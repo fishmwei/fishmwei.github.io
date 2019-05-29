@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://fishmwei.github.io">
-  <title>CocoaLumberJack源码解析 | KEEP</title>
+  <title>CocoaLumberJack源码学习 | KEEP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="CocoaLumberjack库代码学习CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
+  <meta name="description" content="CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
 <meta name="keywords" content="iOS,开源代码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CocoaLumberJack源码解析">
+<meta property="og:title" content="CocoaLumberJack源码学习">
 <meta property="og:url" content="http://fishmwei.github.io/2019/05/29/lumberjack/index.html">
 <meta property="og:site_name" content="KEEP">
-<meta property="og:description" content="CocoaLumberjack库代码学习CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
+<meta property="og:description" content="CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
 <meta property="og:locale" content="Chinese">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2118490-5ded25471f21383b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-05-29T14:20:19.987Z">
+<meta property="og:updated_time" content="2019-05-29T14:23:33.681Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CocoaLumberJack源码解析">
-<meta name="twitter:description" content="CocoaLumberjack库代码学习CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
+<meta name="twitter:title" content="CocoaLumberJack源码学习">
+<meta name="twitter:description" content="CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2118490-5ded25471f21383b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="KEEP" type="application/atom+xml">
@@ -156,7 +156,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      CocoaLumberJack源码解析
+      CocoaLumberJack源码学习
     </h1>
   
 
@@ -169,7 +169,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="CocoaLumberjack库代码学习"><a href="#CocoaLumberjack库代码学习" class="headerlink" title="CocoaLumberjack库代码学习"></a>CocoaLumberjack库代码学习</h1><p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
+        <p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
 <p>可以通过设置Logger，分别把日志写入文件、终端、系统日志中。</p>
 <p>DDLogLevel   7个等级</p>
 <p>库不大，代码结构比较清晰。</p>
@@ -268,7 +268,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CocoaLumberjack库代码学习"><span class="toc-number">1.</span> <span class="toc-text">CocoaLumberjack库代码学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">1.1.</span> <span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码解读"><span class="toc-number">1.2.</span> <span class="toc-text">代码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DDLog"><span class="toc-number">1.2.1.</span> <span class="toc-text">DDLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DDLogMessage"><span class="toc-number">1.2.2.</span> <span class="toc-text">DDLogMessage</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDAbstractLogger"><span class="toc-number">1.3.</span> <span class="toc-text">DDAbstractLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLoggerNode-用于记录logger的信息"><span class="toc-number">1.4.</span> <span class="toc-text">DDLoggerNode 用于记录logger的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLogger-protocol"><span class="toc-number">1.5.</span> <span class="toc-text">DDLogger protocol</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDTTYLogger"><span class="toc-number">1.6.</span> <span class="toc-text">DDTTYLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDOSLogger"><span class="toc-number">1.7.</span> <span class="toc-text">DDOSLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDASLLogger"><span class="toc-number">1.8.</span> <span class="toc-text">DDASLLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLoggerInformation"><span class="toc-number">1.9.</span> <span class="toc-text">DDLoggerInformation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDExtractFileNameWithoutExtension-提取文件名"><span class="toc-number">1.10.</span> <span class="toc-text">DDExtractFileNameWithoutExtension 提取文件名</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">1.</span> <span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码解读"><span class="toc-number">2.</span> <span class="toc-text">代码解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DDLog"><span class="toc-number">2.1.</span> <span class="toc-text">DDLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DDLogMessage"><span class="toc-number">2.2.</span> <span class="toc-text">DDLogMessage</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDAbstractLogger"><span class="toc-number">3.</span> <span class="toc-text">DDAbstractLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLoggerNode-用于记录logger的信息"><span class="toc-number">4.</span> <span class="toc-text">DDLoggerNode 用于记录logger的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLogger-protocol"><span class="toc-number">5.</span> <span class="toc-text">DDLogger protocol</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDTTYLogger"><span class="toc-number">6.</span> <span class="toc-text">DDTTYLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDOSLogger"><span class="toc-number">7.</span> <span class="toc-text">DDOSLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDASLLogger"><span class="toc-number">8.</span> <span class="toc-text">DDASLLogger</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDLoggerInformation"><span class="toc-number">9.</span> <span class="toc-text">DDLoggerInformation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDExtractFileNameWithoutExtension-提取文件名"><span class="toc-number">10.</span> <span class="toc-text">DDExtractFileNameWithoutExtension 提取文件名</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -397,19 +397,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开源代码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">JS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">开源代码</a>
               </li>
             
             <div class="clearfix"></div>
