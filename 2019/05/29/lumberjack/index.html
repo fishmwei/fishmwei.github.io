@@ -16,12 +16,12 @@
 <meta property="og:site_name" content="KEEP">
 <meta property="og:description" content="CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
 <meta property="og:locale" content="Chinese">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/2118490-5ded25471f21383b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-05-29T14:23:33.681Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png">
+<meta property="og:updated_time" content="2019-06-04T14:45:22.064Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CocoaLumberJack源码学习">
 <meta name="twitter:description" content="CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。 可以通过设置Logger，分别把日志写入文件、终端、系统日志中。 DDLogLevel   7个等级 库不大，代码结构比较清晰。">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/2118490-5ded25471f21383b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png">
   
     <link rel="alternative" href="/atom.xml" title="KEEP" type="application/atom+xml">
   
@@ -180,7 +180,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// podfile </span><br><span class="line"></span><br><span class="line">pod &apos;CocoaLumberjack&apos;</span><br></pre></td></tr></table></figure>
 <p>代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt; // 引用头文件</span><br><span class="line"></span><br><span class="line">static DDLogLevel ddLogLevel = DDLogLevelAll; // 定义全局变量</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    DDLogInfo(@&quot;message&quot;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
 <h2 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读"></a>代码解读</h2><p>主要代码类可以参考GitHub给出的图。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/2118490-5ded25471f21383b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="CocoaLumberjackClassDiagram.png"></p>
+<p><img src="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png" alt="CocoaLumberjackClassDiagram.png"></p>
 <h3 id="DDLog"><a href="#DDLog" class="headerlink" title="DDLog"></a>DDLog</h3><p>这个是对外的接口， 所有API都是直接调用这个接口的类方法进行写日志的。</p>
 <p>有一个单例和一个队列。 所有写日志操作，最终都是在同一个队列进行操作的。 </p>
 <p>日志可以写到不同的输出终端， 通过DDLogger协议来控制， DDLog可以添加多个DDLogger协议的对象(具体的都是抽象类DDAbstractLogger的子类)。</p>
@@ -239,9 +239,18 @@
   
 <nav id="article-nav">
   
+    <a href="/2019/06/04/synGitRepo/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          fork库Git代码同步
+        
+      </div>
+    </a>
   
-    <a href="/2019/05/25/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">开盘了</div>
+  
+    <a href="/2019/05/24/DeprecatedJs/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Deprecated js库</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -410,6 +419,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开源代码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
             
             <div class="clearfix"></div>
