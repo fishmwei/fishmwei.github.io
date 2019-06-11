@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://fishmwei.github.io">
-  <title>fork库Git代码同步 | KEEP</title>
+  <title>Tag: Bugly | KEEP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。">
-<meta name="keywords" content="Git,React-Native">
-<meta property="og:type" content="article">
-<meta property="og:title" content="fork库Git代码同步">
-<meta property="og:url" content="http://fishmwei.github.io/2019/06/04/synGitRepo/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="KEEP">
+<meta property="og:url" content="http://fishmwei.github.io/tags/Bugly/index.html">
 <meta property="og:site_name" content="KEEP">
-<meta property="og:description" content="做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。">
 <meta property="og:locale" content="Chinese">
-<meta property="og:updated_time" content="2019-06-04T14:45:22.064Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="fork库Git代码同步">
-<meta name="twitter:description" content="做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。">
+<meta name="twitter:title" content="KEEP">
   
     <link rel="alternative" href="/atom.xml" title="KEEP" type="application/atom+xml">
   
@@ -147,157 +142,64 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-synGitRepo" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      fork库Git代码同步
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/06/11/weak-attribute/" class="archive-article-date">
+  	<time datetime="2019-06-11T13:33:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-11</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/06/11/weak-attribute/">Bugly RN调用栈 - C的弱符号</a>
     </h1>
   
 
-        
-        <a href="/2019/06/04/synGitRepo/" class="archive-article-date">
-  	<time datetime="2019-06-04T07:33:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
-<a id="more"></a>
-<ol>
-<li><p>clone当前库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置源库 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取远程仓库修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到master库， 合并远程库修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把本地库推送上去。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>同步完成。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Bugly</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/06/04/RNTester/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          React-Native Sample代码运行
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/05/29/lumberjack/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">CocoaLumberJack源码学习</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-        <div class="toc-container tooltip-left">
-            <i class="icon-font icon-category"></i>
-            <div class="tooltip tooltip-east">
-                <span class="tooltip-item">
-                </span>
-                <span class="tooltip-content">
-                    <div class="toc-article">
-                    目录，不存在的…
-                    </div>
-                </span>
-            </div>
-        </div>
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
-  <div id="gitment-ctn"></div> 
-<link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
-<script src="https://jjeejj.github.io/js/gitment.js"></script>
-<script>
-var gitment = new Gitment({
-  id: "http://fishmwei.github.io/2019/06/04/synGitRepo/",
-  owner: 'fishmwei',
-  repo: 'fishmwei.github.io',
-  oauth: {
-    client_id: 'eb2d57404132c0864ff8',
-    client_secret: '14e9edb59849ac39b938326b36d037ef218416e1',
-  },
-  lazy:false
-})
-gitment.render('gitment-ctn')
-</script>
-  
+    
 
 
           </div>
@@ -320,9 +222,9 @@ gitment.render('gitment-ctn')
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
