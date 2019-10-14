@@ -17,7 +17,7 @@
 <meta property="og:description" content="react-native: 0.49.3 推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。">
 <meta property="og:locale" content="Chinese">
 <meta property="og:image" content="http://fishmwei.github.io/images/machoview-weak.png">
-<meta property="og:updated_time" content="2019-09-18T03:17:54.848Z">
+<meta property="og:updated_time" content="2019-10-14T03:07:44.185Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Bugly RN调用栈 - C的弱符号">
 <meta name="twitter:description" content="react-native: 0.49.3 推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。">
@@ -188,6 +188,7 @@
 <p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
 <p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
 <p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 
       
 
@@ -417,15 +418,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+                <a href="javascript:void(0)" class="js-tag color3">工具</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -437,6 +438,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
@@ -445,23 +450,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">iOS知识点</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">构思方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">版本信息</a>
+                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">软件设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
             
             <div class="clearfix"></div>

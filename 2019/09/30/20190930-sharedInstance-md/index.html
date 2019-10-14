@@ -9,7 +9,7 @@
   <title>一次单例模式的代码重构 | IT攻城狮小明</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="不要滥用设计模式 最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。">
-<meta name="keywords" content="软件设计,开发经验">
+<meta name="keywords" content="开发经验,软件设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一次单例模式的代码重构">
 <meta property="og:url" content="http://fishmwei.github.io/2019/09/30/20190930-sharedInstance-md/index.html">
@@ -18,7 +18,7 @@
 <meta property="og:locale" content="Chinese">
 <meta property="og:image" content="http://fishmwei.github.io/images/20190930/OriginalClasses.png">
 <meta property="og:image" content="http://fishmwei.github.io/images/20190930/newClasses.png">
-<meta property="og:updated_time" content="2019-09-30T14:58:41.200Z">
+<meta property="og:updated_time" content="2019-10-14T03:07:44.189Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一次单例模式的代码重构">
 <meta name="twitter:description" content="不要滥用设计模式 最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。">
@@ -192,6 +192,7 @@
 <blockquote>
 <p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
 </blockquote>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 
       
 
@@ -231,11 +232,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">软件设计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发经验</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发经验</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">软件设计</a>
         		</li>
       		
 		</ul>
@@ -412,15 +413,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+                <a href="javascript:void(0)" class="js-tag color3">工具</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -432,6 +433,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
@@ -440,23 +445,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">iOS知识点</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">构思方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">版本信息</a>
+                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">软件设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
             
             <div class="clearfix"></div>

@@ -17,7 +17,7 @@
 <meta property="og:description" content="前言最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。 首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。">
 <meta property="og:locale" content="Chinese">
 <meta property="og:image" content="http://fishmwei.github.io/images/configOrientation.png">
-<meta property="og:updated_time" content="2019-09-18T03:16:41.416Z">
+<meta property="og:updated_time" content="2019-10-14T03:07:44.186Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS知识点(2) - iOS横竖屏旋转">
 <meta name="twitter:description" content="前言最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。 首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。">
@@ -191,6 +191,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
 <p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 
       
 
@@ -416,15 +417,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+                <a href="javascript:void(0)" class="js-tag color3">工具</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -436,6 +437,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
@@ -444,23 +449,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">iOS知识点</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">构思方案</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">版本信息</a>
+                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">软件设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
               </li>
             
             <div class="clearfix"></div>
