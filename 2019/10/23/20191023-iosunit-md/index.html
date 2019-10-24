@@ -6,18 +6,26 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://fishmwei.github.io">
-  <title>Archives: 2019 | IT攻城狮小明</title>
+  <title>iOS接口的单元测试 | IT攻城狮小明</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="IT攻城狮小明">
-<meta property="og:url" content="http://fishmwei.github.io/archives/2019/index.html">
+  <meta name="description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS接口的单元测试">
+<meta property="og:url" content="http://fishmwei.github.io/2019/10/23/20191023-iosunit-md/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="技术博客">
+<meta property="og:description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
 <meta property="og:locale" content="Chinese">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit1.png">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit2.png">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit3.png">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit4.png">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit5.pngs">
+<meta property="og:updated_time" content="2019-10-24T01:07:09.703Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IT攻城狮小明">
-<meta name="twitter:description" content="技术博客">
+<meta name="twitter:title" content="iOS接口的单元测试">
+<meta name="twitter:description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/20191023/unit1.png">
   
     <link rel="alternative" href="/atom.xml" title="IT攻城狮小明" type="application/atom+xml">
   
@@ -149,36 +157,98 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-20191023-iosunit-md" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      iOS接口的单元测试
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/23/20191023-iosunit-md/" class="archive-article-date">
+
+        
+        <a href="/2019/10/23/20191023-iosunit-md/" class="archive-article-date">
   	<time datetime="2019-10-23T11:06:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-23</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/23/20191023-iosunit-md/">iOS接口的单元测试</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
+<p>现在就来聊聊iOS代码的单元测试。</p>
+<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
+<a id="more"></a>
+<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
+<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
+<p>下面讲一下我是如何作单元测试的</p>
+<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
+<ul>
+<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
+<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
+<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
+<li>编译执行test  target （快捷键 command + U）</li>
+</ul>
+<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
+<p><img src="/images/20191023/unit1.png" alt></p>
+<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
+<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
+<p><img src="/images/20191023/unit2.png" alt></p>
+<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
+<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
+<li>添加文件到test target</li>
+<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
+</ul>
+<p><img src="/images/20191023/unit3.png" alt></p>
+<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
+<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
+<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
+<p><img src="/images/20191023/unit4.png" alt></p>
+<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
+<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
+<li>跑一遍单元测试， 查看结果</li>
+</ul>
+<p><img src="/images/20191023/unit5.pngs" alt></p>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
+<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>欢迎关注公众号<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/qrcode_for_gzh.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -190,392 +260,84 @@
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/30/20190930-sharedInstance-md/" class="archive-article-date">
-  	<time datetime="2019-09-30T11:54:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-30</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/09/30/20190930-sharedInstance-md/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">一次单例模式的代码重构</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/30/20190930-sharedInstance-md/">一次单例模式的代码重构</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发经验</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">软件设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS接口的单元测试"><span class="toc-number">1.</span> <span class="toc-text">iOS接口的单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试流程"><span class="toc-number">1.1.</span> <span class="toc-text">单元测试流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何开始单元测试"><span class="toc-number">1.1.1.</span> <span class="toc-text">如何开始单元测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步接口测试"><span class="toc-number">1.1.2.</span> <span class="toc-text">异步接口测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加文件测试"><span class="toc-number">1.1.3.</span> <span class="toc-text">添加文件测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用OCMock进行代码mock"><span class="toc-number">1.1.4.</span> <span class="toc-text">使用OCMock进行代码mock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用OHHTTPStubs-对网络接口进行mock"><span class="toc-number">1.1.5.</span> <span class="toc-text">使用OHHTTPStubs 对网络接口进行mock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看代码覆盖率"><span class="toc-number">1.1.6.</span> <span class="toc-text">查看代码覆盖率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更多"><span class="toc-number">1.1.7.</span> <span class="toc-text">更多</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#感想"><span class="toc-number">1.2.</span> <span class="toc-text">感想</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/27/20190927-versionScheme-common/" class="archive-article-date">
-  	<time datetime="2019-09-27T12:26:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-27</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/27/20190927-versionScheme-common/">一种获取客户端程序的代码版本的方法</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">构思方案</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发经验</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/30/20190830-kvStore-iOS/" class="archive-article-date">
-  	<time datetime="2019-08-30T03:36:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/30/20190830-kvStore-iOS/">YTKKeyValueStore开源库使用</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开源代码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/18/20190818-OCCopy-iOS/" class="archive-article-date">
-  	<time datetime="2019-08-18T00:43:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-18</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/18/20190818-OCCopy-iOS/">iOS知识点(3) - NSCopying/NSMutableCopying</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/08/20190808-autorotateiOS/" class="archive-article-date">
-  	<time datetime="2019-08-08T03:55:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/08/20190808-autorotateiOS/">iOS知识点(2) - iOS横竖屏旋转</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/19/20190619-NSCache-iOS/" class="archive-article-date">
-  	<time datetime="2019-06-19T03:09:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/19/20190619-NSCache-iOS/">iOS知识点(1) - NSCache</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/11/20190611-weak-attribute/" class="archive-article-date">
-  	<time datetime="2019-06-11T13:33:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/11/20190611-weak-attribute/">Bugly RN调用栈 - C的弱符号</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Bugly</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/04/20190604-RNTester-RN/" class="archive-article-date">
-  	<time datetime="2019-06-04T08:39:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/04/20190604-RNTester-RN/">React-Native Sample代码运行</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/04/20190604-synGitRepo/" class="archive-article-date">
-  	<time datetime="2019-06-04T07:33:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/04/20190604-synGitRepo/">fork库Git代码同步</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工具</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Git</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/2019/page/2/">2</a><a class="extend next" rel="next" href="/archives/2019/page/2/">Next &raquo;</a>
-    </nav>
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+<script src="https://jjeejj.github.io/js/gitment.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://fishmwei.github.io/2019/10/23/20191023-iosunit-md/",
+  owner: 'fishmwei',
+  repo: 'fishmwei.github.io',
+  oauth: {
+    client_id: 'eb2d57404132c0864ff8',
+    client_secret: '14e9edb59849ac39b938326b36d037ef218416e1',
+  },
+  lazy:false
+})
+gitment.render('gitment-ctn')
+</script>
   
 
 
@@ -599,8 +361,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
