@@ -20,8 +20,8 @@
 <meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit2.png">
 <meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit3.png">
 <meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit4.png">
-<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit5.pngs">
-<meta property="og:updated_time" content="2019-10-24T01:07:09.703Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/20191023/unit5.png">
+<meta property="og:updated_time" content="2019-10-24T01:16:07.019Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS接口的单元测试">
 <meta name="twitter:description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
@@ -210,7 +210,7 @@
 <li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
 <li>跑一遍单元测试， 查看结果</li>
 </ul>
-<p><img src="/images/20191023/unit5.pngs" alt></p>
+<p><img src="/images/20191023/unit5.png" alt></p>
 <h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
 <p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
 <h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
@@ -435,6 +435,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">工具</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">JS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
@@ -443,19 +451,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">工具</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">React-Native</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">JS</a>
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
               </li>
              
               <li class="article-tag-list-item">
