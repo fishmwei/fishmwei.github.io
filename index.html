@@ -172,34 +172,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
-<p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
-<p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
-<h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> <span class="title">temp</span>;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (temp.flag &amp; <span class="number">0x1f</span>) &#123; <span class="comment">// 不好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (temp.flag) &#123; <span class="comment">// 好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>分析是，第一种，进行按位与的操作时，会按位操作。第二种，直接取值与0进行对比，减少了位的操作。</p>
-<h3 id="2-减少移位操作"><a href="#2-减少移位操作" class="headerlink" title="2. 减少移位操作"></a>2. 减少移位操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a&gt;&gt;<span class="number">1</span> &amp; <span class="number">0x1</span>)  ===&gt; <span class="keyword">if</span> (a&amp;<span class="number">0x2</span>)</span><br></pre></td></tr></table></figure>
-<p>少了一次移位的操作</p>
-<h3 id="3-减少位域的算术操作"><a href="#3-减少位域的算术操作" class="headerlink" title="3. 减少位域的算术操作"></a>3. 减少位域的算术操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">24</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data.flag == <span class="number">0xffffff</span>) &#123;  <span class="comment">// 不好的做法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 好的做法</span></span><br><span class="line"><span class="keyword">unsigned</span> flag = data.falg;</span><br><span class="line"><span class="keyword">if</span> (flag ==  <span class="number">0xffffff</span>) &#123;</span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过赋值再比较的方式，赋值的时候，直接拷贝了低24位到寄存器，然后再与整型0xffffff比较。而第一种做法，编译器会先取低24位的值，通过bmsk的操作获取位域的值。然后再跟再与整型0xffffff比较。 通过实际测试，发现bmsk的操作很耗时。</p>
-<h3 id="4-尽量减少内存的清除动作"><a href="#4-尽量减少内存的清除动作" class="headerlink" title="4. 尽量减少内存的清除动作"></a>4. 尽量减少内存的清除动作</h3><p>测试发现 memset(dstPtr, 0, size) 比直接赋值为0的效率低。</p>
-<h3 id="5-函数尽量使用static函数"><a href="#5-函数尽量使用static函数" class="headerlink" title="5. 函数尽量使用static函数"></a>5. 函数尽量使用static函数</h3><p>我们知道，static函数全局只会有一份，但是普通的函数在调用的地方都会维持一份拷贝。 使用static函数可以避免调用函数的压栈出栈，速度会比较快。</p>
-<h3 id="6-C语言的求模运算效率低"><a href="#6-C语言的求模运算效率低" class="headerlink" title="6. C语言的求模运算效率低 %"></a>6. C语言的求模运算效率低 %</h3><p>实际测试发现，使用平台库提供的mod函数效率比普通的求模%运算好太多。</p>
-<h2 id="可维护性"><a href="#可维护性" class="headerlink" title="可维护性"></a>可维护性</h2><p>这里主要讲一下代码的可读性， 设备命令的可读性。</p>
-<p>在之前，代码流程是个大杂烩吧， 在一个大函数里各种条件判断，很多流程都糅合在了一起，太多人写过这代码了，没人愿意拆分，怕结果是越来越乱，既然是新项目，我就来做个雷锋吧，改改改。</p>
-<p>设备命令可读性，我想讲的是，很多命令都是直接打印16进制内容，然后查看之后，还得对着设计文档一个个比特的去看是什么意思。做命令的小哥，也是照搬前人的逻辑，复制代码、粘贴代码，改改就来用。我催了不下十遍了，才给我改了一个用户友好的命令显示。哎，人微言轻，推不动啊。</p>
-<h2 id="叽叽歪歪"><a href="#叽叽歪歪" class="headerlink" title="叽叽歪歪"></a>叽叽歪歪</h2><p>在这里</p>
-<ol>
-<li>没有结对编程的概念</li>
-<li>代码不经检视可以直接入库、几乎不会主动发起代码检视</li>
-<li>缺少设计实现的讨论评审，基本面对面沟通</li>
-<li>输出文档少，归档不明确, 一般都是口口相传</li>
-<li>协作方式很原始</li>
-<li>小组几乎不开会 ~ OMG</li>
-<li>No training，No share 成员成长靠自我</li>
-</ol>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-
+        
+          <a class="article-more-a" href="/2020/06/03/20200603-optimize/#more">全文 >></a>
+        
       
 
       
@@ -270,11 +245,9 @@
       
         <h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
 <p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。工资待遇呢，相对福州是降薪了，貌似我换工作，总是降薪来换，上次从华为到网龙也是。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-
+        
+          <a class="article-more-a" href="/2020/06/03/20200603-newjob/#more">全文 >></a>
+        
       
 
       
@@ -344,22 +317,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-
+        
+          <a class="article-more-a" href="/2019/12/24/20191224-CoreDump/#more">全文 >></a>
+        
       
 
       
@@ -1040,10 +1000,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
@@ -1052,7 +1008,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1060,7 +1016,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Bugly</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1069,10 +1033,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">

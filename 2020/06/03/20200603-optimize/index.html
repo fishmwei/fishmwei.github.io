@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://fishmwei.github.io">
   <title>项目性能优化 | IT攻城狮小明</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
+  <meta name="description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。">
 <meta name="keywords" content="开发经验">
 <meta property="og:type" content="article">
 <meta property="og:title" content="项目性能优化">
 <meta property="og:url" content="http://fishmwei.github.io/2020/06/03/20200603-optimize/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
+<meta property="og:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。">
 <meta property="og:locale" content="Chinese">
-<meta property="og:updated_time" content="2020-06-04T02:48:38.313Z">
+<meta property="og:updated_time" content="2020-06-04T06:20:56.283Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="项目性能优化">
-<meta name="twitter:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
+<meta name="twitter:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。">
   
     <link rel="alternative" href="/atom.xml" title="IT攻城狮小明" type="application/atom+xml">
   
@@ -172,7 +172,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
+<a id="more"></a>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都对设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
 <p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
 <p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
 <h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
@@ -423,10 +424,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iOS</a>
               </li>
              
@@ -435,7 +432,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -443,7 +440,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Bugly</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -452,10 +457,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">开发经验</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
