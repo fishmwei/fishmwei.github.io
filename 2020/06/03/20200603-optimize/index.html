@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://fishmwei.github.io">
-  <title>Tag: iOS | IT攻城狮小明</title>
+  <title>项目性能优化 | IT攻城狮小明</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="IT攻城狮小明">
-<meta property="og:url" content="http://fishmwei.github.io/tags/iOS/index.html">
+  <meta name="description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
+<meta name="keywords" content="开发经验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="项目性能优化">
+<meta property="og:url" content="http://fishmwei.github.io/2020/06/03/20200603-optimize/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="技术博客">
+<meta property="og:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
 <meta property="og:locale" content="Chinese">
+<meta property="og:updated_time" content="2020-06-04T02:48:38.313Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IT攻城狮小明">
-<meta name="twitter:description" content="技术博客">
+<meta name="twitter:title" content="项目性能优化">
+<meta name="twitter:description" content="背景项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。 性能粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很">
   
     <link rel="alternative" href="/atom.xml" title="IT攻城狮小明" type="application/atom+xml">
   
@@ -149,262 +151,178 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-20200603-optimize" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      项目性能优化
+    </h1>
+  
+
+        
+        <a href="/2020/06/03/20200603-optimize/" class="archive-article-date">
+  	<time datetime="2020-06-03T08:35:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-03</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
+<p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
+<p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
+<h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> <span class="title">temp</span>;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (temp.flag &amp; <span class="number">0x1f</span>) &#123; <span class="comment">// 不好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (temp.flag) &#123; <span class="comment">// 好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析是，第一种，进行按位与的操作时，会按位操作。第二种，直接取值与0进行对比，减少了位的操作。</p>
+<h3 id="2-减少移位操作"><a href="#2-减少移位操作" class="headerlink" title="2. 减少移位操作"></a>2. 减少移位操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a&gt;&gt;<span class="number">1</span> &amp; <span class="number">0x1</span>)  ===&gt; <span class="keyword">if</span> (a&amp;<span class="number">0x2</span>)</span><br></pre></td></tr></table></figure>
+<p>少了一次移位的操作</p>
+<h3 id="3-减少位域的算术操作"><a href="#3-减少位域的算术操作" class="headerlink" title="3. 减少位域的算术操作"></a>3. 减少位域的算术操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">24</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data.flag == <span class="number">0xffffff</span>) &#123;  <span class="comment">// 不好的做法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 好的做法</span></span><br><span class="line"><span class="keyword">unsigned</span> flag = data.falg;</span><br><span class="line"><span class="keyword">if</span> (flag ==  <span class="number">0xffffff</span>) &#123;</span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过赋值再比较的方式，赋值的时候，直接拷贝了低24位到寄存器，然后再与整型0xffffff比较。而第一种做法，编译器会先取低24位的值，通过bmsk的操作获取位域的值。然后再跟再与整型0xffffff比较。 通过实际测试，发现bmsk的操作很耗时。</p>
+<h3 id="4-尽量减少内存的清除动作"><a href="#4-尽量减少内存的清除动作" class="headerlink" title="4. 尽量减少内存的清除动作"></a>4. 尽量减少内存的清除动作</h3><p>测试发现 memset(dstPtr, 0, size) 比直接赋值为0的效率低。</p>
+<h3 id="5-函数尽量使用static函数"><a href="#5-函数尽量使用static函数" class="headerlink" title="5. 函数尽量使用static函数"></a>5. 函数尽量使用static函数</h3><p>我们知道，static函数全局只会有一份，但是普通的函数在调用的地方都会维持一份拷贝。 使用static函数可以避免调用函数的压栈出栈，速度会比较快。</p>
+<h3 id="6-C语言的求模运算效率低"><a href="#6-C语言的求模运算效率低" class="headerlink" title="6. C语言的求模运算效率低 %"></a>6. C语言的求模运算效率低 %</h3><p>实际测试发现，使用平台库提供的mod函数效率比普通的求模%运算好太多。</p>
+<h2 id="可维护性"><a href="#可维护性" class="headerlink" title="可维护性"></a>可维护性</h2><p>这里主要讲一下代码的可读性， 设备命令的可读性。</p>
+<p>在之前，代码流程是个大杂烩吧， 在一个大函数里各种条件判断，很多流程都糅合在了一起，太多人写过这代码了，没人愿意拆分，怕结果是越来越乱，既然是新项目，我就来做个雷锋吧，改改改。</p>
+<p>设备命令可读性，我想讲的是，很多命令都是直接打印16进制内容，然后查看之后，还得对着设计文档一个个比特的去看是什么意思。做命令的小哥，也是照搬前人的逻辑，复制代码、粘贴代码，改改就来用。我催了不下十遍了，才给我改了一个用户友好的命令显示。哎，人微言轻，推不动啊。</p>
+<h2 id="叽叽歪歪"><a href="#叽叽歪歪" class="headerlink" title="叽叽歪歪"></a>叽叽歪歪</h2><p>在这里</p>
+<ol>
+<li>没有结对编程的概念</li>
+<li>代码不经检视可以直接入库、几乎不会主动发起代码检视</li>
+<li>缺少设计实现的讨论评审，基本面对面沟通</li>
+<li>输出文档少，归档不明确, 一般都是口口相传</li>
+<li>协作方式很原始</li>
+<li>小组几乎不开会 ~ OMG</li>
+<li>No training，No share 成员成长靠自我</li>
+</ol>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>欢迎关注公众号<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/qrcode_for_gzh.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/23/20191023-iosunit-md/" class="archive-article-date">
-  	<time datetime="2019-10-23T11:06:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/23/20191023-iosunit-md/">iOS接口的单元测试</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开发经验</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/30/20190830-kvStore-iOS/" class="archive-article-date">
-  	<time datetime="2019-08-30T03:36:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-30</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/03/20200603-newjob/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">换城市工作切换的感受</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/30/20190830-kvStore-iOS/">YTKKeyValueStore开源库使用</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开源代码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能"><span class="toc-number">2.</span> <span class="toc-text">性能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-在条件语句中，尽量不进行位域值的运算"><span class="toc-number">2.1.</span> <span class="toc-text">1. 在条件语句中，尽量不进行位域值的运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-减少移位操作"><span class="toc-number">2.2.</span> <span class="toc-text">2. 减少移位操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-减少位域的算术操作"><span class="toc-number">2.3.</span> <span class="toc-text">3. 减少位域的算术操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-尽量减少内存的清除动作"><span class="toc-number">2.4.</span> <span class="toc-text">4. 尽量减少内存的清除动作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-函数尽量使用static函数"><span class="toc-number">2.5.</span> <span class="toc-text">5. 函数尽量使用static函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-C语言的求模运算效率低"><span class="toc-number">2.6.</span> <span class="toc-text">6. C语言的求模运算效率低 %</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#可维护性"><span class="toc-number">3.</span> <span class="toc-text">可维护性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#叽叽歪歪"><span class="toc-number">4.</span> <span class="toc-text">叽叽歪歪</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/18/20190818-OCCopy-iOS/" class="archive-article-date">
-  	<time datetime="2019-08-18T00:43:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-18</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/18/20190818-OCCopy-iOS/">iOS知识点(3) - NSCopying/NSMutableCopying</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/08/20190808-autorotateiOS/" class="archive-article-date">
-  	<time datetime="2019-08-08T03:55:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-08</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/08/20190808-autorotateiOS/">iOS知识点(2) - iOS横竖屏旋转</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/19/20190619-NSCache-iOS/" class="archive-article-date">
-  	<time datetime="2019-06-19T03:09:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/19/20190619-NSCache-iOS/">iOS知识点(1) - NSCache</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">React-Native</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/05/29/20190529-lumberjack-iOS/" class="archive-article-date">
-  	<time datetime="2019-05-29T14:06:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-29</time>
-</a>
-        </div>
-    	 
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+<script src="https://jjeejj.github.io/js/gitment.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://fishmwei.github.io/2020/06/03/20200603-optimize/",
+  owner: 'fishmwei',
+  repo: 'fishmwei.github.io',
+  oauth: {
+    client_id: 'eb2d57404132c0864ff8',
+    client_secret: '14e9edb59849ac39b938326b36d037ef218416e1',
+  },
+  lazy:false
+})
+gitment.render('gitment-ctn')
+</script>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/05/29/20190529-lumberjack-iOS/">CocoaLumberJack源码学习</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">开源代码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -427,9 +345,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
