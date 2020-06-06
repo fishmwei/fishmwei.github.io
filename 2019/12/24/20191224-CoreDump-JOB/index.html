@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    
+    <title>
+        CoreDump的使用 | IT攻城狮小明
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <link rel="shortcut icon" href="/images/headerIcon.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script id="hexo-configurations">
+    let CONFIG = {"hostname":"fishmwei.github.io","root":"/","localsearch":{"enable":true,"trigger":"auto","unescape":false,"preload":false},"themeInfo":{"name":"ILS","version":"1.1.1","author":"XPoet","repository":"https://github.com/XPoet/hexo-theme-ils"}};
+  </script>
+</head>
+
+
+<body>
+<div class="page-template">
+    <div class="page-top">
+        <header class="header-wrapper">
+
+    <div class="header-content">
+
+        <a class="logo-title" href="/">
+            IT攻城狮小明
+        </a>
+
+        <ul class="menu-list">
+            
+                <li class="menu-item">
+                    <a class href="/">
+                        首页
+                    </a>
+                </li>
+            
+                <li class="menu-item">
+                    <a class href="/archives">
+                        归档
+                    </a>
+                </li>
+            
+        </ul>
+
+        <div class="menu-bar">
+            <div class="menu-bar-middle"></div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item">
+                    <a class href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item">
+                    <a class href="/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+    </div>
+
+    <div class="page-middle ">
+
+        <main class="main-content normal-code-theme">
+
+            <div class="main-content-left">
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <h3><a class="title-hover-animation">CoreDump的使用</a></h3>
+        </div>
+
+        <div class="meta-info">
+            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa fa-calendar-o"></i> 2019-12-24 22:04:52
+    </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa fa-tags"></i>
+            <ul>
+                
+                    <li>
+                        <a href="/tags/linux/">linux</a>
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+</div>
+        </div>
+
+        <div class="article-content markdown-body">
+            <p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+
+        </div>
+
+        <div class="article-nav">
+            
+                <div class="article-prev">
+                    <a class="prev btn" rel="prev" href="/2020/06/03/20200603-newjob-JOB/"><i class="fa fa-chevron-left"></i> 换城市工作切换的感受
+                    </a>
+                </div>
+            
+            
+                <div class="article-next">
+                    <a class="next btn" rel="next" href="/2019/10/23/20191023-iosunit-IOS/">iOS接口的单元测试 <i class="fa fa-chevron-right"></i>
+                    </a>
+                </div>
+            
+        </div>
+
+        <div class="comment-container">
+            <div class="comments-container">
+    
+        
+    <div class="valine-container">
+        <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+        <div id="vcomments"></div>
+        <script>
+            new Valine({
+                el: '#vcomments',
+                appId: 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+                appKey: '0x5cs3gW6EAeDvJk6z4X3uAQ',
+                meta: 'nick,mail,link'.split(','),
+                avatar: 'wavatar',
+                enableQQ: true,
+                placeholder: '😜尽情吐槽吧~',
+                lang: 'zh-CN'.toLowerCase()
+            })
+        </script>
+    </div>
+
+
+    
+</div>
+        </div>
+    </div>
+</div>
+
+    <div class="article-toc-container fade-in-down-animation">
+        <div class="article-toc">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使系统创建coredump文件"><span class="nav-number">1.</span> <span class="nav-text">如何使系统创建coredump文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关配置"><span class="nav-number">2.</span> <span class="nav-text">相关配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试命令"><span class="nav-number">3.</span> <span class="nav-text">调试命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">4.</span> <span class="nav-text">示例</span></a></li></ol>
+    </div>
+</div>
+        </div>
+    </div>
+
+
+                
+
+            </div>
+
+            
+
+        </main>
+
+        <div class="sidebar-tools">
+            <div class="tools-container">
+    <ul class="tools-list">
+        
+            <li class="search popup-trigger">
+                <i class="fa fa-search"></i>
+            </li>
+            <script src="/js/local-search.js"></script>
+        
+        <li class="mode-toggle">
+            <i class="fa fa-moon-o"></i>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <div class="scroll-to-top">
+                <ul>
+                    <li>
+                        <!--<i class="fa fa-caret-up"></i>-->
+                        <span class="scroll-percent"></span>
+                    </li>
+                </ul>
+            </div>
+        
+    </div>
+
+    <div class="page-bottom">
+        <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy; 2020 <a href="/">IT攻城狮小明</a>
+        </div>
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动 | 主题 <a href="https://github.com/XPoet/hexo-theme-ils" target="_blank">ILS v1.1.1</a>
+        </div>
+        
+    </div>
+</footer>
+    </div>
+</div>
+
+    <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-icon">
+            <i class="fa fa-search"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script src="/js/header-shrink.js"></script>
+<script src="/js/toggle-mode.js"></script>
+
+
+    <script src="/js/scroll-to-top.js"></script>
+
+
+
+
+    
+        <script src="/js/code-copy.js"></script>
+    
+
+    
+        <script src="/lib/anime.min.js"></script>
+<script src="/js/toc.js"></script>
+    
+
+
+
+
+</body>
+</html>
