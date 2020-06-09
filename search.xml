@@ -152,6 +152,29 @@
       </tags>
   </entry>
   <entry>
+    <title>iOS知识点(1) - NSCache</title>
+    <url>/2019/06/19/20190619-NSCache-iOS/</url>
+    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
+<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
+<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+<a id="more"></a>
+<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
+<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
+<p>NSCache主要有几个属性 及 方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
+<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
+<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>iOS知识点(2) - iOS横竖屏旋转</title>
     <url>/2019/08/08/20190808-autorotateiOS/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
@@ -200,29 +223,6 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(1) - NSCache</title>
-    <url>/2019/06/19/20190619-NSCache-iOS/</url>
-    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
-<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
-<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
-<a id="more"></a>
-<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
-<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
-<p>NSCache主要有几个属性 及 方法</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
-<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
-<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>React-Native</tag>
       </tags>
   </entry>
   <entry>
@@ -382,40 +382,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/06/08/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>iOS接口的单元测试</title>
     <url>/2019/10/23/20191023-iosunit-IOS/</url>
     <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
@@ -484,6 +450,43 @@
 ]]></content>
       <tags>
         <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
