@@ -174,6 +174,188 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/06/13/c-command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/13/c-command/" class="post-title-link" itemprop="url">C程序的命令行参数处理函数getopt</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-13 09:47:07 / 修改时间：14:42:22" itemprop="dateCreated datePublished" datetime="2020-06-13T09:47:07+08:00">2020-06-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/06/13/c-command/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/13/c-command/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>工作中，存在着这么一个问题。开发提供给测试的二进制版本，都是记录在一个excel表中，保存着对应版本的提测日期和文件的Md5值、以及对应的svn标签信息。但是，文件这种东西，是需要靠人来填写的。许多临时的版本，就没有记录了。经常出现测试的文件找不到对应的记录，不知道是何时提供、解决了什么问题。 那么，就有这么个需求，把对应的信息保存到二进制文件，在编译的时候，获取编译的时间，svn版本号，编译机器的用户名(一般可以对应到开发人员)等信息，自动生成源代码文件，记入编译文件。然后，还需要提供一种方式读取这些信息，让二进制文件支持参数处理是一个不错的方式。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/13/c-command/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/06/09/tiny-program/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/09/tiny-program/" class="post-title-link" itemprop="url">二进制包大小优化思路</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-09 15:09:20" itemprop="dateCreated datePublished" datetime="2020-06-09T15:09:20+08:00">2020-06-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-13 09:55:17" itemprop="dateModified" datetime="2020-06-13T09:55:17+08:00">2020-06-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/06/09/tiny-program/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/09/tiny-program/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/06/03/optimize-JOB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -480,7 +662,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-06 11:25:35" itemprop="dateModified" datetime="2020-06-06T11:25:35+08:00">2020-06-06</time>
+                <time title="修改时间：2020-06-13 09:43:32" itemprop="dateModified" datetime="2020-06-13T09:43:32+08:00">2020-06-13</time>
               </span>
 
           
@@ -1730,7 +1912,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
