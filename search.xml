@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Deprecated js库</title>
     <url>/2019/05/24/Deprecated-Js/</url>
     <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
@@ -127,6 +109,24 @@
       </tags>
   </entry>
   <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Bugly RN调用栈 - C的弱符号</title>
     <url>/2019/06/11/weak-attribute-C/</url>
     <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
@@ -226,58 +226,6 @@
       </tags>
   </entry>
   <entry>
-    <title>YTKKeyValueStore开源库使用</title>
-    <url>/2019/08/30/kvStore-iOS/</url>
-    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
-<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
-<a id="more"></a>
-<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
-<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
-<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
-<p>实现逻辑比较简单， 支持如下功能</p>
-<ul>
-<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
-<li>创建指定名称的表操作</li>
-<li>清空表操作</li>
-<li>关闭数据库</li>
-<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
-<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>插入对象， 存储对象的json字符串</li>
-<li>获取对象， 获取都json字符串，转为对象</li>
-<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
-<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>删除指定表名、指定id的条目</li>
-<li>删除指定表名、指定id数组的多个条目</li>
-<li>删除指定表明、指定前缀的id条目</li>
-<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-</ul>
-<p>缺点： </p>
-<ul>
-<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
-</ul>
-<p>我新增了这个功能:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
-</ul>
-<p>番外知识点：</p>
-<ul>
-<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
-<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
-<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
-<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
-</ul>
-<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>一种获取客户端程序的代码版本的方法</title>
     <url>/2019/09/27/versionScheme-common/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
@@ -351,6 +299,58 @@
       <tags>
         <tag>构思方案</tag>
         <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>YTKKeyValueStore开源库使用</title>
+    <url>/2019/08/30/kvStore-iOS/</url>
+    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
+<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
+<a id="more"></a>
+<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
+<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
+<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
+<p>实现逻辑比较简单， 支持如下功能</p>
+<ul>
+<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
+<li>创建指定名称的表操作</li>
+<li>清空表操作</li>
+<li>关闭数据库</li>
+<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
+<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>插入对象， 存储对象的json字符串</li>
+<li>获取对象， 获取都json字符串，转为对象</li>
+<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
+<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>删除指定表名、指定id的条目</li>
+<li>删除指定表名、指定id数组的多个条目</li>
+<li>删除指定表明、指定前缀的id条目</li>
+<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+</ul>
+<p>缺点： </p>
+<ul>
+<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
+</ul>
+<p>我新增了这个功能:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
+</ul>
+<p>番外知识点：</p>
+<ul>
+<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
+<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
+<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
+<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
+</ul>
+<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
       </tags>
   </entry>
   <entry>
@@ -561,21 +561,6 @@
       </categories>
   </entry>
   <entry>
-    <title>换城市工作切换的感受</title>
-    <url>/2020/06/03/newjob-JOB/</url>
-    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
-<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
-<a id="more"></a>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>项目性能优化</title>
     <url>/2020/06/03/optimize-JOB/</url>
     <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问他的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
@@ -627,6 +612,21 @@
       </categories>
   </entry>
   <entry>
+    <title>换城市工作切换的感受</title>
+    <url>/2020/06/03/newjob-JOB/</url>
+    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
+<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+<a id="more"></a>
+<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
+<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
+<p>好了， 先这样。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -646,17 +646,6 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>网络协议之PPP</title>
-    <url>/2020/06/18/np-ppp/</url>
-    <content><![CDATA[<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>网络协议</category>
       </categories>
   </entry>
   <entry>
