@@ -96,6 +96,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Bugly RN调用栈 - C的弱符号</title>
+    <url>/2019/06/11/weak-attribute-C/</url>
+    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
+<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<a id="more"></a>
+<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
+<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
+<p>相当于增加了一个默认函数。</p>
+<p>原理：连接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
+<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
+<p><img src="/images/machoview-weak.png" alt></p>
+<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
+<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
+<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>React-Native</tag>
+        <tag>Bugly</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>fork库Git代码同步</title>
     <url>/2019/06/04/synGitRepo/</url>
     <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
@@ -127,48 +152,26 @@
       </tags>
   </entry>
   <entry>
-    <title>Bugly RN调用栈 - C的弱符号</title>
-    <url>/2019/06/11/weak-attribute-C/</url>
-    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
-<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+    <title>iOS知识点(2) - iOS横竖屏旋转</title>
+    <url>/2019/08/08/autorotateiOS/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
+<p>首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。</p>
 <a id="more"></a>
-<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
-<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
-<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
-<p>相当于增加了一个默认函数。</p>
-<p>原理：连接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
-<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
-<p><img src="/images/machoview-weak.png" alt></p>
-<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
-<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
-<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>React-Native</tag>
-        <tag>Bugly</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="勾选支持方向"><a href="#勾选支持方向" class="headerlink" title="勾选支持方向"></a>勾选支持方向</h3><p>工程 - General - Deployment Info - Device Orientation</p>
+<p><img src="/images/configOrientation.png" alt></p>
+<h3 id="controller接口"><a href="#controller接口" class="headerlink" title="controller接口"></a>controller接口</h3><p>UIViewController需要实现3个接口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return _isAutoRotate;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">    return self.supportedOrientation;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">      return self.preferredOrientation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有当shouldAutorotate为YES时，其它两个接口才生效。<br>UIInterfaceOrientationMask 标识支持的方向集合， UIInterfaceOrientation用于当控制器被present出来后的视图方向</p>
+<h3 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h3><p>我们看代码， 可以看到2个方向， 界面方向和设备方向</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 用户界面方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIInterfaceOrientation) &#123;</span><br><span class="line">    UIInterfaceOrientationUnknown            = UIDeviceOrientationUnknown,</span><br><span class="line">    UIInterfaceOrientationPortrait           = UIDeviceOrientationPortrait,</span><br><span class="line">    UIInterfaceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,</span><br><span class="line">    UIInterfaceOrientationLandscapeLeft      = UIDeviceOrientationLandscapeRight,</span><br><span class="line">    UIInterfaceOrientationLandscapeRight     = UIDeviceOrientationLandscapeLeft</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 用户方向，一般与状态栏方向一致， 可以通过获取状态栏方向 来获取当前界面的方向</span><br><span class="line"></span><br><span class="line">[[UIApplication sharedApplication] statusBarOrientation]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 设备方向， 当前设备的方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIDeviceOrientation) &#123;</span><br><span class="line">    UIDeviceOrientationUnknown,</span><br><span class="line">    UIDeviceOrientationPortrait,            // Device oriented vertically, home button on the bottom</span><br><span class="line">    UIDeviceOrientationPortraitUpsideDown,  // Device oriented vertically, home button on the top</span><br><span class="line">    UIDeviceOrientationLandscapeLeft,       // Device oriented horizontally, home button on the right</span><br><span class="line">    UIDeviceOrientationLandscapeRight,      // Device oriented horizontally, home button on the left</span><br><span class="line">    UIDeviceOrientationFaceUp,              // Device oriented flat, face up</span><br><span class="line">    UIDeviceOrientationFaceDown             // Device oriented flat, face down</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// 设备方向， 通过当前设备的接口获取，  需要事先调用 </span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] orientation]</span><br><span class="line">    </span><br><span class="line">    ...  // 操作</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];</span><br></pre></td></tr></table></figure>
+<p>很多时候， 界面方向会和设备方向不一致（支持当前设备方向的前提下）。 我们可以调用接口使其自动旋转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
+<h3 id="手动切换方向"><a href="#手动切换方向" class="headerlink" title="手动切换方向"></a>手动切换方向</h3><p>目前只能通过修改orientation的方向来达到切方向的功能</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[[UIDevice currentDevice] setValue:@(deviceOrientation) forKey:@&quot;orientation&quot;];</span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
+<h3 id="根控制器支持横竖屏"><a href="#根控制器支持横竖屏" class="headerlink" title="根控制器支持横竖屏"></a>根控制器支持横竖屏</h3><p>大部分应用window不是以UIViewController为rootViewController。 一般是TabbarController或者NavigationControler。 要使得他们支持横竖屏，需要额外添加一个分类， 重新对应的接口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
@@ -196,6 +199,110 @@
       <tags>
         <tag>iOS</tag>
         <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次单例模式的代码重构</title>
+    <url>/2019/09/30/sharedInstance-JOB/</url>
+    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
+<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
+<a id="more"></a>
+<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
+<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
+<p>初始类图关系大致如下：</p>
+<p><img src="/images/20190930/OriginalClasses.png" alt></p>
+<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
+<p><img src="/images/20190930/newClasses.png" alt></p>
+<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
+<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
+<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
+<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
+<blockquote>
+<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
+</blockquote>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>软件设计</tag>
+        <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>YTKKeyValueStore开源库使用</title>
+    <url>/2019/08/30/kvStore-iOS/</url>
+    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
+<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
+<a id="more"></a>
+<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
+<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
+<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
+<p>实现逻辑比较简单， 支持如下功能</p>
+<ul>
+<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
+<li>创建指定名称的表操作</li>
+<li>清空表操作</li>
+<li>关闭数据库</li>
+<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
+<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>插入对象， 存储对象的json字符串</li>
+<li>获取对象， 获取都json字符串，转为对象</li>
+<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
+<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>删除指定表名、指定id的条目</li>
+<li>删除指定表名、指定id数组的多个条目</li>
+<li>删除指定表明、指定前缀的id条目</li>
+<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+</ul>
+<p>缺点： </p>
+<ul>
+<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
+</ul>
+<p>我新增了这个功能:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
+</ul>
+<p>番外知识点：</p>
+<ul>
+<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
+<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
+<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
+<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
+</ul>
+<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
       </tags>
   </entry>
   <entry>
@@ -270,140 +377,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
+        <tag>开发经验</tag>
         <tag>构思方案</tag>
-        <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(2) - iOS横竖屏旋转</title>
-    <url>/2019/08/08/autorotateiOS/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
-<p>首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。</p>
-<a id="more"></a>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="勾选支持方向"><a href="#勾选支持方向" class="headerlink" title="勾选支持方向"></a>勾选支持方向</h3><p>工程 - General - Deployment Info - Device Orientation</p>
-<p><img src="/images/configOrientation.png" alt></p>
-<h3 id="controller接口"><a href="#controller接口" class="headerlink" title="controller接口"></a>controller接口</h3><p>UIViewController需要实现3个接口</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return _isAutoRotate;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">    return self.supportedOrientation;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">      return self.preferredOrientation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>只有当shouldAutorotate为YES时，其它两个接口才生效。<br>UIInterfaceOrientationMask 标识支持的方向集合， UIInterfaceOrientation用于当控制器被present出来后的视图方向</p>
-<h3 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h3><p>我们看代码， 可以看到2个方向， 界面方向和设备方向</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 用户界面方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIInterfaceOrientation) &#123;</span><br><span class="line">    UIInterfaceOrientationUnknown            = UIDeviceOrientationUnknown,</span><br><span class="line">    UIInterfaceOrientationPortrait           = UIDeviceOrientationPortrait,</span><br><span class="line">    UIInterfaceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,</span><br><span class="line">    UIInterfaceOrientationLandscapeLeft      = UIDeviceOrientationLandscapeRight,</span><br><span class="line">    UIInterfaceOrientationLandscapeRight     = UIDeviceOrientationLandscapeLeft</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 用户方向，一般与状态栏方向一致， 可以通过获取状态栏方向 来获取当前界面的方向</span><br><span class="line"></span><br><span class="line">[[UIApplication sharedApplication] statusBarOrientation]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 设备方向， 当前设备的方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIDeviceOrientation) &#123;</span><br><span class="line">    UIDeviceOrientationUnknown,</span><br><span class="line">    UIDeviceOrientationPortrait,            // Device oriented vertically, home button on the bottom</span><br><span class="line">    UIDeviceOrientationPortraitUpsideDown,  // Device oriented vertically, home button on the top</span><br><span class="line">    UIDeviceOrientationLandscapeLeft,       // Device oriented horizontally, home button on the right</span><br><span class="line">    UIDeviceOrientationLandscapeRight,      // Device oriented horizontally, home button on the left</span><br><span class="line">    UIDeviceOrientationFaceUp,              // Device oriented flat, face up</span><br><span class="line">    UIDeviceOrientationFaceDown             // Device oriented flat, face down</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// 设备方向， 通过当前设备的接口获取，  需要事先调用 </span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] orientation]</span><br><span class="line">    </span><br><span class="line">    ...  // 操作</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];</span><br></pre></td></tr></table></figure>
-<p>很多时候， 界面方向会和设备方向不一致（支持当前设备方向的前提下）。 我们可以调用接口使其自动旋转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
-<h3 id="手动切换方向"><a href="#手动切换方向" class="headerlink" title="手动切换方向"></a>手动切换方向</h3><p>目前只能通过修改orientation的方向来达到切方向的功能</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[[UIDevice currentDevice] setValue:@(deviceOrientation) forKey:@&quot;orientation&quot;];</span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
-<h3 id="根控制器支持横竖屏"><a href="#根控制器支持横竖屏" class="headerlink" title="根控制器支持横竖屏"></a>根控制器支持横竖屏</h3><p>大部分应用window不是以UIViewController为rootViewController。 一般是TabbarController或者NavigationControler。 要使得他们支持横竖屏，需要额外添加一个分类， 重新对应的接口</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一次单例模式的代码重构</title>
-    <url>/2019/09/30/sharedInstance-JOB/</url>
-    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
-<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
-<a id="more"></a>
-<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
-<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
-<p>初始类图关系大致如下：</p>
-<p><img src="/images/20190930/OriginalClasses.png" alt></p>
-<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
-<p><img src="/images/20190930/newClasses.png" alt></p>
-<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
-<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
-<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
-<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
-<blockquote>
-<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
-</blockquote>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>开发经验</tag>
-        <tag>软件设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>YTKKeyValueStore开源库使用</title>
-    <url>/2019/08/30/kvStore-iOS/</url>
-    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
-<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
-<a id="more"></a>
-<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
-<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
-<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
-<p>实现逻辑比较简单， 支持如下功能</p>
-<ul>
-<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
-<li>创建指定名称的表操作</li>
-<li>清空表操作</li>
-<li>关闭数据库</li>
-<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
-<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>插入对象， 存储对象的json字符串</li>
-<li>获取对象， 获取都json字符串，转为对象</li>
-<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
-<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>删除指定表名、指定id的条目</li>
-<li>删除指定表名、指定id数组的多个条目</li>
-<li>删除指定表明、指定前缀的id条目</li>
-<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-</ul>
-<p>缺点： </p>
-<ul>
-<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
-</ul>
-<p>我新增了这个功能:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
-</ul>
-<p>番外知识点：</p>
-<ul>
-<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
-<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
-<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
-<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
-</ul>
-<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -453,24 +428,66 @@
       </tags>
   </entry>
   <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06</li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书</li>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
 </ul>
-<h2 id="人文"><a href="#人文" class="headerlink" title="人文"></a>人文</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完</li>
-</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>书单</category>
+        <category>技术</category>
       </categories>
+      <tags>
+        <tag>开发经验</tag>
+      </tags>
   </entry>
   <entry>
     <title>todo</title>
@@ -515,57 +532,6 @@
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
 <li style="list-style: none"><input type="checkbox"> 正则表达式</li>
 </ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -627,6 +593,42 @@
       </tags>
   </entry>
   <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>结构体偏移</title>
+    <url>/2020/06/17/memberoffsetof/</url>
+    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
+<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>assert说明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
+<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>C基础</category>
+      </categories>
+  </entry>
+  <entry>
     <title>关于</title>
     <url>/2020/06/20/about/</url>
     <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
@@ -656,25 +658,23 @@
       </categories>
   </entry>
   <entry>
-    <title>结构体偏移</title>
-    <url>/2020/06/17/memberoffsetof/</url>
-    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a></li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书</li>
+</ul>
+<h2 id="人文"><a href="#人文" class="headerlink" title="人文"></a>人文</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完</li>
+</ul>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>技术</category>
-        <category>C基础</category>
+        <category>书单</category>
       </categories>
   </entry>
   <entry>
