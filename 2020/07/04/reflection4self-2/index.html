@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/filecmd.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/elfhdr.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/section.jpeg">
-<meta property="og:updated_time" content="2020-07-07T06:42:24.683Z">
+<meta property="og:updated_time" content="2020-07-07T07:57:28.353Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="程序员自我修养读后感-2">
 <meta name="twitter:description" content="静态链接编译器的工作完整的程序编译包含以下流程 1预编译 - 编译 - 汇编 - 链接">
@@ -299,6 +299,7 @@
 <li>所有定义都是弱符号， 则选择占用空间最大的那个符号</li>
 </ul>
 <p>可以用来做插件，内容声明为弱符号， 外部声明为强符号，当外部实现了功能，则使用外部的功能。</p>
+<p>之前的博客写过遇到过一个关于弱符号的问题 <a href="/2019/06/11/weak-attribute-C">点击查看</a></p>
 <h3 id="调试信息"><a href="#调试信息" class="headerlink" title="调试信息"></a>调试信息</h3><p>编译时，添加 -g选项，则会往目标文件写入调试的信息。ELF采用一种DWARF的调试信息格式。一般调试信息会占用挺大的空间的，对空间敏感的场景下可以通过strip删掉目标文件中调试相关的段，减小文件的大小。这样的目标文件不会影响代码的正常运行，但是不好进行gdb调试了。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strip filename</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
