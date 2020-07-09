@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/filecmd.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/elfhdr.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202007/section.jpeg">
-<meta property="og:updated_time" content="2020-07-07T07:57:28.353Z">
+<meta property="og:updated_time" content="2020-07-09T00:45:06.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="程序员自我修养读后感-2">
 <meta name="twitter:description" content="静态链接编译器的工作完整的程序编译包含以下流程 1预编译 - 编译 - 汇编 - 链接">
@@ -292,7 +292,7 @@
 <p><img src="/images/202007/section.jpeg" alt></p>
 <h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><h3 id="extern-“C”"><a href="#extern-“C”" class="headerlink" title="extern “C”"></a>extern “C”</h3><p>由于符号的不一致性， 但又希望C可以被C++代码引用，一般把C语言的代码通过 extern “C”包含起来，这样编译处理的符号还是C语言格式的。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> <span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">// c statement</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-<h3 id="强符号与弱符号"><a href="#强符号与弱符号" class="headerlink" title="强符号与弱符号"></a>强符号与弱符号</h3><p><strong>attribute</strong>(weak)</p>
+<h3 id="强符号与弱符号"><a href="#强符号与弱符号" class="headerlink" title="强符号与弱符号"></a>强符号与弱符号</h3><p><code>__attribute__(weak)</code></p>
 <ul>
 <li>不允许出现多个同名的强符号定义</li>
 <li>既存在强符号、又存在弱符号， 链接时选择强符号</li>
@@ -323,7 +323,10 @@
     <a href="/2020/06/24/reflection4self-1/" rel="prev" title="程序员自我修养读后感-1">
       <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-1
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/08/codeclean/" rel="next" title="代码洁癖">
+      代码洁癖 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -398,7 +401,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
