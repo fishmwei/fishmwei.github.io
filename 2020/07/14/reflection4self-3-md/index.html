@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="结构体偏移项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。">
+  <meta name="description" content="静态链接2前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="结构体偏移">
-<meta property="og:url" content="http://fishmwei.github.io/2020/06/17/memberoffsetof/index.html">
+<meta property="og:title" content="r程序员自我修养读后感-3">
+<meta property="og:url" content="http://fishmwei.github.io/2020/07/14/reflection4self-3-md/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="结构体偏移项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。">
+<meta property="og:description" content="静态链接2前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-06-20T06:04:16.219Z">
+<meta property="og:updated_time" content="2020-07-14T06:55:15.303Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="结构体偏移">
-<meta name="twitter:description" content="结构体偏移项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。">
+<meta name="twitter:title" content="r程序员自我修养读后感-3">
+<meta name="twitter:description" content="静态链接2前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/06/17/memberoffsetof/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/07/14/reflection4self-3-md/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>结构体偏移 | IT攻城狮小明</title>
+  <title>r程序员自我修养读后感-3 | IT攻城狮小明</title>
   
 
 
@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/06/17/memberoffsetof/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/14/reflection4self-3-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -197,7 +197,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          结构体偏移
+          r程序员自我修养读后感-3
         </h1>
 
         <div class="post-meta">
@@ -207,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-06-17 14:02:17" itemprop="dateCreated datePublished" datetime="2020-06-17T14:02:17+08:00">2020-06-17</time>
+              <time title="创建时间：2020-07-14 11:14:01" itemprop="dateCreated datePublished" datetime="2020-07-14T11:14:01+08:00">2020-07-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,11 +215,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/c基础/" itemprop="url" rel="index"><span itemprop="name">C基础</span></a>
+                  <a href="/categories/读后感/" itemprop="url" rel="index"><span itemprop="name">读后感</span></a>
                 </span>
             </span>
 
@@ -232,8 +228,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/06/17/memberoffsetof/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/17/memberoffsetof/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/07/14/reflection4self-3-md/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/14/reflection4self-3-md/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -248,16 +244,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+        <h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
 <a id="more"></a>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
+<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
+<ol>
+<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
+</li>
+<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
+<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
+<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
+<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
+<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
+<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
+<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
+<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标及其上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
+<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
+<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -276,13 +287,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/13/c-command/" rel="prev" title="C程序的命令行参数处理函数getopt">
-      <i class="fa fa-chevron-left"></i> C程序的命令行参数处理函数getopt
+    <a href="/2020/07/08/codeclean/" rel="prev" title="代码洁癖">
+      <i class="fa fa-chevron-left"></i> 代码洁癖
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/20/about/" rel="next" title="关于">
-      关于 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -342,7 +350,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#结构体偏移"><span class="nav-number">1.</span> <span class="nav-text">结构体偏移</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#静态链接2"><span class="nav-number">1.</span> <span class="nav-text">静态链接2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#空间与地址的分配"><span class="nav-number">1.1.</span> <span class="nav-text">空间与地址的分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号地址的确定"><span class="nav-number">1.2.</span> <span class="nav-text">符号地址的确定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号的解析与重定位"><span class="nav-number">1.3.</span> <span class="nav-text">符号的解析与重定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">1.4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数级别的链接"><span class="nav-number">1.4.1.</span> <span class="nav-text">函数级别的链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉编译链工具"><span class="nav-number">1.4.2.</span> <span class="nav-text">交叉编译链工具</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
