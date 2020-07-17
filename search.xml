@@ -19,19 +19,20 @@
       </tags>
   </entry>
   <entry>
-    <title>Deprecated js库</title>
-    <url>/2019/05/24/Deprecated-Js/</url>
-    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+    <title>React-Native Sample代码运行</title>
+    <url>/2019/06/04/RNTester-RN/</url>
+    <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
 <a id="more"></a>
-<hr>
-<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="安装js依赖"><a href="#安装js依赖" class="headerlink" title="安装js依赖"></a>安装js依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//根目录执行</span><br><span class="line">npm install </span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<h2 id="解压第三方库"><a href="#解压第三方库" class="headerlink" title="解压第三方库"></a>解压第三方库</h2><p>React-Native依赖了 folly、glog等第三方库， 需要下载解压</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd scripts</span><br><span class="line">sh ios-install-third-party.sh</span><br></pre></td></tr></table></figure>
+<h2 id="安装iOS依赖"><a href="#安装iOS依赖" class="headerlink" title="安装iOS依赖"></a>安装iOS依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd RNTester</span><br><span class="line">pod update // 更新.lock中的依赖</span><br></pre></td></tr></table></figure>
+<p>以上步骤完成， XCode运行RNTester.workspace</p>
+<p><img src="/images/RNTester.gif" alt></p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>工具</tag>
-        <tag>JS</tag>
+        <tag>React-Native</tag>
       </tags>
   </entry>
   <entry>
@@ -79,20 +80,50 @@
       </tags>
   </entry>
   <entry>
-    <title>React-Native Sample代码运行</title>
-    <url>/2019/06/04/RNTester-RN/</url>
-    <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
+    <title>fork库Git代码同步</title>
+    <url>/2019/06/04/synGitRepo/</url>
+    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
 <a id="more"></a>
-<h2 id="安装js依赖"><a href="#安装js依赖" class="headerlink" title="安装js依赖"></a>安装js依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//根目录执行</span><br><span class="line">npm install </span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
-<h2 id="解压第三方库"><a href="#解压第三方库" class="headerlink" title="解压第三方库"></a>解压第三方库</h2><p>React-Native依赖了 folly、glog等第三方库， 需要下载解压</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd scripts</span><br><span class="line">sh ios-install-third-party.sh</span><br></pre></td></tr></table></figure>
-<h2 id="安装iOS依赖"><a href="#安装iOS依赖" class="headerlink" title="安装iOS依赖"></a>安装iOS依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd RNTester</span><br><span class="line">pod update // 更新.lock中的依赖</span><br></pre></td></tr></table></figure>
-<p>以上步骤完成， XCode运行RNTester.workspace</p>
-<p><img src="/images/RNTester.gif" alt></p>
+<ol>
+<li><p>clone当前库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置源库 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取远程仓库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到master库， 合并远程库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把本地库推送上去。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>同步完成。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
         <tag>React-Native</tag>
+        <tag>工具</tag>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Deprecated js库</title>
+    <url>/2019/05/24/Deprecated-Js/</url>
+    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<hr>
+<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>JS</tag>
       </tags>
   </entry>
   <entry>
@@ -121,37 +152,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fork库Git代码同步</title>
-    <url>/2019/06/04/synGitRepo/</url>
-    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
-<a id="more"></a>
-<ol>
-<li><p>clone当前库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置源库 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取远程仓库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到master库， 合并远程库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把本地库推送上去。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>同步完成。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>React-Native</tag>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS知识点(1) - NSCache</title>
     <url>/2019/06/19/NSCache-iOS/</url>
     <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
@@ -170,8 +170,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>iOS</tag>
         <tag>React-Native</tag>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -195,30 +195,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
 <p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
@@ -275,6 +251,30 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -797,6 +797,32 @@
       </categories>
   </entry>
   <entry>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+<a id="more"></a>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -832,32 +858,6 @@
 ]]></content>
       <categories>
         <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
