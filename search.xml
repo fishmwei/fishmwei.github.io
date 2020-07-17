@@ -19,6 +19,50 @@
       </tags>
   </entry>
   <entry>
+    <title>CocoaLumberJack源码学习</title>
+    <url>/2019/05/29/lumberjack-iOS/</url>
+    <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
+<p>可以通过设置Logger，分别把日志写入文件、终端、系统日志中。</p>
+<p>DDLogLevel   7个等级</p>
+<p>库不大，代码结构比较清晰。</p>
+<a id="more"></a>
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>我用的cocopods、oc。</p>
+<p>修改podfile</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// podfile </span><br><span class="line"></span><br><span class="line">pod &apos;CocoaLumberjack&apos;</span><br></pre></td></tr></table></figure>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt; // 引用头文件</span><br><span class="line"></span><br><span class="line">static DDLogLevel ddLogLevel = DDLogLevelAll; // 定义全局变量</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    DDLogInfo(@&quot;message&quot;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<h2 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读"></a>代码解读</h2><p>主要代码类可以参考GitHub给出的图。</p>
+<p><img src="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png" alt="CocoaLumberjackClassDiagram.png"></p>
+<h3 id="DDLog"><a href="#DDLog" class="headerlink" title="DDLog"></a>DDLog</h3><p>这个是对外的接口， 所有API都是直接调用这个接口的类方法进行写日志的。</p>
+<p>有一个单例和一个队列。 所有写日志操作，最终都是在同一个队列进行操作的。 </p>
+<p>日志可以写到不同的输出终端， 通过DDLogger协议来控制， DDLog可以添加多个DDLogger协议的对象(具体的都是抽象类DDAbstractLogger的子类)。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// _loggingQueue</span><br><span class="line"></span><br><span class="line">// _loggingGroup</span><br><span class="line"></span><br><span class="line">// _queueSemaphore</span><br><span class="line"></span><br><span class="line">// _numProcessors</span><br><span class="line"></span><br><span class="line">_loggingGroup 用于并发输出</span><br><span class="line"></span><br><span class="line">UIApplicationWillTerminateNotification 执行 flushLog</span><br><span class="line">applicationWillTerminate</span><br></pre></td></tr></table></figure>
+<h3 id="DDLogMessage"><a href="#DDLogMessage" class="headerlink" title="DDLogMessage"></a>DDLogMessage</h3><p>日志信息<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    NSString *_message;  // 内容</span><br><span class="line">    DDLogLevel _level;      // 等级</span><br><span class="line">    DDLogFlag _flag;      // 用于过滤等级的信息， 只有   _level &amp; _flag == 1 才会输出</span><br><span class="line">    NSInteger _context;     // 可以用来过滤， 参考 DDContextWhitelistFilterLogFormatter</span><br><span class="line">    NSString *_file;        // 输出文件路径</span><br><span class="line">    NSString *_fileName;    // 输出文件名</span><br><span class="line">    NSString *_function;    //  ?? </span><br><span class="line">    NSUInteger _line;       </span><br><span class="line">    id _tag;        // ?? </span><br><span class="line">    DDLogMessageOptions _options;</span><br><span class="line">    NSDate *_timestamp;</span><br><span class="line">    NSString *_threadID;</span><br><span class="line">    NSString *_threadName;</span><br><span class="line">    NSString *_queueLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>_loggerQueue</p>
+<h2 id="DDAbstractLogger"><a href="#DDAbstractLogger" class="headerlink" title="DDAbstractLogger"></a>DDAbstractLogger</h2><p>抽象的logger， </p>
+<p>可以设置logFormatter、loggerQueue</p>
+<p>logFormatter可以对输出的日志再格式化。</p>
+<h2 id="DDLoggerNode-用于记录logger的信息"><a href="#DDLoggerNode-用于记录logger的信息" class="headerlink" title="DDLoggerNode 用于记录logger的信息"></a>DDLoggerNode 用于记录logger的信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface DDLoggerNode : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">    dispatch_queue_t _loggerQueue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, readonly) id &lt;DDLogger&gt; logger;</span><br><span class="line">@property (nonatomic, readonly) DDLogLevel level;</span><br><span class="line">@property (nonatomic, readonly) dispatch_queue_t loggerQueue;</span><br></pre></td></tr></table></figure>
+<p>不同的logger输出， 又在各自的queue中操作。</p>
+<h2 id="DDLogger-protocol"><a href="#DDLogger-protocol" class="headerlink" title="DDLogger protocol"></a>DDLogger protocol</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)logMessage:(DDLogMessage *)logMessage NS_SWIFT_NAME(log(message:));</span><br><span class="line"> </span><br><span class="line">@property (nonatomic, strong) id &lt;DDLogFormatter&gt; logFormatter;</span><br></pre></td></tr></table></figure>
+<h2 id="DDTTYLogger"><a href="#DDTTYLogger" class="headerlink" title="DDTTYLogger"></a>DDTTYLogger</h2><p>写到tty的logger</p>
+<h2 id="DDOSLogger"><a href="#DDOSLogger" class="headerlink" title="DDOSLogger"></a>DDOSLogger</h2><p>usr/include/os/log.h</p>
+<p>os_log_create<br>os_log_error<br>os_log_info</p>
+<h2 id="DDASLLogger"><a href="#DDASLLogger" class="headerlink" title="DDASLLogger"></a>DDASLLogger</h2><p>asl.h // 废弃了， 使用 usr/include/os/log.h</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_client = asl_open(NULL, &quot;com.apple.console&quot;, 0);</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        const char *msg = [message UTF8String];</span><br><span class="line"></span><br><span class="line">        size_t aslLogLevel;</span><br><span class="line">        switch (logMessage-&gt;_flag) &#123;</span><br><span class="line">            // Note: By default ASL will filter anything above level 5 (Notice).</span><br><span class="line">            // So our mappings shouldn&apos;t go above that level.</span><br><span class="line">            case DDLogFlagError     : aslLogLevel = ASL_LEVEL_CRIT;     break;</span><br><span class="line">            case DDLogFlagWarning   : aslLogLevel = ASL_LEVEL_ERR;      break;</span><br><span class="line">            case DDLogFlagInfo      : aslLogLevel = ASL_LEVEL_WARNING;  break; // Regular NSLog&apos;s level</span><br><span class="line">            case DDLogFlagDebug     :</span><br><span class="line">            case DDLogFlagVerbose   :</span><br><span class="line">            default                 : aslLogLevel = ASL_LEVEL_NOTICE;   break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        static char const *const level_strings[] = &#123; &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot; &#125;;</span><br><span class="line"></span><br><span class="line">        // NSLog uses the current euid to set the ASL_KEY_READ_UID.</span><br><span class="line">        uid_t const readUID = geteuid();</span><br><span class="line"></span><br><span class="line">        char readUIDString[16];</span><br><span class="line">#ifndef NS_BLOCK_ASSERTIONS</span><br><span class="line">        size_t l = (size_t)snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#else</span><br><span class="line">        snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">        NSAssert(l &lt; sizeof(readUIDString),</span><br><span class="line">                 @&quot;Formatted euid is too long.&quot;);</span><br><span class="line">        NSAssert(aslLogLevel &lt; (sizeof(level_strings) / sizeof(level_strings[0])),</span><br><span class="line">                 @&quot;Unhandled ASL log level.&quot;);</span><br><span class="line"></span><br><span class="line">        aslmsg m = asl_new(ASL_TYPE_MSG);</span><br><span class="line">        if (m != NULL) &#123;</span><br><span class="line">            if (asl_set(m, ASL_KEY_LEVEL, level_strings[aslLogLevel]) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_MSG, msg) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_READ_UID, readUIDString) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, kDDASLKeyDDLog, kDDASLDDLogValue) == 0) &#123;</span><br><span class="line">                asl_send(_client, m);</span><br><span class="line">            &#125;</span><br><span class="line">            asl_free(m);</span><br><span class="line">        &#125;</span><br><span class="line">        //TODO handle asl_* failures non-silently?</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>OS_OBJECT_USE_OBJC 用于判断系统是否是6.0以前的？ 6.0之后才定义了这个宏。</p>
+</blockquote>
+<p>dispatch_group_async</p>
+<h2 id="DDLoggerInformation"><a href="#DDLoggerInformation" class="headerlink" title="DDLoggerInformation"></a>DDLoggerInformation</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="DDExtractFileNameWithoutExtension-提取文件名"><a href="#DDExtractFileNameWithoutExtension-提取文件名" class="headerlink" title="DDExtractFileNameWithoutExtension 提取文件名"></a>DDExtractFileNameWithoutExtension 提取文件名</h2><p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React-Native Sample代码运行</title>
     <url>/2019/06/04/RNTester-RN/</url>
     <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
@@ -83,50 +127,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CocoaLumberJack源码学习</title>
-    <url>/2019/05/29/lumberjack-iOS/</url>
-    <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
-<p>可以通过设置Logger，分别把日志写入文件、终端、系统日志中。</p>
-<p>DDLogLevel   7个等级</p>
-<p>库不大，代码结构比较清晰。</p>
-<a id="more"></a>
-<hr>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>我用的cocopods、oc。</p>
-<p>修改podfile</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// podfile </span><br><span class="line"></span><br><span class="line">pod &apos;CocoaLumberjack&apos;</span><br></pre></td></tr></table></figure>
-<p>代码<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt; // 引用头文件</span><br><span class="line"></span><br><span class="line">static DDLogLevel ddLogLevel = DDLogLevelAll; // 定义全局变量</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    DDLogInfo(@&quot;message&quot;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<h2 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读"></a>代码解读</h2><p>主要代码类可以参考GitHub给出的图。</p>
-<p><img src="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png" alt="CocoaLumberjackClassDiagram.png"></p>
-<h3 id="DDLog"><a href="#DDLog" class="headerlink" title="DDLog"></a>DDLog</h3><p>这个是对外的接口， 所有API都是直接调用这个接口的类方法进行写日志的。</p>
-<p>有一个单例和一个队列。 所有写日志操作，最终都是在同一个队列进行操作的。 </p>
-<p>日志可以写到不同的输出终端， 通过DDLogger协议来控制， DDLog可以添加多个DDLogger协议的对象(具体的都是抽象类DDAbstractLogger的子类)。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// _loggingQueue</span><br><span class="line"></span><br><span class="line">// _loggingGroup</span><br><span class="line"></span><br><span class="line">// _queueSemaphore</span><br><span class="line"></span><br><span class="line">// _numProcessors</span><br><span class="line"></span><br><span class="line">_loggingGroup 用于并发输出</span><br><span class="line"></span><br><span class="line">UIApplicationWillTerminateNotification 执行 flushLog</span><br><span class="line">applicationWillTerminate</span><br></pre></td></tr></table></figure>
-<h3 id="DDLogMessage"><a href="#DDLogMessage" class="headerlink" title="DDLogMessage"></a>DDLogMessage</h3><p>日志信息<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    NSString *_message;  // 内容</span><br><span class="line">    DDLogLevel _level;      // 等级</span><br><span class="line">    DDLogFlag _flag;      // 用于过滤等级的信息， 只有   _level &amp; _flag == 1 才会输出</span><br><span class="line">    NSInteger _context;     // 可以用来过滤， 参考 DDContextWhitelistFilterLogFormatter</span><br><span class="line">    NSString *_file;        // 输出文件路径</span><br><span class="line">    NSString *_fileName;    // 输出文件名</span><br><span class="line">    NSString *_function;    //  ?? </span><br><span class="line">    NSUInteger _line;       </span><br><span class="line">    id _tag;        // ?? </span><br><span class="line">    DDLogMessageOptions _options;</span><br><span class="line">    NSDate *_timestamp;</span><br><span class="line">    NSString *_threadID;</span><br><span class="line">    NSString *_threadName;</span><br><span class="line">    NSString *_queueLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>_loggerQueue</p>
-<h2 id="DDAbstractLogger"><a href="#DDAbstractLogger" class="headerlink" title="DDAbstractLogger"></a>DDAbstractLogger</h2><p>抽象的logger， </p>
-<p>可以设置logFormatter、loggerQueue</p>
-<p>logFormatter可以对输出的日志再格式化。</p>
-<h2 id="DDLoggerNode-用于记录logger的信息"><a href="#DDLoggerNode-用于记录logger的信息" class="headerlink" title="DDLoggerNode 用于记录logger的信息"></a>DDLoggerNode 用于记录logger的信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface DDLoggerNode : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">    dispatch_queue_t _loggerQueue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, readonly) id &lt;DDLogger&gt; logger;</span><br><span class="line">@property (nonatomic, readonly) DDLogLevel level;</span><br><span class="line">@property (nonatomic, readonly) dispatch_queue_t loggerQueue;</span><br></pre></td></tr></table></figure>
-<p>不同的logger输出， 又在各自的queue中操作。</p>
-<h2 id="DDLogger-protocol"><a href="#DDLogger-protocol" class="headerlink" title="DDLogger protocol"></a>DDLogger protocol</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)logMessage:(DDLogMessage *)logMessage NS_SWIFT_NAME(log(message:));</span><br><span class="line"> </span><br><span class="line">@property (nonatomic, strong) id &lt;DDLogFormatter&gt; logFormatter;</span><br></pre></td></tr></table></figure>
-<h2 id="DDTTYLogger"><a href="#DDTTYLogger" class="headerlink" title="DDTTYLogger"></a>DDTTYLogger</h2><p>写到tty的logger</p>
-<h2 id="DDOSLogger"><a href="#DDOSLogger" class="headerlink" title="DDOSLogger"></a>DDOSLogger</h2><p>usr/include/os/log.h</p>
-<p>os_log_create<br>os_log_error<br>os_log_info</p>
-<h2 id="DDASLLogger"><a href="#DDASLLogger" class="headerlink" title="DDASLLogger"></a>DDASLLogger</h2><p>asl.h // 废弃了， 使用 usr/include/os/log.h</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_client = asl_open(NULL, &quot;com.apple.console&quot;, 0);</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        const char *msg = [message UTF8String];</span><br><span class="line"></span><br><span class="line">        size_t aslLogLevel;</span><br><span class="line">        switch (logMessage-&gt;_flag) &#123;</span><br><span class="line">            // Note: By default ASL will filter anything above level 5 (Notice).</span><br><span class="line">            // So our mappings shouldn&apos;t go above that level.</span><br><span class="line">            case DDLogFlagError     : aslLogLevel = ASL_LEVEL_CRIT;     break;</span><br><span class="line">            case DDLogFlagWarning   : aslLogLevel = ASL_LEVEL_ERR;      break;</span><br><span class="line">            case DDLogFlagInfo      : aslLogLevel = ASL_LEVEL_WARNING;  break; // Regular NSLog&apos;s level</span><br><span class="line">            case DDLogFlagDebug     :</span><br><span class="line">            case DDLogFlagVerbose   :</span><br><span class="line">            default                 : aslLogLevel = ASL_LEVEL_NOTICE;   break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        static char const *const level_strings[] = &#123; &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot; &#125;;</span><br><span class="line"></span><br><span class="line">        // NSLog uses the current euid to set the ASL_KEY_READ_UID.</span><br><span class="line">        uid_t const readUID = geteuid();</span><br><span class="line"></span><br><span class="line">        char readUIDString[16];</span><br><span class="line">#ifndef NS_BLOCK_ASSERTIONS</span><br><span class="line">        size_t l = (size_t)snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#else</span><br><span class="line">        snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">        NSAssert(l &lt; sizeof(readUIDString),</span><br><span class="line">                 @&quot;Formatted euid is too long.&quot;);</span><br><span class="line">        NSAssert(aslLogLevel &lt; (sizeof(level_strings) / sizeof(level_strings[0])),</span><br><span class="line">                 @&quot;Unhandled ASL log level.&quot;);</span><br><span class="line"></span><br><span class="line">        aslmsg m = asl_new(ASL_TYPE_MSG);</span><br><span class="line">        if (m != NULL) &#123;</span><br><span class="line">            if (asl_set(m, ASL_KEY_LEVEL, level_strings[aslLogLevel]) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_MSG, msg) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_READ_UID, readUIDString) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, kDDASLKeyDDLog, kDDASLDDLogValue) == 0) &#123;</span><br><span class="line">                asl_send(_client, m);</span><br><span class="line">            &#125;</span><br><span class="line">            asl_free(m);</span><br><span class="line">        &#125;</span><br><span class="line">        //TODO handle asl_* failures non-silently?</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>OS_OBJECT_USE_OBJC 用于判断系统是否是6.0以前的？ 6.0之后才定义了这个宏。</p>
-</blockquote>
-<p>dispatch_group_async</p>
-<h2 id="DDLoggerInformation"><a href="#DDLoggerInformation" class="headerlink" title="DDLoggerInformation"></a>DDLoggerInformation</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="DDExtractFileNameWithoutExtension-提取文件名"><a href="#DDExtractFileNameWithoutExtension-提取文件名" class="headerlink" title="DDExtractFileNameWithoutExtension 提取文件名"></a>DDExtractFileNameWithoutExtension 提取文件名</h2><p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Bugly RN调用栈 - C的弱符号</title>
     <url>/2019/06/11/weak-attribute-C/</url>
     <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
@@ -170,8 +170,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>React-Native</tag>
         <tag>iOS</tag>
+        <tag>React-Native</tag>
       </tags>
   </entry>
   <entry>
@@ -199,6 +199,58 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次单例模式的代码重构</title>
+    <url>/2019/09/30/sharedInstance-JOB/</url>
+    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
+<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
+<a id="more"></a>
+<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
+<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
+<p>初始类图关系大致如下：</p>
+<p><img src="/images/20190930/OriginalClasses.png" alt></p>
+<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
+<p><img src="/images/20190930/newClasses.png" alt></p>
+<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
+<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
+<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
+<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
+<blockquote>
+<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
+</blockquote>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>软件设计</tag>
+        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -251,30 +303,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -349,159 +377,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
+        <tag>开发经验</tag>
         <tag>构思方案</tag>
-        <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一次单例模式的代码重构</title>
-    <url>/2019/09/30/sharedInstance-JOB/</url>
-    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
-<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
-<a id="more"></a>
-<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
-<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
-<p>初始类图关系大致如下：</p>
-<p><img src="/images/20190930/OriginalClasses.png" alt></p>
-<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
-<p><img src="/images/20190930/newClasses.png" alt></p>
-<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
-<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
-<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
-<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
-<blockquote>
-<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
-</blockquote>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>开发经验</tag>
-        <tag>软件设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox"> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a></li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li><p>[ ]《Linux命令行与shell脚本编程大全》实体书</p>
-</li>
-<li><p>[x]《明朝那些事儿》 微信读书电子书 2020.04.19读完</p>
-</li>
-</ul>
-<ul>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传</li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>项目性能优化</title>
-    <url>/2020/06/03/optimize-JOB/</url>
-    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问题的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
-<a id="more"></a>
-<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都对设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
-<p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
-<p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
-<h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> <span class="title">temp</span>;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (temp.flag &amp; <span class="number">0x1f</span>) &#123; <span class="comment">// 不好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (temp.flag) &#123; <span class="comment">// 好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>分析是，第一种，进行按位与的操作时，会按位操作。第二种，直接取值与0进行对比，减少了位的操作。</p>
-<h3 id="2-减少移位操作"><a href="#2-减少移位操作" class="headerlink" title="2. 减少移位操作"></a>2. 减少移位操作</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a&gt;&gt;<span class="number">1</span> &amp; <span class="number">0x1</span>)  ===&gt; <span class="keyword">if</span> (a&amp;<span class="number">0x2</span>)</span><br></pre></td></tr></table></figure>
-<p>少了一次移位的操作</p>
-<h3 id="3-减少位域的算术操作"><a href="#3-减少位域的算术操作" class="headerlink" title="3. 减少位域的算术操作"></a>3. 减少位域的算术操作</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">24</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data.flag == <span class="number">0xffffff</span>) &#123;  <span class="comment">// 不好的做法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 好的做法</span></span><br><span class="line"><span class="keyword">unsigned</span> flag = data.falg;</span><br><span class="line"><span class="keyword">if</span> (flag ==  <span class="number">0xffffff</span>) &#123;</span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过赋值再比较的方式，赋值的时候，直接拷贝了低24位到寄存器，然后再与整型0xffffff比较。而第一种做法，编译器会先取低24位的值，通过bmsk的操作获取位域的值。然后再跟再与整型0xffffff比较。 通过实际测试，发现bmsk的操作很耗时。</p>
-<h3 id="4-尽量减少内存的清除动作"><a href="#4-尽量减少内存的清除动作" class="headerlink" title="4. 尽量减少内存的清除动作"></a>4. 尽量减少内存的清除动作</h3><p>测试发现 memset(dstPtr, 0, size) 比直接赋值为0的效率低。</p>
-<h3 id="5-函数尽量使用static函数"><a href="#5-函数尽量使用static函数" class="headerlink" title="5. 函数尽量使用static函数"></a>5. 函数尽量使用static函数</h3><p>我们知道，static函数全局只会有一份，但是普通的函数在调用的地方都会维持一份拷贝。 使用static函数可以避免调用函数的压栈出栈，速度会比较快。</p>
-<h3 id="6-C语言的求模运算效率低"><a href="#6-C语言的求模运算效率低" class="headerlink" title="6. C语言的求模运算效率低 %"></a>6. C语言的求模运算效率低 %</h3><p>实际测试发现，使用平台库提供的mod函数效率比普通的求模%运算好太多。</p>
-<h2 id="可维护性"><a href="#可维护性" class="headerlink" title="可维护性"></a>可维护性</h2><p>这里主要讲一下代码的可读性， 设备命令的可读性。</p>
-<p>在之前，代码流程是个大杂烩吧， 在一个大函数里各种条件判断，很多流程都糅合在了一起，太多人写过这代码了，没人愿意拆分，怕结果是越来越乱，既然是新项目，我就来做个雷锋吧，改改改。</p>
-<p>设备命令可读性，我想讲的是，很多命令都是直接打印16进制内容，然后查看之后，还得对着设计文档一个个比特的去看是什么意思。做命令的小哥，也是照搬前人的逻辑，复制代码、粘贴代码，改改就来用。我催了不下十遍了，才给我改了一个用户友好的命令显示。哎，人微言轻，推不动啊。</p>
-<h2 id="叽叽歪歪"><a href="#叽叽歪歪" class="headerlink" title="叽叽歪歪"></a>叽叽歪歪</h2><p>在这里</p>
-<ol>
-<li>没有结对编程的概念</li>
-<li>代码不经检视可以直接入库、几乎不会主动发起代码检视</li>
-<li>缺少设计实现的讨论评审，基本面对面沟通</li>
-<li>输出文档少，归档不明确, 一般都是口口相传</li>
-<li>协作方式很原始</li>
-<li>小组几乎不开会 ~ OMG</li>
-<li>No training，No share 成员成长靠自我</li>
-</ol>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -551,26 +428,117 @@
       </tags>
   </entry>
   <entry>
-    <title>换城市工作切换的感受</title>
-    <url>/2020/06/03/newjob-JOB/</url>
-    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
-<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox"> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a></li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li><p>[ ]《Linux命令行与shell脚本编程大全》实体书</p>
+</li>
+<li><p>[x]《明朝那些事儿》 微信读书电子书 2020.04.19读完</p>
+</li>
+</ul>
+<ul>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传</li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
 <a id="more"></a>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>杂谈</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+    <title>项目性能优化</title>
+    <url>/2020/06/03/optimize-JOB/</url>
+    <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问题的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
+<a id="more"></a>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都对设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
+<p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
+<p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
+<h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> <span class="title">temp</span>;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (temp.flag &amp; <span class="number">0x1f</span>) &#123; <span class="comment">// 不好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (temp.flag) &#123; <span class="comment">// 好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析是，第一种，进行按位与的操作时，会按位操作。第二种，直接取值与0进行对比，减少了位的操作。</p>
+<h3 id="2-减少移位操作"><a href="#2-减少移位操作" class="headerlink" title="2. 减少移位操作"></a>2. 减少移位操作</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a&gt;&gt;<span class="number">1</span> &amp; <span class="number">0x1</span>)  ===&gt; <span class="keyword">if</span> (a&amp;<span class="number">0x2</span>)</span><br></pre></td></tr></table></figure>
+<p>少了一次移位的操作</p>
+<h3 id="3-减少位域的算术操作"><a href="#3-减少位域的算术操作" class="headerlink" title="3. 减少位域的算术操作"></a>3. 减少位域的算术操作</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">unsigned</span> flag:<span class="number">24</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data.flag == <span class="number">0xffffff</span>) &#123;  <span class="comment">// 不好的做法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 好的做法</span></span><br><span class="line"><span class="keyword">unsigned</span> flag = data.falg;</span><br><span class="line"><span class="keyword">if</span> (flag ==  <span class="number">0xffffff</span>) &#123;</span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过赋值再比较的方式，赋值的时候，直接拷贝了低24位到寄存器，然后再与整型0xffffff比较。而第一种做法，编译器会先取低24位的值，通过bmsk的操作获取位域的值。然后再跟再与整型0xffffff比较。 通过实际测试，发现bmsk的操作很耗时。</p>
+<h3 id="4-尽量减少内存的清除动作"><a href="#4-尽量减少内存的清除动作" class="headerlink" title="4. 尽量减少内存的清除动作"></a>4. 尽量减少内存的清除动作</h3><p>测试发现 memset(dstPtr, 0, size) 比直接赋值为0的效率低。</p>
+<h3 id="5-函数尽量使用static函数"><a href="#5-函数尽量使用static函数" class="headerlink" title="5. 函数尽量使用static函数"></a>5. 函数尽量使用static函数</h3><p>我们知道，static函数全局只会有一份，但是普通的函数在调用的地方都会维持一份拷贝。 使用static函数可以避免调用函数的压栈出栈，速度会比较快。</p>
+<h3 id="6-C语言的求模运算效率低"><a href="#6-C语言的求模运算效率低" class="headerlink" title="6. C语言的求模运算效率低 %"></a>6. C语言的求模运算效率低 %</h3><p>实际测试发现，使用平台库提供的mod函数效率比普通的求模%运算好太多。</p>
+<h2 id="可维护性"><a href="#可维护性" class="headerlink" title="可维护性"></a>可维护性</h2><p>这里主要讲一下代码的可读性， 设备命令的可读性。</p>
+<p>在之前，代码流程是个大杂烩吧， 在一个大函数里各种条件判断，很多流程都糅合在了一起，太多人写过这代码了，没人愿意拆分，怕结果是越来越乱，既然是新项目，我就来做个雷锋吧，改改改。</p>
+<p>设备命令可读性，我想讲的是，很多命令都是直接打印16进制内容，然后查看之后，还得对着设计文档一个个比特的去看是什么意思。做命令的小哥，也是照搬前人的逻辑，复制代码、粘贴代码，改改就来用。我催了不下十遍了，才给我改了一个用户友好的命令显示。哎，人微言轻，推不动啊。</p>
+<h2 id="叽叽歪歪"><a href="#叽叽歪歪" class="headerlink" title="叽叽歪歪"></a>叽叽歪歪</h2><p>在这里</p>
+<ol>
+<li>没有结对编程的概念</li>
+<li>代码不经检视可以直接入库、几乎不会主动发起代码检视</li>
+<li>缺少设计实现的讨论评审，基本面对面沟通</li>
+<li>输出文档少，归档不明确, 一般都是口口相传</li>
+<li>协作方式很原始</li>
+<li>小组几乎不开会 ~ OMG</li>
+<li>No training，No share 成员成长靠自我</li>
+</ol>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -578,6 +546,9 @@
       <categories>
         <category>技术</category>
       </categories>
+      <tags>
+        <tag>开发经验</tag>
+      </tags>
   </entry>
   <entry>
     <title>todo</title>
@@ -631,6 +602,50 @@
       </categories>
   </entry>
   <entry>
+    <title>换城市工作切换的感受</title>
+    <url>/2020/06/03/newjob-JOB/</url>
+    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
+<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+<a id="more"></a>
+<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
+<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
+<p>好了， 先这样。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
+      </categories>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -650,112 +665,6 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-1</title>
-    <url>/2020/06/24/reflection4self-1/</url>
-    <content><![CDATA[<p>鉴于这本书是精读过的， 按章节来个读后感比较有效。</p>
-<h1 id="计算机硬件结构"><a href="#计算机硬件结构" class="headerlink" title="计算机硬件结构"></a>计算机硬件结构</h1><p><img src="/images/202006/self1.jpeg" alt></p>
-<p>计算机硬件结构主要就是CPU、内存、IO设备之间的通信结构。通过使用南北桥芯片架构，北桥芯片协调高速的CPU、内存、高速图形设备以及通过南桥芯片连接慢速的外接设备。</p>
-<a id="more"></a>
-<p>后来由于CPU的频率达到阶段性的瓶颈，发展多了多核处理技术，加快多个不相干程序的运行效率。</p>
-<h1 id="计算机软件结构"><a href="#计算机软件结构" class="headerlink" title="计算机软件结构"></a>计算机软件结构</h1><p><img src="/images/202006/self2.jpeg" alt></p>
-<p>复杂的东西都可以通过分层来简化。软件架构分为硬件层面、操作系统、运行时库、应用软件等。各层之间通过接口协调。只要接口不变，就可以达到不同平台的移植。</p>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><p>操作系统就是用于为多个程序分配资源的，尽可能高效的利用资源。</p>
-<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>内存管理解决内存安全、利用率的问题。通过进程虚拟空间映射到物理内存，由软件进行内存隔离，保证内存安全。使用分段、分页的机制，实现程序运行时换入换出，提高内存的使用效率。</p>
-<h2 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h2><p>通过线程间空间的隔离，保障内存访问安全。</p>
-<p>使用基于时间片和优先级的调度机制，保障线程的正常运行。 临界区的保护。 线程的状态： 运行、就绪、阻塞。</p>
-<p>线程的内核态、用户态。 内核态不可抢占。</p>
-<h1 id="编译器的工作"><a href="#编译器的工作" class="headerlink" title="编译器的工作"></a>编译器的工作</h1><p>源文件 –》 预处理  – 汇编  – 编译 – 链接 –》 目标文件</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-3</title>
-    <url>/2020/07/14/reflection4self-3-md/</url>
-    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
-<a id="more"></a>
-<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
-<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
-<ol>
-<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
-</li>
-<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
-<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
-<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
-<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
-<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
-<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
-<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
-<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
-<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
-<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>具体的编译配置可以使用选项-v查看</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -824,23 +733,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《C程序设计语言》读后感</title>
-    <url>/2020/06/22/reflection4c/</url>
-    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
-<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
-<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>代码洁癖</title>
     <url>/2020/07/08/codeclean/</url>
     <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
@@ -859,6 +751,139 @@
       <categories>
         <category>技术</category>
       </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-3</title>
+    <url>/2020/07/14/reflection4self-3-md/</url>
+    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+<a id="more"></a>
+<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
+<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
+<ol>
+<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
+</li>
+<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
+<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
+<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
+<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
+<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
+<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
+<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
+<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
+<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
+<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>具体的编译配置可以使用选项-v查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+<a id="more"></a>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-1</title>
+    <url>/2020/06/24/reflection4self-1/</url>
+    <content><![CDATA[<p>鉴于这本书是精读过的， 按章节来个读后感比较有效。</p>
+<a id="more"></a>
+<h1 id="计算机硬件结构"><a href="#计算机硬件结构" class="headerlink" title="计算机硬件结构"></a>计算机硬件结构</h1><p><img src="/images/202006/self1.jpeg" alt></p>
+<p>计算机硬件结构主要就是CPU、内存、IO设备之间的通信结构。通过使用南北桥芯片架构，北桥芯片协调高速的CPU、内存、高速图形设备以及通过南桥芯片连接慢速的外接设备。</p>
+<p>后来由于CPU的频率达到阶段性的瓶颈，发展多了多核处理技术，加快多个不相干程序的运行效率。</p>
+<h1 id="计算机软件结构"><a href="#计算机软件结构" class="headerlink" title="计算机软件结构"></a>计算机软件结构</h1><p><img src="/images/202006/self2.jpeg" alt></p>
+<p>复杂的东西都可以通过分层来简化。软件架构分为硬件层面、操作系统、运行时库、应用软件等。各层之间通过接口协调。只要接口不变，就可以达到不同平台的移植。</p>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><p>操作系统就是用于为多个程序分配资源的，尽可能高效的利用资源。</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>内存管理解决内存安全、利用率的问题。通过进程虚拟空间映射到物理内存，由软件进行内存隔离，保证内存安全。使用分段、分页的机制，实现程序运行时换入换出，提高内存的使用效率。</p>
+<h2 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h2><p>通过线程间空间的隔离，保障内存访问安全。</p>
+<p>使用基于时间片和优先级的调度机制，保障线程的正常运行。 临界区的保护。 线程的状态： 运行、就绪、阻塞。</p>
+<p>线程的内核态、用户态。 内核态不可抢占。</p>
+<h1 id="编译器的工作"><a href="#编译器的工作" class="headerlink" title="编译器的工作"></a>编译器的工作</h1><p>源文件 –》 预处理  – 汇编  – 编译 – 链接 –》 目标文件</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-3</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+<a id="more"></a>
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg" alt></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《C程序设计语言》读后感</title>
+    <url>/2020/06/22/reflection4c/</url>
+    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
+<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
+<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
   </entry>
   <entry>
     <title>C程序的命令行参数处理函数getopt</title>
