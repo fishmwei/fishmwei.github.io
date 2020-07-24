@@ -20,20 +20,19 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。">
-<meta name="keywords" content="iOS">
+  <meta name="description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS知识点(3) - NSCopying&#x2F;NSMutableCopying">
-<meta property="og:url" content="http://fishmwei.github.io/2019/08/18/OCCopy-iOS/index.html">
+<meta property="og:title" content="程序员自我修养读后感-5">
+<meta property="og:url" content="http://fishmwei.github.io/2020/07/23/reflection4self-5/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。">
+<meta property="og:description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-14T03:07:44.187Z">
+<meta property="og:updated_time" content="2020-07-24T08:29:54.464Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS知识点(3) - NSCopying&#x2F;NSMutableCopying">
-<meta name="twitter:description" content="有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。">
+<meta name="twitter:title" content="程序员自我修养读后感-5">
+<meta name="twitter:description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
 
-<link rel="canonical" href="http://fishmwei.github.io/2019/08/18/OCCopy-iOS/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/07/23/reflection4self-5/">
 
 
 <script id="page-configurations">
@@ -46,7 +45,7 @@
   };
 </script>
 
-  <title>iOS知识点(3) - NSCopying/NSMutableCopying | IT攻城狮小明</title>
+  <title>程序员自我修养读后感-5 | IT攻城狮小明</title>
   
 
 
@@ -185,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2019/08/18/OCCopy-iOS/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/23/reflection4self-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -198,7 +197,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          iOS知识点(3) - NSCopying/NSMutableCopying
+          程序员自我修养读后感-5
         </h1>
 
         <div class="post-meta">
@@ -208,7 +207,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-08-18 08:43:06" itemprop="dateCreated datePublished" datetime="2019-08-18T08:43:06+08:00">2019-08-18</time>
+              <time title="创建时间：2020-07-23 23:09:07" itemprop="dateCreated datePublished" datetime="2020-07-23T23:09:07+08:00">2020-07-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
             </span>
 
           
@@ -220,8 +228,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2019/08/18/OCCopy-iOS/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/08/18/OCCopy-iOS/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/07/23/reflection4self-5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/reflection4self-5/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -236,22 +244,26 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+        <h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
 <a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
+<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
+<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
+<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
+<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
+<p>动态链接器的信息由elf中的.interp段保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
+<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
+<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
 
     </div>
 
@@ -260,9 +272,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/ios/" rel="tag"># iOS</a>
-          </div>
 
         
 
@@ -270,13 +279,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/08/08/autorotateiOS/" rel="prev" title="iOS知识点(2) - iOS横竖屏旋转">
-      <i class="fa fa-chevron-left"></i> iOS知识点(2) - iOS横竖屏旋转
+    <a href="/2020/07/17/reflection4self-4/" rel="prev" title="程序员自我修养读后感-4">
+      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-4
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/08/30/kvStore-iOS/" rel="next" title="YTKKeyValueStore开源库使用">
-      YTKKeyValueStore开源库使用 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -336,7 +342,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSCopying"><span class="nav-number">1.</span> <span class="nav-text">NSCopying</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSMutableCopying"><span class="nav-number">2.</span> <span class="nav-text">NSMutableCopying</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#动态链接"><span class="nav-number">1.</span> <span class="nav-text">动态链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础命令"><span class="nav-number">1.1.</span> <span class="nav-text">基础命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#地址无关代码"><span class="nav-number">1.2.</span> <span class="nav-text">地址无关代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟加载技术"><span class="nav-number">1.3.</span> <span class="nav-text">延迟加载技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态链接相关结构"><span class="nav-number">1.4.</span> <span class="nav-text">动态链接相关结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interp段"><span class="nav-number">1.4.1.</span> <span class="nav-text">.interp段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic段"><span class="nav-number">1.4.2.</span> <span class="nav-text">.dynamic段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">1.4.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示加载动态库"><span class="nav-number">1.5.</span> <span class="nav-text">显示加载动态库</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
