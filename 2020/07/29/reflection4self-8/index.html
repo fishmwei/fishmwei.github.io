@@ -20,18 +20,21 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="IT攻城狮小明">
-<meta property="og:url" content="http://fishmwei.github.io/archives/2020/01/index.html">
+  <meta name="description" content="运行库每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员自我修养读后感-8">
+<meta property="og:url" content="http://fishmwei.github.io/2020/07/29/reflection4self-8/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="技术博客">
+<meta property="og:description" content="运行库每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://fishmwei.github.io/images/202007/IOrelation.jpeg">
+<meta property="og:updated_time" content="2020-07-29T02:15:18.050Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IT攻城狮小明">
-<meta name="twitter:description" content="技术博客">
+<meta name="twitter:title" content="程序员自我修养读后感-8">
+<meta name="twitter:description" content="运行库每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202007/IOrelation.jpeg">
 
-<link rel="canonical" href="http://fishmwei.github.io/archives/2020/01/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/07/29/reflection4self-8/">
 
 
 <script id="page-configurations">
@@ -39,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | IT攻城狮小明</title>
+  <title>程序员自我修养读后感-8 | IT攻城狮小明</title>
   
 
 
@@ -176,77 +179,126 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/29/reflection4self-8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员自我修养读后感-8
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-29 08:52:38" itemprop="dateCreated datePublished" datetime="2020-07-29T08:52:38+08:00">2020-07-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">还行! 目前共计 34 篇日志。 继续努力。</span>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/29/reflection4self-8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/29/reflection4self-8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-19T21:15:47+08:00"
-              content="2020-01-19">
-          01-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/01/19/problem/" itemprop="url">
-            <span itemprop="name">一次被坑的惨痛经历</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-01-01T13:53:30+08:00"
-              content="2020-01-01">
-          01-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/01/01/2020books/" itemprop="url">
-            <span itemprop="name">2020书单</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+        <h1 id="运行库"><a href="#运行库" class="headerlink" title="运行库"></a>运行库</h1><p>每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。</p>
+<a id="more"></a>
+<p>运行库glibc的入库为_start， 由链接器设置。</p>
+<p>运行库功能包含</p>
+<ul>
+<li>程序的启动与退出</li>
+<li>标准函数库</li>
+<li>IO库封装</li>
+<li>堆的实现</li>
+<li>语言实现，语言功能</li>
+<li>调试</li>
+</ul>
+<h2 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h2><p>运行库提供IO文件的操作，存在fd、FILE指针、内核对象等概念。</p>
+<p> <img src="/images/202007/IOrelation.jpeg" width="400" height="300" alt="图片名称" align="center"></p>
+<p>运行库在调用用户代码之前， 会进行IO初始化，创建fd与FILE等的对应关系， 这样就可以在用户代码中调用printf, scanf等函数。</p>
+<h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
+<p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
+<p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/27/reflection4self-7/" rel="prev" title="程序员自我修养读后感-7">
+      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-7
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -293,6 +345,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#运行库"><span class="nav-number">1.</span> <span class="nav-text">运行库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO"><span class="nav-number">1.1.</span> <span class="nav-text">IO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统调用"><span class="nav-number">2.</span> <span class="nav-text">系统调用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
