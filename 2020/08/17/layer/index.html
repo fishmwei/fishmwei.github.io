@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="小小的工作回顾新项目红红火火的开展了， 嗯，自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
+  <meta name="description" content="小小的工作回顾新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="小小的工作回顾">
 <meta property="og:url" content="http://fishmwei.github.io/2020/08/17/layer/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="小小的工作回顾新项目红红火火的开展了， 嗯，自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
+<meta property="og:description" content="小小的工作回顾新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202008/layer.jpg">
-<meta property="og:updated_time" content="2020-08-18T01:51:37.756Z">
+<meta property="og:updated_time" content="2020-08-18T01:53:12.941Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小小的工作回顾">
-<meta name="twitter:description" content="小小的工作回顾新项目红红火火的开展了， 嗯，自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
+<meta name="twitter:description" content="小小的工作回顾新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。">
 <meta name="twitter:image" content="http://fishmwei.github.io/images/202008/layer.jpg">
 
 <link rel="canonical" href="http://fishmwei.github.io/2020/08/17/layer/">
@@ -246,7 +246,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="小小的工作回顾"><a href="#小小的工作回顾" class="headerlink" title="小小的工作回顾"></a>小小的工作回顾</h1><p>新项目红红火火的开展了， 嗯，自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+        <h1 id="小小的工作回顾"><a href="#小小的工作回顾" class="headerlink" title="小小的工作回顾"></a>小小的工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
 <a id="more"></a>
 <h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对于我这样的一个项目组的新成员，对就项目的框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
 <h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
