@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Deprecated js库</title>
-    <url>/2019/05/24/Deprecated-Js/</url>
-    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<hr>
-<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>JS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CocoaLumberJack源码学习</title>
     <url>/2019/05/29/lumberjack-iOS/</url>
     <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
@@ -79,6 +45,65 @@
       </tags>
   </entry>
   <entry>
+    <title>Deprecated js库</title>
+    <url>/2019/05/24/Deprecated-Js/</url>
+    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<hr>
+<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>JS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Bugly RN调用栈 - C的弱符号</title>
+    <url>/2019/06/11/weak-attribute-C/</url>
+    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
+<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<a id="more"></a>
+<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
+<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
+<p>相当于增加了一个默认函数。</p>
+<p>原理：链接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
+<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
+<p><img src="/images/machoview-weak.png" alt></p>
+<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
+<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
+<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>Bugly</tag>
+        <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>React-Native Sample代码运行</title>
     <url>/2019/06/04/RNTester-RN/</url>
     <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
@@ -92,6 +117,80 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
+        <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(2) - iOS横竖屏旋转</title>
+    <url>/2019/08/08/autorotateiOS/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
+<p>首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。</p>
+<a id="more"></a>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="勾选支持方向"><a href="#勾选支持方向" class="headerlink" title="勾选支持方向"></a>勾选支持方向</h3><p>工程 - General - Deployment Info - Device Orientation</p>
+<p><img src="/images/configOrientation.png" alt></p>
+<h3 id="controller接口"><a href="#controller接口" class="headerlink" title="controller接口"></a>controller接口</h3><p>UIViewController需要实现3个接口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return _isAutoRotate;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">    return self.supportedOrientation;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">      return self.preferredOrientation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有当shouldAutorotate为YES时，其它两个接口才生效。<br>UIInterfaceOrientationMask 标识支持的方向集合， UIInterfaceOrientation用于当控制器被present出来后的视图方向</p>
+<h3 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h3><p>我们看代码， 可以看到2个方向， 界面方向和设备方向</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 用户界面方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIInterfaceOrientation) &#123;</span><br><span class="line">    UIInterfaceOrientationUnknown            = UIDeviceOrientationUnknown,</span><br><span class="line">    UIInterfaceOrientationPortrait           = UIDeviceOrientationPortrait,</span><br><span class="line">    UIInterfaceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,</span><br><span class="line">    UIInterfaceOrientationLandscapeLeft      = UIDeviceOrientationLandscapeRight,</span><br><span class="line">    UIInterfaceOrientationLandscapeRight     = UIDeviceOrientationLandscapeLeft</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 用户方向，一般与状态栏方向一致， 可以通过获取状态栏方向 来获取当前界面的方向</span><br><span class="line"></span><br><span class="line">[[UIApplication sharedApplication] statusBarOrientation]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 设备方向， 当前设备的方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIDeviceOrientation) &#123;</span><br><span class="line">    UIDeviceOrientationUnknown,</span><br><span class="line">    UIDeviceOrientationPortrait,            // Device oriented vertically, home button on the bottom</span><br><span class="line">    UIDeviceOrientationPortraitUpsideDown,  // Device oriented vertically, home button on the top</span><br><span class="line">    UIDeviceOrientationLandscapeLeft,       // Device oriented horizontally, home button on the right</span><br><span class="line">    UIDeviceOrientationLandscapeRight,      // Device oriented horizontally, home button on the left</span><br><span class="line">    UIDeviceOrientationFaceUp,              // Device oriented flat, face up</span><br><span class="line">    UIDeviceOrientationFaceDown             // Device oriented flat, face down</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// 设备方向， 通过当前设备的接口获取，  需要事先调用 </span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] orientation]</span><br><span class="line">    </span><br><span class="line">    ...  // 操作</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];</span><br></pre></td></tr></table></figure>
+<p>很多时候， 界面方向会和设备方向不一致（支持当前设备方向的前提下）。 我们可以调用接口使其自动旋转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
+<h3 id="手动切换方向"><a href="#手动切换方向" class="headerlink" title="手动切换方向"></a>手动切换方向</h3><p>目前只能通过修改orientation的方向来达到切方向的功能</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[[UIDevice currentDevice] setValue:@(deviceOrientation) forKey:@&quot;orientation&quot;];</span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
+<h3 id="根控制器支持横竖屏"><a href="#根控制器支持横竖屏" class="headerlink" title="根控制器支持横竖屏"></a>根控制器支持横竖屏</h3><p>大部分应用window不是以UIViewController为rootViewController。 一般是TabbarController或者NavigationControler。 要使得他们支持横竖屏，需要额外添加一个分类， 重新对应的接口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(1) - NSCache</title>
+    <url>/2019/06/19/NSCache-iOS/</url>
+    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
+<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
+<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+<a id="more"></a>
+<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
+<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
+<p>NSCache主要有几个属性 及 方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
+<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
+<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
         <tag>React-Native</tag>
       </tags>
   </entry>
@@ -124,105 +223,6 @@
         <tag>工具</tag>
         <tag>React-Native</tag>
         <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Bugly RN调用栈 - C的弱符号</title>
-    <url>/2019/06/11/weak-attribute-C/</url>
-    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
-<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
-<a id="more"></a>
-<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
-<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
-<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
-<p>相当于增加了一个默认函数。</p>
-<p>原理：链接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
-<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
-<p><img src="/images/machoview-weak.png" alt></p>
-<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
-<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
-<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>React-Native</tag>
-        <tag>Bugly</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(1) - NSCache</title>
-    <url>/2019/06/19/NSCache-iOS/</url>
-    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
-<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
-<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
-<a id="more"></a>
-<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
-<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
-<p>NSCache主要有几个属性 及 方法</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
-<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
-<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>React-Native</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(2) - iOS横竖屏旋转</title>
-    <url>/2019/08/08/autorotateiOS/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
-<p>首先，应用要支持横竖屏旋转， 首先要在工程配置中勾选支持的方向。然后，不同的ViewController通过实现对应的接口实现横竖屏， 以及代码调用接口来手动实现横竖屏切换。</p>
-<a id="more"></a>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="勾选支持方向"><a href="#勾选支持方向" class="headerlink" title="勾选支持方向"></a>勾选支持方向</h3><p>工程 - General - Deployment Info - Device Orientation</p>
-<p><img src="/images/configOrientation.png" alt></p>
-<h3 id="controller接口"><a href="#controller接口" class="headerlink" title="controller接口"></a>controller接口</h3><p>UIViewController需要实现3个接口</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return _isAutoRotate;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">    return self.supportedOrientation;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">      return self.preferredOrientation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>只有当shouldAutorotate为YES时，其它两个接口才生效。<br>UIInterfaceOrientationMask 标识支持的方向集合， UIInterfaceOrientation用于当控制器被present出来后的视图方向</p>
-<h3 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h3><p>我们看代码， 可以看到2个方向， 界面方向和设备方向</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 用户界面方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIInterfaceOrientation) &#123;</span><br><span class="line">    UIInterfaceOrientationUnknown            = UIDeviceOrientationUnknown,</span><br><span class="line">    UIInterfaceOrientationPortrait           = UIDeviceOrientationPortrait,</span><br><span class="line">    UIInterfaceOrientationPortraitUpsideDown = UIDeviceOrientationPortraitUpsideDown,</span><br><span class="line">    UIInterfaceOrientationLandscapeLeft      = UIDeviceOrientationLandscapeRight,</span><br><span class="line">    UIInterfaceOrientationLandscapeRight     = UIDeviceOrientationLandscapeLeft</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 用户方向，一般与状态栏方向一致， 可以通过获取状态栏方向 来获取当前界面的方向</span><br><span class="line"></span><br><span class="line">[[UIApplication sharedApplication] statusBarOrientation]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 设备方向， 当前设备的方向</span><br><span class="line">typedef NS_ENUM(NSInteger, UIDeviceOrientation) &#123;</span><br><span class="line">    UIDeviceOrientationUnknown,</span><br><span class="line">    UIDeviceOrientationPortrait,            // Device oriented vertically, home button on the bottom</span><br><span class="line">    UIDeviceOrientationPortraitUpsideDown,  // Device oriented vertically, home button on the top</span><br><span class="line">    UIDeviceOrientationLandscapeLeft,       // Device oriented horizontally, home button on the right</span><br><span class="line">    UIDeviceOrientationLandscapeRight,      // Device oriented horizontally, home button on the left</span><br><span class="line">    UIDeviceOrientationFaceUp,              // Device oriented flat, face up</span><br><span class="line">    UIDeviceOrientationFaceDown             // Device oriented flat, face down</span><br><span class="line">&#125; API_UNAVAILABLE(tvos);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// 设备方向， 通过当前设备的接口获取，  需要事先调用 </span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] orientation]</span><br><span class="line">    </span><br><span class="line">    ...  // 操作</span><br><span class="line"></span><br><span class="line">    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];</span><br></pre></td></tr></table></figure>
-<p>很多时候， 界面方向会和设备方向不一致（支持当前设备方向的前提下）。 我们可以调用接口使其自动旋转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
-<h3 id="手动切换方向"><a href="#手动切换方向" class="headerlink" title="手动切换方向"></a>手动切换方向</h3><p>目前只能通过修改orientation的方向来达到切方向的功能</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[[UIDevice currentDevice] setValue:@(deviceOrientation) forKey:@&quot;orientation&quot;];</span><br><span class="line">[UIViewController attemptRotationToDeviceOrientation];</span><br></pre></td></tr></table></figure>
-<h3 id="根控制器支持横竖屏"><a href="#根控制器支持横竖屏" class="headerlink" title="根控制器支持横竖屏"></a>根控制器支持横竖屏</h3><p>大部分应用window不是以UIViewController为rootViewController。 一般是TabbarController或者NavigationControler。 要使得他们支持横竖屏，需要额外添加一个分类， 重新对应的接口</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -278,79 +278,28 @@
       </tags>
   </entry>
   <entry>
-    <title>一种获取客户端程序的代码版本的方法</title>
-    <url>/2019/09/27/versionScheme-common/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
 <a id="more"></a>
-<h2 id="背景技术"><a href="#背景技术" class="headerlink" title="背景技术"></a>背景技术</h2><p>目前主流的程序软件开发，都是依赖多个不同的代码库而构建的，有开源代码库、也有自研的代码库。不同版本的程序，依赖代码库的不同版本。目前流行的移动app还支持基于js的混合开发，程序可以通过下载最新的js代码运行新功能或者修复已知问题，同一个版本的app根据用户或者设备、平台等信息的不同，还可能更新到不同的js代码运行。</p>
-<p>一般情况下，使用的代码库信息在构建生成二进制文件之后，没有进行保存。当出现问题时，开发人员根据最新的代码库不一定能够复现问题， 时间很久的话，又很难找到当初构建app的工程，导致问题较难定位。另外，对于支持js热更新的业务，没有有效的方式获取移动app运行的js的版本，常常无法证明js版本是否更新。针对此类问题的运维手段较缺乏。</p>
-<h2 id="方案描述"><a href="#方案描述" class="headerlink" title="方案描述"></a>方案描述</h2><p>我们在构建移动app及其js代码时，把对应的依赖库版本信息与移动端app或者js代码的版本上传到专门的服务器保存。服务器提供接口查询，客户端app带上版本、包Id等信息，通过接口请求获取代码依赖库的版本信息，然后在客户端进行展示。技术实现简单，但是一旦实施，对问题定位是大有裨益的，快速定位问题出现版本，结合现象很容易分析出问题根因。</p>
-<p>基本流程如下：</p>
-<h3 id="1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"><a href="#1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。" class="headerlink" title="1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"></a>1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</h3><p>移动app代码工程构建前，都需要根据配置的依赖代码库版本信息(一般由一个特定的文件来配置，如iOS的podfile文件)，来拉取对应的代码库。并生成一个相关的依赖文件， 比如iOS的podfile.lock、js的npm-shrinkwrap.json或者package-lock.json等记录最终使用的代码版本信息。然后，进行编译构建出最终的可执行文件包。<br>我们在构建成功后，把对应的版本信息文件和构建的app版本等信息上传到服务器，服务器解析后保存到数据库中。</p>
-<p>最终信息层次可以参考如下：</p>
-<p>一个移动app的信息：<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;   </span><br><span class="line">    bundleId: com.apple.app.diary,</span><br><span class="line">    appName: 移动app，</span><br><span class="line">    platform: ios, <span class="comment">// 系统类型， android和iOS是分开编译的，其解析方式、依赖组件的名称及版本都是不一样的</span></span><br><span class="line">    nativeInfoList: [ <span class="comment">// 原生代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.1</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.2</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    jsInfoList: [  <span class="comment">// js代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            name: personalPage, <span class="comment">// 个人主页业务js</span></span><br><span class="line">            versions: &#123;</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.1</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.2</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>参考流程：</p>
-<p><img src="/images/versionScheme.png" alt></p>
-<h3 id="2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息"><a href="#2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息" class="headerlink" title="2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息"></a>2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</h3><p>服务器开发一个接口，支持通过移动app上传app包Id，版本、平台、以及查询的js版本(如果有)信息，获取代码依赖版本信息。找不到则返回具体的错误(不存在的app、不存在的版本、不存在js版本等)。</p>
-<h3 id="3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"><a href="#3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息" class="headerlink" title="3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"></a>3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</h3><p>移动app保存有当前的版本号及运行的js版本(更新的时候，需要保存更新后的版本)信息。测人人员通过某些方式(比如：通过IM聊天窗口的链接功能访问，也可以使用某些隐藏的方式触发访问，点击版本号10次之类的)跳转到UI展示页面，展示当前app的版本已经运行的所有js的版本。 点击具体的项目，发起对应的请求，然后进行结果展示。</p>
-<p>如此，我们就可以准确的获取移动app对应的依赖代码库的版本列表，快速定位问题版本。</p>
-<h2 id="场景举例"><a href="#场景举例" class="headerlink" title="场景举例"></a>场景举例</h2><p>以下通过具体场景，描述上述算法的具体实现：</p>
-<h3 id="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"><a href="#场景一：bug已修复，但是业务方依旧经常反馈相同的问题。" class="headerlink" title="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"></a>场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</h3><p>在工作中，常常会遇到如题所述的场景。某些bug已经在某个库版本中发布解决了，但是还是会有相同的问题反馈。我们之前需要找到对应移动app的构建环境，然后确认其配置是否引用的是已修复的代码版本。有时候，甚至会找不到构建环境了， 业务方仅能够提供移动app的程序，给问题定位带来很大的困难。通过本方案，我们可以快速确认发生问题的移动app引用的版本，确认问题版本号，然后再针对具体版本代码分析。</p>
-<p>流程：</p>
-<ul>
-<li><ol>
-<li>从业务方获取移动app，登录</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>启动app，打开版本信息界面</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>连续点击版本号10次，跳转版本获取页面</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>点击具体的条目，获取版本代码依赖信息</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>确认问题是否由于未引用新的版本代码导致。如果是由于版本为更新引起的，告知业务方原因，通知其采用新的代码版本。</li>
-</ol>
-</li>
-<li><ol start="6">
-<li>如果是新的版本也有问题，采用问题版本进行复现定位。</li>
-</ol>
-</li>
-</ul>
-<h3 id="场景二：业务方反馈热更新不生效，导致其功能异常"><a href="#场景二：业务方反馈热更新不生效，导致其功能异常" class="headerlink" title="场景二：业务方反馈热更新不生效，导致其功能异常"></a>场景二：业务方反馈热更新不生效，导致其功能异常</h3><p>有时候，业务方会反馈称基本的js版本更新功能不生效，导致其功能无法通过热更新修复。其实不然，也有可能因为其代码修改未覆盖所有异常情况导致的，我们可以通过获取js依赖代码版本信息，证明代码已更新。</p>
-<ul>
-<li><ol>
-<li>从业务方获取问题复现环境(设备啊， 帐户啊)</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>启动app，打开版本信息界面</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>点击具体的条目，获取版本代码依赖信息</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>确认运行的js版本及代码依赖信息，告知业务方，以确认更新功能是否异常。如果更新功能正常，转业务开发人员继续定位</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>如果更新功能异常，查找异常原因并解决。</li>
-</ol>
-</li>
-</ul>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>构思方案</tag>
-        <tag>开发经验</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -377,115 +326,7 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>开发经验</tag>
         <tag>软件设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS接口的单元测试</title>
-    <url>/2019/10/23/iosunit-IOS/</url>
-    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
-<p>现在就来聊聊iOS代码的单元测试。</p>
-<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
-<a id="more"></a>
-<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
-<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
-<p>下面讲一下我是如何作单元测试的</p>
-<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
-<ul>
-<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
-<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
-<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
-<li>编译执行test  target （快捷键 command + U）</li>
-</ul>
-<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
-<p><img src="/images/20191023/unit1.png" alt></p>
-<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
-<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
-<p><img src="/images/20191023/unit2.png" alt></p>
-<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
-<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
-<li>添加文件到test target</li>
-<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
-</ul>
-<p><img src="/images/20191023/unit3.png" alt></p>
-<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
-<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
-<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
-<p><img src="/images/20191023/unit4.png" alt></p>
-<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
-<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
-<li>跑一遍单元测试， 查看结果</li>
-</ul>
-<p><img src="/images/20191023/unit5.png" alt></p>
-<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
-<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
-<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
         <tag>开发经验</tag>
       </tags>
   </entry>
@@ -561,6 +402,128 @@
       </categories>
   </entry>
   <entry>
+    <title>一种获取客户端程序的代码版本的方法</title>
+    <url>/2019/09/27/versionScheme-common/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
+<a id="more"></a>
+<h2 id="背景技术"><a href="#背景技术" class="headerlink" title="背景技术"></a>背景技术</h2><p>目前主流的程序软件开发，都是依赖多个不同的代码库而构建的，有开源代码库、也有自研的代码库。不同版本的程序，依赖代码库的不同版本。目前流行的移动app还支持基于js的混合开发，程序可以通过下载最新的js代码运行新功能或者修复已知问题，同一个版本的app根据用户或者设备、平台等信息的不同，还可能更新到不同的js代码运行。</p>
+<p>一般情况下，使用的代码库信息在构建生成二进制文件之后，没有进行保存。当出现问题时，开发人员根据最新的代码库不一定能够复现问题， 时间很久的话，又很难找到当初构建app的工程，导致问题较难定位。另外，对于支持js热更新的业务，没有有效的方式获取移动app运行的js的版本，常常无法证明js版本是否更新。针对此类问题的运维手段较缺乏。</p>
+<h2 id="方案描述"><a href="#方案描述" class="headerlink" title="方案描述"></a>方案描述</h2><p>我们在构建移动app及其js代码时，把对应的依赖库版本信息与移动端app或者js代码的版本上传到专门的服务器保存。服务器提供接口查询，客户端app带上版本、包Id等信息，通过接口请求获取代码依赖库的版本信息，然后在客户端进行展示。技术实现简单，但是一旦实施，对问题定位是大有裨益的，快速定位问题出现版本，结合现象很容易分析出问题根因。</p>
+<p>基本流程如下：</p>
+<h3 id="1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"><a href="#1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。" class="headerlink" title="1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"></a>1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</h3><p>移动app代码工程构建前，都需要根据配置的依赖代码库版本信息(一般由一个特定的文件来配置，如iOS的podfile文件)，来拉取对应的代码库。并生成一个相关的依赖文件， 比如iOS的podfile.lock、js的npm-shrinkwrap.json或者package-lock.json等记录最终使用的代码版本信息。然后，进行编译构建出最终的可执行文件包。<br>我们在构建成功后，把对应的版本信息文件和构建的app版本等信息上传到服务器，服务器解析后保存到数据库中。</p>
+<p>最终信息层次可以参考如下：</p>
+<p>一个移动app的信息：<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;   </span><br><span class="line">    bundleId: com.apple.app.diary,</span><br><span class="line">    appName: 移动app，</span><br><span class="line">    platform: ios, <span class="comment">// 系统类型， android和iOS是分开编译的，其解析方式、依赖组件的名称及版本都是不一样的</span></span><br><span class="line">    nativeInfoList: [ <span class="comment">// 原生代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.1</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.2</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    jsInfoList: [  <span class="comment">// js代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            name: personalPage, <span class="comment">// 个人主页业务js</span></span><br><span class="line">            versions: &#123;</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.1</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.2</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>参考流程：</p>
+<p><img src="/images/versionScheme.png" alt></p>
+<h3 id="2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息"><a href="#2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息" class="headerlink" title="2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息"></a>2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</h3><p>服务器开发一个接口，支持通过移动app上传app包Id，版本、平台、以及查询的js版本(如果有)信息，获取代码依赖版本信息。找不到则返回具体的错误(不存在的app、不存在的版本、不存在js版本等)。</p>
+<h3 id="3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"><a href="#3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息" class="headerlink" title="3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"></a>3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</h3><p>移动app保存有当前的版本号及运行的js版本(更新的时候，需要保存更新后的版本)信息。测人人员通过某些方式(比如：通过IM聊天窗口的链接功能访问，也可以使用某些隐藏的方式触发访问，点击版本号10次之类的)跳转到UI展示页面，展示当前app的版本已经运行的所有js的版本。 点击具体的项目，发起对应的请求，然后进行结果展示。</p>
+<p>如此，我们就可以准确的获取移动app对应的依赖代码库的版本列表，快速定位问题版本。</p>
+<h2 id="场景举例"><a href="#场景举例" class="headerlink" title="场景举例"></a>场景举例</h2><p>以下通过具体场景，描述上述算法的具体实现：</p>
+<h3 id="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"><a href="#场景一：bug已修复，但是业务方依旧经常反馈相同的问题。" class="headerlink" title="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"></a>场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</h3><p>在工作中，常常会遇到如题所述的场景。某些bug已经在某个库版本中发布解决了，但是还是会有相同的问题反馈。我们之前需要找到对应移动app的构建环境，然后确认其配置是否引用的是已修复的代码版本。有时候，甚至会找不到构建环境了， 业务方仅能够提供移动app的程序，给问题定位带来很大的困难。通过本方案，我们可以快速确认发生问题的移动app引用的版本，确认问题版本号，然后再针对具体版本代码分析。</p>
+<p>流程：</p>
+<ul>
+<li><ol>
+<li>从业务方获取移动app，登录</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>连续点击版本号10次，跳转版本获取页面</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>确认问题是否由于未引用新的版本代码导致。如果是由于版本为更新引起的，告知业务方原因，通知其采用新的代码版本。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>如果是新的版本也有问题，采用问题版本进行复现定位。</li>
+</ol>
+</li>
+</ul>
+<h3 id="场景二：业务方反馈热更新不生效，导致其功能异常"><a href="#场景二：业务方反馈热更新不生效，导致其功能异常" class="headerlink" title="场景二：业务方反馈热更新不生效，导致其功能异常"></a>场景二：业务方反馈热更新不生效，导致其功能异常</h3><p>有时候，业务方会反馈称基本的js版本更新功能不生效，导致其功能无法通过热更新修复。其实不然，也有可能因为其代码修改未覆盖所有异常情况导致的，我们可以通过获取js依赖代码版本信息，证明代码已更新。</p>
+<ul>
+<li><ol>
+<li>从业务方获取问题复现环境(设备啊， 帐户啊)</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>确认运行的js版本及代码依赖信息，告知业务方，以确认更新功能是否异常。如果更新功能正常，转业务开发人员继续定位</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>如果更新功能异常，查找异常原因并解决。</li>
+</ol>
+</li>
+</ul>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>开发经验</tag>
+        <tag>构思方案</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS接口的单元测试</title>
+    <url>/2019/10/23/iosunit-IOS/</url>
+    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
+<p>现在就来聊聊iOS代码的单元测试。</p>
+<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
+<a id="more"></a>
+<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
+<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
+<p>下面讲一下我是如何作单元测试的</p>
+<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
+<ul>
+<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
+<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
+<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
+<li>编译执行test  target （快捷键 command + U）</li>
+</ul>
+<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
+<p><img src="/images/20191023/unit1.png" alt></p>
+<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
+<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
+<p><img src="/images/20191023/unit2.png" alt></p>
+<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
+<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
+<li>添加文件到test target</li>
+<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
+</ul>
+<p><img src="/images/20191023/unit3.png" alt></p>
+<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
+<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
+<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
+<p><img src="/images/20191023/unit4.png" alt></p>
+<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
+<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
+<li>跑一遍单元测试， 查看结果</li>
+</ul>
+<p><img src="/images/20191023/unit5.png" alt></p>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
+<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>换城市工作切换的感受</title>
     <url>/2020/06/03/newjob-JOB/</url>
     <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
@@ -573,6 +536,57 @@
 ]]></content>
       <tags>
         <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -611,20 +625,6 @@
       <tags>
         <tag>开发经验</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>结构体偏移</title>
@@ -773,6 +773,26 @@
       </categories>
   </entry>
   <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -808,26 +828,6 @@
 ]]></content>
       <categories>
         <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -930,6 +930,33 @@
       </categories>
   </entry>
   <entry>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+<a id="more"></a>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对于我这样的一个项目组的新成员，对就项目的框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-7</title>
     <url>/2020/07/27/reflection4self-7/</url>
     <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
@@ -976,33 +1003,6 @@
 <h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
 <p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
 <p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>小小的工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="小小的工作回顾"><a href="#小小的工作回顾" class="headerlink" title="小小的工作回顾"></a>小小的工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
-<a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对于我这样的一个项目组的新成员，对就项目的框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
