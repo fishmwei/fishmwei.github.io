@@ -19,6 +19,22 @@
       </tags>
   </entry>
   <entry>
+    <title>Deprecated js库</title>
+    <url>/2019/05/24/Deprecated-Js/</url>
+    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<hr>
+<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>JS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CocoaLumberJack源码学习</title>
     <url>/2019/05/29/lumberjack-iOS/</url>
     <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
@@ -60,22 +76,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Deprecated js库</title>
-    <url>/2019/05/24/Deprecated-Js/</url>
-    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<hr>
-<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>JS</tag>
       </tags>
   </entry>
   <entry>
@@ -138,7 +138,7 @@
 <p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
 <p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
 <p>相当于增加了一个默认函数。</p>
-<p>原理：连接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
+<p>原理：链接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
 <p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
 <p><img src="/images/machoview-weak.png" alt></p>
 <p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
@@ -453,6 +453,26 @@
       </tags>
   </entry>
   <entry>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
     <title>一次被坑的惨痛经历</title>
     <url>/2020/01/19/problem/</url>
     <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
@@ -490,31 +510,48 @@
       </tags>
   </entry>
   <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+    <title>todo</title>
+    <url>/2020/02/13/todo/</url>
+    <content><![CDATA[<h1 id="todo-列表"><a href="#todo-列表" class="headerlink" title="todo 列表"></a>todo 列表</h1><a id="more"></a>
+<h2 id="编程知识"><a href="#编程知识" class="headerlink" title="编程知识"></a>编程知识</h2><h3 id="linux编程"><a href="#linux编程" class="headerlink" title="linux编程"></a>linux编程</h3><ul>
+<li style="list-style: none"><input type="checkbox"> socket</li>
+<li style="list-style: none"><input type="checkbox"> 线程创建</li>
 </ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><h3 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h3><ul>
+<li style="list-style: none"><input type="checkbox"> sed命令使用</li>
+<li style="list-style: none"><input type="checkbox"> awk命令使用</li>
+<li style="list-style: none"><input type="checkbox"> grep命令使用</li>
+<li style="list-style: none"><input type="checkbox"> tcpdump</li>
+</ul>
+<h3 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h3><ul>
+<li style="list-style: none"><input type="checkbox"> makefile使用</li>
+<li style="list-style: none"><input type="checkbox" checked> coredump</li>
+<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
+</ul>
+<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
+<li style="list-style: none"><input type="checkbox"> radius</li>
+<li style="list-style: none"><input type="checkbox"> lldp</li>
+<li style="list-style: none"><input type="checkbox"> mpls</li>
+<li style="list-style: none"><input type="checkbox"> sctp</li>
+<li style="list-style: none"><input type="checkbox"> ppp</li>
+<li style="list-style: none"><input type="checkbox"> pppoe</li>
+<li style="list-style: none"><input type="checkbox"> ip相关</li>
+<li style="list-style: none"><input type="checkbox"> ah协议</li>
+<li style="list-style: none"><input type="checkbox"> gre</li>
+<li style="list-style: none"><input type="checkbox"> gtp</li>
+<li style="list-style: none"><input type="checkbox"> hdlc</li>
+<li style="list-style: none"><input type="checkbox"> teredo</li>
+<li style="list-style: none"><input type="checkbox"> 报文分片</li>
+<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
+</ul>
+<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
+<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
+<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
+</ul>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -576,54 +613,39 @@
       </tags>
   </entry>
   <entry>
-    <title>todo</title>
-    <url>/2020/02/13/todo/</url>
-    <content><![CDATA[<h1 id="todo-列表"><a href="#todo-列表" class="headerlink" title="todo 列表"></a>todo 列表</h1><a id="more"></a>
-<h2 id="编程知识"><a href="#编程知识" class="headerlink" title="编程知识"></a>编程知识</h2><h3 id="linux编程"><a href="#linux编程" class="headerlink" title="linux编程"></a>linux编程</h3><ul>
-<li style="list-style: none"><input type="checkbox"> socket</li>
-<li style="list-style: none"><input type="checkbox"> 线程创建</li>
-</ul>
-<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><h3 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h3><ul>
-<li style="list-style: none"><input type="checkbox"> sed命令使用</li>
-<li style="list-style: none"><input type="checkbox"> awk命令使用</li>
-<li style="list-style: none"><input type="checkbox"> grep命令使用</li>
-<li style="list-style: none"><input type="checkbox"> tcpdump</li>
-</ul>
-<h3 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h3><ul>
-<li style="list-style: none"><input type="checkbox"> makefile使用</li>
-<li style="list-style: none"><input type="checkbox" checked> coredump</li>
-<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
-</ul>
-<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
-<li style="list-style: none"><input type="checkbox"> radius</li>
-<li style="list-style: none"><input type="checkbox"> lldp</li>
-<li style="list-style: none"><input type="checkbox"> mpls</li>
-<li style="list-style: none"><input type="checkbox"> sctp</li>
-<li style="list-style: none"><input type="checkbox"> ppp</li>
-<li style="list-style: none"><input type="checkbox"> pppoe</li>
-<li style="list-style: none"><input type="checkbox"> ip相关</li>
-<li style="list-style: none"><input type="checkbox"> ah协议</li>
-<li style="list-style: none"><input type="checkbox"> gre</li>
-<li style="list-style: none"><input type="checkbox"> gtp</li>
-<li style="list-style: none"><input type="checkbox"> hdlc</li>
-<li style="list-style: none"><input type="checkbox"> teredo</li>
-<li style="list-style: none"><input type="checkbox"> 报文分片</li>
-<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
-</ul>
-<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
-<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
-<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
-</ul>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
         <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>结构体偏移</title>
+    <url>/2020/06/17/memberoffsetof/</url>
+    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
+<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>assert说明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
+<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>C基础</category>
       </categories>
   </entry>
   <entry>
@@ -659,26 +681,31 @@
       </tags>
   </entry>
   <entry>
-    <title>结构体偏移</title>
-    <url>/2020/06/17/memberoffsetof/</url>
-    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+    <title>程序员自我修养读后感-1</title>
+    <url>/2020/06/24/reflection4self-1/</url>
+    <content><![CDATA[<p>鉴于这本书是精读过的， 按章节来个读后感比较有效。</p>
 <a id="more"></a>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+<h1 id="计算机硬件结构"><a href="#计算机硬件结构" class="headerlink" title="计算机硬件结构"></a>计算机硬件结构</h1><p><img src="/images/202006/self1.jpeg" alt></p>
+<p>计算机硬件结构主要就是CPU、内存、IO设备之间的通信结构。通过使用南北桥芯片架构，北桥芯片协调高速的CPU、内存、高速图形设备以及通过南桥芯片连接慢速的外接设备。</p>
+<p>后来由于CPU的频率达到阶段性的瓶颈，发展多了多核处理技术，加快多个不相干程序的运行效率。</p>
+<h1 id="计算机软件结构"><a href="#计算机软件结构" class="headerlink" title="计算机软件结构"></a>计算机软件结构</h1><p><img src="/images/202006/self2.jpeg" alt></p>
+<p>复杂的东西都可以通过分层来简化。软件架构分为硬件层面、操作系统、运行时库、应用软件等。各层之间通过接口协调。只要接口不变，就可以达到不同平台的移植。</p>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><p>操作系统就是用于为多个程序分配资源的，尽可能高效的利用资源。</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>内存管理解决内存安全、利用率的问题。通过进程虚拟空间映射到物理内存，由软件进行内存隔离，保证内存安全。使用分段、分页的机制，实现程序运行时换入换出，提高内存的使用效率。</p>
+<h2 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h2><p>通过线程间空间的隔离，保障内存访问安全。</p>
+<p>使用基于时间片和优先级的调度机制，保障线程的正常运行。 临界区的保护。 线程的状态： 运行、就绪、阻塞。</p>
+<p>线程的内核态、用户态。 内核态不可抢占。</p>
+<h1 id="编译器的工作"><a href="#编译器的工作" class="headerlink" title="编译器的工作"></a>编译器的工作</h1><p>源文件 –》 预处理  – 汇编  – 编译 – 链接 –》 目标文件</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
         <category>技术</category>
-        <category>C基础</category>
       </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -746,33 +773,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-1</title>
-    <url>/2020/06/24/reflection4self-1/</url>
-    <content><![CDATA[<p>鉴于这本书是精读过的， 按章节来个读后感比较有效。</p>
-<a id="more"></a>
-<h1 id="计算机硬件结构"><a href="#计算机硬件结构" class="headerlink" title="计算机硬件结构"></a>计算机硬件结构</h1><p><img src="/images/202006/self1.jpeg" alt></p>
-<p>计算机硬件结构主要就是CPU、内存、IO设备之间的通信结构。通过使用南北桥芯片架构，北桥芯片协调高速的CPU、内存、高速图形设备以及通过南桥芯片连接慢速的外接设备。</p>
-<p>后来由于CPU的频率达到阶段性的瓶颈，发展多了多核处理技术，加快多个不相干程序的运行效率。</p>
-<h1 id="计算机软件结构"><a href="#计算机软件结构" class="headerlink" title="计算机软件结构"></a>计算机软件结构</h1><p><img src="/images/202006/self2.jpeg" alt></p>
-<p>复杂的东西都可以通过分层来简化。软件架构分为硬件层面、操作系统、运行时库、应用软件等。各层之间通过接口协调。只要接口不变，就可以达到不同平台的移植。</p>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><p>操作系统就是用于为多个程序分配资源的，尽可能高效的利用资源。</p>
-<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>内存管理解决内存安全、利用率的问题。通过进程虚拟空间映射到物理内存，由软件进行内存隔离，保证内存安全。使用分段、分页的机制，实现程序运行时换入换出，提高内存的使用效率。</p>
-<h2 id="线程管理"><a href="#线程管理" class="headerlink" title="线程管理"></a>线程管理</h2><p>通过线程间空间的隔离，保障内存访问安全。</p>
-<p>使用基于时间片和优先级的调度机制，保障线程的正常运行。 临界区的保护。 线程的状态： 运行、就绪、阻塞。</p>
-<p>线程的内核态、用户态。 内核态不可抢占。</p>
-<h1 id="编译器的工作"><a href="#编译器的工作" class="headerlink" title="编译器的工作"></a>编译器的工作</h1><p>源文件 –》 预处理  – 汇编  – 编译 – 链接 –》 目标文件</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>代码洁癖</title>
     <url>/2020/07/08/codeclean/</url>
     <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
@@ -784,6 +784,69 @@
 <p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
 <p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
 <p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-3</title>
+    <url>/2020/07/14/reflection4self-3-md/</url>
+    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+<a id="more"></a>
+<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
+<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
+<ol>
+<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
+</li>
+<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
+<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
+<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
+<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
+<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
+<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
+<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
+<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
+<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
+<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>具体的编译配置可以使用选项-v查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-4</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+<a id="more"></a>
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg" alt></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -819,22 +882,45 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-4</title>
-    <url>/2020/07/17/reflection4self-4/</url>
-    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+    <title>程序员自我修养读后感-5</title>
+    <url>/2020/07/23/reflection4self-5/</url>
+    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
 <a id="more"></a>
-<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
-<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
-<p><img src="/images/202007/vmaload.jpeg" alt></p>
-<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
-<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
-<li>读取文件的前面128字节， 判断文件类型</li>
-<li>查找不同文件的handler函数</li>
-<li>根据程序表头，对文件进行映射</li>
-<li>初始化进程环境， 修改入口地址</li>
-<li>开始执行</li>
-</ol>
+<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
+<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
+<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
+<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
+<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
+<p>动态链接器的信息由elf中的.interp段保存。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
+<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
+<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -899,83 +985,24 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-3</title>
-    <url>/2020/07/14/reflection4self-3-md/</url>
-    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+    <title>小小的工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="小小的工作回顾"><a href="#小小的工作回顾" class="headerlink" title="小小的工作回顾"></a>小小的工作回顾</h1><p>新项目红红火火的开展了， 嗯，自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
 <a id="more"></a>
-<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
-<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
-<ol>
-<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
-</li>
-<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
-<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
-<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
-<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
-<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
-<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
-<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
-<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
-<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
-<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>具体的编译配置可以使用选项-v查看</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-5</title>
-    <url>/2020/07/23/reflection4self-5/</url>
-    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
-<a id="more"></a>
-<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
-<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
-<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
-<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
-<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
-<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
-<p>动态链接器的信息由elf中的.interp段保存。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
-<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
-<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
-<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对于我这样的一个项目组的新成员，对就项目的框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个某块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
