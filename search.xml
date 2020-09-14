@@ -428,6 +428,26 @@
       </tags>
   </entry>
   <entry>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
     <title>CoreDump的使用</title>
     <url>/2019/12/24/CoreDump-JOB/</url>
     <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
@@ -451,26 +471,6 @@
       <tags>
         <tag>linux</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
   </entry>
   <entry>
     <title>一次被坑的惨痛经历</title>
@@ -507,21 +507,6 @@
       </categories>
       <tags>
         <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>换城市工作切换的感受</title>
-    <url>/2020/06/03/newjob-JOB/</url>
-    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
-<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
-<a id="more"></a>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -576,6 +561,21 @@
       </categories>
   </entry>
   <entry>
+    <title>换城市工作切换的感受</title>
+    <url>/2020/06/03/newjob-JOB/</url>
+    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
+<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+<a id="more"></a>
+<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
+<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
+<p>好了， 先这样。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>项目性能优化</title>
     <url>/2020/06/03/optimize-JOB/</url>
     <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问题的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
@@ -627,6 +627,21 @@
       </categories>
   </entry>
   <entry>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
+      </categories>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -646,21 +661,6 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
       </categories>
   </entry>
   <entry>
@@ -706,26 +706,6 @@
       <tags>
         <tag>读后感</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -793,23 +773,17 @@
       </categories>
   </entry>
   <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -857,22 +831,23 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-4</title>
-    <url>/2020/07/17/reflection4self-4/</url>
-    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
 <a id="more"></a>
-<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
-<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
-<p><img src="/images/202007/vmaload.jpeg" alt></p>
-<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
-<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
-<li>读取文件的前面128字节， 判断文件类型</li>
-<li>查找不同文件的handler函数</li>
-<li>根据程序表头，对文件进行映射</li>
-<li>初始化进程环境， 修改入口地址</li>
-<li>开始执行</li>
-</ol>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -910,44 +885,22 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+    <title>程序员自我修养读后感-4</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
 <a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>近期工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
-<a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg" alt></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -983,17 +936,17 @@
       </categories>
   </entry>
   <entry>
-    <title>学以致用</title>
-    <url>/2020/08/28/skills/</url>
-    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
-<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1032,19 +985,66 @@
       </categories>
   </entry>
   <entry>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+<a id="more"></a>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>学以致用</title>
+    <url>/2020/08/28/skills/</url>
+    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+<a id="more"></a>
+<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
+<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>位域左移溢出问题</title>
     <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。问题是由于节点索引是一个27位的结构体位域，当值位60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作，使得最后的结果不是预期的。show u code:</p>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
 <a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>程序执行结果如下：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，高位全为f。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
 <p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
 <p>通过代码汇编可以看出具体实现：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行强转一下再左移。</p>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
