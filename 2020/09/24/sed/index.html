@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
+  <meta name="description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:type" content="article">
-<meta property="og:title" content="程序员自我修养读后感-5">
-<meta property="og:url" content="http://fishmwei.github.io/2020/07/23/reflection4self-5/index.html">
+<meta property="og:title" content="sed命令使用">
+<meta property="og:url" content="http://fishmwei.github.io/2020/09/24/sed/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
+<meta property="og:description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-07-24T08:29:54.464Z">
+<meta property="og:updated_time" content="2020-09-30T01:37:35.715Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="程序员自我修养读后感-5">
-<meta name="twitter:description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
+<meta name="twitter:title" content="sed命令使用">
+<meta name="twitter:description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/07/23/reflection4self-5/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/09/24/sed/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>程序员自我修养读后感-5 | IT攻城狮小明</title>
+  <title>sed命令使用 | IT攻城狮小明</title>
   
 
 
@@ -184,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/23/reflection4self-5/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/09/24/sed/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -197,7 +197,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          程序员自我修养读后感-5
+          sed命令使用
         </h1>
 
         <div class="post-meta">
@@ -207,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-23 23:09:07" itemprop="dateCreated datePublished" datetime="2020-07-23T23:09:07+08:00">2020-07-23</time>
+              <time title="创建时间：2020-09-24 09:39:28" itemprop="dateCreated datePublished" datetime="2020-09-24T09:39:28+08:00">2020-09-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,8 +228,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/07/23/reflection4self-5/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/reflection4self-5/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/09/24/sed/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/24/sed/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -244,23 +244,58 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
+        <p>sed – stream editor</p>
+<p>流编辑</p>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
-<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
-<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
-<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
-<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
-<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
-<p>动态链接器的信息由elf中的.interp段保存。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
-<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
-<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
-<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
+<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。如果没有指定-n，则把_patter space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
+<p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
+<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-n, --quit, --silent 静默</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件回来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
+<h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
+<p>指定行的格式可以如下：</p>
+<ul>
+<li>‘NUMBER’, 指定特定行号</li>
+<li>‘First-Step’，从第几行开始，每次跳跃Step行</li>
+<li>‘$’, 文件最后一行</li>
+<li>‘/REGEXP/‘, 匹配REGEX的行</li>
+<li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
+<li>‘Start， end’ 指定范围<br>  sed -ne 3,5p sed.md<br>  sed -ne 1,/888/p sed.md // 1-匹配888</li>
+</ul>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
+<li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
+<li><ul>
+<li>匹配前一个字符0到多个</li>
+</ul>
+</li>
+<li>. 匹配任一字符</li>
+<li>^ 以什么开头</li>
+<li>$ 以什么结尾</li>
+<li>[LIST] 匹配LIST中的任一字符</li>
+<li>[^LIST] 不属于LIST中的任一字符</li>
+<li>REGEXP1|REGEXP2 匹配REGEXP1或者REGEXP2</li>
+<li>REGEXP1REGEXP2 整串连续匹配REGEXP1, REGEXP2</li>
+<li>\n 匹配换行</li>
+</ul>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
+<li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
+<li>d 删除匹配的行</li>
+<li>p 打印匹配的行</li>
+<li>{COMMANDS} 多个命令，使用分号分割</li>
+<li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
+- NUMBER 替换指定第几次匹配的行
+- p print new pattern space 
+- w FILE_NAME 匹配的结果写入文件
+- r FILE_NAME 读取文件插入到匹配的行
+</code></pre></li>
+</ul>
+<p>sed s/^ <em>//<br>sed s/ </em>$//</p>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
+<p>###示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br></pre></td></tr></table></figure>
+<p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -279,13 +314,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/17/reflection4self-4/" rel="prev" title="程序员自我修养读后感-4">
-      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-4
+    <a href="/2020/09/19/grep/" rel="prev" title="grep命令使用">
+      <i class="fa fa-chevron-left"></i> grep命令使用
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/24/reflection4self-6/" rel="next" title="程序员自我修养读后感-6">
-      程序员自我修养读后感-6 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -345,7 +377,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#动态链接"><span class="nav-number">1.</span> <span class="nav-text">动态链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础命令"><span class="nav-number">1.1.</span> <span class="nav-text">基础命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#地址无关代码"><span class="nav-number">1.2.</span> <span class="nav-text">地址无关代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延迟加载技术"><span class="nav-number">1.3.</span> <span class="nav-text">延迟加载技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态链接相关结构"><span class="nav-number">1.4.</span> <span class="nav-text">动态链接相关结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interp段"><span class="nav-number">1.4.1.</span> <span class="nav-text">.interp段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic段"><span class="nav-number">1.4.2.</span> <span class="nav-text">.dynamic段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">1.4.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示加载动态库"><span class="nav-number">1.5.</span> <span class="nav-text">显示加载动态库</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed如何工作"><span class="nav-number">2.</span> <span class="nav-text">sed如何工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项"><span class="nav-number">3.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Address-Range"><span class="nav-number">3.2.</span> <span class="nav-text">Address Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">3.3.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">3.4.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值"><span class="nav-number">3.5.</span> <span class="nav-text">返回值</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
