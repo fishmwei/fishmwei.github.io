@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Deprecated js库</title>
     <url>/2019/05/24/Deprecated-Js/</url>
     <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
@@ -76,6 +58,24 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -382,77 +382,6 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS接口的单元测试</title>
-    <url>/2019/10/23/iosunit-IOS/</url>
-    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
-<p>现在就来聊聊iOS代码的单元测试。</p>
-<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
-<a id="more"></a>
-<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
-<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
-<p>下面讲一下我是如何作单元测试的</p>
-<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
-<ul>
-<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
-<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
-<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
-<li>编译执行test  target （快捷键 command + U）</li>
-</ul>
-<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
-<p><img src="/images/20191023/unit1.png" alt></p>
-<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
-<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
-<p><img src="/images/20191023/unit2.png" alt></p>
-<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
-<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
-<li>添加文件到test target</li>
-<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
-</ul>
-<p><img src="/images/20191023/unit3.png" alt></p>
-<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
-<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
-<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
-<p><img src="/images/20191023/unit4.png" alt></p>
-<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
-<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
-<li>跑一遍单元测试， 查看结果</li>
-</ul>
-<p><img src="/images/20191023/unit5.png" alt></p>
-<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
-<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
-<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>2020书单</title>
     <url>/2020/01/01/2020books/</url>
     <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
@@ -507,6 +436,52 @@
       </categories>
       <tags>
         <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS接口的单元测试</title>
+    <url>/2019/10/23/iosunit-IOS/</url>
+    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
+<p>现在就来聊聊iOS代码的单元测试。</p>
+<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
+<a id="more"></a>
+<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
+<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
+<p>下面讲一下我是如何作单元测试的</p>
+<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
+<ul>
+<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
+<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
+<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
+<li>编译执行test  target （快捷键 command + U）</li>
+</ul>
+<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
+<p><img src="/images/20191023/unit1.png" alt></p>
+<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
+<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
+<p><img src="/images/20191023/unit2.png" alt></p>
+<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
+<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
+<li>添加文件到test target</li>
+<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
+</ul>
+<p><img src="/images/20191023/unit3.png" alt></p>
+<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
+<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
+<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
+<p><img src="/images/20191023/unit4.png" alt></p>
+<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
+<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
+<li>跑一遍单元测试， 查看结果</li>
+</ul>
+<p><img src="/images/20191023/unit5.png" alt></p>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
+<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -576,6 +551,31 @@
       </tags>
   </entry>
   <entry>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>项目性能优化</title>
     <url>/2020/06/03/optimize-JOB/</url>
     <content><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问题的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
@@ -627,6 +627,21 @@
       </categories>
   </entry>
   <entry>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
+      </categories>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -646,21 +661,6 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
       </categories>
   </entry>
   <entry>
@@ -706,6 +706,26 @@
       <tags>
         <tag>读后感</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -773,26 +793,6 @@
       </categories>
   </entry>
   <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -857,31 +857,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-4</title>
-    <url>/2020/07/17/reflection4self-4/</url>
-    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
-<a id="more"></a>
-<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
-<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
-<p><img src="/images/202007/vmaload.jpeg" alt></p>
-<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
-<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
-<li>读取文件的前面128字节， 判断文件类型</li>
-<li>查找不同文件的handler函数</li>
-<li>根据程序表头，对文件进行映射</li>
-<li>初始化进程环境， 修改入口地址</li>
-<li>开始执行</li>
-</ol>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-5</title>
     <url>/2020/07/23/reflection4self-5/</url>
     <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
@@ -910,17 +885,22 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+    <title>程序员自我修养读后感-4</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
 <a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg" alt></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -947,6 +927,26 @@
 <h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
 <p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
 <p>内存分配算法：空闲链表法、位图法。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -985,6 +985,102 @@
       </categories>
   </entry>
   <entry>
+    <title>grep命令使用</title>
+    <url>/2020/09/19/grep/</url>
+    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
+<a id="more"></a>
+<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
+<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
+<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
+<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
+<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
+<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
+<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
+<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
+<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
+<pre><code>0  有匹配的行
+1  没有任何行匹配
+&gt;1  命令执行错误
+</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]&#123;1,3&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
+<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
+</code></pre><blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>sed命令使用</title>
+    <url>/2020/09/24/sed/</url>
+    <content><![CDATA[<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>stream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。</p>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
+<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。把_pattern space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
+<p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
+<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-n, --quit, --silent 静默, 只输出匹配正则表达式的行，默认的所有行都会输出</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件用来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
+<h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
+<p>指定行的格式可以如下：</p>
+<ul>
+<li>‘NUMBER’, 指定特定行号<br>  sed ‘$p’ sed.md</li>
+<li>‘First~Step’，从第几行开始，每次跳跃Step行</li>
+<li>‘$’, 文件最后一行</li>
+<li>‘/REGEXP/‘, 匹配REGEX的行</li>
+<li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
+<li>‘Start， end’ 指定范围<br>  sed -ne ‘3,5p’ sed.md<br>  sed -ne ‘1,/888/p’ sed.md // 1-匹配888</li>
+</ul>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
+<li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
+<li><ul>
+<li>匹配前一个字符0到多个</li>
+</ul>
+</li>
+<li>. 匹配任一字符</li>
+<li>^ 以什么开头</li>
+<li>$ 以什么结尾</li>
+<li>[LIST] 匹配LIST中的任一字符</li>
+<li>[^LIST] 不属于LIST中的任一字符</li>
+<li>REGEXP1|REGEXP2 匹配REGEXP1或者REGEXP2</li>
+<li>REGEXP1REGEXP2 整串连续匹配REGEXP1, REGEXP2</li>
+<li>\n 匹配换行</li>
+</ul>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
+<li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
+<li>d 删除匹配的行  sed ‘/^$/d’ file</li>
+<li>p 打印匹配的行  sed  ‘3p’ file</li>
+<li>{COMMANDS} 多个命令，使用分号分割</li>
+<li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
+- NUMBER 替换指定第几次匹配的行
+- p print new pattern space 
+- w FILE_NAME 匹配的结果写入文件
+- r FILE_NAME 读取文件插入到匹配的行
+- &amp; 前面匹配的字符  sed &apos;s/222/xxx &amp;/&apos; sed.md
+</code></pre></li>
+</ul>
+<ul>
+<li>! 表示命令对不匹配的行生效</li>
+</ul>
+<p><strong>命令最好使用单引号包含起来</strong></p>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br><span class="line">sed -ne  '/2\&#123;1,3\&#125;/p' sed.md</span><br><span class="line">sed ‘s/^ *//‘  删除前导空格</span><br><span class="line">sed ’s/ *$//’ 删除行尾空格</span><br></pre></td></tr></table></figure>
+<p>以上是常用的一些命令， 还有许多其他命令，更多内容建议参考’man sed’</p>
+<p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>近期工作回顾</title>
     <url>/2020/08/17/layer/</url>
     <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
@@ -1003,6 +1099,39 @@
 <p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
 <p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>awk命令使用</title>
+    <url>/2020/09/30/awk/</url>
+    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
+<a id="more"></a>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
+<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
+<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
+<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
+<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
+<p>可能的语句形式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
+<p>语句指定由分号、换行符或者括号分隔。</p>
+<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
+<p>还支持运算符运算。</p>
+<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
+<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
+<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1045,131 +1174,6 @@
 <p>通过代码汇编可以看出具体实现：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
 <p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>grep命令使用</title>
-    <url>/2020/09/19/grep/</url>
-    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
-<a id="more"></a>
-<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
-<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
-<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
-<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
-<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
-<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
-<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
-<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
-<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
-<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
-<pre><code>0  有匹配的行
-1  没有任何行匹配
-&gt;1  命令执行错误
-</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]&#123;1,3&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
-<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
-<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
-</code></pre><blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>sed命令使用</title>
-    <url>/2020/09/24/sed/</url>
-    <content><![CDATA[<p>sed – stream editor</p>
-<p>流编辑</p>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
-<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。如果没有指定-n，则把_patter space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
-<p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
-<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-n, --quit, --silent 静默</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件回来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
-<h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
-<p>指定行的格式可以如下：</p>
-<ul>
-<li>‘NUMBER’, 指定特定行号</li>
-<li>‘First-Step’，从第几行开始，每次跳跃Step行</li>
-<li>‘$’, 文件最后一行</li>
-<li>‘/REGEXP/‘, 匹配REGEX的行</li>
-<li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
-<li>‘Start， end’ 指定范围<br>  sed -ne 3,5p sed.md<br>  sed -ne 1,/888/p sed.md // 1-匹配888</li>
-</ul>
-<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
-<li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
-<li><ul>
-<li>匹配前一个字符0到多个</li>
-</ul>
-</li>
-<li>. 匹配任一字符</li>
-<li>^ 以什么开头</li>
-<li>$ 以什么结尾</li>
-<li>[LIST] 匹配LIST中的任一字符</li>
-<li>[^LIST] 不属于LIST中的任一字符</li>
-<li>REGEXP1|REGEXP2 匹配REGEXP1或者REGEXP2</li>
-<li>REGEXP1REGEXP2 整串连续匹配REGEXP1, REGEXP2</li>
-<li>\n 匹配换行</li>
-</ul>
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
-<li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
-<li>d 删除匹配的行</li>
-<li>p 打印匹配的行</li>
-<li>{COMMANDS} 多个命令，使用分号分割</li>
-<li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
-- NUMBER 替换指定第几次匹配的行
-- p print new pattern space 
-- w FILE_NAME 匹配的结果写入文件
-- r FILE_NAME 读取文件插入到匹配的行
-</code></pre></li>
-</ul>
-<p>sed s/^ <em>//<br>sed s/ </em>$//</p>
-<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br></pre></td></tr></table></figure>
-<p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>awk命令使用</title>
-    <url>/2020/09/30/awk/</url>
-    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
-<a id="more"></a>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
-<p>linux的命令都一个样， 差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
-<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
-<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
-<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
-<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
-<p>可能的语句形式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
-<p>语句指定由分号、换行符或者括号分隔。</p>
-<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
-<p>还支持运算符运算。</p>
-<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
-<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
-<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
-<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
-<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>

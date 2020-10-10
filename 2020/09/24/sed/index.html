@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
+  <meta name="description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sed命令使用">
 <meta property="og:url" content="http://fishmwei.github.io/2020/09/24/sed/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
+<meta property="og:description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-09-30T01:49:38.218Z">
+<meta property="og:updated_time" content="2020-10-10T01:57:46.064Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sed命令使用">
-<meta name="twitter:description" content="sed – stream editor 流编辑 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
+<meta name="twitter:description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 
 <link rel="canonical" href="http://fishmwei.github.io/2020/09/24/sed/">
 
@@ -244,25 +244,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>sed – stream editor</p>
-<p>流编辑</p>
+        <h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>stream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。</p>
 <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
-<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。如果没有指定-n，则把_patter space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
+<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。把_pattern space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
 <p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
 <h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-n, --quit, --silent 静默</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件回来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">-n, --quit, --silent 静默, 只输出匹配正则表达式的行，默认的所有行都会输出</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件用来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
 <h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
 <p>指定行的格式可以如下：</p>
 <ul>
-<li>‘NUMBER’, 指定特定行号</li>
-<li>‘First-Step’，从第几行开始，每次跳跃Step行</li>
+<li>‘NUMBER’, 指定特定行号<br>  sed ‘$p’ sed.md</li>
+<li>‘First~Step’，从第几行开始，每次跳跃Step行</li>
 <li>‘$’, 文件最后一行</li>
 <li>‘/REGEXP/‘, 匹配REGEX的行</li>
 <li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
-<li>‘Start， end’ 指定范围<br>  sed -ne 3,5p sed.md<br>  sed -ne 1,/888/p sed.md // 1-匹配888</li>
+<li>‘Start， end’ 指定范围<br>  sed -ne ‘3,5p’ sed.md<br>  sed -ne ‘1,/888/p’ sed.md // 1-匹配888</li>
 </ul>
 <h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
 <li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
@@ -281,19 +280,24 @@
 </ul>
 <h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
 <li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
-<li>d 删除匹配的行</li>
-<li>p 打印匹配的行</li>
+<li>d 删除匹配的行  sed ‘/^$/d’ file</li>
+<li>p 打印匹配的行  sed  ‘3p’ file</li>
 <li>{COMMANDS} 多个命令，使用分号分割</li>
 <li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
 - NUMBER 替换指定第几次匹配的行
 - p print new pattern space 
 - w FILE_NAME 匹配的结果写入文件
 - r FILE_NAME 读取文件插入到匹配的行
+- &amp; 前面匹配的字符  sed &apos;s/222/xxx &amp;/&apos; sed.md
 </code></pre></li>
 </ul>
-<p>sed s/^ <em>//<br>sed s/ </em>$//</p>
+<ul>
+<li>! 表示命令对不匹配的行生效</li>
+</ul>
+<p><strong>命令最好使用单引号包含起来</strong></p>
 <h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br></pre></td></tr></table></figure>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br><span class="line">sed -ne  '/2\&#123;1,3\&#125;/p' sed.md</span><br><span class="line">sed ‘s/^ *//‘  删除前导空格</span><br><span class="line">sed ’s/ *$//’ 删除行尾空格</span><br></pre></td></tr></table></figure>
+<p>以上是常用的一些命令， 还有许多其他命令，更多内容建议参考’man sed’</p>
 <p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -379,7 +383,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed如何工作"><span class="nav-number">2.</span> <span class="nav-text">sed如何工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项"><span class="nav-number">3.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Address-Range"><span class="nav-number">3.2.</span> <span class="nav-text">Address Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">3.3.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">3.4.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值"><span class="nav-number">3.5.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">3.6.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sed"><span class="nav-number">1.</span> <span class="nav-text">sed</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">1.1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed如何工作"><span class="nav-number">1.2.</span> <span class="nav-text">sed如何工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选项"><span class="nav-number">1.3.1.</span> <span class="nav-text">选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Address-Range"><span class="nav-number">1.3.2.</span> <span class="nav-text">Address Range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">1.3.3.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">1.3.4.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值"><span class="nav-number">1.3.5.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例"><span class="nav-number">1.3.6.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

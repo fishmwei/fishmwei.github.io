@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="awkawk是一个用于模式匹配和处理的语言，有相应的语法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-09-30T09:55:14.847Z">
+<meta property="og:updated_time" content="2020-10-10T01:58:00.875Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="awk命令使用">
 <meta name="twitter:description" content="awkawk是一个用于模式匹配和处理的语言，有相应的语法。">
@@ -247,7 +247,7 @@
         <h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
 <a id="more"></a>
 <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
-<p>linux的命令都一个样， 差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
+<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
 <h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
 <h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
@@ -263,7 +263,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
 <p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
 <p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
 <p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
 <h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
 <blockquote><p>行动，才不会被动!</p>
