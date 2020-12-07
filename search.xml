@@ -226,34 +226,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次单例模式的代码重构</title>
-    <url>/2019/09/30/sharedInstance-JOB/</url>
-    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
-<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
-<a id="more"></a>
-<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
-<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
-<p>初始类图关系大致如下：</p>
-<p><img src="/images/20190930/OriginalClasses.png" alt></p>
-<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
-<p><img src="/images/20190930/newClasses.png" alt></p>
-<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
-<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
-<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
-<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
-<blockquote>
-<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
-</blockquote>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>软件设计</tag>
-        <tag>开发经验</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>YTKKeyValueStore开源库使用</title>
     <url>/2019/08/30/kvStore-iOS/</url>
     <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
@@ -377,8 +349,36 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>开发经验</tag>
         <tag>构思方案</tag>
+        <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一次单例模式的代码重构</title>
+    <url>/2019/09/30/sharedInstance-JOB/</url>
+    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
+<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
+<a id="more"></a>
+<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
+<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
+<p>初始类图关系大致如下：</p>
+<p><img src="/images/20190930/OriginalClasses.png" alt></p>
+<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
+<p><img src="/images/20190930/newClasses.png" alt></p>
+<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
+<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
+<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
+<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
+<blockquote>
+<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
+</blockquote>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>开发经验</tag>
+        <tag>软件设计</tag>
       </tags>
   </entry>
   <entry>
@@ -425,63 +425,6 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -561,6 +504,63 @@
       </categories>
   </entry>
   <entry>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>换城市工作切换的感受</title>
     <url>/2020/06/03/newjob-JOB/</url>
     <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
@@ -574,6 +574,20 @@
       <tags>
         <tag>杂谈</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>项目性能优化</title>
@@ -613,6 +627,28 @@
       </tags>
   </entry>
   <entry>
+    <title>结构体偏移</title>
+    <url>/2020/06/17/memberoffsetof/</url>
+    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
+<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>assert说明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
+<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>C基础</category>
+      </categories>
+  </entry>
+  <entry>
     <title>关于</title>
     <url>/2020/06/20/about/</url>
     <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
@@ -625,20 +661,6 @@
 ]]></content>
       <categories>
         <category>关于</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -667,129 +689,6 @@
       <tags>
         <tag>读后感</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>结构体偏移</title>
-    <url>/2020/06/17/memberoffsetof/</url>
-    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《C程序设计语言》读后感</title>
-    <url>/2020/06/22/reflection4c/</url>
-    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
-<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
-<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-3</title>
-    <url>/2020/07/14/reflection4self-3-md/</url>
-    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
-<a id="more"></a>
-<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
-<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
-<ol>
-<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
-</li>
-<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
-<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
-<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
-<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
-<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
-<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
-<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
-<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
-<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
-<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>具体的编译配置可以使用选项-v查看</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>读后感</category>
-      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -857,6 +756,69 @@
       </categories>
   </entry>
   <entry>
+    <title>《C程序设计语言》读后感</title>
+    <url>/2020/06/22/reflection4c/</url>
+    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
+<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
+<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+<a id="more"></a>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-4</title>
     <url>/2020/07/17/reflection4self-4/</url>
     <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
@@ -882,6 +844,44 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感-3</title>
+    <url>/2020/07/14/reflection4self-3-md/</url>
+    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+<a id="more"></a>
+<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
+<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
+<ol>
+<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
+</li>
+<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
+<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
+<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
+<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
+<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
+<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
+<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
+<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
+<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
+<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>具体的编译配置可以使用选项-v查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-5</title>
     <url>/2020/07/23/reflection4self-5/</url>
     <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
@@ -901,6 +901,79 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
 <h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
 <p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-7</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+<a id="more"></a>
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+<a id="more"></a>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -939,79 +1012,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-7</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
-<a id="more"></a>
-<ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
-</ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
-<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>近期工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
-<a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>学以致用</title>
     <url>/2020/08/28/skills/</url>
     <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
@@ -1023,76 +1023,6 @@
 <h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
 <p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>grep命令使用</title>
-    <url>/2020/09/19/grep/</url>
-    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
-<a id="more"></a>
-<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
-<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
-<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
-<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
-<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
-<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
-<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
-<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
-<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
-<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
-<pre><code>0  有匹配的行
-1  没有任何行匹配
-&gt;1  命令执行错误
-</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
-<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
-<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
-</code></pre><blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(二)</title>
-    <url>/2020/11/18/linux2/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-二"><a href="#《趣谈linux操作系统》小结-二" class="headerlink" title="《趣谈linux操作系统》小结(二)"></a>《趣谈linux操作系统》小结(二)</h1><h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
-<a id="more"></a>
-<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
-<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
-<p>Linux 命令行</p>
-<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1168,29 +1098,50 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
 <a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>grep命令使用</title>
+    <url>/2020/09/19/grep/</url>
+    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
+<a id="more"></a>
+<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
+<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
+<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
+<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
+<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
+<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
+<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
+<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
+<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
+<pre><code>0  有匹配的行
+1  没有任何行匹配
+&gt;1  命令执行错误
+</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
+<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
+</code></pre><blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1223,6 +1174,88 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
 <p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
 <h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(二)</title>
+    <url>/2020/11/18/linux2/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-二"><a href="#《趣谈linux操作系统》小结-二" class="headerlink" title="《趣谈linux操作系统》小结(二)"></a>《趣谈linux操作系统》小结(二)</h1><h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
+<a id="more"></a>
+<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
+<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
+<p>Linux 命令行</p>
+<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+<a id="more"></a>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(三)</title>
+    <url>/2020/11/21/linux3/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-三"><a href="#《趣谈linux操作系统》小结-三" class="headerlink" title="《趣谈linux操作系统》小结(三)"></a>《趣谈linux操作系统》小结(三)</h1><h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>操作系统内核给软件提供接口的方式主要就是系统调用。系统调用提供了许多功能，这里只讲一些开发常用的。</p>
+<a id="more"></a>
+<h3 id="进程创建-fork"><a href="#进程创建-fork" class="headerlink" title="进程创建 fork"></a>进程创建 fork</h3><p>当父进程调用 fork 创建进程的时候，子进程将各个子系统为父进程创建的数据结构也全部拷贝了一份，甚至连程序代码也是拷贝过来的。通过fork函数的返回值判断当前线程是父进程、还是子进程。子进程返回0， 父进程返回创建的子进程id。根据进程号，后续进行不同的处理流程。</p>
+<p>系统调用waitpid，父进程可以调用它，将子进程的进程号作为参数传给它，这样父进程就知道子进程运行完了没有，成功与否。</p>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p>分配内存的系统调用，brk和mmap。当分配的内存数量比较小的时候，使用 brk，会和原来的堆的数据连在一起，这就像多分配两三个工位，在原来的区域旁边搬两把椅子就行了。当分配的内存数量比较大的时候，使用 mmap，会重新划分一块区域，也就是说，当办公空间需要太多的时候，索性来个一整块。</p>
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><p>对于已经有的文件，可以使用open打开这个文件，close关闭这个文件；<br>对于没有的文件，可以使用creat创建文件；<br>打开文件以后，可以使用lseek跳到文件的某个位置；<br>可以对文件的内容进行读写，读的系统调用是read，写是write</p>
+<p>Linux一切皆是文件。</p>
+<h3 id="异常与信号"><a href="#异常与信号" class="headerlink" title="异常与信号"></a>异常与信号</h3><p>当程序运行时，遇到外部或者内部的异常，需要作对应的处理。</p>
+<p>经常遇到的信号有以下几种：</p>
+<ul>
+<li>在执行一个程序的时候，在键盘输入“CTRL+C”，这就是中断的信号，正在执行的命令就会中止退出；</li>
+<li>如果非法访问内存，例如你跑到别人的会议室，可能会看到不该看的东西；</li>
+<li>硬件故障，设备出了问题，当然要通知项目组；</li>
+<li>用户进程通过kill函数，将一个用户信号发送给另一个进程。</li>
+</ul>
+<p>当项目组收到信号的时候，项目组需要决定如何处理这些异常情况。对于一些不严重的信号，可以忽略，该干啥干啥，但是像 SIGKILL（用于终止一个进程的信号）和 SIGSTOP（用于中止一个进程的信号）是不能忽略的，可以执行对于该信号的默认动作。每种信号都定义了默认的动作，例如硬件故障，默认终止；也可以提供信号处理函数，可以通过sigaction系统调用，注册一个信号处理函数。提供了信号处理服务，项目执行过程中一旦有变动，就可以及时处理了。</p>
+<h3 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h3><p>主要有消息队列、共享内存、信号量等机制相关系统调用。</p>
+<p>进程间通信，主要用于不同进程间的信息传递。</p>
+<h3 id="网络通信"><a href="#网络通信" class="headerlink" title="网络通信"></a>网络通信</h3><p>不同机器间进行通信的唯一手段。不同进程间也可以使用网络通信实现进程间的通信。主要就是socket的系统调用。</p>
+<h3 id="Glibc"><a href="#Glibc" class="headerlink" title="Glibc"></a>Glibc</h3><p>Glibc是linux系统下的一个C标准库，Glibc封装了许多系统调用，屏蔽了一些底层的细节，更便于开发者调用。</p>
+<p>有时候，Glibc 一个单独的 API 可能调用多个系统调用，比如说，Glibc 提供的 printf 函数就会调用如 sys_open、sys_mmap、sys_write、sys_close 等等系统调用。也有时候，多个 API 也可能只对应同一个系统调用，如 Glibc 下实现的 malloc、calloc、free 等函数用来分配和释放内存，都利用了内核的 sys_brk 的系统调用。</p>
+<h3 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h3><p>strace命令可以跟着程序的系统调用情况。显示系统调用的记录，还是比较详细的。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
