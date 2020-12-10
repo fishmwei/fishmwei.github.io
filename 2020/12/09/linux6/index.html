@@ -20,19 +20,24 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。">
+  <meta name="description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="gdbserver">
-<meta property="og:url" content="http://fishmwei.github.io/2020/07/16/gdbserver/index.html">
+<meta property="og:title" content="《趣谈linux操作系统》小结(六)">
+<meta property="og:url" content="http://fishmwei.github.io/2020/12/09/linux6/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。">
+<meta property="og:description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-07-17T07:34:00.586Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_kernel.png">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_layer.jpg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_save.jpeg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_init.jpeg">
+<meta property="og:updated_time" content="2020-12-10T11:47:06.342Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="gdbserver">
-<meta name="twitter:description" content="gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。">
+<meta name="twitter:title" content="《趣谈linux操作系统》小结(六)">
+<meta name="twitter:description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202012/linux_kernel.png">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/07/16/gdbserver/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/12/09/linux6/">
 
 
 <script id="page-configurations">
@@ -45,7 +50,7 @@
   };
 </script>
 
-  <title>gdbserver | IT攻城狮小明</title>
+  <title>《趣谈linux操作系统》小结(六) | IT攻城狮小明</title>
   
 
 
@@ -184,7 +189,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/16/gdbserver/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/09/linux6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -197,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          gdbserver
+          《趣谈linux操作系统》小结(六)
         </h1>
 
         <div class="post-meta">
@@ -207,7 +212,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-16 19:07:11" itemprop="dateCreated datePublished" datetime="2020-07-16T19:07:11+08:00">2020-07-16</time>
+              <time title="创建时间：2020-12-09 19:49:11" itemprop="dateCreated datePublished" datetime="2020-12-09T19:49:11+08:00">2020-12-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,8 +233,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/07/16/gdbserver/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/16/gdbserver/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/12/09/linux6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/09/linux6/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -244,21 +249,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+        <h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
 <a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
+<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
+<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
+<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
+<p>系统调用资源需要保存，调用之后再恢复。</p>
+<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
+<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
+<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -277,13 +280,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/14/reflection4self-3-md/" rel="prev" title="程序员自我修养读后感-3">
-      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-3
+    <a href="/2020/12/08/linux5/" rel="prev" title="《趣谈linux操作系统》小结(五)">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(五)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/17/reflection4self-4/" rel="next" title="程序员自我修养读后感-4">
-      程序员自我修养读后感-4 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -343,7 +343,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#编译"><span class="nav-number">1.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">2.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number"></span> <span class="nav-text">其他</span></a></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#《趣谈linux操作系统》小结-六"><span class="nav-number">1.</span> <span class="nav-text">《趣谈linux操作系统》小结(六)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内核的启动代码流程"><span class="nav-number">1.1.</span> <span class="nav-text">内核的启动代码流程</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
