@@ -20,20 +20,21 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。 本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。 RCTIm">
-<meta name="keywords" content="React-Native,iOS">
+  <meta name="description" content="ps命令使用小结ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS知识点(1) - NSCache">
-<meta property="og:url" content="http://fishmwei.github.io/2019/06/19/NSCache-iOS/index.html">
+<meta property="og:title" content="ps命令使用小结">
+<meta property="og:url" content="http://fishmwei.github.io/2020/12/15/ps/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。 本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。 RCTIm">
+<meta property="og:description" content="ps命令使用小结ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-14T03:07:44.185Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/ps_help.jpg">
+<meta property="og:updated_time" content="2020-12-16T02:14:30.518Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS知识点(1) - NSCache">
-<meta name="twitter:description" content="最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。 本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。 RCTIm">
+<meta name="twitter:title" content="ps命令使用小结">
+<meta name="twitter:description" content="ps命令使用小结ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202012/ps_help.jpg">
 
-<link rel="canonical" href="http://fishmwei.github.io/2019/06/19/NSCache-iOS/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/12/15/ps/">
 
 
 <script id="page-configurations">
@@ -46,7 +47,7 @@
   };
 </script>
 
-  <title>iOS知识点(1) - NSCache | IT攻城狮小明</title>
+  <title>ps命令使用小结 | IT攻城狮小明</title>
   
 
 
@@ -185,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2019/06/19/NSCache-iOS/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/15/ps/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -198,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          iOS知识点(1) - NSCache
+          ps命令使用小结
         </h1>
 
         <div class="post-meta">
@@ -208,7 +209,16 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-06-19 11:09:04" itemprop="dateCreated datePublished" datetime="2019-06-19T11:09:04+08:00">2019-06-19</time>
+              <time title="创建时间：2020-12-15 14:57:12" itemprop="dateCreated datePublished" datetime="2020-12-15T14:57:12+08:00">2020-12-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
             </span>
 
           
@@ -220,8 +230,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2019/06/19/NSCache-iOS/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2019/06/19/NSCache-iOS/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/12/15/ps/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/15/ps/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -236,20 +246,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
-<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
-<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+        <h1 id="ps命令使用小结"><a href="#ps命令使用小结" class="headerlink" title="ps命令使用小结"></a>ps命令使用小结</h1><p>ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps --help</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
-<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
-<p>NSCache主要有几个属性 及 方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
-<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
-<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/202012/ps_help.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>可以看到<code>ps</code>命令后面的选项大概分为5种， 简单选择项，指定选择项，输出格式项，指定长选项和混合选项。正常情况下，前面的4种选项，只能选择其中的一个选项参数，不同的种类间可以混合设置。基于兼容处理，如果有选项不能混合的话， 会显示一行warning，然后再继续显示。</p>
+<p>具体的还可以看一下 <code>man ps</code></p>
+<p><code>ps</code>显示当前进程的一个快照信息。可以通过选项设置显示的进程，如果希望持续更新显示进程信息可以使用<code>top</code>命令。</p>
+<p>不同版本的<code>ps</code>可以支持多种种类的选项。</p>
+<ul>
+<li>UNIX选项格式， 必须使用<code>-</code>连接，可以组合多个选项</li>
+<li>BSD选项格式，不能使用<code>-</code>连接，可以组合多个选项</li>
+<li>GNU类型长选项，需要连个<code>-</code>作为前导符号</li>
+</ul>
+<p>不同种类的选项可能一起出现，但是可以会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
+<p>默认的，ps会显示相同用户id下的所有进程(euid=EUID)和当前终端启动的进程，输出的进程一般是未作排序的。ps会显示PID、关联的终端名TTY、累积的CPU运行时间(实际的还是总的？)TIME、可执行文件名(CMD)。</p>
+<p>BSD格式的选项，还会显示进程的状态STAT, 使用进程名加参数的形式替换可执行文件名，当然这是可以设置的，可以设置环境变量PS_FORMAT(没试过，后面补充看看)。</p>
+<p>默认的许多进程是不被显示的，只有通过设置了选项，符合选项设置的进程信息才能显示出来。</p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">查看每个进程的信息，标准格式</span><br><span class="line">ps -e</span><br><span class="line">ps -ef</span><br><span class="line">ps -eF</span><br><span class="line">ps -ely</span><br><span class="line"></span><br><span class="line">查看每个进程的信息， BSD格式</span><br><span class="line">ps ax</span><br><span class="line">ps axu</span><br><span class="line"></span><br><span class="line">查看进程树</span><br><span class="line">ps -ejH</span><br><span class="line">ps axjf</span><br><span class="line"></span><br><span class="line">获取线程的信息</span><br><span class="line">ps -eLf</span><br><span class="line">ps axms</span><br><span class="line"></span><br><span class="line">显示安全信息? // TODO需要了解一下 内核中进程的结构</span><br><span class="line">ps -axZ</span><br><span class="line">ps -eM</span><br><span class="line"></span><br><span class="line">作为root用户运行的进程，用户格式</span><br><span class="line">ps -U root -u root u</span><br><span class="line"></span><br><span class="line">使用用户自定义的格式查看每个进程</span><br><span class="line">ps -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wcha:14,comm </span><br><span class="line">ps axo stat,euid,ruid,tty,comm</span><br><span class="line">ps -eopid,tt,user,fname,tmout,f,wchan</span><br><span class="line"></span><br><span class="line">只查看指定进程名的pid的信息</span><br><span class="line">ps -C init -o pid=</span><br><span class="line"></span><br><span class="line">只查看进程id为42的进程名</span><br><span class="line">ps -p 42 -o comm=</span><br></pre></td></tr></table></figure></p>
+<p>更多的功能，可以组合选项尝试输出一下。</p>
+<h2 id="CPU运行时间"><a href="#CPU运行时间" class="headerlink" title="CPU运行时间"></a>CPU运行时间</h2><p>运行时间分几种，一种是程序结束的时间减去程序开始的时间，即自然时间 Wall Clock Time. 还有一种是实际占用CPU的运行时间，因为CPU同时需要运行多个程序，不断的在程序间切换。可以使用time命令查看某个程序的运行时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Keep:~ keep$ time ps</span><br><span class="line">  PID TTY           TIME CMD</span><br><span class="line">  455 ttys000    0:00.01 /bin/bash -l</span><br><span class="line">  456 ttys001    0:00.01 /bin/bash -l</span><br><span class="line">  906 ttys002    0:00.03 -bash</span><br><span class="line"></span><br><span class="line">real	0m0.017s</span><br><span class="line">user	0m0.002s</span><br><span class="line">sys	0m0.011s</span><br></pre></td></tr></table></figure>
+<p>第一个是 real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间；第二个是 user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间；第三个是 sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间。而程序实际花费的 CPU 执行时间（CPU Time），就是 user time 加上 sys time, ps中显示的就是这个时间。</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
 
     </div>
 
@@ -258,10 +279,6 @@
     
 
       <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/react-native/" rel="tag"># React-Native</a>
-              <a href="/tags/ios/" rel="tag"># iOS</a>
-          </div>
 
         
 
@@ -269,13 +286,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/06/11/weak-attribute-C/" rel="prev" title="Bugly RN调用栈 - C的弱符号">
-      <i class="fa fa-chevron-left"></i> Bugly RN调用栈 - C的弱符号
+    <a href="/2020/12/10/linux7/" rel="prev" title="《趣谈linux操作系统》小结(七)">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(七)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/08/08/autorotateiOS/" rel="next" title="iOS知识点(2) - iOS横竖屏旋转">
-      iOS知识点(2) - iOS横竖屏旋转 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -335,6 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ps命令使用小结"><span class="nav-number">1.</span> <span class="nav-text">ps命令使用小结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU运行时间"><span class="nav-number">1.1.</span> <span class="nav-text">CPU运行时间</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

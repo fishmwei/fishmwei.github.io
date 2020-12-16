@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Deprecated js库</title>
-    <url>/2019/05/24/Deprecated-Js/</url>
-    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+    <title>React-Native Sample代码运行</title>
+    <url>/2019/06/04/RNTester-RN/</url>
+    <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
 <a id="more"></a>
-<hr>
-<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="安装js依赖"><a href="#安装js依赖" class="headerlink" title="安装js依赖"></a>安装js依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//根目录执行</span><br><span class="line">npm install </span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+<h2 id="解压第三方库"><a href="#解压第三方库" class="headerlink" title="解压第三方库"></a>解压第三方库</h2><p>React-Native依赖了 folly、glog等第三方库， 需要下载解压</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd scripts</span><br><span class="line">sh ios-install-third-party.sh</span><br></pre></td></tr></table></figure>
+<h2 id="安装iOS依赖"><a href="#安装iOS依赖" class="headerlink" title="安装iOS依赖"></a>安装iOS依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd RNTester</span><br><span class="line">pod update // 更新.lock中的依赖</span><br></pre></td></tr></table></figure>
+<p>以上步骤完成， XCode运行RNTester.workspace</p>
+<p><img src="/images/RNTester.gif" alt></p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>工具</tag>
-        <tag>JS</tag>
+        <tag>React-Native</tag>
       </tags>
   </entry>
   <entry>
@@ -79,51 +80,19 @@
       </tags>
   </entry>
   <entry>
-    <title>React-Native Sample代码运行</title>
-    <url>/2019/06/04/RNTester-RN/</url>
-    <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
+    <title>Deprecated js库</title>
+    <url>/2019/05/24/Deprecated-Js/</url>
+    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<h2 id="安装js依赖"><a href="#安装js依赖" class="headerlink" title="安装js依赖"></a>安装js依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">//根目录执行</span><br><span class="line">npm install </span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
-<h2 id="解压第三方库"><a href="#解压第三方库" class="headerlink" title="解压第三方库"></a>解压第三方库</h2><p>React-Native依赖了 folly、glog等第三方库， 需要下载解压</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd scripts</span><br><span class="line">sh ios-install-third-party.sh</span><br></pre></td></tr></table></figure>
-<h2 id="安装iOS依赖"><a href="#安装iOS依赖" class="headerlink" title="安装iOS依赖"></a>安装iOS依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd RNTester</span><br><span class="line">pod update // 更新.lock中的依赖</span><br></pre></td></tr></table></figure>
-<p>以上步骤完成， XCode运行RNTester.workspace</p>
-<p><img src="/images/RNTester.gif" alt></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>React-Native</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>fork库Git代码同步</title>
-    <url>/2019/06/04/synGitRepo/</url>
-    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
-<a id="more"></a>
-<ol>
-<li><p>clone当前库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置源库 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取远程仓库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到master库， 合并远程库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把本地库推送上去。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>同步完成。</p>
+<hr>
+<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
         <tag>工具</tag>
-        <tag>React-Native</tag>
-        <tag>Git</tag>
+        <tag>JS</tag>
       </tags>
   </entry>
   <entry>
@@ -152,26 +121,34 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS知识点(1) - NSCache</title>
-    <url>/2019/06/19/NSCache-iOS/</url>
-    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
-<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
-<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+    <title>fork库Git代码同步</title>
+    <url>/2019/06/04/synGitRepo/</url>
+    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
 <a id="more"></a>
-<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
-<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
-<p>NSCache主要有几个属性 及 方法</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
-<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
-<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>clone当前库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置源库 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取远程仓库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到master库， 合并远程库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把本地库推送上去。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>同步完成。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>iOS</tag>
         <tag>React-Native</tag>
+        <tag>工具</tag>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -198,6 +175,29 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(1) - NSCache</title>
+    <url>/2019/06/19/NSCache-iOS/</url>
+    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
+<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage/RCTImageCache.m中_decodedImageCache的使用。</p>
+<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+<a id="more"></a>
+<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
+<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
+<p>NSCache主要有几个属性 及 方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br></pre></td></tr></table></figure>
+<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
+<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&apos;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>React-Native</tag>
         <tag>iOS</tag>
       </tags>
   </entry>
@@ -428,61 +428,29 @@
       </tags>
   </entry>
   <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
 <a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
 ]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
       <tags>
-        <tag>开发经验</tag>
+        <tag>linux</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
   </entry>
   <entry>
     <title>todo</title>
@@ -536,28 +504,38 @@
       </categories>
   </entry>
   <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>换城市工作切换的感受</title>
+    <url>/2020/06/03/newjob-JOB/</url>
+    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
+<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
 <a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
+<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
+<p>好了， 先这样。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>linux</tag>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -598,18 +576,40 @@
       </tags>
   </entry>
   <entry>
-    <title>换城市工作切换的感受</title>
-    <url>/2020/06/03/newjob-JOB/</url>
-    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
-<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
 <a id="more"></a>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
 ]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
       <tags>
-        <tag>杂谈</tag>
+        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -627,21 +627,19 @@
       </categories>
   </entry>
   <entry>
-    <title>《C程序设计语言》读后感</title>
-    <url>/2020/06/22/reflection4c/</url>
-    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
-<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
-<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>技术</category>
+        <category>关于</category>
       </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
   </entry>
   <entry>
     <title>结构体偏移</title>
@@ -666,19 +664,21 @@
       </categories>
   </entry>
   <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
+    <title>《C程序设计语言》读后感</title>
+    <url>/2020/06/22/reflection4c/</url>
+    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
+<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
+<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>关于</category>
+        <category>技术</category>
       </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
   </entry>
   <entry>
     <title>程序员自我修养读后感-1</title>
@@ -719,6 +719,57 @@
 <p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
 <p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
 <p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+<a id="more"></a>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-4</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+<a id="more"></a>
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg" alt></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -831,57 +882,6 @@
       </categories>
   </entry>
   <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-4</title>
-    <url>/2020/07/17/reflection4self-4/</url>
-    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
-<a id="more"></a>
-<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
-<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
-<p><img src="/images/202007/vmaload.jpeg" alt></p>
-<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br></pre></td></tr></table></figure>
-<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
-<li>读取文件的前面128字节， 判断文件类型</li>
-<li>查找不同文件的handler函数</li>
-<li>根据程序表头，对文件进行映射</li>
-<li>初始化进程环境， 修改入口地址</li>
-<li>开始执行</li>
-</ol>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-5</title>
     <url>/2020/07/23/reflection4self-5/</url>
     <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
@@ -901,6 +901,33 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
 <h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
 <p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+<a id="more"></a>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1007,6 +1034,26 @@
       </categories>
   </entry>
   <entry>
+    <title>学以致用</title>
+    <url>/2020/08/28/skills/</url>
+    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+<a id="more"></a>
+<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
+<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>grep命令使用</title>
     <url>/2020/09/19/grep/</url>
     <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
@@ -1037,24 +1084,30 @@
       </categories>
   </entry>
   <entry>
-    <title>近期工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+    <title>awk命令使用</title>
+    <url>/2020/09/30/awk/</url>
+    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
 <a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
+<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
+<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
+<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
+<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
+<p>可能的语句形式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
+<p>语句指定由分号、换行符或者括号分隔。</p>
+<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
+<p>还支持运算符运算。</p>
+<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
+<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
+<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1064,17 +1117,28 @@
       </categories>
   </entry>
   <entry>
-    <title>学以致用</title>
-    <url>/2020/08/28/skills/</url>
-    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
 <a id="more"></a>
-<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
-<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1168,94 +1232,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
-<a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>awk命令使用</title>
-    <url>/2020/09/30/awk/</url>
-    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
-<a id="more"></a>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
-<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
-<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
-<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
-<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
-<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
-<p>可能的语句形式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
-<p>语句指定由分号、换行符或者括号分隔。</p>
-<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
-<p>还支持运算符运算。</p>
-<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
-<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
-<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
-<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
-<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(六)</title>
-    <url>/2020/12/09/linux6/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
-<a id="more"></a>
-<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
-<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
-<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
-<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
-<p>系统调用资源需要保存，调用之后再恢复。</p>
-<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
-<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
-<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(三)</title>
     <url>/2020/11/21/linux3/</url>
     <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-三"><a href="#《趣谈linux操作系统》小结-三" class="headerlink" title="《趣谈linux操作系统》小结(三)"></a>《趣谈linux操作系统》小结(三)</h1><h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>操作系统内核给软件提供接口的方式主要就是系统调用。系统调用提供了许多功能，这里只讲一些开发常用的。</p>
@@ -1333,6 +1309,86 @@
 </ul>
 <p>切换到保护模式后，访问的地址空间就大了。继续运行grub启动程序，选择启动的操作系统。装载启动的内核文件，启动内核。</p>
 <p><img src="/images/202012/linux_startup.jpeg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>ps命令使用小结</title>
+    <url>/2020/12/15/ps/</url>
+    <content><![CDATA[<h1 id="ps命令使用小结"><a href="#ps命令使用小结" class="headerlink" title="ps命令使用小结"></a>ps命令使用小结</h1><p>ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ps --help</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p><img src="/images/202012/ps_help.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>可以看到<code>ps</code>命令后面的选项大概分为5种， 简单选择项，指定选择项，输出格式项，指定长选项和混合选项。正常情况下，前面的4种选项，只能选择其中的一个选项参数，不同的种类间可以混合设置。基于兼容处理，如果有选项不能混合的话， 会显示一行warning，然后再继续显示。</p>
+<p>具体的还可以看一下 <code>man ps</code></p>
+<p><code>ps</code>显示当前进程的一个快照信息。可以通过选项设置显示的进程，如果希望持续更新显示进程信息可以使用<code>top</code>命令。</p>
+<p>不同版本的<code>ps</code>可以支持多种种类的选项。</p>
+<ul>
+<li>UNIX选项格式， 必须使用<code>-</code>连接，可以组合多个选项</li>
+<li>BSD选项格式，不能使用<code>-</code>连接，可以组合多个选项</li>
+<li>GNU类型长选项，需要连个<code>-</code>作为前导符号</li>
+</ul>
+<p>不同种类的选项可能一起出现，但是可以会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
+<p>默认的，ps会显示相同用户id下的所有进程(euid=EUID)和当前终端启动的进程，输出的进程一般是未作排序的。ps会显示PID、关联的终端名TTY、累积的CPU运行时间(实际的还是总的？)TIME、可执行文件名(CMD)。</p>
+<p>BSD格式的选项，还会显示进程的状态STAT, 使用进程名加参数的形式替换可执行文件名，当然这是可以设置的，可以设置环境变量PS_FORMAT(没试过，后面补充看看)。</p>
+<p>默认的许多进程是不被显示的，只有通过设置了选项，符合选项设置的进程信息才能显示出来。</p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看每个进程的信息，标准格式</span><br><span class="line">ps -e</span><br><span class="line">ps -ef</span><br><span class="line">ps -eF</span><br><span class="line">ps -ely</span><br><span class="line"></span><br><span class="line">查看每个进程的信息， BSD格式</span><br><span class="line">ps ax</span><br><span class="line">ps axu</span><br><span class="line"></span><br><span class="line">查看进程树</span><br><span class="line">ps -ejH</span><br><span class="line">ps axjf</span><br><span class="line"></span><br><span class="line">获取线程的信息</span><br><span class="line">ps -eLf</span><br><span class="line">ps axms</span><br><span class="line"></span><br><span class="line">显示安全信息? // TODO需要了解一下 内核中进程的结构</span><br><span class="line">ps -axZ</span><br><span class="line">ps -eM</span><br><span class="line"></span><br><span class="line">作为root用户运行的进程，用户格式</span><br><span class="line">ps -U root -u root u</span><br><span class="line"></span><br><span class="line">使用用户自定义的格式查看每个进程</span><br><span class="line">ps -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wcha:14,comm </span><br><span class="line">ps axo stat,euid,ruid,tty,comm</span><br><span class="line">ps -eopid,tt,user,fname,tmout,f,wchan</span><br><span class="line"></span><br><span class="line">只查看指定进程名的pid的信息</span><br><span class="line">ps -C init -o pid=</span><br><span class="line"></span><br><span class="line">只查看进程id为42的进程名</span><br><span class="line">ps -p 42 -o comm=</span><br></pre></td></tr></table></figure></p>
+<p>更多的功能，可以组合选项尝试输出一下。</p>
+<h2 id="CPU运行时间"><a href="#CPU运行时间" class="headerlink" title="CPU运行时间"></a>CPU运行时间</h2><p>运行时间分几种，一种是程序结束的时间减去程序开始的时间，即自然时间 Wall Clock Time. 还有一种是实际占用CPU的运行时间，因为CPU同时需要运行多个程序，不断的在程序间切换。可以使用time命令查看某个程序的运行时间。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:~ keep$ time ps</span><br><span class="line">  PID TTY           TIME CMD</span><br><span class="line">  455 ttys000    0:00.01 /bin/bash -l</span><br><span class="line">  456 ttys001    0:00.01 /bin/bash -l</span><br><span class="line">  906 ttys002    0:00.03 -bash</span><br><span class="line"></span><br><span class="line">real	0m0.017s</span><br><span class="line">user	0m0.002s</span><br><span class="line">sys	0m0.011s</span><br></pre></td></tr></table></figure>
+<p>第一个是 real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间；第二个是 user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间；第三个是 sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间。而程序实际花费的 CPU 执行时间（CPU Time），就是 user time 加上 sys time, ps中显示的就是这个时间。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(六)</title>
+    <url>/2020/12/09/linux6/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+<a id="more"></a>
+<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
+<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
+<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
+<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
+<p>系统调用资源需要保存，调用之后再恢复。</p>
+<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
+<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
+<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(七)</title>
+    <url>/2020/12/10/linux7/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-七"><a href="#《趣谈linux操作系统》小结-七" class="headerlink" title="《趣谈linux操作系统》小结(七)"></a>《趣谈linux操作系统》小结(七)</h1><h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
+<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
+<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
+<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
+<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
+<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
+<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
