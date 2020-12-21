@@ -28,7 +28,7 @@
 <meta property="og:description" content="ps命令使用小结ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/ps_help.jpg">
-<meta property="og:updated_time" content="2020-12-16T02:23:32.501Z">
+<meta property="og:updated_time" content="2020-12-17T06:12:22.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ps命令使用小结">
 <meta name="twitter:description" content="ps命令使用小结ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
@@ -257,9 +257,9 @@
 <ul>
 <li>UNIX选项格式， 必须使用<code>-</code>连接，可以组合多个选项</li>
 <li>BSD选项格式，不能使用<code>-</code>连接，可以组合多个选项</li>
-<li>GNU类型长选项，需要连个<code>-</code>作为前导符号</li>
+<li>GNU类型长选项，需要两个<code>-</code>作为前导符号</li>
 </ul>
-<p>不同种类的选项可能一起出现，但是可以会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
+<p>不同种类的选项可能一起出现，但是可能会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
 <p>默认的，ps会显示相同用户id下的所有进程(euid=EUID)和当前终端启动的进程，输出的进程一般是未作排序的。ps会显示PID、关联的终端名TTY、累积的CPU运行时间(实际的还是总的？)TIME、可执行文件名(CMD)。</p>
 <p>BSD格式的选项，还会显示进程的状态STAT, 使用进程名加参数的形式替换可执行文件名，当然这是可以设置的，可以设置环境变量PS_FORMAT(没试过，后面补充看看)。</p>
 <p>默认的许多进程是不被显示的，只有通过设置了选项，符合选项设置的进程信息才能显示出来。</p>
@@ -378,7 +378,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

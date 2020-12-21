@@ -182,6 +182,94 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/16/linux9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/16/linux9/" class="post-title-link" itemprop="url">《趣谈linux操作系统》小结(九)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-16 15:02:08" itemprop="dateCreated datePublished" datetime="2020-12-16T15:02:08+08:00">2020-12-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/12/16/linux9/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/16/linux9/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="《趣谈linux操作系统》小结-九"><a href="#《趣谈linux操作系统》小结-九" class="headerlink" title="《趣谈linux操作系统》小结(九)"></a>《趣谈linux操作系统》小结(九)</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/12/16/linux9/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/16/linux8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -243,7 +331,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。<br>
+          <h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/16/linux8/#more" rel="contents">
@@ -253,7 +341,7 @@
           <!--/noindex-->
         
       
-    </p></div>
+    </div>
 
     
     
@@ -4442,7 +4530,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

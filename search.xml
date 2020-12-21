@@ -17,6 +17,37 @@
       </tags>
   </entry>
   <entry>
+    <title>fork库Git代码同步</title>
+    <url>/2019/06/04/synGitRepo/</url>
+    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
+<a id="more"></a>
+<ol>
+<li><p>clone当前库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置源库 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取远程仓库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到master库， 合并远程库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把本地库推送上去。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>同步完成。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>Git</tag>
+        <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CocoaLumberJack源码学习</title>
     <url>/2019/05/29/lumberjack-iOS/</url>
     <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
@@ -61,24 +92,6 @@
       </tags>
   </entry>
   <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React-Native Sample代码运行</title>
     <url>/2019/06/04/RNTester-RN/</url>
     <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
@@ -93,37 +106,6 @@
 ]]></content>
       <tags>
         <tag>React-Native</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>fork库Git代码同步</title>
-    <url>/2019/06/04/synGitRepo/</url>
-    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
-<a id="more"></a>
-<ol>
-<li><p>clone当前库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置源库 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取远程仓库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到master库， 合并远程库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把本地库推送上去。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>同步完成。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>React-Native</tag>
-        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -170,8 +152,50 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>iOS</tag>
         <tag>React-Native</tag>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -195,30 +219,6 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@implementation UINavigationController (Rotation)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController shouldAutorotate];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController supportedInterfaceOrientations];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  if (self.viewControllers &amp;&amp; [self.viewControllers count] &gt; 0) &#123;</span><br><span class="line">    return [self.topViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return [super preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation UITabBarController (Rotation)</span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">  return [self.selectedViewController shouldAutorotate];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientationMask)supportedInterfaceOrientations &#123;</span><br><span class="line">  return [self.selectedViewController supportedInterfaceOrientations];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation &#123;</span><br><span class="line">  return [self.selectedViewController preferredInterfaceOrientationForPresentation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 大部分ViewController只支持竖屏， 不支持切换</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (rotate)</span><br><span class="line"></span><br><span class="line">- (BOOL)shouldAutorotate &#123;</span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
 <p>番外：最近家里添丁，事情比较多，挺久没有更新博客了， 以后坚持一周至少一篇。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
@@ -354,34 +354,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一次单例模式的代码重构</title>
-    <url>/2019/09/30/sharedInstance-JOB/</url>
-    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
-<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
-<a id="more"></a>
-<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
-<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
-<p>初始类图关系大致如下：</p>
-<p><img src="/images/20190930/OriginalClasses.png" alt></p>
-<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
-<p><img src="/images/20190930/newClasses.png" alt></p>
-<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
-<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
-<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
-<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
-<blockquote>
-<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
-</blockquote>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>开发经验</tag>
-        <tag>软件设计</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS接口的单元测试</title>
     <url>/2019/10/23/iosunit-IOS/</url>
     <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
@@ -453,6 +425,85 @@
       </tags>
   </entry>
   <entry>
+    <title>一次单例模式的代码重构</title>
+    <url>/2019/09/30/sharedInstance-JOB/</url>
+    <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
+<p>最近在做代码剥离重构， 有一个基础库A，作为面向业务开发者的接口库，随着业务的发展，很多内容都往里面塞。虽然，中间每次添加都或多或少考虑了解耦，抽象了很多协议接口，但架不住常年累月的堆积啊。</p>
+<a id="more"></a>
+<p>熟悉设计模式的人，对单例模式一定不陌生吧。一次创建、处处可用。也不用担心用错。</p>
+<p>这里讲到的是一个解析配置文件的单例， 作为配置文件的管理类， 内部会包含多个不同文件的管理对象，然后对外提供统一的接口。 但是这些管理对象呢，又存在相互依赖的关系。 然后呢， 有部分文件的管理对象就也设计成了单例， 又有一部分的文件的管理对象却是普通对象。设计成单例的文件管理对象，基本上是被其它管理对象或者其它类依赖了的。库中的其它类有的依赖管理对象，有的依赖了具体文件的管理对象。总之，就是有点乱。 </p>
+<p>初始类图关系大致如下：</p>
+<p><img src="/images/20190930/OriginalClasses.png" alt></p>
+<p>现在，有一个需求，进入每个页面后，页面的配置更改不能影响全局的配置。然后，我就很崩溃了，本来呢， 快照可以是管理对象的一个实例就行了， 每次进页面创建一个快照管理对象，配置更新全部在快照管理对象上处理就行了。可是，好多单例啊， 一旦修改，全局都生效了。 好吧， 花点时间把管理理一下， 然后有如下的新类图:</p>
+<p><img src="/images/20190930/newClasses.png" alt></p>
+<p>图中的<code>#</code>号表示这些属性对内部的类暴露, <code>OC</code>实现就是用扩展，然后内部类可以包含扩展的头文件。 对外业务暴露的接口不包含扩展的接口和属性。内部其它类只依赖管理对象， 然后把具体文件的管理对象的单例干掉。在管理对象中，生成每个文件的管理对象实例。 部分文件的管理对象依赖管理对象， 不再依赖具体的文件管理对象。 这里， 我还把管理对象中属性的初始化通过懒加载实现， 为了保证线程安全， 在初始化的地方加锁， 由于存在文件管理对象依赖文件管理对象的情况， 这个锁还需要可重入的，也就是递归锁。实现代码如下：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ConfigManager.m</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _getterLock = [[<span class="built_in">NSRecursiveLock</span> alloc] init]; <span class="comment">// 处理懒加载，初始化 多线程互斥</span></span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileAConfigManager *)aConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_aConfigManager) &#123;</span><br><span class="line">        [_getterLock lock]; <span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_aConfigManager) &#123; <span class="comment">// 二次判断</span></span><br><span class="line">            _aConfigManager = [[FileAConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _aConfigManager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (FileBConfigManager *)bConfigManager &#123;</span><br><span class="line">    <span class="keyword">if</span> (!_bConfigManager) &#123;</span><br><span class="line">        [_getterLock lock];<span class="comment">// 空值加锁</span></span><br><span class="line">        <span class="keyword">if</span> (!_bConfigManager) &#123;<span class="comment">// 二次判断</span></span><br><span class="line">            _bConfigManager = [[FileBConfigManager alloc] init];</span><br><span class="line">        &#125;</span><br><span class="line">        [_getterLock unlock];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> _bConfigManager;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// FileAConfigManager.m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)method &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * 旧代码</span></span><br><span class="line"><span class="comment">    * id&lt;FileConfigManagerInterface&gt; bManager = [FileBConfigManager shareInstance]]; </span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 新代码通过管理对象访问文件对象</span></span><br><span class="line">    <span class="keyword">id</span>&lt;FileConfigManagerInterface&gt; bManager = [[ConfigManager shareInstance] bConfigManager]; </span><br><span class="line"></span><br><span class="line">    ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好了， 进入页面，创建一个<code>PageConfigManager</code>， 初始化时都是一样的。 在进入页面后，更改的也只是操作当前<code>PageConfigManager</code>，不会影响到全局。 </p>
+<p>这里， 还好原先设计的逻辑比较清晰， 而且 只有内部的类使用到了具体的文件管理对象。 对外接口是统一的，改起来还可以接受吧。也许之前场景没有考虑到后续的配置独立的需求，为了方便，使用了单例模式。随着需求的演进， 需要不断的对代码进行重构，以适应新的需求。</p>
+<p>如果之前写代码的时候，不贪图这点方便，直接一步到位， 可能会是更好的设计。 后面，只需要直接用，或者继承一下就好了。</p>
+<p>切记，设计模式不可滥用，但是好的设计必须要用到设计模式。 重构需要捋清楚各个类的关系，对外接口清晰，类职责单一。 </p>
+<blockquote>
+<p>今天是2019.90.30， 明天就是国庆了， 中华人民共和国建国70周年， 祖国生日快乐!! </p>
+</blockquote>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>开发经验</tag>
+        <tag>软件设计</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>todo</title>
+    <url>/2020/02/13/todo/</url>
+    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
+<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
+<li style="list-style: none"><input type="checkbox"> socket</li>
+<li style="list-style: none"><input type="checkbox"> 线程创建</li>
+</ul>
+<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
+<li style="list-style: none"><input type="checkbox"> tcpdump</li>
+</ul>
+<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
+<li style="list-style: none"><input type="checkbox"> makefile使用</li>
+<li style="list-style: none"><input type="checkbox" checked> coredump</li>
+<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
+</ul>
+<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
+<li style="list-style: none"><input type="checkbox"> radius</li>
+<li style="list-style: none"><input type="checkbox"> lldp</li>
+<li style="list-style: none"><input type="checkbox"> mpls</li>
+<li style="list-style: none"><input type="checkbox"> sctp</li>
+<li style="list-style: none"><input type="checkbox"> ppp</li>
+<li style="list-style: none"><input type="checkbox"> pppoe</li>
+<li style="list-style: none"><input type="checkbox"> ip相关</li>
+<li style="list-style: none"><input type="checkbox"> ah协议</li>
+<li style="list-style: none"><input type="checkbox"> gre</li>
+<li style="list-style: none"><input type="checkbox"> gtp</li>
+<li style="list-style: none"><input type="checkbox"> hdlc</li>
+<li style="list-style: none"><input type="checkbox"> teredo</li>
+<li style="list-style: none"><input type="checkbox"> 报文分片</li>
+<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
+</ul>
+<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
+<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
+<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>2020书单</title>
     <url>/2020/01/01/2020books/</url>
     <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
@@ -510,57 +561,6 @@
       </tags>
   </entry>
   <entry>
-    <title>todo</title>
-    <url>/2020/02/13/todo/</url>
-    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
-<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
-<li style="list-style: none"><input type="checkbox"> socket</li>
-<li style="list-style: none"><input type="checkbox"> 线程创建</li>
-</ul>
-<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
-<li style="list-style: none"><input type="checkbox"> tcpdump</li>
-</ul>
-<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
-<li style="list-style: none"><input type="checkbox"> makefile使用</li>
-<li style="list-style: none"><input type="checkbox" checked> coredump</li>
-<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
-</ul>
-<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
-<li style="list-style: none"><input type="checkbox"> radius</li>
-<li style="list-style: none"><input type="checkbox"> lldp</li>
-<li style="list-style: none"><input type="checkbox"> mpls</li>
-<li style="list-style: none"><input type="checkbox"> sctp</li>
-<li style="list-style: none"><input type="checkbox"> ppp</li>
-<li style="list-style: none"><input type="checkbox"> pppoe</li>
-<li style="list-style: none"><input type="checkbox"> ip相关</li>
-<li style="list-style: none"><input type="checkbox"> ah协议</li>
-<li style="list-style: none"><input type="checkbox"> gre</li>
-<li style="list-style: none"><input type="checkbox"> gtp</li>
-<li style="list-style: none"><input type="checkbox"> hdlc</li>
-<li style="list-style: none"><input type="checkbox"> teredo</li>
-<li style="list-style: none"><input type="checkbox"> 报文分片</li>
-<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
-</ul>
-<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
-<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
-<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>换城市工作切换的感受</title>
     <url>/2020/06/03/newjob-JOB/</url>
     <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
@@ -574,20 +574,6 @@
       <tags>
         <tag>杂谈</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>项目性能优化</title>
@@ -625,6 +611,20 @@
       <tags>
         <tag>开发经验</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>《C程序设计语言》读后感</title>
@@ -678,6 +678,26 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -773,17 +793,51 @@
       </categories>
   </entry>
   <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
 <a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
+<p>好了， 后面就是gdb调试了</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
+<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
+<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-5</title>
+    <url>/2020/07/23/reflection4self-5/</url>
+    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
+<a id="more"></a>
+<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
+<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
+<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
+<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
+<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
+<p>动态链接器的信息由elf中的.interp段保存。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
+<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
+<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -831,32 +885,6 @@
       </categories>
   </entry>
   <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<a id="more"></a>
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-<p>调试系统<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure></p>
-<p>好了， 后面就是gdb调试了</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>驾照快到期了， 今天一大早去医院体检，先到解放军医院，结果门口贴着纸张提示近期有部队任务，不接收社会人士体检。转而到市第一医院排队体检， 去的时候还没有开门， 等了几分钟，开门后咨询了护士，告知驾照体检统一安排在下午2：30-5：00， 好了，那就下午来吧。上班时间还来得及， 赶忙去公司上班了。</p>
-<p>下午的时候，到了医院，缴费30元，等到2：30左右开始体检， 测试双眼视力，都要达到4.9。可以戴眼睛的， 啊哈哈，结果左眼视力太差了，看不清楚视力表，右眼正常。护士给了一个老花镜，套上，再测了一次，左眼就可以看清楚了，顺利通过视力测试。看来年纪轻轻就老花了，小时候没有保护好眼睛啊，哎！老大徒伤悲。通过测试后，有护士帮忙拍照，信息录入电脑。然后，就可以在12123app上面申请期满换证了。目前等待审核中。 </p>
-<p>从医院出来才15：00，然后又去公司上班了。到了公司，电梯不运行，愣是爬了楼梯，汗流浃背啊！貌似，那个时候有领导来办公楼视察，不让用电梯。看来我国的官僚主义还是很盛行啊，一个领导视察，电梯都不给用了，比习大大的谱还大,叽歪叽歪。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-4</title>
     <url>/2020/07/17/reflection4self-4/</url>
     <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
@@ -873,34 +901,6 @@
 <li>初始化进程环境， 修改入口地址</li>
 <li>开始执行</li>
 </ol>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-5</title>
-    <url>/2020/07/23/reflection4self-5/</url>
-    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
-<a id="more"></a>
-<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
-<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
-<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
-<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
-<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
-<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
-<p>动态链接器的信息由elf中的.interp段保存。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
-<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
-<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
-<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1034,26 +1034,6 @@
       </categories>
   </entry>
   <entry>
-    <title>学以致用</title>
-    <url>/2020/08/28/skills/</url>
-    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
-<a id="more"></a>
-<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
-<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>grep命令使用</title>
     <url>/2020/09/19/grep/</url>
     <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
@@ -1076,6 +1056,59 @@
 <h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
 <h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
 </code></pre><blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>学以致用</title>
+    <url>/2020/08/28/skills/</url>
+    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+<a id="more"></a>
+<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
+<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>awk命令使用</title>
+    <url>/2020/09/30/awk/</url>
+    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
+<a id="more"></a>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
+<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
+<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
+<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
+<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
+<p>可能的语句形式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
+<p>语句指定由分号、换行符或者括号分隔。</p>
+<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
+<p>还支持运算符运算。</p>
+<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
+<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
+<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1150,30 +1183,28 @@
       </categories>
   </entry>
   <entry>
-    <title>awk命令使用</title>
-    <url>/2020/09/30/awk/</url>
-    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
 <a id="more"></a>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
-<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
-<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
-<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
-<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
-<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
-<p>可能的语句形式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
-<p>语句指定由分号、换行符或者括号分隔。</p>
-<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
-<p>还支持运算符运算。</p>
-<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
-<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
-<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
-<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
-<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1234,61 +1265,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
-<a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(六)</title>
-    <url>/2020/12/09/linux6/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
-<a id="more"></a>
-<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
-<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
-<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
-<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
-<p>系统调用资源需要保存，调用之后再恢复。</p>
-<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
-<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
-<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(四)</title>
     <url>/2020/12/08/linux4/</url>
     <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-四"><a href="#《趣谈linux操作系统》小结-四" class="headerlink" title="《趣谈linux操作系统》小结(四)"></a>《趣谈linux操作系统》小结(四)</h1><h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
@@ -1315,20 +1291,21 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(七)</title>
-    <url>/2020/12/10/linux7/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-七"><a href="#《趣谈linux操作系统》小结-七" class="headerlink" title="《趣谈linux操作系统》小结(七)"></a>《趣谈linux操作系统》小结(七)</h1><h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
-<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
-<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
-<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
-<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
-<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
-<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
+    <title>《趣谈linux操作系统》小结(六)</title>
+    <url>/2020/12/09/linux6/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+<a id="more"></a>
+<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
+<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
+<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
+<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
+<p>系统调用资源需要保存，调用之后再恢复。</p>
+<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
+<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
+<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1365,9 +1342,79 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(七)</title>
+    <url>/2020/12/10/linux7/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-七"><a href="#《趣谈linux操作系统》小结-七" class="headerlink" title="《趣谈linux操作系统》小结(七)"></a>《趣谈linux操作系统》小结(七)</h1><h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
+<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
+<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
+<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
+<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
+<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
+<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(九)</title>
+    <url>/2020/12/16/linux9/</url>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-九"><a href="#《趣谈linux操作系统》小结-九" class="headerlink" title="《趣谈linux操作系统》小结(九)"></a>《趣谈linux操作系统》小结(九)</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+<a id="more"></a>
+<p><img src="/images/202012/linux_task.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>内核由一个链表用来存储<strong>task_struct</strong></p>
+<h2 id="task-struct内容"><a href="#task-struct内容" class="headerlink" title="task_struct内容"></a>task_struct内容</h2><h3 id="任务ID"><a href="#任务ID" class="headerlink" title="任务ID"></a>任务ID</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line"><span class="keyword">pid_t</span> tgid;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span></span><br></pre></td></tr></table></figure>
+<p>任何一个进程，如果只有主线程，那 pid 是自己，tgid 是自己，group_leader 指向的还是自己。但是，如果一个进程创建了其他线程，那就会有所变化了。线程有自己的 pid，tgid 就是进程的主线程的 pid，group_leader 指向的就是进程的主线程。</p>
+<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>结构体中包含了许多信号处理相关的字段</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Signal handlers: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">signal_struct</span>    *<span class="title">signal</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sighand_struct</span>    *<span class="title">sighand</span>;</span></span><br><span class="line"><span class="keyword">sigset_t</span>      blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      real_blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      saved_sigmask;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigpending</span>    <span class="title">pending</span>;</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      sas_ss_sp;</span><br><span class="line"><span class="keyword">size_t</span>        sas_ss_size;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      sas_ss_flags;</span><br></pre></td></tr></table></figure>
+<p>定义了哪些信号被阻塞暂不处理（blocked），哪些信号尚等待处理（pending），哪些信号正在通过信号处理函数进行处理（sighand）。处理的结果可以是忽略，可以是结束进程等等。</p>
+<p>信号处理函数默认使用用户态的函数栈，当然也可以开辟新的栈专门用于信号处理，这就是 sas_ss_xxx 这三个变量的作用。</p>
+<p>task_struct 里面有一个 struct sigpending pending。如果我们进入 struct signal_struct *signal 去看的话，还有一个 struct sigpending shared_pending。它们一个是本任务的，一个是线程组共享的。</p>
+<h3 id="任务状态"><a href="#任务状态" class="headerlink" title="任务状态"></a>任务状态</h3><p>状态相关的变量有3个</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">volatile</span> <span class="keyword">long</span> state;    <span class="comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span></span><br><span class="line"> <span class="keyword">int</span> exit_state;</span><br><span class="line"> <span class="keyword">unsigned</span> <span class="keyword">int</span> flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_RUNNING                    0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_INTERRUPTIBLE              1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_UNINTERRUPTIBLE            2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_STOPPED                  4</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_TRACED                   8</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_DEAD                       16</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_ZOMBIE                     32</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_TRACE                      (EXIT_ZOMBIE | EXIT_DEAD)</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_DEAD                       64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKEKILL                   128</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKING                     256</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_PARKED                     512</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NOLOAD                     1024</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NEW                        2048</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_STATE_MAX                  4096</span></span><br></pre></td></tr></table></figure>
+<p>任务的切换流程</p>
+<p><img src="/images/202012/linux_task_state.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//是否在运行队列上</span></span><br><span class="line"><span class="keyword">int</span>        on_rq;</span><br><span class="line"><span class="comment">//优先级</span></span><br><span class="line"><span class="keyword">int</span>        prio;</span><br><span class="line"><span class="keyword">int</span>        static_prio;</span><br><span class="line"><span class="keyword">int</span>        normal_prio;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      rt_priority;</span><br><span class="line"><span class="comment">//调度器类</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>  *<span class="title">sched_class</span>;</span></span><br><span class="line"><span class="comment">//调度实体</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>    <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>    <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>    <span class="title">dl</span>;</span></span><br><span class="line"><span class="comment">//调度策略</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      policy;</span><br><span class="line"><span class="comment">//可以使用哪些CPU</span></span><br><span class="line"><span class="keyword">int</span>        nr_cpus_allowed;</span><br><span class="line"><span class="keyword">cpumask_t</span>      cpus_allowed;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_info</span>    <span class="title">sched_info</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="结构体内容概览"><a href="#结构体内容概览" class="headerlink" title="结构体内容概览"></a>结构体内容概览</h3><p><img src="/images/202012/linux_task_content.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h3 id="运行统计信息"><a href="#运行统计信息" class="headerlink" title="运行统计信息"></a>运行统计信息</h3><p>在进程的运行过程中，会有一些统计量，具体你可以看下面的列表。这里面有进程在用户态和内核态消耗的时间、上下文切换的次数等等。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">u64        utime;<span class="comment">//用户态消耗的CPU时间</span></span><br><span class="line">u64        stime;<span class="comment">//内核态消耗的CPU时间</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nvcsw;<span class="comment">//自愿(voluntary)上下文切换计数</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nivcsw;<span class="comment">//非自愿(involuntary)上下文切换计数</span></span><br><span class="line">u64        start_time;<span class="comment">//进程启动时间，不包含睡眠时间</span></span><br><span class="line">u64        real_start_time;<span class="comment">//进程启动时间，包含睡眠时间</span></span><br></pre></td></tr></table></figure>
+<h3 id="进程亲缘关系"><a href="#进程亲缘关系" class="headerlink" title="进程亲缘关系"></a>进程亲缘关系</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">/* real parent process */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span> <span class="comment">/* recipient of SIGCHLD, wait4() reports */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span>      <span class="comment">/* list of my children */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>       <span class="comment">/* linkage in my parent's children list */</span></span><br></pre></td></tr></table></figure>
+<p>保存了父进程、子进程、兄弟进程的信息。</p>
+<p><img src="/images/202012/linux_task_parent.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>real_parent 和 parent 是一样的，但是也会有另外的情况存在。例如，bash 创建一个进程，那进程的 parent 和 real_parent 就都是 bash。如果在 bash 上使用 GDB 来 debug 一个进程，这个时候 GDB 是 parent，bash 是这个进程的 real_parent。 具体如何实现的， 还需要深入了解代码后才能清楚。</p>
+<h3 id="进程权限"><a href="#进程权限" class="headerlink" title="进程权限"></a>进程权限</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Objective and real subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">real_cred</span>;</span></span><br><span class="line"><span class="comment">/* Effective (overridable) subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">cred</span>;</span></span><br></pre></td></tr></table></figure>
+<p>real_cred 就是说明谁能操作我这个进程，而 cred 就是说明我这个进程能够操作谁。</p>
+<p>cred结构保存的基本上就是一些用户或者组的id， 权限控制时，通过比较这些id来确定是否拥有权限。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cred</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kuid_t</span>          uid;            <span class="comment">/* real UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          gid;            <span class="comment">/* real GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          suid;           <span class="comment">/* saved UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          sgid;           <span class="comment">/* saved GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          euid;           <span class="comment">/* effective UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          egid;           <span class="comment">/* effective GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          fsuid;          <span class="comment">/* UID for VFS ops */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          fsgid;          <span class="comment">/* GID for VFS ops */</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_inheritable; <span class="comment">/* caps our children can inherit */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_permitted;  <span class="comment">/* caps we're permitted */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_effective;  <span class="comment">/* caps we can actually use */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_bset;       <span class="comment">/* capability bounding set */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_ambient;    <span class="comment">/* Ambient capability set */</span></span><br><span class="line">......</span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+<p>第一个是 uid 和 gid，注释是 real user/group id。一般情况下，谁启动的进程，就是谁的 ID。但是权限审核的时候，往往不比较这两个，也就是说不大起作用。</p>
+<p>第二个是 euid 和 egid，注释是 effective user/group id。一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。</p>
+<p>第三个是 fsuid 和 fsgid，也就是 filesystem user/group id。这个是对文件操作会审核的权限。一般说来，fsuid、euid，和 uid 是一样的，fsgid、egid，和 gid 也是一样的。因为谁启动的进程，就应该审核启动的用户到底有没有这个权限。</p>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>每个进程都有自己独立的虚拟内存空间，这需要有一个数据结构来表示，就是 mm_struct。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">mm</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">active_mm</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="文件与文件系统"><a href="#文件与文件系统" class="headerlink" title="文件与文件系统"></a>文件与文件系统</h3><p>每个进程有一个文件系统的数据结构，还有一个打开文件的数据结构。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Filesystem information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fs_struct</span>                *<span class="title">fs</span>;</span></span><br><span class="line"><span class="comment">/* Open file information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>             *<span class="title">files</span>;</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/202012/linux_task_content2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(八)</title>
     <url>/2020/12/16/linux8/</url>
-    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。<br><a id="more"></a></p>
+    <content><![CDATA[<h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
+<a id="more"></a>
 <p>线程的创建：</p>
 <p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
@@ -1397,9 +1444,9 @@
 <ul>
 <li>UNIX选项格式， 必须使用<code>-</code>连接，可以组合多个选项</li>
 <li>BSD选项格式，不能使用<code>-</code>连接，可以组合多个选项</li>
-<li>GNU类型长选项，需要连个<code>-</code>作为前导符号</li>
+<li>GNU类型长选项，需要两个<code>-</code>作为前导符号</li>
 </ul>
-<p>不同种类的选项可能一起出现，但是可以会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
+<p>不同种类的选项可能一起出现，但是可能会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
 <p>默认的，ps会显示相同用户id下的所有进程(euid=EUID)和当前终端启动的进程，输出的进程一般是未作排序的。ps会显示PID、关联的终端名TTY、累积的CPU运行时间(实际的还是总的？)TIME、可执行文件名(CMD)。</p>
 <p>BSD格式的选项，还会显示进程的状态STAT, 使用进程名加参数的形式替换可执行文件名，当然这是可以设置的，可以设置环境变量PS_FORMAT(没试过，后面补充看看)。</p>
 <p>默认的许多进程是不被显示的，只有通过设置了选项，符合选项设置的进程信息才能显示出来。</p>

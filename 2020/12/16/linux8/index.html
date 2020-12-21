@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_thread.jpg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_thread_data.jpg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_thread_mutex.jpg">
-<meta property="og:updated_time" content="2020-12-16T06:52:53.424Z">
+<meta property="og:updated_time" content="2020-12-17T06:13:03.451Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(八)">
 <meta name="twitter:description" content="《趣谈linux操作系统》小结(八)进程与线程进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。">
@@ -248,7 +248,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。<br><a id="more"></a></p>
+        <h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
+<a id="more"></a>
 <p>线程的创建：</p>
 <p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
@@ -277,7 +278,10 @@
     <a href="/2020/12/15/ps/" rel="prev" title="ps命令使用小结">
       <i class="fa fa-chevron-left"></i> ps命令使用小结
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/16/linux9/" rel="next" title="《趣谈linux操作系统》小结(九)">
+      《趣谈linux操作系统》小结(九) <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -352,7 +356,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-count">50</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
