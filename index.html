@@ -182,6 +182,94 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/23/linux-schedule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/23/linux-schedule/" class="post-title-link" itemprop="url">《趣谈linux操作系统》小结(十一) - 进程调度</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-23 16:45:48" itemprop="dateCreated datePublished" datetime="2020-12-23T16:45:48+08:00">2020-12-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/12/23/linux-schedule/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/23/linux-schedule/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>进程分为实时进程和普通进程。 实时进程需要立刻执行返回结果，普通进程没有这个需求。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/12/23/linux-schedule/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/22/experience/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -243,7 +331,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="关于工作经验"><a href="#关于工作经验" class="headerlink" title="关于工作经验"></a>关于工作经验</h1><p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
+          <p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/22/experience/#more" rel="contents">
@@ -331,7 +419,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-十"><a href="#《趣谈linux操作系统》小结-十" class="headerlink" title="《趣谈linux操作系统》小结(十)"></a>《趣谈linux操作系统》小结(十)</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
+          <h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/21/linux10/#more" rel="contents">
@@ -419,7 +507,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-九"><a href="#《趣谈linux操作系统》小结-九" class="headerlink" title="《趣谈linux操作系统》小结(九)"></a>《趣谈linux操作系统》小结(九)</h1><h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+          <h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/16/linux9/#more" rel="contents">
@@ -507,7 +595,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-八"><a href="#《趣谈linux操作系统》小结-八" class="headerlink" title="《趣谈linux操作系统》小结(八)"></a>《趣谈linux操作系统》小结(八)</h1><h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
+          <h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/16/linux8/#more" rel="contents">
@@ -595,7 +683,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="ps命令使用小结"><a href="#ps命令使用小结" class="headerlink" title="ps命令使用小结"></a>ps命令使用小结</h1><p>ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。</p>
+          <p>ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps --help</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
@@ -684,7 +772,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-七"><a href="#《趣谈linux操作系统》小结-七" class="headerlink" title="《趣谈linux操作系统》小结(七)"></a>《趣谈linux操作系统》小结(七)</h1><h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br>
+          <h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/10/linux7/#more" rel="contents">
@@ -772,7 +860,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+          <h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/09/linux6/#more" rel="contents">
@@ -860,7 +948,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-五"><a href="#《趣谈linux操作系统》小结-五" class="headerlink" title="《趣谈linux操作系统》小结(五)"></a>《趣谈linux操作系统》小结(五)</h1><h2 id="BIOS到bootloader"><a href="#BIOS到bootloader" class="headerlink" title="BIOS到bootloader"></a>BIOS到bootloader</h2><h3 id="BIOS"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS</h3><p>在主板的ROM上保存有BIOS程序，计算机启动首先读取BIOS（Basic Input and Output System，基本输入输出系统）程序进行运行。此时，计算机运行在实模式下，只能访问1MB的空间。这个1MB的空间也有一个标准的约定。</p>
+          <h2 id="BIOS到bootloader"><a href="#BIOS到bootloader" class="headerlink" title="BIOS到bootloader"></a>BIOS到bootloader</h2><h3 id="BIOS"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS</h3><p>在主板的ROM上保存有BIOS程序，计算机启动首先读取BIOS（Basic Input and Output System，基本输入输出系统）程序进行运行。此时，计算机运行在实模式下，只能访问1MB的空间。这个1MB的空间也有一个标准的约定。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/08/linux5/#more" rel="contents">
@@ -948,7 +1036,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-四"><a href="#《趣谈linux操作系统》小结-四" class="headerlink" title="《趣谈linux操作系统》小结(四)"></a>《趣谈linux操作系统》小结(四)</h1><h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
+          <h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/08/linux4/#more" rel="contents">
@@ -1036,7 +1124,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-三"><a href="#《趣谈linux操作系统》小结-三" class="headerlink" title="《趣谈linux操作系统》小结(三)"></a>《趣谈linux操作系统》小结(三)</h1><h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>操作系统内核给软件提供接口的方式主要就是系统调用。系统调用提供了许多功能，这里只讲一些开发常用的。</p>
+          <h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>操作系统内核给软件提供接口的方式主要就是系统调用。系统调用提供了许多功能，这里只讲一些开发常用的。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/11/21/linux3/#more" rel="contents">
@@ -1124,7 +1212,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-二"><a href="#《趣谈linux操作系统》小结-二" class="headerlink" title="《趣谈linux操作系统》小结(二)"></a>《趣谈linux操作系统》小结(二)</h1><h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
+          <h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/11/18/linux2/#more" rel="contents">
@@ -1212,7 +1300,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="《趣谈linux操作系统》小结-一"><a href="#《趣谈linux操作系统》小结-一" class="headerlink" title="《趣谈linux操作系统》小结(一)"></a>《趣谈linux操作系统》小结(一)</h1><p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+          <p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/10/20/linux1/#more" rel="contents">
@@ -4706,7 +4794,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

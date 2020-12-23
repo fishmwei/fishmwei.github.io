@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
+  <meta name="description" content="内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《趣谈linux操作系统》小结(六)">
 <meta property="og:url" content="http://fishmwei.github.io/2020/12/09/linux6/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
+<meta property="og:description" content="内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_kernel.png">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_layer.jpg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_save.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_init.jpeg">
-<meta property="og:updated_time" content="2020-12-10T11:47:06.342Z">
+<meta property="og:updated_time" content="2020-12-23T11:41:19.334Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(六)">
-<meta name="twitter:description" content="《趣谈linux操作系统》小结(六)内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
+<meta name="twitter:description" content="内核的启动代码流程内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。">
 <meta name="twitter:image" content="http://fishmwei.github.io/images/202012/linux_kernel.png">
 
 <link rel="canonical" href="http://fishmwei.github.io/2020/12/09/linux6/">
@@ -249,7 +249,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="《趣谈linux操作系统》小结-六"><a href="#《趣谈linux操作系统》小结-六" class="headerlink" title="《趣谈linux操作系统》小结(六)"></a>《趣谈linux操作系统》小结(六)</h1><h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+        <h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
 <a id="more"></a>
 <p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
 <p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
@@ -346,7 +346,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#《趣谈linux操作系统》小结-六"><span class="nav-number">1.</span> <span class="nav-text">《趣谈linux操作系统》小结(六)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#内核的启动代码流程"><span class="nav-number">1.1.</span> <span class="nav-text">内核的启动代码流程</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内核的启动代码流程"><span class="nav-number">1.</span> <span class="nav-text">内核的启动代码流程</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -361,7 +361,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
