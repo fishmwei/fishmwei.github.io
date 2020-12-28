@@ -35,50 +35,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CocoaLumberJack源码学习</title>
-    <url>/2019/05/29/lumberjack-iOS/</url>
-    <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
-<p>可以通过设置Logger，分别把日志写入文件、终端、系统日志中。</p>
-<p>DDLogLevel   7个等级</p>
-<p>库不大，代码结构比较清晰。</p>
-<a id="more"></a>
-<hr>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>我用的cocopods、oc。</p>
-<p>修改podfile</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// podfile </span><br><span class="line"></span><br><span class="line">pod &apos;CocoaLumberjack&apos;</span><br></pre></td></tr></table></figure>
-<p>代码<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt; // 引用头文件</span><br><span class="line"></span><br><span class="line">static DDLogLevel ddLogLevel = DDLogLevelAll; // 定义全局变量</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    DDLogInfo(@&quot;message&quot;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<h2 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读"></a>代码解读</h2><p>主要代码类可以参考GitHub给出的图。</p>
-<p><img src="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png" alt="CocoaLumberjackClassDiagram.png"></p>
-<h3 id="DDLog"><a href="#DDLog" class="headerlink" title="DDLog"></a>DDLog</h3><p>这个是对外的接口， 所有API都是直接调用这个接口的类方法进行写日志的。</p>
-<p>有一个单例和一个队列。 所有写日志操作，最终都是在同一个队列进行操作的。 </p>
-<p>日志可以写到不同的输出终端， 通过DDLogger协议来控制， DDLog可以添加多个DDLogger协议的对象(具体的都是抽象类DDAbstractLogger的子类)。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// _loggingQueue</span><br><span class="line"></span><br><span class="line">// _loggingGroup</span><br><span class="line"></span><br><span class="line">// _queueSemaphore</span><br><span class="line"></span><br><span class="line">// _numProcessors</span><br><span class="line"></span><br><span class="line">_loggingGroup 用于并发输出</span><br><span class="line"></span><br><span class="line">UIApplicationWillTerminateNotification 执行 flushLog</span><br><span class="line">applicationWillTerminate</span><br></pre></td></tr></table></figure>
-<h3 id="DDLogMessage"><a href="#DDLogMessage" class="headerlink" title="DDLogMessage"></a>DDLogMessage</h3><p>日志信息<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    NSString *_message;  // 内容</span><br><span class="line">    DDLogLevel _level;      // 等级</span><br><span class="line">    DDLogFlag _flag;      // 用于过滤等级的信息， 只有   _level &amp; _flag == 1 才会输出</span><br><span class="line">    NSInteger _context;     // 可以用来过滤， 参考 DDContextWhitelistFilterLogFormatter</span><br><span class="line">    NSString *_file;        // 输出文件路径</span><br><span class="line">    NSString *_fileName;    // 输出文件名</span><br><span class="line">    NSString *_function;    //  ?? </span><br><span class="line">    NSUInteger _line;       </span><br><span class="line">    id _tag;        // ?? </span><br><span class="line">    DDLogMessageOptions _options;</span><br><span class="line">    NSDate *_timestamp;</span><br><span class="line">    NSString *_threadID;</span><br><span class="line">    NSString *_threadName;</span><br><span class="line">    NSString *_queueLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>_loggerQueue</p>
-<h2 id="DDAbstractLogger"><a href="#DDAbstractLogger" class="headerlink" title="DDAbstractLogger"></a>DDAbstractLogger</h2><p>抽象的logger， </p>
-<p>可以设置logFormatter、loggerQueue</p>
-<p>logFormatter可以对输出的日志再格式化。</p>
-<h2 id="DDLoggerNode-用于记录logger的信息"><a href="#DDLoggerNode-用于记录logger的信息" class="headerlink" title="DDLoggerNode 用于记录logger的信息"></a>DDLoggerNode 用于记录logger的信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface DDLoggerNode : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">    dispatch_queue_t _loggerQueue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, readonly) id &lt;DDLogger&gt; logger;</span><br><span class="line">@property (nonatomic, readonly) DDLogLevel level;</span><br><span class="line">@property (nonatomic, readonly) dispatch_queue_t loggerQueue;</span><br></pre></td></tr></table></figure>
-<p>不同的logger输出， 又在各自的queue中操作。</p>
-<h2 id="DDLogger-protocol"><a href="#DDLogger-protocol" class="headerlink" title="DDLogger protocol"></a>DDLogger protocol</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)logMessage:(DDLogMessage *)logMessage NS_SWIFT_NAME(log(message:));</span><br><span class="line"> </span><br><span class="line">@property (nonatomic, strong) id &lt;DDLogFormatter&gt; logFormatter;</span><br></pre></td></tr></table></figure>
-<h2 id="DDTTYLogger"><a href="#DDTTYLogger" class="headerlink" title="DDTTYLogger"></a>DDTTYLogger</h2><p>写到tty的logger</p>
-<h2 id="DDOSLogger"><a href="#DDOSLogger" class="headerlink" title="DDOSLogger"></a>DDOSLogger</h2><p>usr/include/os/log.h</p>
-<p>os_log_create<br>os_log_error<br>os_log_info</p>
-<h2 id="DDASLLogger"><a href="#DDASLLogger" class="headerlink" title="DDASLLogger"></a>DDASLLogger</h2><p>asl.h // 废弃了， 使用 usr/include/os/log.h</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_client = asl_open(NULL, &quot;com.apple.console&quot;, 0);</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        const char *msg = [message UTF8String];</span><br><span class="line"></span><br><span class="line">        size_t aslLogLevel;</span><br><span class="line">        switch (logMessage-&gt;_flag) &#123;</span><br><span class="line">            // Note: By default ASL will filter anything above level 5 (Notice).</span><br><span class="line">            // So our mappings shouldn&apos;t go above that level.</span><br><span class="line">            case DDLogFlagError     : aslLogLevel = ASL_LEVEL_CRIT;     break;</span><br><span class="line">            case DDLogFlagWarning   : aslLogLevel = ASL_LEVEL_ERR;      break;</span><br><span class="line">            case DDLogFlagInfo      : aslLogLevel = ASL_LEVEL_WARNING;  break; // Regular NSLog&apos;s level</span><br><span class="line">            case DDLogFlagDebug     :</span><br><span class="line">            case DDLogFlagVerbose   :</span><br><span class="line">            default                 : aslLogLevel = ASL_LEVEL_NOTICE;   break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        static char const *const level_strings[] = &#123; &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot; &#125;;</span><br><span class="line"></span><br><span class="line">        // NSLog uses the current euid to set the ASL_KEY_READ_UID.</span><br><span class="line">        uid_t const readUID = geteuid();</span><br><span class="line"></span><br><span class="line">        char readUIDString[16];</span><br><span class="line">#ifndef NS_BLOCK_ASSERTIONS</span><br><span class="line">        size_t l = (size_t)snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#else</span><br><span class="line">        snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">        NSAssert(l &lt; sizeof(readUIDString),</span><br><span class="line">                 @&quot;Formatted euid is too long.&quot;);</span><br><span class="line">        NSAssert(aslLogLevel &lt; (sizeof(level_strings) / sizeof(level_strings[0])),</span><br><span class="line">                 @&quot;Unhandled ASL log level.&quot;);</span><br><span class="line"></span><br><span class="line">        aslmsg m = asl_new(ASL_TYPE_MSG);</span><br><span class="line">        if (m != NULL) &#123;</span><br><span class="line">            if (asl_set(m, ASL_KEY_LEVEL, level_strings[aslLogLevel]) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_MSG, msg) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_READ_UID, readUIDString) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, kDDASLKeyDDLog, kDDASLDDLogValue) == 0) &#123;</span><br><span class="line">                asl_send(_client, m);</span><br><span class="line">            &#125;</span><br><span class="line">            asl_free(m);</span><br><span class="line">        &#125;</span><br><span class="line">        //TODO handle asl_* failures non-silently?</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>OS_OBJECT_USE_OBJC 用于判断系统是否是6.0以前的？ 6.0之后才定义了这个宏。</p>
-</blockquote>
-<p>dispatch_group_async</p>
-<h2 id="DDLoggerInformation"><a href="#DDLoggerInformation" class="headerlink" title="DDLoggerInformation"></a>DDLoggerInformation</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="DDExtractFileNameWithoutExtension-提取文件名"><a href="#DDExtractFileNameWithoutExtension-提取文件名" class="headerlink" title="DDExtractFileNameWithoutExtension 提取文件名"></a>DDExtractFileNameWithoutExtension 提取文件名</h2><p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>React-Native Sample代码运行</title>
     <url>/2019/06/04/RNTester-RN/</url>
     <content><![CDATA[<p>React-Native官方<a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub库</a>，提供了各个API及控件的示例代码， 在根目录下的RNTester目录中。要运行示例代码只需要如下步骤：</p>
@@ -170,8 +126,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>iOS</tag>
         <tag>React-Native</tag>
+        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -202,6 +158,50 @@
       </tags>
   </entry>
   <entry>
+    <title>CocoaLumberJack源码学习</title>
+    <url>/2019/05/29/lumberjack-iOS/</url>
+    <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
+<p>可以通过设置Logger，分别把日志写入文件、终端、系统日志中。</p>
+<p>DDLogLevel   7个等级</p>
+<p>库不大，代码结构比较清晰。</p>
+<a id="more"></a>
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>我用的cocopods、oc。</p>
+<p>修改podfile</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// podfile </span><br><span class="line"></span><br><span class="line">pod &apos;CocoaLumberjack&apos;</span><br></pre></td></tr></table></figure>
+<p>代码<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#import &lt;CocoaLumberjack/CocoaLumberjack.h&gt; // 引用头文件</span><br><span class="line"></span><br><span class="line">static DDLogLevel ddLogLevel = DDLogLevelAll; // 定义全局变量</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    DDLogInfo(@&quot;message&quot;);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<h2 id="代码解读"><a href="#代码解读" class="headerlink" title="代码解读"></a>代码解读</h2><p>主要代码类可以参考GitHub给出的图。</p>
+<p><img src="https://raw.githubusercontent.com/CocoaLumberjack/CocoaLumberjack/master/Documentation/CocoaLumberjackClassDiagram.png" alt="CocoaLumberjackClassDiagram.png"></p>
+<h3 id="DDLog"><a href="#DDLog" class="headerlink" title="DDLog"></a>DDLog</h3><p>这个是对外的接口， 所有API都是直接调用这个接口的类方法进行写日志的。</p>
+<p>有一个单例和一个队列。 所有写日志操作，最终都是在同一个队列进行操作的。 </p>
+<p>日志可以写到不同的输出终端， 通过DDLogger协议来控制， DDLog可以添加多个DDLogger协议的对象(具体的都是抽象类DDAbstractLogger的子类)。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// _loggingQueue</span><br><span class="line"></span><br><span class="line">// _loggingGroup</span><br><span class="line"></span><br><span class="line">// _queueSemaphore</span><br><span class="line"></span><br><span class="line">// _numProcessors</span><br><span class="line"></span><br><span class="line">_loggingGroup 用于并发输出</span><br><span class="line"></span><br><span class="line">UIApplicationWillTerminateNotification 执行 flushLog</span><br><span class="line">applicationWillTerminate</span><br></pre></td></tr></table></figure>
+<h3 id="DDLogMessage"><a href="#DDLogMessage" class="headerlink" title="DDLogMessage"></a>DDLogMessage</h3><p>日志信息<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    NSString *_message;  // 内容</span><br><span class="line">    DDLogLevel _level;      // 等级</span><br><span class="line">    DDLogFlag _flag;      // 用于过滤等级的信息， 只有   _level &amp; _flag == 1 才会输出</span><br><span class="line">    NSInteger _context;     // 可以用来过滤， 参考 DDContextWhitelistFilterLogFormatter</span><br><span class="line">    NSString *_file;        // 输出文件路径</span><br><span class="line">    NSString *_fileName;    // 输出文件名</span><br><span class="line">    NSString *_function;    //  ?? </span><br><span class="line">    NSUInteger _line;       </span><br><span class="line">    id _tag;        // ?? </span><br><span class="line">    DDLogMessageOptions _options;</span><br><span class="line">    NSDate *_timestamp;</span><br><span class="line">    NSString *_threadID;</span><br><span class="line">    NSString *_threadName;</span><br><span class="line">    NSString *_queueLabel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>_loggerQueue</p>
+<h2 id="DDAbstractLogger"><a href="#DDAbstractLogger" class="headerlink" title="DDAbstractLogger"></a>DDAbstractLogger</h2><p>抽象的logger， </p>
+<p>可以设置logFormatter、loggerQueue</p>
+<p>logFormatter可以对输出的日志再格式化。</p>
+<h2 id="DDLoggerNode-用于记录logger的信息"><a href="#DDLoggerNode-用于记录logger的信息" class="headerlink" title="DDLoggerNode 用于记录logger的信息"></a>DDLoggerNode 用于记录logger的信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface DDLoggerNode : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">    dispatch_queue_t _loggerQueue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, readonly) id &lt;DDLogger&gt; logger;</span><br><span class="line">@property (nonatomic, readonly) DDLogLevel level;</span><br><span class="line">@property (nonatomic, readonly) dispatch_queue_t loggerQueue;</span><br></pre></td></tr></table></figure>
+<p>不同的logger输出， 又在各自的queue中操作。</p>
+<h2 id="DDLogger-protocol"><a href="#DDLogger-protocol" class="headerlink" title="DDLogger protocol"></a>DDLogger protocol</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- (void)logMessage:(DDLogMessage *)logMessage NS_SWIFT_NAME(log(message:));</span><br><span class="line"> </span><br><span class="line">@property (nonatomic, strong) id &lt;DDLogFormatter&gt; logFormatter;</span><br></pre></td></tr></table></figure>
+<h2 id="DDTTYLogger"><a href="#DDTTYLogger" class="headerlink" title="DDTTYLogger"></a>DDTTYLogger</h2><p>写到tty的logger</p>
+<h2 id="DDOSLogger"><a href="#DDOSLogger" class="headerlink" title="DDOSLogger"></a>DDOSLogger</h2><p>usr/include/os/log.h</p>
+<p>os_log_create<br>os_log_error<br>os_log_info</p>
+<h2 id="DDASLLogger"><a href="#DDASLLogger" class="headerlink" title="DDASLLogger"></a>DDASLLogger</h2><p>asl.h // 废弃了， 使用 usr/include/os/log.h</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">_client = asl_open(NULL, &quot;com.apple.console&quot;, 0);</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">        const char *msg = [message UTF8String];</span><br><span class="line"></span><br><span class="line">        size_t aslLogLevel;</span><br><span class="line">        switch (logMessage-&gt;_flag) &#123;</span><br><span class="line">            // Note: By default ASL will filter anything above level 5 (Notice).</span><br><span class="line">            // So our mappings shouldn&apos;t go above that level.</span><br><span class="line">            case DDLogFlagError     : aslLogLevel = ASL_LEVEL_CRIT;     break;</span><br><span class="line">            case DDLogFlagWarning   : aslLogLevel = ASL_LEVEL_ERR;      break;</span><br><span class="line">            case DDLogFlagInfo      : aslLogLevel = ASL_LEVEL_WARNING;  break; // Regular NSLog&apos;s level</span><br><span class="line">            case DDLogFlagDebug     :</span><br><span class="line">            case DDLogFlagVerbose   :</span><br><span class="line">            default                 : aslLogLevel = ASL_LEVEL_NOTICE;   break;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        static char const *const level_strings[] = &#123; &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot; &#125;;</span><br><span class="line"></span><br><span class="line">        // NSLog uses the current euid to set the ASL_KEY_READ_UID.</span><br><span class="line">        uid_t const readUID = geteuid();</span><br><span class="line"></span><br><span class="line">        char readUIDString[16];</span><br><span class="line">#ifndef NS_BLOCK_ASSERTIONS</span><br><span class="line">        size_t l = (size_t)snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#else</span><br><span class="line">        snprintf(readUIDString, sizeof(readUIDString), &quot;%d&quot;, readUID);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">        NSAssert(l &lt; sizeof(readUIDString),</span><br><span class="line">                 @&quot;Formatted euid is too long.&quot;);</span><br><span class="line">        NSAssert(aslLogLevel &lt; (sizeof(level_strings) / sizeof(level_strings[0])),</span><br><span class="line">                 @&quot;Unhandled ASL log level.&quot;);</span><br><span class="line"></span><br><span class="line">        aslmsg m = asl_new(ASL_TYPE_MSG);</span><br><span class="line">        if (m != NULL) &#123;</span><br><span class="line">            if (asl_set(m, ASL_KEY_LEVEL, level_strings[aslLogLevel]) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_MSG, msg) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, ASL_KEY_READ_UID, readUIDString) == 0 &amp;&amp;</span><br><span class="line">                asl_set(m, kDDASLKeyDDLog, kDDASLDDLogValue) == 0) &#123;</span><br><span class="line">                asl_send(_client, m);</span><br><span class="line">            &#125;</span><br><span class="line">            asl_free(m);</span><br><span class="line">        &#125;</span><br><span class="line">        //TODO handle asl_* failures non-silently?</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>OS_OBJECT_USE_OBJC 用于判断系统是否是6.0以前的？ 6.0之后才定义了这个宏。</p>
+</blockquote>
+<p>dispatch_group_async</p>
+<h2 id="DDLoggerInformation"><a href="#DDLoggerInformation" class="headerlink" title="DDLoggerInformation"></a>DDLoggerInformation</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    // Direct accessors to be used only for performance</span><br><span class="line">    @public</span><br><span class="line">    id &lt;DDLogger&gt; _logger;</span><br><span class="line">    DDLogLevel _level;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="DDExtractFileNameWithoutExtension-提取文件名"><a href="#DDExtractFileNameWithoutExtension-提取文件名" class="headerlink" title="DDExtractFileNameWithoutExtension 提取文件名"></a>DDExtractFileNameWithoutExtension 提取文件名</h2><p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
     <url>/2019/08/18/OCCopy-iOS/</url>
     <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
@@ -223,6 +223,58 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>YTKKeyValueStore开源库使用</title>
+    <url>/2019/08/30/kvStore-iOS/</url>
+    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
+<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
+<a id="more"></a>
+<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
+<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
+<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
+<p>实现逻辑比较简单， 支持如下功能</p>
+<ul>
+<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
+<li>创建指定名称的表操作</li>
+<li>清空表操作</li>
+<li>关闭数据库</li>
+<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
+<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>插入对象， 存储对象的json字符串</li>
+<li>获取对象， 获取都json字符串，转为对象</li>
+<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
+<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>删除指定表名、指定id的条目</li>
+<li>删除指定表名、指定id数组的多个条目</li>
+<li>删除指定表明、指定前缀的id条目</li>
+<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+</ul>
+<p>缺点： </p>
+<ul>
+<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
+</ul>
+<p>我新增了这个功能:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
+</ul>
+<p>番外知识点：</p>
+<ul>
+<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
+<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
+<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
+<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
+</ul>
+<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
       </tags>
   </entry>
   <entry>
@@ -302,58 +354,6 @@
       </tags>
   </entry>
   <entry>
-    <title>YTKKeyValueStore开源库使用</title>
-    <url>/2019/08/30/kvStore-iOS/</url>
-    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
-<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
-<a id="more"></a>
-<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
-<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
-<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
-<p>实现逻辑比较简单， 支持如下功能</p>
-<ul>
-<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
-<li>创建指定名称的表操作</li>
-<li>清空表操作</li>
-<li>关闭数据库</li>
-<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
-<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>插入对象， 存储对象的json字符串</li>
-<li>获取对象， 获取都json字符串，转为对象</li>
-<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
-<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>删除指定表名、指定id的条目</li>
-<li>删除指定表名、指定id数组的多个条目</li>
-<li>删除指定表明、指定前缀的id条目</li>
-<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-</ul>
-<p>缺点： </p>
-<ul>
-<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
-</ul>
-<p>我新增了这个功能:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
-</ul>
-<p>番外知识点：</p>
-<ul>
-<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
-<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
-<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
-<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
-</ul>
-<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>一次单例模式的代码重构</title>
     <url>/2019/09/30/sharedInstance-JOB/</url>
     <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
@@ -379,52 +379,6 @@
       <tags>
         <tag>开发经验</tag>
         <tag>软件设计</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS接口的单元测试</title>
-    <url>/2019/10/23/iosunit-IOS/</url>
-    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
-<p>现在就来聊聊iOS代码的单元测试。</p>
-<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
-<a id="more"></a>
-<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
-<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
-<p>下面讲一下我是如何作单元测试的</p>
-<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
-<ul>
-<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
-<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
-<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
-<li>编译执行test  target （快捷键 command + U）</li>
-</ul>
-<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
-<p><img src="/images/20191023/unit1.png" alt></p>
-<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
-<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
-<p><img src="/images/20191023/unit2.png" alt></p>
-<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
-<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
-<li>添加文件到test target</li>
-<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
-</ul>
-<p><img src="/images/20191023/unit3.png" alt></p>
-<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
-<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
-<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
-<p><img src="/images/20191023/unit4.png" alt></p>
-<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
-<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
-<li>跑一遍单元测试， 查看结果</li>
-</ul>
-<p><img src="/images/20191023/unit5.png" alt></p>
-<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
-<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
-<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -627,6 +581,52 @@
       </categories>
   </entry>
   <entry>
+    <title>iOS接口的单元测试</title>
+    <url>/2019/10/23/iosunit-IOS/</url>
+    <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
+<p>现在就来聊聊iOS代码的单元测试。</p>
+<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
+<a id="more"></a>
+<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
+<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
+<p>下面讲一下我是如何作单元测试的</p>
+<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
+<ul>
+<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
+<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
+<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
+<li>编译执行test  target （快捷键 command + U）</li>
+</ul>
+<p>每个测试用例的重复代码可以写在 <code>setUp</code>/<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
+<p><img src="/images/20191023/unit1.png" alt></p>
+<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
+<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
+<p><img src="/images/20191023/unit2.png" alt></p>
+<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
+<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
+<li>添加文件到test target</li>
+<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
+</ul>
+<p><img src="/images/20191023/unit3.png" alt></p>
+<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
+<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a href="http://ocmock.org/" target="_blank" rel="noopener">链接</a></p>
+<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
+<p><img src="/images/20191023/unit4.png" alt></p>
+<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
+<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
+<li>跑一遍单元测试， 查看结果</li>
+</ul>
+<p><img src="/images/20191023/unit5.png" alt></p>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
+<p>更多查看<a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1" target="_blank" rel="noopener">苹果文档</a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2/5, 写代码4/15, 单元测试大概1/3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -773,6 +773,26 @@
       </categories>
   </entry>
   <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -808,26 +828,6 @@
 ]]></content>
       <categories>
         <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -1150,37 +1150,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
-<a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>awk命令使用</title>
     <url>/2020/09/30/awk/</url>
     <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
@@ -1205,6 +1174,37 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
 <p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
 <h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+<a id="more"></a>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1499,6 +1499,25 @@
       </categories>
   </entry>
   <entry>
+    <title>关于工作经验</title>
+    <url>/2020/12/22/experience/</url>
+    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
+<a id="more"></a>
+<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
+<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
+<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
+<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
+<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
+<p>哦了，不瞎唠叨了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
     <url>/2020/12/23/linux-schedule-active/</url>
     <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
@@ -1526,25 +1545,6 @@
 <h3 id="内核态的抢占时机"><a href="#内核态的抢占时机" class="headerlink" title="内核态的抢占时机"></a>内核态的抢占时机</h3><p>对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。</p>
 <p>同样的，内核态处理中断返回时，也可以触发检查抢占，进行schedule调度。</p>
 <p>实际工作中，也用了许多这种设置标记的情况。比如，相同配置连续下发的时候，处理耗时又比较长，每个处理都是不可被中断的。那么，就只能保存最新的那条配置，然后设置标记为需要更新。当配置更新完成后，检查标志位，如果需要更新，再启动新一轮的处理流程。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于工作经验</title>
-    <url>/2020/12/22/experience/</url>
-    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
-<a id="more"></a>
-<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
-<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
-<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
-<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
-<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
-<p>哦了，不瞎唠叨了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1590,6 +1590,37 @@
 <p><img src="/images/202012/linux_task_rq.jpeg" alt="图片替换文本" width="800" height="513" align="bottom"></p>
 <p>实现不同进程的调度，是通过按优先级从高到低来遍历调度类的方法来实现的。为了确保进程不被饿死，还需要动态更新进程的优先级，保证长时间未运行的进程随着时间变长而提升优先级，使之可以更快的被调用到。rt_sched_class 先被调用，它会在 rt_rq 上找下一个任务，只有找不到的时候，才轮到 fair_sched_class 被调用，它会在 cfs_rq 上找下一个任务。这样保证了实时任务的优先级永远大于普通任务。</p>
 <p><img src="/images/202012/linux_scedule_q.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
+    <url>/2020/12/28/linux13-processnew/</url>
+    <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
+<a id="more"></a>
+<ul>
+<li>申请新的task_struct， 申请新的内核栈空间，赋值给 task_struct 的 void *stack 成员变量；拷贝task_struct的内容， 调用 setup_thread_stack 设置 thread_info。</li>
+<li>调用copy_creds，设置权限相关的配置</li>
+<li>重新设置进程运行的统计量</li>
+<li>设置调度相关的变量 sched_fork， 设置状态、优先级、运行量，调度类等。是否可抢占。</li>
+<li>初始化与文件和文件系统相关的变量。复制一个进程打开的文件信息。复制一个进程的目录信息。</li>
+<li>初始化与信号相关的变量。 拷贝信号处理函数</li>
+<li>复制进程内存空间</li>
+<li>分配 pid，设置 tid，group_leader，并且建立进程之间的亲缘关系。</li>
+</ul>
+<p>第二步，唤醒新的进程wake_up_new_task。</p>
+<ul>
+<li>将进程的状态设置为 TASK_RUNNING</li>
+<li>将 sched_entity 加入到红黑树里面，然后将 se-&gt;on_rq = 1 设置在队列上。</li>
+<li>调用 check_preempt_curr，看是否能够抢占当前进程。如果可以抢占，给当前进程设置标志。</li>
+</ul>
+<p>OK， fork系统调用结束后，触发抢占。</p>
+<p><img src="/images/202012/linux13_fork.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
