@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_task_rq.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202012/linux_scedule_q.jpeg">
-<meta property="og:updated_time" content="2020-12-23T11:39:08.604Z">
+<meta property="og:updated_time" content="2020-12-28T01:11:20.193Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(十一) - 进程调度">
 <meta name="twitter:description" content="进程分为实时进程和普通进程。 实时进程需要立刻执行返回结果，普通进程没有这个需求。">
@@ -263,7 +263,7 @@
 <li>SCHED_BATCH 是后台进程，几乎不需要和前端进行交互。这类项目可以默默执行，不要影响需要交互的进程，可以降低它的优先级。</li>
 <li>SCHED_IDLE 是特别空闲的时候才跑的进程</li>
 </ul>
-<h2 id="调度策略的实现者"><a href="#调度策略的实现者" class="headerlink" title="调度策略的实现者"></a>调度策略的实现者</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> *<span class="title">sched_class</span>;</span></span><br></pre></td></tr></table></figure>
+<h2 id="调度策略的实现者，-调度类"><a href="#调度策略的实现者，-调度类" class="headerlink" title="调度策略的实现者， 调度类"></a>调度策略的实现者， 调度类</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> *<span class="title">sched_class</span>;</span></span><br></pre></td></tr></table></figure>
 <p>sched_class 有几种实现：</p>
 <ul>
 <li>stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；</li>
@@ -276,7 +276,7 @@
 <h2 id="完全公平调度算法-CFS"><a href="#完全公平调度算法-CFS" class="headerlink" title="完全公平调度算法 CFS"></a>完全公平调度算法 CFS</h2><p>计算根据进程的优先级分配不同的权重，然后计算每个进程的运行时间值。 对比运行的实际值，小的就优先运行。保证每个进程都可以运行到。</p>
 <h2 id="调度队列与调度实体"><a href="#调度队列与调度实体" class="headerlink" title="调度队列与调度实体"></a>调度队列与调度实体</h2><p>进程调度实体涉及的成员</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span> <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span> <span class="title">dl</span>;</span></span><br></pre></td></tr></table></figure>
-<p>CFS不同的进程通过把调度的实体挂在红黑树上实现快速的调度。所有可运行的进程通过不断地插入操作最终都存储在以时间为顺序的红黑树中，vruntime 最小的在树的左侧，vruntime 最多的在树的右侧。 CFS 调度策略会选择红黑树最左边的叶子节点作为下一个将获得 CPU 的任务。</p>
+<p>CFS不同的进程通过把调度的实体挂在红黑树上实现快速的调度。所有可运行的进程通过不断地插入操作最终都存储在以运行时间vruntime为顺序的红黑树中，vruntime 最小的在树的左侧，vruntime 最多的在树的右侧。 CFS 调度策略会选择红黑树最左边的叶子节点作为下一个将获得 CPU 的任务。</p>
 <p>每个cpu都有自己的 struct rq 结构，其用于描述在此 CPU 上所运行的所有进程，其包括一个实时进程队列 rt_rq 和一个 CFS 运行队列 cfs_rq。在调度时，调度器首先会先去实时进程队列找是否有实时进程需要运行，如果没有才会去 CFS 运行队列找是否有进程需要运行。</p>
 <p><img src="/images/202012/linux_task_rq.jpeg" alt="图片替换文本" width="800" height="513" align="bottom"></p>
 <p>实现不同进程的调度，是通过按优先级从高到低来遍历调度类的方法来实现的。为了确保进程不被饿死，还需要动态更新进程的优先级，保证长时间未运行的进程随着时间变长而提升优先级，使之可以更快的被调用到。rt_sched_class 先被调用，它会在 rt_rq 上找下一个任务，只有找不到的时候，才轮到 fair_sched_class 被调用，它会在 cfs_rq 上找下一个任务。这样保证了实时任务的优先级永远大于普通任务。</p>
@@ -302,7 +302,10 @@
     <a href="/2020/12/22/experience/" rel="prev" title="关于工作经验">
       <i class="fa fa-chevron-left"></i> 关于工作经验
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/23/linux-schedule-active/" rel="next" title="《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度">
+      《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -362,7 +365,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实时调度策略"><span class="nav-number">1.</span> <span class="nav-text">实时调度策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通调度策略"><span class="nav-number">2.</span> <span class="nav-text">普通调度策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度策略的实现者"><span class="nav-number">3.</span> <span class="nav-text">调度策略的实现者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完全公平调度算法-CFS"><span class="nav-number">4.</span> <span class="nav-text">完全公平调度算法 CFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度队列与调度实体"><span class="nav-number">5.</span> <span class="nav-text">调度队列与调度实体</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实时调度策略"><span class="nav-number">1.</span> <span class="nav-text">实时调度策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通调度策略"><span class="nav-number">2.</span> <span class="nav-text">普通调度策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度策略的实现者，-调度类"><span class="nav-number">3.</span> <span class="nav-text">调度策略的实现者， 调度类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完全公平调度算法-CFS"><span class="nav-number">4.</span> <span class="nav-text">完全公平调度算法 CFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调度队列与调度实体"><span class="nav-number">5.</span> <span class="nav-text">调度队列与调度实体</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -377,7 +380,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
