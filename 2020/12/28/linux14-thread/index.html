@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下 123if (likely(offset)) &amp;#123;  offset = 0;&amp;#125;">
+  <meta name="description" content="thread_create线程创建线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="代码洁癖">
-<meta property="og:url" content="http://fishmwei.github.io/2020/07/08/codeclean/index.html">
+<meta property="og:title" content="《趣谈linux操作系统》小结(十四) - thread_create线程创建">
+<meta property="og:url" content="http://fishmwei.github.io/2020/12/28/linux14-thread/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下 123if (likely(offset)) &amp;#123;  offset = 0;&amp;#125;">
+<meta property="og:description" content="thread_create线程创建线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-07-09T02:18:26.712Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/202012/linux14_thread.jpeg">
+<meta property="og:updated_time" content="2020-12-29T09:42:46.108Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="代码洁癖">
-<meta name="twitter:description" content="最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下 123if (likely(offset)) &amp;#123;  offset = 0;&amp;#125;">
+<meta name="twitter:title" content="《趣谈linux操作系统》小结(十四) - thread_create线程创建">
+<meta name="twitter:description" content="thread_create线程创建线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202012/linux14_thread.jpeg">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/07/08/codeclean/">
+<link rel="canonical" href="http://fishmwei.github.io/2020/12/28/linux14-thread/">
 
 
 <script id="page-configurations">
@@ -45,7 +47,7 @@
   };
 </script>
 
-  <title>代码洁癖 | IT攻城狮小明</title>
+  <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建 | IT攻城狮小明</title>
   
 
 
@@ -184,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/07/08/codeclean/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/28/linux14-thread/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -197,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          代码洁癖
+          《趣谈linux操作系统》小结(十四) - thread_create线程创建
         </h1>
 
         <div class="post-meta">
@@ -207,7 +209,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-08 20:26:08" itemprop="dateCreated datePublished" datetime="2020-07-08T20:26:08+08:00">2020-07-08</time>
+              <time title="创建时间：2020-12-28 19:53:50" itemprop="dateCreated datePublished" datetime="2020-12-28T19:53:50+08:00">2020-12-28</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,8 +230,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/07/08/codeclean/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/08/codeclean/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/12/28/linux14-thread/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/28/linux14-thread/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -244,15 +246,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
 <a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
+<ul>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
+</ul>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -271,13 +285,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/04/reflection4self-2/" rel="prev" title="程序员自我修养读后感-2">
-      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感-2
+    <a href="/2020/12/28/linux13-processnew/" rel="prev" title="《趣谈linux操作系统》小结(十三) - fork进程创建">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(十三) - fork进程创建
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/14/reflection4self-3-md/" rel="next" title="程序员自我修养读后感-3">
-      程序员自我修养读后感-3 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -337,6 +348,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#thread-create线程创建"><span class="nav-number">1.</span> <span class="nav-text">thread_create线程创建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户态创建线程"><span class="nav-number">1.1.</span> <span class="nav-text">用户态创建线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内核态创建任务"><span class="nav-number">1.2.</span> <span class="nav-text">内核态创建任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#资源赋值-设置"><span class="nav-number">1.2.1.</span> <span class="nav-text">资源赋值/设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#亲缘关系设置"><span class="nav-number">1.2.2.</span> <span class="nav-text">亲缘关系设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号的处理"><span class="nav-number">1.2.3.</span> <span class="nav-text">信号的处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户态执行线程"><span class="nav-number">1.3.</span> <span class="nav-text">用户态执行线程</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
