@@ -226,6 +226,58 @@
       </tags>
   </entry>
   <entry>
+    <title>YTKKeyValueStore开源库使用</title>
+    <url>/2019/08/30/kvStore-iOS/</url>
+    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
+<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
+<a id="more"></a>
+<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
+<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
+<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
+<p>实现逻辑比较简单， 支持如下功能</p>
+<ul>
+<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
+<li>创建指定名称的表操作</li>
+<li>清空表操作</li>
+<li>关闭数据库</li>
+<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
+<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>插入对象， 存储对象的json字符串</li>
+<li>获取对象， 获取都json字符串，转为对象</li>
+<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
+<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>删除指定表名、指定id的条目</li>
+<li>删除指定表名、指定id数组的多个条目</li>
+<li>删除指定表明、指定前缀的id条目</li>
+<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+</ul>
+<p>缺点： </p>
+<ul>
+<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
+</ul>
+<p>我新增了这个功能:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
+</ul>
+<p>番外知识点：</p>
+<ul>
+<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
+<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
+<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
+<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
+</ul>
+<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一种获取客户端程序的代码版本的方法</title>
     <url>/2019/09/27/versionScheme-common/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
@@ -330,58 +382,6 @@
       </tags>
   </entry>
   <entry>
-    <title>YTKKeyValueStore开源库使用</title>
-    <url>/2019/08/30/kvStore-iOS/</url>
-    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
-<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
-<a id="more"></a>
-<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
-<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
-<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
-<p>实现逻辑比较简单， 支持如下功能</p>
-<ul>
-<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
-<li>创建指定名称的表操作</li>
-<li>清空表操作</li>
-<li>关闭数据库</li>
-<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
-<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>插入对象， 存储对象的json字符串</li>
-<li>获取对象， 获取都json字符串，转为对象</li>
-<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
-<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>删除指定表名、指定id的条目</li>
-<li>删除指定表名、指定id数组的多个条目</li>
-<li>删除指定表明、指定前缀的id条目</li>
-<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-</ul>
-<p>缺点： </p>
-<ul>
-<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。  </li>
-</ul>
-<p>我新增了这个功能:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
-</ul>
-<p>番外知识点：</p>
-<ul>
-<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
-<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
-<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
-<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
-</ul>
-<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS接口的单元测试</title>
     <url>/2019/10/23/iosunit-IOS/</url>
     <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
@@ -465,31 +465,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>2020书单</title>
     <url>/2020/01/01/2020books/</url>
     <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
@@ -561,18 +536,29 @@
       </categories>
   </entry>
   <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
 ]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
+      <tags>
+        <tag>linux</tag>
+      </tags>
   </entry>
   <entry>
     <title>换城市工作切换的感受</title>
@@ -627,6 +613,20 @@
       </tags>
   </entry>
   <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>关于</title>
     <url>/2020/06/20/about/</url>
     <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
@@ -657,48 +657,6 @@
       <tags>
         <tag>读后感</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>结构体偏移</title>
-    <url>/2020/06/17/memberoffsetof/</url>
-    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -766,41 +724,45 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-3</title>
-    <url>/2020/07/14/reflection4self-3-md/</url>
-    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+    <title>结构体偏移</title>
+    <url>/2020/06/17/memberoffsetof/</url>
+    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
 <a id="more"></a>
-<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
-<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
-<ol>
-<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
-</li>
-<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
-<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
-<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
-<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
-<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
-<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
-<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
-<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
-<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
-<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p>具体的编译配置可以使用选项-v查看</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
+<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>assert说明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
+<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>读后感</category>
+        <category>技术</category>
+        <category>C基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -857,6 +819,44 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感-3</title>
+    <url>/2020/07/14/reflection4self-3-md/</url>
+    <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+<a id="more"></a>
+<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
+<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
+<ol>
+<li><p>空间与地址的分配<br>扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
+</li>
+<li><p>符号的解析与重定位<br>读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
+<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
+<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
+<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
+<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
+<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$</span><br></pre></td></tr></table></figure>
+<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
+<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
+<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
+<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>具体的编译配置可以使用选项-v查看</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-4</title>
     <url>/2020/07/17/reflection4self-4/</url>
     <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
@@ -910,6 +910,52 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-7</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+<a id="more"></a>
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>近期工作回顾</title>
     <url>/2020/08/17/layer/</url>
     <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
@@ -928,6 +974,28 @@
 <p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
 <p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -966,65 +1034,63 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-7</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+    <title>sed命令使用</title>
+    <url>/2020/09/24/sed/</url>
+    <content><![CDATA[<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>stream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。</p>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
+<h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
+<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。把_pattern space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
+<p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
+<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-n, --quit, --silent 静默, 只输出匹配正则表达式的行，默认的所有行都会输出</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件用来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
+<h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
+<p>指定行的格式可以如下：</p>
 <ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+<li>‘NUMBER’, 指定特定行号<br>  sed ‘$p’ sed.md</li>
+<li>‘First~Step’，从第几行开始，每次跳跃Step行</li>
+<li>‘$’, 文件最后一行</li>
+<li>‘/REGEXP/‘, 匹配REGEX的行</li>
+<li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
+<li>‘Start， end’ 指定范围<br>  sed -ne ‘3,5p’ sed.md<br>  sed -ne ‘1,/888/p’ sed.md // 1-匹配888</li>
 </ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
-<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
+<li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
+<li><ul>
+<li>匹配前一个字符0到多个</li>
+</ul>
+</li>
+<li>. 匹配任一字符</li>
+<li>^ 以什么开头</li>
+<li>$ 以什么结尾</li>
+<li>[LIST] 匹配LIST中的任一字符</li>
+<li>[^LIST] 不属于LIST中的任一字符</li>
+<li>REGEXP1|REGEXP2 匹配REGEXP1或者REGEXP2</li>
+<li>REGEXP1REGEXP2 整串连续匹配REGEXP1, REGEXP2</li>
+<li>\n 匹配换行</li>
+</ul>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
+<li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
+<li>d 删除匹配的行  sed ‘/^$/d’ file</li>
+<li>p 打印匹配的行  sed  ‘3p’ file</li>
+<li>{COMMANDS} 多个命令，使用分号分割</li>
+<li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
+- NUMBER 替换指定第几次匹配的行
+- p print new pattern space 
+- w FILE_NAME 匹配的结果写入文件
+- r FILE_NAME 读取文件插入到匹配的行
+- &amp; 前面匹配的字符  sed &apos;s/222/xxx &amp;/&apos; sed.md
+</code></pre></li>
+</ul>
+<ul>
+<li>! 表示命令对不匹配的行生效</li>
+</ul>
+<p><strong>命令最好使用单引号包含起来</strong></p>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br><span class="line">sed -ne  '/2\&#123;1,3\&#125;/p' sed.md</span><br><span class="line">sed ‘s/^ *//‘  删除前导空格</span><br><span class="line">sed ’s/ *$//’ 删除行尾空格</span><br></pre></td></tr></table></figure>
+<p>以上是常用的一些命令， 还有许多其他命令，更多内容建议参考’man sed’</p>
+<p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1117,6 +1183,24 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(二)</title>
+    <url>/2020/11/18/linux2/</url>
+    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
+<a id="more"></a>
+<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
+<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
+<p>Linux 命令行</p>
+<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(一)</title>
     <url>/2020/10/20/linux1/</url>
     <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
@@ -1139,24 +1223,6 @@
 <p>CPU分为运算单元、数据单元和控制单元。</p>
 <p>统一开放的硬件平台， x86。</p>
 <p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(二)</title>
-    <url>/2020/11/18/linux2/</url>
-    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
-<a id="more"></a>
-<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
-<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
-<p>Linux 命令行</p>
-<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1199,72 +1265,6 @@
       </categories>
   </entry>
   <entry>
-    <title>sed命令使用</title>
-    <url>/2020/09/24/sed/</url>
-    <content><![CDATA[<h1 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h1><p>stream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。</p>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sed 【OPTION】 ... &#123;script-only-if-no-other-script&#125; &#123;input-file&#125; ...</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="sed如何工作"><a href="#sed如何工作" class="headerlink" title="sed如何工作"></a>sed如何工作</h2><p>sed维护两块内存空间，_pattern space 和 _hold space 初始都为空。</p>
-<p>sed从输入流中读取一行，删除掉换行，然后把他放到_pattern space。然后执行各个命令。把_pattern space中的内容输出到输出流中，并添加换行符号，继续处理下一行，直到文件末尾。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>sed工具读取给定的文件，如果没有给定文件，读取标准输入。然后根据给定的一系列命令修改输入的内容。最后把修改内容输出到标准输出中。</p>
-<p>一个单独的命令可以通过第一个参数传递给sed。 多个命令的话， 可以通过制定-e 或者-f选项设置。所有命令按顺序应用到输入。</p>
-<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><p>支持如下选项：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-n, --quit, --silent 静默, 只输出匹配正则表达式的行，默认的所有行都会输出</span><br><span class="line"></span><br><span class="line">-e script , --expression=script 添加一个脚本执行命令</span><br><span class="line"></span><br><span class="line">-f script-file  从文件中读取命令添加到执行命令</span><br><span class="line"></span><br><span class="line">--follow-symlinks 处理符号链接指向的文件，默认不处理</span><br><span class="line"></span><br><span class="line">-i[SUFFIX] --inplace=SUFFIX 直接修改文件的内容，如果指定了后缀， 会把源文件重命名为以后缀结尾的文件，原始文件用来保存结果。</span><br><span class="line">   sed -e 's/123/xxx &amp;/' -ib sed.md // 直接修改sed.md 同时备份内容到sed.mdb文件</span><br><span class="line"></span><br><span class="line">-c 指定-i时，使用copy而不是重命名。</span><br><span class="line"></span><br><span class="line">--posix disable all GNU extensions</span><br><span class="line"></span><br><span class="line">-l N, --line-length=N 指定长行的换行， 0 表示从不为长行换行， 默认70</span><br><span class="line"></span><br><span class="line">   -r 指定正则表达式属于扩展正则表达式</span><br></pre></td></tr></table></figure>
-<h3 id="Address-Range"><a href="#Address-Range" class="headerlink" title="Address Range"></a>Address Range</h3><p>执行命令可以指定行，[address] commands</p>
-<p>指定行的格式可以如下：</p>
-<ul>
-<li>‘NUMBER’, 指定特定行号<br>  sed ‘$p’ sed.md</li>
-<li>‘First~Step’，从第几行开始，每次跳跃Step行</li>
-<li>‘$’, 文件最后一行</li>
-<li>‘/REGEXP/‘, 匹配REGEX的行</li>
-<li>‘\%REGEXP%’，匹配REGEX的行  %是分隔符</li>
-<li>‘Start， end’ 指定范围<br>  sed -ne ‘3,5p’ sed.md<br>  sed -ne ‘1,/888/p’ sed.md // 1-匹配888</li>
-</ul>
-<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ul>
-<li>‘CHAR’ 匹配普通字符 ‘CHAR’</li>
-<li><ul>
-<li>匹配前一个字符0到多个</li>
-</ul>
-</li>
-<li>. 匹配任一字符</li>
-<li>^ 以什么开头</li>
-<li>$ 以什么结尾</li>
-<li>[LIST] 匹配LIST中的任一字符</li>
-<li>[^LIST] 不属于LIST中的任一字符</li>
-<li>REGEXP1|REGEXP2 匹配REGEXP1或者REGEXP2</li>
-<li>REGEXP1REGEXP2 整串连续匹配REGEXP1, REGEXP2</li>
-<li>\n 匹配换行</li>
-</ul>
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><ul>
-<li>‘#’ 用来做注释的， 把命令写在文件中时使用， 用来注释</li>
-<li>d 删除匹配的行  sed ‘/^$/d’ file</li>
-<li>p 打印匹配的行  sed  ‘3p’ file</li>
-<li>{COMMANDS} 多个命令，使用分号分割</li>
-<li>s 替换命令  s/REGEX/REPLACEMENT/FLAGS<br>  sed s/2/II/ sed.md<br>  sed s/1/I/1 sed.md<br>  sed s/1\2/I/ sed.md<br>  FLAGS： <pre><code>- g 替换所有匹配行
-- NUMBER 替换指定第几次匹配的行
-- p print new pattern space 
-- w FILE_NAME 匹配的结果写入文件
-- r FILE_NAME 读取文件插入到匹配的行
-- &amp; 前面匹配的字符  sed &apos;s/222/xxx &amp;/&apos; sed.md
-</code></pre></li>
-</ul>
-<ul>
-<li>! 表示命令对不匹配的行生效</li>
-</ul>
-<p><strong>命令最好使用单引号包含起来</strong></p>
-<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>执行成功返回0， 出错返回 &gt;0 </p>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">sed -n  '/[0-9]\&#123;1,3\&#125;/p' sed.md  // 显示含有数字的行</span><br><span class="line">sed -n -e '/.*inux/p' sed.md		// 输出包含inux的行</span><br><span class="line">sed -ne  '/2\&#123;1,3\&#125;/p' sed.md</span><br><span class="line">sed ‘s/^ *//‘  删除前导空格</span><br><span class="line">sed ’s/ *$//’ 删除行尾空格</span><br></pre></td></tr></table></figure>
-<p>以上是常用的一些命令， 还有许多其他命令，更多内容建议参考’man sed’</p>
-<p>网络上有一篇博客写的挺详细的， <a href="https://www.cnblogs.com/maxincai/p/5146338.html" target="_blank" rel="noopener">链接</a></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(五)</title>
     <url>/2020/12/08/linux5/</url>
     <content><![CDATA[<h2 id="BIOS到bootloader"><a href="#BIOS到bootloader" class="headerlink" title="BIOS到bootloader"></a>BIOS到bootloader</h2><h3 id="BIOS"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS</h3><p>在主板的ROM上保存有BIOS程序，计算机启动首先读取BIOS（Basic Input and Output System，基本输入输出系统）程序进行运行。此时，计算机运行在实模式下，只能访问1MB的空间。这个1MB的空间也有一个标准的约定。</p>
@@ -1292,23 +1292,20 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(四)</title>
-    <url>/2020/12/08/linux4/</url>
-    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
-<a id="more"></a>
-<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
-<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
-<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
-<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
-<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
-<p>16位的处理器大概就是这样子的。</p>
-<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
-<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
-<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
+    <title>《趣谈linux操作系统》小结(七)</title>
+    <url>/2020/12/10/linux7/</url>
+    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
+<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
+<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
+<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
+<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
+<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
+<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1342,20 +1339,69 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(七)</title>
-    <url>/2020/12/10/linux7/</url>
-    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
-<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
-<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
-<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
-<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
-<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
-<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
+    <title>《趣谈linux操作系统》小结(九)</title>
+    <url>/2020/12/16/linux9/</url>
+    <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+<a id="more"></a>
+<p><img src="/images/202012/linux_task.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>内核由一个链表用来存储<strong>task_struct</strong></p>
+<h2 id="task-struct内容"><a href="#task-struct内容" class="headerlink" title="task_struct内容"></a>task_struct内容</h2><h3 id="任务ID"><a href="#任务ID" class="headerlink" title="任务ID"></a>任务ID</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line"><span class="keyword">pid_t</span> tgid;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span></span><br></pre></td></tr></table></figure>
+<p>任何一个进程，如果只有主线程，那 pid 是自己，tgid 是自己，group_leader 指向的还是自己。但是，如果一个进程创建了其他线程，那就会有所变化了。线程有自己的 pid，tgid 就是进程的主线程的 pid，group_leader 指向的就是进程的主线程。</p>
+<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>结构体中包含了许多信号处理相关的字段</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Signal handlers: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">signal_struct</span>    *<span class="title">signal</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sighand_struct</span>    *<span class="title">sighand</span>;</span></span><br><span class="line"><span class="keyword">sigset_t</span>      blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      real_blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      saved_sigmask;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigpending</span>    <span class="title">pending</span>;</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      sas_ss_sp;</span><br><span class="line"><span class="keyword">size_t</span>        sas_ss_size;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      sas_ss_flags;</span><br></pre></td></tr></table></figure>
+<p>定义了哪些信号被阻塞暂不处理（blocked），哪些信号尚等待处理（pending），哪些信号正在通过信号处理函数进行处理（sighand）。处理的结果可以是忽略，可以是结束进程等等。</p>
+<p>信号处理函数默认使用用户态的函数栈，当然也可以开辟新的栈专门用于信号处理，这就是 sas_ss_xxx 这三个变量的作用。</p>
+<p>task_struct 里面有一个 struct sigpending pending。如果我们进入 struct signal_struct *signal 去看的话，还有一个 struct sigpending shared_pending。它们一个是本任务的，一个是线程组共享的。</p>
+<h3 id="任务状态"><a href="#任务状态" class="headerlink" title="任务状态"></a>任务状态</h3><p>状态相关的变量有3个</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">volatile</span> <span class="keyword">long</span> state;    <span class="comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span></span><br><span class="line"> <span class="keyword">int</span> exit_state;</span><br><span class="line"> <span class="keyword">unsigned</span> <span class="keyword">int</span> flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_RUNNING                    0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_INTERRUPTIBLE              1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_UNINTERRUPTIBLE            2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_STOPPED                  4</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_TRACED                   8</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_DEAD                       16</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_ZOMBIE                     32</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_TRACE                      (EXIT_ZOMBIE | EXIT_DEAD)</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_DEAD                       64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKEKILL                   128</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKING                     256</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_PARKED                     512</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NOLOAD                     1024</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NEW                        2048</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_STATE_MAX                  4096</span></span><br></pre></td></tr></table></figure>
+<p>任务的切换流程</p>
+<p><img src="/images/202012/linux_task_state.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//是否在运行队列上</span></span><br><span class="line"><span class="keyword">int</span>        on_rq;</span><br><span class="line"><span class="comment">//优先级</span></span><br><span class="line"><span class="keyword">int</span>        prio;</span><br><span class="line"><span class="keyword">int</span>        static_prio;</span><br><span class="line"><span class="keyword">int</span>        normal_prio;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      rt_priority;</span><br><span class="line"><span class="comment">//调度器类</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>  *<span class="title">sched_class</span>;</span></span><br><span class="line"><span class="comment">//调度实体</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>    <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>    <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>    <span class="title">dl</span>;</span></span><br><span class="line"><span class="comment">//调度策略</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      policy;</span><br><span class="line"><span class="comment">//可以使用哪些CPU</span></span><br><span class="line"><span class="keyword">int</span>        nr_cpus_allowed;</span><br><span class="line"><span class="keyword">cpumask_t</span>      cpus_allowed;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_info</span>    <span class="title">sched_info</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="结构体内容概览"><a href="#结构体内容概览" class="headerlink" title="结构体内容概览"></a>结构体内容概览</h3><p><img src="/images/202012/linux_task_content.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h3 id="运行统计信息"><a href="#运行统计信息" class="headerlink" title="运行统计信息"></a>运行统计信息</h3><p>在进程的运行过程中，会有一些统计量，具体你可以看下面的列表。这里面有进程在用户态和内核态消耗的时间、上下文切换的次数等等。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">u64        utime;<span class="comment">//用户态消耗的CPU时间</span></span><br><span class="line">u64        stime;<span class="comment">//内核态消耗的CPU时间</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nvcsw;<span class="comment">//自愿(voluntary)上下文切换计数</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nivcsw;<span class="comment">//非自愿(involuntary)上下文切换计数</span></span><br><span class="line">u64        start_time;<span class="comment">//进程启动时间，不包含睡眠时间</span></span><br><span class="line">u64        real_start_time;<span class="comment">//进程启动时间，包含睡眠时间</span></span><br></pre></td></tr></table></figure>
+<h3 id="进程亲缘关系"><a href="#进程亲缘关系" class="headerlink" title="进程亲缘关系"></a>进程亲缘关系</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">/* real parent process */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span> <span class="comment">/* recipient of SIGCHLD, wait4() reports */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span>      <span class="comment">/* list of my children */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>       <span class="comment">/* linkage in my parent's children list */</span></span><br></pre></td></tr></table></figure>
+<p>保存了父进程、子进程、兄弟进程的信息。</p>
+<p><img src="/images/202012/linux_task_parent.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>real_parent 和 parent 是一样的，但是也会有另外的情况存在。例如，bash 创建一个进程，那进程的 parent 和 real_parent 就都是 bash。如果在 bash 上使用 GDB 来 debug 一个进程，这个时候 GDB 是 parent，bash 是这个进程的 real_parent。 具体如何实现的， 还需要深入了解代码后才能清楚。</p>
+<h3 id="进程权限"><a href="#进程权限" class="headerlink" title="进程权限"></a>进程权限</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Objective and real subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">real_cred</span>;</span></span><br><span class="line"><span class="comment">/* Effective (overridable) subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">cred</span>;</span></span><br></pre></td></tr></table></figure>
+<p>real_cred 就是说明谁能操作我这个进程，而 cred 就是说明我这个进程能够操作谁。</p>
+<p>cred结构保存的基本上就是一些用户或者组的id， 权限控制时，通过比较这些id来确定是否拥有权限。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cred</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kuid_t</span>          uid;            <span class="comment">/* real UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          gid;            <span class="comment">/* real GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          suid;           <span class="comment">/* saved UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          sgid;           <span class="comment">/* saved GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          euid;           <span class="comment">/* effective UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          egid;           <span class="comment">/* effective GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          fsuid;          <span class="comment">/* UID for VFS ops */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          fsgid;          <span class="comment">/* GID for VFS ops */</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_inheritable; <span class="comment">/* caps our children can inherit */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_permitted;  <span class="comment">/* caps we're permitted */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_effective;  <span class="comment">/* caps we can actually use */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_bset;       <span class="comment">/* capability bounding set */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_ambient;    <span class="comment">/* Ambient capability set */</span></span><br><span class="line">......</span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+<p>第一个是 uid 和 gid，注释是 real user/group id。一般情况下，谁启动的进程，就是谁的 ID。但是权限审核的时候，往往不比较这两个，也就是说不大起作用。</p>
+<p>第二个是 euid 和 egid，注释是 effective user/group id。一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。</p>
+<p>第三个是 fsuid 和 fsgid，也就是 filesystem user/group id。这个是对文件操作会审核的权限。一般说来，fsuid、euid，和 uid 是一样的，fsgid、egid，和 gid 也是一样的。因为谁启动的进程，就应该审核启动的用户到底有没有这个权限。</p>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>每个进程都有自己独立的虚拟内存空间，这需要有一个数据结构来表示，就是 mm_struct。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">mm</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">active_mm</span>;</span></span><br></pre></td></tr></table></figure>
+<h3 id="文件与文件系统"><a href="#文件与文件系统" class="headerlink" title="文件与文件系统"></a>文件与文件系统</h3><p>每个进程有一个文件系统的数据结构，还有一个打开文件的数据结构。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Filesystem information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fs_struct</span>                *<span class="title">fs</span>;</span></span><br><span class="line"><span class="comment">/* Open file information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>             *<span class="title">files</span>;</span></span><br></pre></td></tr></table></figure>
+<p><img src="/images/202012/linux_task_content2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(四)</title>
+    <url>/2020/12/08/linux4/</url>
+    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
+<a id="more"></a>
+<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
+<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
+<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
+<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
+<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
+<p>16位的处理器大概就是这样子的。</p>
+<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
+<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
+<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1409,40 +1455,17 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十)</title>
-    <url>/2020/12/21/linux10/</url>
-    <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
+    <title>《趣谈linux操作系统》小结(八)</title>
+    <url>/2020/12/16/linux8/</url>
+    <content><![CDATA[<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
 <a id="more"></a>
-<h3 id="用户态函数栈"><a href="#用户态函数栈" class="headerlink" title="用户态函数栈"></a>用户态函数栈</h3><p>32位函数调用涉及到2个寄存器，ESP（Extended Stack Pointer）是栈顶指针寄存器；另外有一个寄存器 EBP（Extended Base Pointer），是栈基地址指针寄存器，指向当前栈帧的最底部。</p>
-<p>A调用B的时候，A的栈中除了存储自身的局部变量，还存储传给B的参数，以及返回A的地址，这样B才知道返回到哪里。B返回的时候，结果存储在eax寄存器中，从栈中弹出A的地址以及给B的参数。</p>
-<p><img src="/images/202012/linux_stack.jpg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>64位系统，寄存器多一些，rax 用于保存函数调用的返回结果。栈顶指针寄存器变成了 rsp，指向栈顶位置。堆栈的 Pop 和 Push 操作会自动调整 rsp，栈基指针寄存器变成了 rbp，指向当前栈帧的起始位置。还有专门用来传递参数的寄存器，rdi、rsi、rdx、rcx、r8、r9 这 6 个寄存器，用于传递存储函数调用时的 6 个参数。如果超过 6 的时候，还是需要放到栈里面。然而，前 6 个参数有时候需要进行寻址，但是如果在寄存器里面，是没有地址的，因而还是会放到栈里面，只不过放到栈里面的操作是被调用函数做的，就是参数最终是还会放在B的栈里面。</p>
-<p><img src="/images/202012/linux_stack1.jpg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<h3 id="内核态函数栈"><a href="#内核态函数栈" class="headerlink" title="内核态函数栈"></a>内核态函数栈</h3><p>Linux 给每个 task 都分配了内核栈，使用的就是stack这个成员变量。</p>
-<p>32位系统，内核栈大小为8K， 64位系统，大小为16K。</p>
-<p>内核栈的结构：</p>
-<p><img src="/images/202012/linux_stack2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>内核栈里面保存了当前寄存器的内容，调用返回后，再恢复寄存器的值。</p>
-<p>在内核态里的调用都有和用户态相似的过程。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于工作经验</title>
-    <url>/2020/12/22/experience/</url>
-    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
-<a id="more"></a>
-<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
-<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
-<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
-<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
-<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
-<p>哦了，不瞎唠叨了。</p>
+<p>线程的创建：</p>
+<p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
+<p><img src="/images/202012/linux_thread_data.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);</span><br></pre></td></tr></table></figure>
+<h2 id="线程的数据保护"><a href="#线程的数据保护" class="headerlink" title="线程的数据保护"></a>线程的数据保护</h2><p>数据保护一般通过互斥量处理。pthread_mutex_t<br><img src="/images/202012/linux_thread_mutex.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>互斥量和条件变量结合使用，可以提高cpu处理性能。不用一直条件判断，而是等待条件触发再判断条件。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1488,17 +1511,21 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(八)</title>
-    <url>/2020/12/16/linux8/</url>
-    <content><![CDATA[<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
+    <title>《趣谈linux操作系统》小结(十)</title>
+    <url>/2020/12/21/linux10/</url>
+    <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>线程的创建：</p>
-<p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
-<p><img src="/images/202012/linux_thread_data.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);</span><br></pre></td></tr></table></figure>
-<h2 id="线程的数据保护"><a href="#线程的数据保护" class="headerlink" title="线程的数据保护"></a>线程的数据保护</h2><p>数据保护一般通过互斥量处理。pthread_mutex_t<br><img src="/images/202012/linux_thread_mutex.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>互斥量和条件变量结合使用，可以提高cpu处理性能。不用一直条件判断，而是等待条件触发再判断条件。</p>
+<h3 id="用户态函数栈"><a href="#用户态函数栈" class="headerlink" title="用户态函数栈"></a>用户态函数栈</h3><p>32位函数调用涉及到2个寄存器，ESP（Extended Stack Pointer）是栈顶指针寄存器；另外有一个寄存器 EBP（Extended Base Pointer），是栈基地址指针寄存器，指向当前栈帧的最底部。</p>
+<p>A调用B的时候，A的栈中除了存储自身的局部变量，还存储传给B的参数，以及返回A的地址，这样B才知道返回到哪里。B返回的时候，结果存储在eax寄存器中，从栈中弹出A的地址以及给B的参数。</p>
+<p><img src="/images/202012/linux_stack.jpg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>64位系统，寄存器多一些，rax 用于保存函数调用的返回结果。栈顶指针寄存器变成了 rsp，指向栈顶位置。堆栈的 Pop 和 Push 操作会自动调整 rsp，栈基指针寄存器变成了 rbp，指向当前栈帧的起始位置。还有专门用来传递参数的寄存器，rdi、rsi、rdx、rcx、r8、r9 这 6 个寄存器，用于传递存储函数调用时的 6 个参数。如果超过 6 的时候，还是需要放到栈里面。然而，前 6 个参数有时候需要进行寻址，但是如果在寄存器里面，是没有地址的，因而还是会放到栈里面，只不过放到栈里面的操作是被调用函数做的，就是参数最终是还会放在B的栈里面。</p>
+<p><img src="/images/202012/linux_stack1.jpg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<h3 id="内核态函数栈"><a href="#内核态函数栈" class="headerlink" title="内核态函数栈"></a>内核态函数栈</h3><p>Linux 给每个 task 都分配了内核栈，使用的就是stack这个成员变量。</p>
+<p>32位系统，内核栈大小为8K， 64位系统，大小为16K。</p>
+<p>内核栈的结构：</p>
+<p><img src="/images/202012/linux_stack2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>内核栈里面保存了当前寄存器的内容，调用返回后，再恢复寄存器的值。</p>
+<p>在内核态里的调用都有和用户态相似的过程。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1508,29 +1535,16 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
-    <url>/2020/12/28/linux14-thread/</url>
-    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
+    <title>关于工作经验</title>
+    <url>/2020/12/22/experience/</url>
+    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
 <a id="more"></a>
-<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
-<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
-<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
-<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
-<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
-<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
-<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
-<ul>
-<li>files_struct 引用计数加一</li>
-<li>fs_struct 的用户数加一</li>
-<li>sighand_struct 引用计数加一</li>
-<li>mm直接指向了原来的 mm_struct</li>
-</ul>
-<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
-<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
-<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
-<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
+<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
+<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
+<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
+<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
+<p>哦了，不瞎唠叨了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1585,6 +1599,32 @@
       </categories>
   </entry>
   <entry>
+    <title>暂时解放了</title>
+    <url>/2021/01/05/sjs/</url>
+    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+<a id="more"></a>
+<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小编还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
+<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
+<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
+<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续和排石茶，一直没有排出来。哎！</p>
+<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，每天蹲好几个小时在卫生间，不过下体没有那么疼了，还以为是不是出来了。工作日继续来长沙上班，在卫生间又发现尿血了，感觉喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，普通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
+<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>好家伙，竟然有12X6mm这么大了。可怕可怕。</p>
+<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水。</p>
+<p>虽然艰难，但省了手术费，省了遭罪。。。 </p>
+<p>注意身体，伙伴们。 （20201223写）</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
     <url>/2020/12/28/linux13-processnew/</url>
     <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
@@ -1616,43 +1656,50 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(九)</title>
-    <url>/2020/12/16/linux9/</url>
-    <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
+    <url>/2020/12/28/linux14-thread/</url>
+    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
 <a id="more"></a>
-<p><img src="/images/202012/linux_task.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>内核由一个链表用来存储<strong>task_struct</strong></p>
-<h2 id="task-struct内容"><a href="#task-struct内容" class="headerlink" title="task_struct内容"></a>task_struct内容</h2><h3 id="任务ID"><a href="#任务ID" class="headerlink" title="任务ID"></a>任务ID</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line"><span class="keyword">pid_t</span> tgid;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span></span><br></pre></td></tr></table></figure>
-<p>任何一个进程，如果只有主线程，那 pid 是自己，tgid 是自己，group_leader 指向的还是自己。但是，如果一个进程创建了其他线程，那就会有所变化了。线程有自己的 pid，tgid 就是进程的主线程的 pid，group_leader 指向的就是进程的主线程。</p>
-<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>结构体中包含了许多信号处理相关的字段</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Signal handlers: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">signal_struct</span>    *<span class="title">signal</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sighand_struct</span>    *<span class="title">sighand</span>;</span></span><br><span class="line"><span class="keyword">sigset_t</span>      blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      real_blocked;</span><br><span class="line"><span class="keyword">sigset_t</span>      saved_sigmask;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigpending</span>    <span class="title">pending</span>;</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      sas_ss_sp;</span><br><span class="line"><span class="keyword">size_t</span>        sas_ss_size;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      sas_ss_flags;</span><br></pre></td></tr></table></figure>
-<p>定义了哪些信号被阻塞暂不处理（blocked），哪些信号尚等待处理（pending），哪些信号正在通过信号处理函数进行处理（sighand）。处理的结果可以是忽略，可以是结束进程等等。</p>
-<p>信号处理函数默认使用用户态的函数栈，当然也可以开辟新的栈专门用于信号处理，这就是 sas_ss_xxx 这三个变量的作用。</p>
-<p>task_struct 里面有一个 struct sigpending pending。如果我们进入 struct signal_struct *signal 去看的话，还有一个 struct sigpending shared_pending。它们一个是本任务的，一个是线程组共享的。</p>
-<h3 id="任务状态"><a href="#任务状态" class="headerlink" title="任务状态"></a>任务状态</h3><p>状态相关的变量有3个</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">volatile</span> <span class="keyword">long</span> state;    <span class="comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span></span><br><span class="line"> <span class="keyword">int</span> exit_state;</span><br><span class="line"> <span class="keyword">unsigned</span> <span class="keyword">int</span> flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_RUNNING                    0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_INTERRUPTIBLE              1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_UNINTERRUPTIBLE            2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_STOPPED                  4</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __TASK_TRACED                   8</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_DEAD                       16</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_ZOMBIE                     32</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> EXIT_TRACE                      (EXIT_ZOMBIE | EXIT_DEAD)</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_DEAD                       64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKEKILL                   128</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_WAKING                     256</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_PARKED                     512</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NOLOAD                     1024</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_NEW                        2048</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TASK_STATE_MAX                  4096</span></span><br></pre></td></tr></table></figure>
-<p>任务的切换流程</p>
-<p><img src="/images/202012/linux_task_state.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//是否在运行队列上</span></span><br><span class="line"><span class="keyword">int</span>        on_rq;</span><br><span class="line"><span class="comment">//优先级</span></span><br><span class="line"><span class="keyword">int</span>        prio;</span><br><span class="line"><span class="keyword">int</span>        static_prio;</span><br><span class="line"><span class="keyword">int</span>        normal_prio;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      rt_priority;</span><br><span class="line"><span class="comment">//调度器类</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>  *<span class="title">sched_class</span>;</span></span><br><span class="line"><span class="comment">//调度实体</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>    <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>    <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>    <span class="title">dl</span>;</span></span><br><span class="line"><span class="comment">//调度策略</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span>      policy;</span><br><span class="line"><span class="comment">//可以使用哪些CPU</span></span><br><span class="line"><span class="keyword">int</span>        nr_cpus_allowed;</span><br><span class="line"><span class="keyword">cpumask_t</span>      cpus_allowed;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_info</span>    <span class="title">sched_info</span>;</span></span><br></pre></td></tr></table></figure>
-<h3 id="结构体内容概览"><a href="#结构体内容概览" class="headerlink" title="结构体内容概览"></a>结构体内容概览</h3><p><img src="/images/202012/linux_task_content.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h3 id="运行统计信息"><a href="#运行统计信息" class="headerlink" title="运行统计信息"></a>运行统计信息</h3><p>在进程的运行过程中，会有一些统计量，具体你可以看下面的列表。这里面有进程在用户态和内核态消耗的时间、上下文切换的次数等等。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">u64        utime;<span class="comment">//用户态消耗的CPU时间</span></span><br><span class="line">u64        stime;<span class="comment">//内核态消耗的CPU时间</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nvcsw;<span class="comment">//自愿(voluntary)上下文切换计数</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span>      nivcsw;<span class="comment">//非自愿(involuntary)上下文切换计数</span></span><br><span class="line">u64        start_time;<span class="comment">//进程启动时间，不包含睡眠时间</span></span><br><span class="line">u64        real_start_time;<span class="comment">//进程启动时间，包含睡眠时间</span></span><br></pre></td></tr></table></figure>
-<h3 id="进程亲缘关系"><a href="#进程亲缘关系" class="headerlink" title="进程亲缘关系"></a>进程亲缘关系</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">/* real parent process */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span> <span class="comment">/* recipient of SIGCHLD, wait4() reports */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span>      <span class="comment">/* list of my children */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>       <span class="comment">/* linkage in my parent's children list */</span></span><br></pre></td></tr></table></figure>
-<p>保存了父进程、子进程、兄弟进程的信息。</p>
-<p><img src="/images/202012/linux_task_parent.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>real_parent 和 parent 是一样的，但是也会有另外的情况存在。例如，bash 创建一个进程，那进程的 parent 和 real_parent 就都是 bash。如果在 bash 上使用 GDB 来 debug 一个进程，这个时候 GDB 是 parent，bash 是这个进程的 real_parent。 具体如何实现的， 还需要深入了解代码后才能清楚。</p>
-<h3 id="进程权限"><a href="#进程权限" class="headerlink" title="进程权限"></a>进程权限</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Objective and real subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">real_cred</span>;</span></span><br><span class="line"><span class="comment">/* Effective (overridable) subjective task credentials (COW): */</span></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">cred</span>;</span></span><br></pre></td></tr></table></figure>
-<p>real_cred 就是说明谁能操作我这个进程，而 cred 就是说明我这个进程能够操作谁。</p>
-<p>cred结构保存的基本上就是一些用户或者组的id， 权限控制时，通过比较这些id来确定是否拥有权限。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cred</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kuid_t</span>          uid;            <span class="comment">/* real UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          gid;            <span class="comment">/* real GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          suid;           <span class="comment">/* saved UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          sgid;           <span class="comment">/* saved GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          euid;           <span class="comment">/* effective UID of the task */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          egid;           <span class="comment">/* effective GID of the task */</span></span><br><span class="line">        <span class="keyword">kuid_t</span>          fsuid;          <span class="comment">/* UID for VFS ops */</span></span><br><span class="line">        <span class="keyword">kgid_t</span>          fsgid;          <span class="comment">/* GID for VFS ops */</span></span><br><span class="line">......</span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_inheritable; <span class="comment">/* caps our children can inherit */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_permitted;  <span class="comment">/* caps we're permitted */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_effective;  <span class="comment">/* caps we can actually use */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_bset;       <span class="comment">/* capability bounding set */</span></span><br><span class="line">        <span class="keyword">kernel_cap_t</span>    cap_ambient;    <span class="comment">/* Ambient capability set */</span></span><br><span class="line">......</span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
-<p>第一个是 uid 和 gid，注释是 real user/group id。一般情况下，谁启动的进程，就是谁的 ID。但是权限审核的时候，往往不比较这两个，也就是说不大起作用。</p>
-<p>第二个是 euid 和 egid，注释是 effective user/group id。一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。</p>
-<p>第三个是 fsuid 和 fsgid，也就是 filesystem user/group id。这个是对文件操作会审核的权限。一般说来，fsuid、euid，和 uid 是一样的，fsgid、egid，和 gid 也是一样的。因为谁启动的进程，就应该审核启动的用户到底有没有这个权限。</p>
-<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>每个进程都有自己独立的虚拟内存空间，这需要有一个数据结构来表示，就是 mm_struct。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">mm</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">active_mm</span>;</span></span><br></pre></td></tr></table></figure>
-<h3 id="文件与文件系统"><a href="#文件与文件系统" class="headerlink" title="文件与文件系统"></a>文件与文件系统</h3><p>每个进程有一个文件系统的数据结构，还有一个打开文件的数据结构。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Filesystem information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fs_struct</span>                *<span class="title">fs</span>;</span></span><br><span class="line"><span class="comment">/* Open file information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>             *<span class="title">files</span>;</span></span><br></pre></td></tr></table></figure>
-<p><img src="/images/202012/linux_task_content2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
+<ul>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
+</ul>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十五) - 内存管理</title>
+    <url>/2021/01/06/linux15-mm/</url>
+    <content><![CDATA[<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><p>每个进程应该自己的内存空间。内存空间都是独立的、相互隔离的。对于每个进程来讲，看起来应该都是独占的。每个程序对内存的操作都是一致的，内存的管理是进程无关的， 不会因为进程的不同而区别对待，而都是一视同仁的。在最开始的时候，已经了解到程序对内存的操作都是通过虚拟地址实现的，就比如一个大数组，比如超过8kb的大小，已经超过一个页了，但是虚拟地址一定是连续的。只是物理地址就不大可能会是连续的了，通过分段分页的虚拟地址映射实现了物理地址的复用。</p>
+<a id="more"></a>
+<h2 id="独立内存空间"><a href="#独立内存空间" class="headerlink" title="独立内存空间"></a>独立内存空间</h2><p>程序的二进制格式都是一致的，仅仅内容大小不一样而已。进程就是运行的程序，运行过程中还会产生一些数据，运行程序和数据都是放在内存里面的。内存有分页机制，通过虚拟地址和物理的地址的映射可以定位到物理地址。物理地址对进程是不可见的，操作系统的内存管理帮忙作了工作。操作系统会给进程分配一个虚拟地址。所有进程看到的这个地址都是一样的，里面的内存都是从 0 开始编号。在程序里面，指令写入的地址是虚拟地址。当程序要访问虚拟地址的时候，由内核的数据结构进行转换，转换成不同的物理地址，这样不同的进程运行的时候，写入的是不同的物理地址，这样就不会冲突了。</p>
+<h2 id="规划虚拟地址空间"><a href="#规划虚拟地址空间" class="headerlink" title="规划虚拟地址空间"></a>规划虚拟地址空间</h2><p>操作系统的内存管理，主要分为三个方面。</p>
+<p>第一，物理内存的管理。</p>
+<p>第二，虚拟地址的管理。</p>
+<p>第三，虚拟地址和物理地址如何映射。</p>
+<p>如果是 32 位，有 2^32 = 4G 的内存空间都是我的，不管内存是不是真的有 4G。如果是 64 位，在 x86_64 下面，其实只使用了 48 位，那也挺恐怖的。48 位地址长度也就是对应了 256TB 的地址空间。至少目前还不需求这么大，过个十几二十年时间没准会突破吧，历史经验。</p>
+<p>虚拟空间一切二，一部分用来放内核的东西，称为内核空间，一部分用来放进程的东西，称为用户空间。用户空间在下，在低地址.内核空间在上，在高地址.</p>
+<p>待续。。。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
