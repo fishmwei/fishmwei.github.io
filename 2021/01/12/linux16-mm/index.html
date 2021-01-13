@@ -20,19 +20,24 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。 工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。 我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。 欢迎交流！ 行动，才不会被动! 欢迎关注个人公众号 微信 -&amp;gt; 搜索 -&amp;gt; fishmwei，沟通交流。">
+  <meta name="description" content="内存映射分段机制在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于">
-<meta property="og:url" content="http://fishmwei.github.io/2020/06/20/about/index.html">
+<meta property="og:title" content="《趣谈linux操作系统》小结(十六) - 内存映射">
+<meta property="og:url" content="http://fishmwei.github.io/2021/01/12/linux16-mm/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。 工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。 我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。 欢迎交流！ 行动，才不会被动! 欢迎关注个人公众号 微信 -&amp;gt; 搜索 -&amp;gt; fishmwei，沟通交流。">
+<meta property="og:description" content="内存映射分段机制在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-11T02:38:00.912Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_seg.jpg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_page.jpg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_page_sec.jpg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_page_64.jpg">
+<meta property="og:updated_time" content="2021-01-13T01:28:11.584Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于">
-<meta name="twitter:description" content="欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。 工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。 我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。 欢迎交流！ 行动，才不会被动! 欢迎关注个人公众号 微信 -&amp;gt; 搜索 -&amp;gt; fishmwei，沟通交流。">
+<meta name="twitter:title" content="《趣谈linux操作系统》小结(十六) - 内存映射">
+<meta name="twitter:description" content="内存映射分段机制在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202101/mm_seg.jpg">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/06/20/about/">
+<link rel="canonical" href="http://fishmwei.github.io/2021/01/12/linux16-mm/">
 
 
 <script id="page-configurations">
@@ -45,7 +50,7 @@
   };
 </script>
 
-  <title>关于 | IT攻城狮小明</title>
+  <title>《趣谈linux操作系统》小结(十六) - 内存映射 | IT攻城狮小明</title>
   
 
 
@@ -184,7 +189,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/06/20/about/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2021/01/12/linux16-mm/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -197,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          关于
+          《趣谈linux操作系统》小结(十六) - 内存映射
         </h1>
 
         <div class="post-meta">
@@ -207,7 +212,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-06-20 14:21:13" itemprop="dateCreated datePublished" datetime="2020-06-20T14:21:13+08:00">2020-06-20</time>
+              <time title="创建时间：2021-01-12 19:11:21" itemprop="dateCreated datePublished" datetime="2021-01-12T19:11:21+08:00">2021-01-12</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,7 +220,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/关于/" itemprop="url" rel="index"><span itemprop="name">关于</span></a>
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
                 </span>
             </span>
 
@@ -228,8 +233,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/06/20/about/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/20/about/" itemprop="commentCount"></span>
+    <a title="valine" href="/2021/01/12/linux16-mm/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/01/12/linux16-mm/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -244,10 +249,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
+        <h1 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h1><h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><p>在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。</p>
+<a id="more"></a>
+<p>分段就是通过段选择子+段内偏移量来定位物理地址，通过段选择子获取段描述符，段描述符存在GDT 全局描述符表中，包含了段的起始地址、大小、权限标志等。</p>
+<p><img src="/images/202101/mm_seg.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>对于物理内存，操作系统把它分成一块一块大小相同的页，这样更方便管理，例如有的内存页面长时间不用了，可以暂时写到硬盘上，称为换出。一旦需要的时候，再加载进来，叫做换入。这样可以扩大可用物理内存的大小，提高物理内存的利用率。</p>
+<p>这个换入和换出都是以页为单位的。页面的大小一般为 4KB。为了能够定位和访问每个页，需要有个页表，保存每个页的起始地址，再加上在页内的偏移量，组成线性地址，就能对于内存中的每个位置进行访问了。</p>
+<p><img src="/images/202101/mm_page.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>虚拟地址分为两部分，页号和页内偏移。页号作为页表的索引，页表包含物理页每页所在物理内存的基地址。这个基地址与页内偏移的组合就形成了物理内存地址。原理和分段的类似， 之前是段表，这里是页表。</p>
+<p>但是，每个页的大小为4K，对于32位系统，支持4GB的寻址空间，那么就有1MB个页，每个页对于一个页表项(每项4字节)，需要4MB的内存存储这个映射。显然空间浪费太大，而且并不是每个页表都会被程序使用到。那么就有了页表分级。</p>
+<p>把这 4M 分成 1K（1024）个 4K，每个 4K 又能放在一页里面，这样 1K 个 4K 就是 1K 个页，这 1K 个页也需要一个表进行管理，我们称为页目录表，这个页目录表里面有 1K 项，每项 4 个字节，页目录表大小也是 4K。页目录有 1K 项，用 10 位就可以表示访问页目录的哪一项。这一项其实对应的是一整页的页表项，也即 4K 的页表项。每个页表项也是 4 个字节，因而一整页的页表项是 1K 个。再用 10 位就可以表示访问页表项的哪一项，页表项中的一项对应的就是一个页，是存放数据的页，这个页的大小是 4K，用 12 位可以定位这个页内的任何一个位置。</p>
+<p><img src="/images/202101/mm_page_sec.jpg" alt="图片替换文本" width="400" height="513" align="bottom"></p>
+<p>尽管看起来表示全部页表的项更多了，占用的空间会更大。但是，进程如果没有用到所有的地址，很多页表是不需要创建的。如果只使用页表，也需要完整的 1M 个页表项共 4M 的内存，但是如果使用了页目录，页目录需要 1K 个全部分配，占用内存 4K，但是里面只有一项使用了。到了页表项，只需要分配能够管理那个数据页的页表项页就可以了，也就是说，最多 4K，这样内存就节省多了。</p>
+<p>64位系统表示的范围更大，就多分几级的页表。具体的是4级目录。通过分级目录节约了内存。分别是全局页目录项 PGD（Page Global Directory）、上层页目录项 PUD（Page Upper Directory）、中间页目录项 PMD（Page Middle Directory）和页表项 PTE（Page Table Entry）。</p>
+<p><img src="/images/202101/mm_page_64.jpg" alt="图片替换文本" width="400" height="513" align="bottom"></p>
+<p>内存分页管理的内容：</p>
+<ul>
+<li><p>第一，虚拟内存空间的管理，将虚拟内存分成大小相等的页；</p>
+</li>
+<li><p>第二，物理内存的管理，将物理内存分成大小相等的页；</p>
+</li>
+<li><p>第三，内存映射，将虚拟内存页和物理内存页映射起来，并且在内存紧张的时候可以换出到硬盘中。</p>
+</li>
+</ul>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -266,13 +290,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/17/memberoffsetof/" rel="prev" title="结构体偏移">
-      <i class="fa fa-chevron-left"></i> 结构体偏移
+    <a href="/2021/01/06/linux15-mm/" rel="prev" title="《趣谈linux操作系统》小结(十五) - 内存管理">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(十五) - 内存管理
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/22/reflection4c/" rel="next" title="《C程序设计语言》读后感">
-      《C程序设计语言》读后感 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -332,6 +353,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#内存映射"><span class="nav-number">1.</span> <span class="nav-text">内存映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分段机制"><span class="nav-number">1.1.</span> <span class="nav-text">分段机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分页机制"><span class="nav-number">1.2.</span> <span class="nav-text">分页机制</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
