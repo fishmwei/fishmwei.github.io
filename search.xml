@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Deprecated js库</title>
+    <url>/2019/05/24/Deprecated-Js/</url>
+    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<hr>
+<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>JS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CocoaLumberJack源码学习</title>
     <url>/2019/05/29/lumberjack-iOS/</url>
     <content><![CDATA[<p>CocoaLumberJack是一个用于mac或者iOS的日志库，简单易用， 可扩展。</p>
@@ -42,24 +76,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -105,8 +121,8 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>React-Native</tag>
         <tag>工具</tag>
+        <tag>React-Native</tag>
         <tag>Git</tag>
       </tags>
   </entry>
@@ -133,22 +149,6 @@
       <tags>
         <tag>React-Native</tag>
         <tag>Bugly</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Deprecated js库</title>
-    <url>/2019/05/24/Deprecated-Js/</url>
-    <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">0524$</span> npm i jQuery </span><br><span class="line">npm WARN deprecated jQuery@1.7.4: This is deprecated. Please use 'jquery' (all lowercase).</span><br><span class="line">npm WARN saveError ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm notice created a lockfile as package-lock.json. You should commit this file.</span><br><span class="line">npm WARN enoent ENOENT: no such file or directory, open '/Volumes/Code/test/0524/package.json'</span><br><span class="line">npm WARN 0524 No description</span><br><span class="line">npm WARN 0524 No repository field.</span><br><span class="line">npm WARN 0524 No README data</span><br><span class="line">npm WARN 0524 No license field.</span><br><span class="line"></span><br><span class="line">+ jQuery@1.7.4</span><br><span class="line">added 1 package from 1 contributor in 0.298s</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<hr>
-<p>其实很简单， 发布前在package.json中添加一个字段 deprecated，就可以了</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">// package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    "deprecated": "This is deprecated. Please use 'jquery' (all lowercase)."</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>JS</tag>
       </tags>
   </entry>
   <entry>
@@ -428,6 +428,31 @@
       </tags>
   </entry>
   <entry>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一次被坑的惨痛经历</title>
     <url>/2020/01/19/problem/</url>
     <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
@@ -485,31 +510,6 @@
       </categories>
   </entry>
   <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>todo</title>
     <url>/2020/02/13/todo/</url>
     <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
@@ -561,18 +561,19 @@
       </categories>
   </entry>
   <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
+    <title>换城市工作切换的感受</title>
+    <url>/2020/06/03/newjob-JOB/</url>
+    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
+<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
+<a id="more"></a>
+<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
+<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
+<p>好了， 先这样。</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
 ]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
   </entry>
   <entry>
     <title>项目性能优化</title>
@@ -612,18 +613,17 @@
       </tags>
   </entry>
   <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
-        <category>关于</category>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -649,19 +649,19 @@
       </categories>
   </entry>
   <entry>
-    <title>换城市工作切换的感受</title>
-    <url>/2020/06/03/newjob-JOB/</url>
-    <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
-<p>这次工作变动比较大，不仅仅更换了公司，还换了工作的城市。从做前端iOS转回到做网络设备安全， 从福建福州来到了湖南长沙，家庭成员也在长沙安顿下来了，福州的房子暂时还空闲着，一方面不舍得出租，另一个方面呢，疫情原因楼市不大景气，目前过着又还房贷、又租房的相对拮据的日子。</p>
-<a id="more"></a>
-<h2 id="聊聊工作"><a href="#聊聊工作" class="headerlink" title="聊聊工作"></a>聊聊工作</h2><p>当前的工作呢，工作内容上算是老本行吧，工作9年多以来，前面4年也都是做网络通信的，先是在锐捷网络，后面到南京华为。到现在的网络设备。工作还算是比较容易上手，C语言、网络知识的底子还在。公司及工作环境，嗯，毕竟只有几十人的公司，环境肯定没有之前好了。工作氛围上，基本上就是小公司有大公司的区别。工作流程少，需求来了就干，代码及软件文档、开发流程等存在很多需要改进的地方吧。这些就不多讲了，唯一的好处就是加班少吧，哈哈。管理上，算是扁平化管理吧，大小领导都可能来需求。工作安排不是很清晰，项目计划什么的比较欠缺点，当然也许我级别低了解不多。同事沟通合作上相对是很简单，老带新吧。同事水平算是参差不齐吧，有些经验老到，有些经验不足。 毕竟工作年限挺久了，有了相当的工作经验，从iOS切换过来感觉没有什么不适应。</p>
-<h2 id="谈谈生活"><a href="#谈谈生活" class="headerlink" title="谈谈生活"></a>谈谈生活</h2><p>天气上呢，就觉得长沙天暗的晚吧，毕竟和福州差了2、3个时区.冬天阴冷，春夏雨水多，潮湿。饮食上，各种辣椒吧，自己煮饭还好。也许是我比较宅，没发现娱乐之都有多么的娱乐。长沙房价呢，相比较福州真是便宜了。5年前在福州买房，单价都1.6w多了。现在长沙，均价也就1w出头。目前长沙继续限购，我呢也没有资格购房，等个两年吧。先适应适应生活，听说长沙的教育不错，本人出生农村，对这个城市里的教育资源怎么个好坏真没有概念。</p>
-<p>好了， 先这样。</p>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
 ]]></content>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
+      <categories>
+        <category>关于</category>
+      </categories>
   </entry>
   <entry>
     <title>《C程序设计语言》读后感</title>
@@ -910,32 +910,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-7</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
-<a id="more"></a>
-<ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
-</ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
-<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-6</title>
     <url>/2020/07/24/reflection4self-6/</url>
     <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
@@ -947,55 +921,6 @@
 <p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>近期工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
-<a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1034,31 +959,123 @@
       </categories>
   </entry>
   <entry>
-    <title>awk命令使用</title>
-    <url>/2020/09/30/awk/</url>
-    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
+    <title>程序员自我修养读后感-7</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
 <a id="more"></a>
-<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
-<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
-<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
-<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
-<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
-<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
-<p>可能的语句形式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
-<p>语句指定由分号、换行符或者括号分隔。</p>
-<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
-<p>还支持运算符运算。</p>
-<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
-<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
-<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
-<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
-<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
 <blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+<a id="more"></a>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>学以致用</title>
+    <url>/2020/08/28/skills/</url>
+    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+<a id="more"></a>
+<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
+<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>grep命令使用</title>
+    <url>/2020/09/19/grep/</url>
+    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
+<a id="more"></a>
+<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
+<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
+<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
+<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
+<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
+<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
+<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
+<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
+<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
+<pre><code>0  有匹配的行
+1  没有任何行匹配
+&gt;1  命令执行错误
+</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
+<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
+</code></pre><blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1133,6 +1150,70 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+<a id="more"></a>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>awk命令使用</title>
+    <url>/2020/09/30/awk/</url>
+    <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
+<a id="more"></a>
+<h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">awk OPTIONS PATTERN_ACTION files</span><br></pre></td></tr></table></figure>
+<p>和grep、sed差不多都是这样的格式。 指定awk通过文件读取内容，每一行都根据模式作匹配，然后作相应的动作。</p>
+<h2 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-Ffs 指定分隔符为fs， 默认是空格/tab</span><br><span class="line">	awk -F":" '&#123; print $1 &#125;' /etc/passwd</span><br><span class="line">-v val=value 设置变量val的值</span><br><span class="line">	awk -v count=10 'BEGIN&#123;print "start ", count&#125; /this/ &#123;count++;print $1 $2 $3&#125; END&#123;print count"lines"&#125;' aw</span><br><span class="line">-f file 指定命令的来源文件</span><br></pre></td></tr></table></figure>
+<h2 id="模式动作"><a href="#模式动作" class="headerlink" title="模式动作"></a>模式动作</h2><p>格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">'pattern &#123; action &#125;'</span><br></pre></td></tr></table></figure>
+<p>A  missing  {  action  } means print the line; a missing pattern always matches.</p>
+<p>action是一系列的语句， 类似C语言的语法。 可以调用内置的函数 比如 length， 还有条件语句、循环语句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">awk &apos; &#123; if(length &gt; 10) print NR&#125;&apos; file // 输出满足条件的行</span><br></pre></td></tr></table></figure>
+<p>可能的语句形式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">if( expression ) statement [ else statement ]</span><br><span class="line">while( expression ) statement</span><br><span class="line">for( expression ; expression ; expression ) statement</span><br><span class="line">for( var in array ) statement</span><br><span class="line">do statement while( expression )</span><br><span class="line">break</span><br><span class="line">continue</span><br><span class="line">&#123; [ statement ... ] &#125;</span><br><span class="line">expression              # commonly var = expression</span><br><span class="line">print [ expression-list ] [ &gt; expression ]</span><br><span class="line">printf format [ , expression-list ] [ &gt; expression ]</span><br><span class="line">return [ expression ]</span><br><span class="line">next                    # skip remaining patterns on this input line</span><br><span class="line">nextfile                # skip rest of this file, open next, start at top</span><br><span class="line">delete array[ expression ]# delete an array element</span><br><span class="line">delete array            # delete all elements of array</span><br><span class="line">exit [ expression ]     # exit immediately; status is expression</span><br></pre></td></tr></table></figure>
+<p>语句指定由分号、换行符或者括号分隔。</p>
+<p>一个空的语句，代表整行 $0。字符串用双引号包含着。</p>
+<p>还支持运算符运算。</p>
+<p>变量可以为常量、数组或者域。 默认被初始化为null 字符串。数组元素可以是字符串，而不必须是数字。数组还指出多维下标。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo | awk &apos;BEGIN&#123;s[3,2,5]=100; &#123;print  s[3,2,5]&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+<p>print函数可以输出内容到标准输出， 也可以输出到文件 &gt; / &gt;&gt; 或者管道。</p>
+<p>有些全局的，而不是针对行的动作， 可以通过BEGIN和END块来执行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
+<p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(二)</title>
     <url>/2020/11/18/linux2/</url>
     <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
@@ -1143,56 +1224,6 @@
 <p>Linux 命令行</p>
 <p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>学以致用</title>
-    <url>/2020/08/28/skills/</url>
-    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
-<a id="more"></a>
-<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
-<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>grep命令使用</title>
-    <url>/2020/09/19/grep/</url>
-    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
-<a id="more"></a>
-<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
-<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
-<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
-<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
-<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
-<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
-<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
-<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
-<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
-<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
-<pre><code>0  有匹配的行
-1  没有任何行匹配
-&gt;1  命令执行错误
-</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
-<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
-<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
-</code></pre><blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1234,28 +1265,23 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+    <title>《趣谈linux操作系统》小结(四)</title>
+    <url>/2020/12/08/linux4/</url>
+    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
 <a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
+<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
+<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
+<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
+<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
+<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
+<p>16位的处理器大概就是这样子的。</p>
+<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
+<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
+<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1292,6 +1318,29 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(七)</title>
+    <url>/2020/12/10/linux7/</url>
+    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
+<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
+<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
+<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
+<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
+<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
+<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(六)</title>
     <url>/2020/12/09/linux6/</url>
     <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
@@ -1307,55 +1356,6 @@
 <p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
 <p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
 <p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(四)</title>
-    <url>/2020/12/08/linux4/</url>
-    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
-<a id="more"></a>
-<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
-<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
-<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
-<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
-<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
-<p>16位的处理器大概就是这样子的。</p>
-<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
-<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
-<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(七)</title>
-    <url>/2020/12/10/linux7/</url>
-    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
-<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
-<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
-<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
-<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
-<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
-<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1475,42 +1475,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
-    <url>/2020/12/23/linux-schedule-active/</url>
-    <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
-<a id="more"></a>
-<h1 id="主动调度"><a href="#主动调度" class="headerlink" title="主动调度"></a>主动调度</h1><p>在操作外部设备的时候，一般需要让出CPU。</p>
-<p>主动调度，在linux源码内部调用的schedule函数来主动让出cpu<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">asmlinkage __visible <span class="keyword">void</span> __<span class="function">sched <span class="title">schedule</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">tsk</span> = <span class="title">current</span>;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  sched_submit_work(tsk);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    preempt_disable();</span><br><span class="line">    __schedule(<span class="literal">false</span>);</span><br><span class="line">    sched_preempt_enable_no_resched();</span><br><span class="line">  &#125; <span class="keyword">while</span> (need_resched());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>主要调动逻辑在__schedule函数，步骤：</p>
-<ul>
-<li>取出当前cpu的任务队列rq,rq里面有不同的任务队列 cfs, rt, dl等。</li>
-<li>获取下一个执行任务</li>
-<li>如果下一个执行任务和当前任务不一致，进行上下文切换</li>
-</ul>
-<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>上下文切换主要干两件事情，一是切换进程空间，也即虚拟内存；二是切换寄存器和 CPU 上下文。</p>
-<p>寄存器和栈的切换，它调用到了 __switch_to_asm。这是一段汇编代码，主要用于栈的切换。<br>对于 32 位操作系统来讲，切换的是栈顶指针 esp。<br>对于 64 位操作系统来讲，切换的是栈顶指针 rsp。</p>
-<p>在 x86 体系结构中，提供了一种以硬件的方式进行进程切换的模式，对于每个进程，x86 希望在内存里面维护一个 TSS（Task State Segment，任务状态段）结构。这里面有所有的寄存器。</p>
-<p>另外，还有一个特殊的寄存器 TR（Task Register，任务寄存器），指向某个进程的 TSS。更改 TR 的值，将会触发硬件保存 CPU 所有寄存器的值到当前进程的 TSS 中，然后从新进程的 TSS 中读出所有寄存器值，加载到 CPU 对应的寄存器中。</p>
-<p>所谓的进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</p>
-<h2 id="指令指针的保存与恢复"><a href="#指令指针的保存与恢复" class="headerlink" title="指令指针的保存与恢复"></a>指令指针的保存与恢复</h2><p>实际在切换的过程中，指令指针寄存器的值没有改变，只是其他寄存器切成了新进程的值，这样指令指针寄存器运行时，用的全部都是新进程相关的值，也就理所当然的成为新进程的指令指针寄存器。挺绕的，实际就是人还是同一个人，在不同环境下他的地位不一样了，是父亲，是儿子，是丈夫。。。 </p>
-<h1 id="抢占式调度"><a href="#抢占式调度" class="headerlink" title="抢占式调度"></a>抢占式调度</h1><p>常见的现象就是一个进程执行时间太长了，是时候切换到另一个进程了。在计算机里面有一个时钟，会过一段时间触发一次时钟中断，通知操作系统，时间又过去一个时钟周期，这是个很好的方式，可以查看是否是需要抢占的时间点。</p>
-<p>时钟中断处理函数会调用 scheduler_tick()。函数先取出当前 CPU 的运行队列，然后得到这个队列上当前正在运行中的进程的 task_struct，然后调用这个 task_struct 的调度类的 task_tick 函数。先是调用 sched_slice 函数计算出的 ideal_runtime。判断在这个时间周期内，当前进程占用的时间是否超过了idealtime，超过就需要被抢占了。这个条件之外，还会通过 __pick_first_entity 取出红黑树中最小的进程。如果当前进程的 vruntime 大于红黑树中最小的进程的 vruntime，且差值大于 ideal_runtime，也应该被抢占了。这里只是给任务置了一个标志。</p>
-<p>另外一种现象是当一个进程被唤醒的时候。当 I/O 到来的时候，进程往往会被唤醒。这个时候是一个时机。当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占。这里也只是给当前运行的任务置了一个标志。</p>
-<h2 id="抢占的时机"><a href="#抢占的时机" class="headerlink" title="抢占的时机"></a>抢占的时机</h2><p>真正的抢占还需要时机，也就是需要那么一个时刻，让正在运行中的进程有机会调用一下 __schedule。</p>
-<p>不可能某个进程代码运行着，突然要去调用 __schedule，代码里面不可能这么写，所以一定要规划几个时机，这个时机分为用户态和内核态。</p>
-<h3 id="用户态的抢占时机"><a href="#用户态的抢占时机" class="headerlink" title="用户态的抢占时机"></a>用户态的抢占时机</h3><p>主要是在系统调用返回和中断处理函数返回的时候，如果有标志位，则进行调用 schedule函数进行调度。可以查看函数exit_to_usermode_loop的实现。</p>
-<h3 id="内核态的抢占时机"><a href="#内核态的抢占时机" class="headerlink" title="内核态的抢占时机"></a>内核态的抢占时机</h3><p>对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。</p>
-<p>同样的，内核态处理中断返回时，也可以触发检查抢占，进行schedule调度。</p>
-<p>实际工作中，也用了许多这种设置标记的情况。比如，相同配置连续下发的时候，处理耗时又比较长，每个处理都是不可被中断的。那么，就只能保存最新的那条配置，然后设置标记为需要更新。当配置更新完成后，检查标志位，如果需要更新，再启动新一轮的处理流程。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十)</title>
     <url>/2020/12/21/linux10/</url>
     <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
@@ -1554,55 +1518,33 @@
       </categories>
   </entry>
   <entry>
-    <title>暂时解放了</title>
-    <url>/2021/01/05/sjs/</url>
-    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+    <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
+    <url>/2020/12/23/linux-schedule-active/</url>
+    <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
 <a id="more"></a>
-<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
-<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
-<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
-<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
-<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
-<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
-<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
-<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
-<p>注意身体，伙伴们。 （20201223写）</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
-    <url>/2020/12/28/linux14-thread/</url>
-    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
-<a id="more"></a>
-<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
-<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
-<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
-<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
-<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
-<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
-<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
+<h1 id="主动调度"><a href="#主动调度" class="headerlink" title="主动调度"></a>主动调度</h1><p>在操作外部设备的时候，一般需要让出CPU。</p>
+<p>主动调度，在linux源码内部调用的schedule函数来主动让出cpu<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">asmlinkage __visible <span class="keyword">void</span> __<span class="function">sched <span class="title">schedule</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">tsk</span> = <span class="title">current</span>;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  sched_submit_work(tsk);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    preempt_disable();</span><br><span class="line">    __schedule(<span class="literal">false</span>);</span><br><span class="line">    sched_preempt_enable_no_resched();</span><br><span class="line">  &#125; <span class="keyword">while</span> (need_resched());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要调动逻辑在__schedule函数，步骤：</p>
 <ul>
-<li>files_struct 引用计数加一</li>
-<li>fs_struct 的用户数加一</li>
-<li>sighand_struct 引用计数加一</li>
-<li>mm直接指向了原来的 mm_struct</li>
+<li>取出当前cpu的任务队列rq,rq里面有不同的任务队列 cfs, rt, dl等。</li>
+<li>获取下一个执行任务</li>
+<li>如果下一个执行任务和当前任务不一致，进行上下文切换</li>
 </ul>
-<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
-<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
-<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
-<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>上下文切换主要干两件事情，一是切换进程空间，也即虚拟内存；二是切换寄存器和 CPU 上下文。</p>
+<p>寄存器和栈的切换，它调用到了 __switch_to_asm。这是一段汇编代码，主要用于栈的切换。<br>对于 32 位操作系统来讲，切换的是栈顶指针 esp。<br>对于 64 位操作系统来讲，切换的是栈顶指针 rsp。</p>
+<p>在 x86 体系结构中，提供了一种以硬件的方式进行进程切换的模式，对于每个进程，x86 希望在内存里面维护一个 TSS（Task State Segment，任务状态段）结构。这里面有所有的寄存器。</p>
+<p>另外，还有一个特殊的寄存器 TR（Task Register，任务寄存器），指向某个进程的 TSS。更改 TR 的值，将会触发硬件保存 CPU 所有寄存器的值到当前进程的 TSS 中，然后从新进程的 TSS 中读出所有寄存器值，加载到 CPU 对应的寄存器中。</p>
+<p>所谓的进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</p>
+<h2 id="指令指针的保存与恢复"><a href="#指令指针的保存与恢复" class="headerlink" title="指令指针的保存与恢复"></a>指令指针的保存与恢复</h2><p>实际在切换的过程中，指令指针寄存器的值没有改变，只是其他寄存器切成了新进程的值，这样指令指针寄存器运行时，用的全部都是新进程相关的值，也就理所当然的成为新进程的指令指针寄存器。挺绕的，实际就是人还是同一个人，在不同环境下他的地位不一样了，是父亲，是儿子，是丈夫。。。 </p>
+<h1 id="抢占式调度"><a href="#抢占式调度" class="headerlink" title="抢占式调度"></a>抢占式调度</h1><p>常见的现象就是一个进程执行时间太长了，是时候切换到另一个进程了。在计算机里面有一个时钟，会过一段时间触发一次时钟中断，通知操作系统，时间又过去一个时钟周期，这是个很好的方式，可以查看是否是需要抢占的时间点。</p>
+<p>时钟中断处理函数会调用 scheduler_tick()。函数先取出当前 CPU 的运行队列，然后得到这个队列上当前正在运行中的进程的 task_struct，然后调用这个 task_struct 的调度类的 task_tick 函数。先是调用 sched_slice 函数计算出的 ideal_runtime。判断在这个时间周期内，当前进程占用的时间是否超过了idealtime，超过就需要被抢占了。这个条件之外，还会通过 __pick_first_entity 取出红黑树中最小的进程。如果当前进程的 vruntime 大于红黑树中最小的进程的 vruntime，且差值大于 ideal_runtime，也应该被抢占了。这里只是给任务置了一个标志。</p>
+<p>另外一种现象是当一个进程被唤醒的时候。当 I/O 到来的时候，进程往往会被唤醒。这个时候是一个时机。当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占。这里也只是给当前运行的任务置了一个标志。</p>
+<h2 id="抢占的时机"><a href="#抢占的时机" class="headerlink" title="抢占的时机"></a>抢占的时机</h2><p>真正的抢占还需要时机，也就是需要那么一个时刻，让正在运行中的进程有机会调用一下 __schedule。</p>
+<p>不可能某个进程代码运行着，突然要去调用 __schedule，代码里面不可能这么写，所以一定要规划几个时机，这个时机分为用户态和内核态。</p>
+<h3 id="用户态的抢占时机"><a href="#用户态的抢占时机" class="headerlink" title="用户态的抢占时机"></a>用户态的抢占时机</h3><p>主要是在系统调用返回和中断处理函数返回的时候，如果有标志位，则进行调用 schedule函数进行调度。可以查看函数exit_to_usermode_loop的实现。</p>
+<h3 id="内核态的抢占时机"><a href="#内核态的抢占时机" class="headerlink" title="内核态的抢占时机"></a>内核态的抢占时机</h3><p>对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。</p>
+<p>同样的，内核态处理中断返回时，也可以触发检查抢占，进行schedule调度。</p>
+<p>实际工作中，也用了许多这种设置标记的情况。比如，相同配置连续下发的时候，处理耗时又比较长，每个处理都是不可被中断的。那么，就只能保存最新的那条配置，然后设置标记为需要更新。当配置更新完成后，检查标志位，如果需要更新，再启动新一轮的处理流程。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1657,11 +1599,29 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十八) -物理内存管理</title>
-    <url>/2021/01/20/linux18-pmm/</url>
-    <content><![CDATA[<h1 id="物理内存管理"><a href="#物理内存管理" class="headerlink" title="物理内存管理"></a>物理内存管理</h1><h2 id="物理内存的组织方式"><a href="#物理内存的组织方式" class="headerlink" title="物理内存的组织方式"></a>物理内存的组织方式</h2><p>把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct page 结构。整个物理内存的布局就非常简单、易管理，这就是最经典的平坦内存模型（Flat Memory Model）。</p>
-<p>内存是一整块的，对内存的访问是通过总线的，多个CPU都需要通过总线访问内存，总线会成为瓶颈，这种方式为对称多处理器。后来有了一种更高级的模式，NUMA（Non-uniform memory access），非一致内存访问。在这种模式下，内存不是一整块。每个 CPU 都有自己的本地内存，CPU 访问本地内存不用过总线，因而速度要快很多，每个 CPU 和内存在一起，称为一个 NUMA 节点。但是，在本地内存不足的情况下，每个 CPU 都可以去另外的 NUMA 节点申请内存，这个时候访问延时就会比较长。内存模型就变成了非连续内存模型，管理起来就复杂一些。再后来，支持热插拔内存，不连续成为常态，于是就有了稀疏内存模型。</p>
-<h2 id="TODO-待续"><a href="#TODO-待续" class="headerlink" title="TODO  待续"></a>TODO  待续</h2><blockquote><p>行动，才不会被动!</p>
+    <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
+    <url>/2020/12/28/linux13-processnew/</url>
+    <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
+<a id="more"></a>
+<ul>
+<li>申请新的task_struct， 申请新的内核栈空间，赋值给 task_struct 的 void *stack 成员变量；拷贝task_struct的内容， 调用 setup_thread_stack 设置 thread_info。</li>
+<li>调用copy_creds，设置权限相关的配置</li>
+<li>重新设置进程运行的统计量</li>
+<li>设置调度相关的变量 sched_fork， 设置状态、优先级、运行量，调度类等。是否可抢占。</li>
+<li>初始化与文件和文件系统相关的变量。复制一个进程打开的文件信息。复制一个进程的目录信息。</li>
+<li>初始化与信号相关的变量。 拷贝信号处理函数</li>
+<li>复制进程内存空间</li>
+<li>分配 pid，设置 tid，group_leader，并且建立进程之间的亲缘关系。</li>
+</ul>
+<p>第二步，唤醒新的进程wake_up_new_task。</p>
+<ul>
+<li>将进程的状态设置为 TASK_RUNNING</li>
+<li>将 sched_entity 加入到红黑树里面，然后将 se-&gt;on_rq = 1 设置在队列上。</li>
+<li>调用 check_preempt_curr，看是否能够抢占当前进程。如果可以抢占，给当前进程设置标志。</li>
+</ul>
+<p>OK， fork系统调用结束后，触发抢占。</p>
+<p><img src="/images/202012/linux13_fork.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1670,21 +1630,29 @@
       </categories>
   </entry>
   <entry>
-    <title>墨菲定律的应验</title>
-    <url>/2021/01/25/mofei/</url>
-    <content><![CDATA[<h1 id="墨菲定律的应验"><a href="#墨菲定律的应验" class="headerlink" title="墨菲定律的应验"></a>墨菲定律的应验</h1><p>其实第一次接触这个概念是在科幻电影《星际穿越》里，没看过的同学可以去看一下。“墨菲定律”的根本内容是“凡是可能出错的事有很大几率会出错”，指的是任何一个事件，只要具有大于零的机率，就不能够假设它不会发生。</p>
+    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
+    <url>/2020/12/28/linux14-thread/</url>
+    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
 <a id="more"></a>
-<p>最近呢， 项目里面也有这么个类似的问题出现了。 功能就是就是多线程对数据条目进行管理，根据添加时间对数据项进行删除操作。首先会根据数据项的元信息生成key，按key把数据项的索引信息存入到一张hash表中，数据项的内容存在一个线性的地址池中，索引就是数据项所在地址的下标。一般而言，如果对数据项进行添加删除，需要同时对hash表和地址池进行加锁保护，之前的版本也的确是这样子。结果呢，由于项目的性能不满足需求，同组的同事就希望可以取巧，通过设置标志位的方式，减少对地址池数据项的加锁保护。进行了一系列的操作:</p>
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
 <ul>
-<li>在老化之前读取标志位，如果标志位有效，则对hash表加锁，判断是否达到老化时间，删除hash表项，并修改标志为为0，解锁hash表。删除结束。</li>
-<li>添加的时候加锁查询hash表是否存在表项，如果不存在则添加到hash表中，先解锁hash表。然后再修改标志位为1. 添加结束。</li>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
 </ul>
-<p>本来以为代码跑的是这样子的。<br><img src="/images/202101/mofei0.jpeg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
-<p>结果跑成这样了。</p>
-<p><img src="/images/202101/mofei1.jpeg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
-<p>按数字过一下，应该就可以发现最终标志位和hash表并不是一致的。标志位为1的时候，hash表中不一定有对应的表项。</p>
-<p>多线程，并不是说只有2个线程，是多个线程，这种时序是不可控的。该加锁的东西就加锁,像这种临界资源，一定要确保互斥，不能搞一半放一半的。</p>
-<p>这个问题，同事修改之后还是有做了认真的自验的， 我在自己搭建的环境上也帮忙跑了一两天都没有复现出问题，但是测试那边跑个一段时间就出现了。^_^  写代码的时候先设计好还是很重要的，不能想当然。 后面把锁的范围恢复到之前那样，问题也就不再复现了。。。</p>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1709,6 +1677,93 @@
 <p><img src="/images/202101/mm0.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
 <p><code>cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>暂时解放了</title>
+    <url>/2021/01/05/sjs/</url>
+    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+<a id="more"></a>
+<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
+<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
+<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
+<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
+<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
+<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
+<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
+<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
+<p>注意身体，伙伴们。 （20201223写）</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十八) -物理内存管理</title>
+    <url>/2021/01/20/linux18-pmm/</url>
+    <content><![CDATA[<h1 id="物理内存管理"><a href="#物理内存管理" class="headerlink" title="物理内存管理"></a>物理内存管理</h1><h2 id="物理内存的组织方式"><a href="#物理内存的组织方式" class="headerlink" title="物理内存的组织方式"></a>物理内存的组织方式</h2><p>把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct page 结构。整个物理内存的布局就非常简单、易管理，这就是最经典的平坦内存模型（Flat Memory Model）。</p>
+<a id="more"></a>
+<p>内存是一整块的，对内存的访问是通过总线的，多个CPU都需要通过总线访问内存，总线会成为瓶颈，这种方式为对称多处理器。后来有了一种更高级的模式，NUMA（Non-uniform memory access），非一致内存访问。在这种模式下，内存不是一整块。每个 CPU 都有自己的本地内存，CPU 访问本地内存不用过总线，因而速度要快很多，每个 CPU 和内存在一起，称为一个 NUMA 节点。但是，在本地内存不足的情况下，每个 CPU 都可以去另外的 NUMA 节点申请内存，这个时候访问延时就会比较长。内存模型就变成了非连续内存模型，管理起来就复杂一些。再后来，支持热插拔内存，不连续成为常态，于是就有了稀疏内存模型。</p>
+<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><p>NUMA（Non-uniform memory access）非连续内存访问节点？</p>
+<p>linux源码中，有对应的结构体<code>struct pglist_data</code>，包含了</p>
+<ul>
+<li>node_id</li>
+<li>node_mem_map 就是这个节点的 struct page 数组，用于描述这个节点里面的所有的页；</li>
+<li>node_start_pfn 是这个节点的起始页号</li>
+<li>node_spanned_pages 是这个节点中包含不连续的物理内存地址的页面数  // total sizeof physical pages range including holes</li>
+<li>node_present_pages // total number of physical pages 真正可用的物理页数量</li>
+</ul>
+<p>例如，64M 物理内存隔着一个 4M 的空洞，然后是另外的 64M 物理内存。这样换算成页面数目就是，16K 个页面隔着 1K 个页面，然后是另外 16K 个页面。这种情况下，node_spanned_pages 就是 33K 个页面，node_present_pages 就是 32K 个页面。</p>
+<p>每一个节点分成一个个区域 zone，放在数组 node_zones 里面。这个数组的大小为 MAX_NR_ZONES。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">enum</span> zone_type &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_ZONE_DMA</span></span><br><span class="line">  ZONE_DMA,</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_ZONE_DMA32</span></span><br><span class="line">  ZONE_DMA32,</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  ZONE_NORMAL,</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_HIGHMEM</span></span><br><span class="line">  ZONE_HIGHMEM,</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  ZONE_MOVABLE,</span><br><span class="line">  __MAX_NR_ZONES</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>不同的ZONE有不同的用途，具体的：</p>
+<p>ZONE_DMA 是指可用于作 DMA（Direct Memory Access，直接内存存取）的内存。DMA 是这样一种机制：要把外设的数据读入内存或把内存的数据传送到外设，原来都要通过 CPU 控制完成，但是这会占用 CPU，影响 CPU 处理其他事情，所以有了 DMA 模式。CPU 只需向 DMA 控制器下达指令，让 DMA 控制器来处理数据的传送，数据传送完毕再把信息反馈给 CPU，这样就可以解放 CPU。本人现在所处的项目也有对应的dma的程序，主要用来向控制面传送数据的， 不占用转发面的处理逻辑。间接的实现转发面和控制面的隔离，跟这里的DMA还是有点区别。</p>
+<p>ZONE_NORMAL 是直接映射区，从物理内存到虚拟内存的内核区域，通过加上一个常量直接映射。</p>
+<p>ZONE_HIGHMEM 是高端内存区，对于 32 位系统来说超过 896M 的地方，对于 64 位没必要有的一段区域。</p>
+<p>ZONE_MOVABLE 是可移动区域，通过将物理内存划分为可移动分配区域和不可移动分配区域来避免内存碎片。</p>
+<p>这边对于区域的划分，都是针对物理内存的。</p>
+<p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对于这部分的处理。 TODO:</p>
+<p>就像区域或者页一样，节点也是存在一个数组里面的。 </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pglist_data</span> *<span class="title">node_data</span>[<span class="title">MAX_NUMNODES</span>] __<span class="title">read_mostly</span>;</span> <span class="comment">// numa.c</span></span><br></pre></td></tr></table></figure>
+<h2 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span>;</span></span><br></pre></td></tr></table></figure>
+<p>在一个 zone 里面，zone_start_pfn 表示属于这个 zone 的第一个页。</p>
+<p>spanned_pages = zone_end_pfn - zone_start_pfn，也即 spanned_pages 指的是不管中间有没有物理内存空洞，反正就是最后的页号减去起始的页号。</p>
+<p>present_pages = spanned_pages - absent_pages(pages in holes)，也即 present_pages 是这个 zone 在物理内存中真实存在的所有 page 数目。</p>
+<p>managed_pages = present_pages - reserved_pages，也即 managed_pages 是这个 zone 被伙伴系统管理的所有的 page 数目。</p>
+<p>per_cpu_pageset 用于区分冷热页。如果一个页被加载到 CPU 高速缓存里面，这就是一个热页（Hot Page），CPU 读起来速度会快很多，如果没有就是冷页（Cold Page）。由于每个 CPU 都有自己的高速缓存，因而 per_cpu_pageset 也是每个 CPU 一个。</p>
+<h2 id="页"><a href="#页" class="headerlink" title="页"></a>页</h2><p>物理内存首先是被拆分成页这种单位的。 然后组成区域， 区域再组成节点。 </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">page</span>;</span></span><br></pre></td></tr></table></figure>
+<p>这个结构体是由多个union组成的， 这在嵌入式系统中很常见，一个是为了复用内存，一个是实现类似抽象类/父类的功能。根据内存页被使用的模式，使用对应的成员。</p>
+<h3 id="整页使用"><a href="#整页使用" class="headerlink" title="整页使用"></a>整页使用</h3><p>这一整页的内存，或者直接和虚拟地址空间建立映射关系，我们把这种称为匿名页（Anonymous Page）。或者用于关联一个文件，然后再和虚拟地址空间建立映射关系，这样的文件，我们称为内存映射文件（Memory-mapped File）。</p>
+<p>如果某一页是这种使用模式，则会使用 union 中的以下变量：</p>
+<ul>
+<li>struct address_space *mapping 就是用于内存映射，如果是匿名页，最低位为 1；如果是映射文件，最低位为 0；</li>
+<li>pgoff_t index 是在映射区的偏移量；</li>
+<li>atomic_t _mapcount，每个进程都有自己的页表，这里指有多少个页表项指向了这个页；</li>
+<li>struct list_head lru 表示这一页应该在一个链表上，例如这个页面被换出，就在换出页的链表中；</li>
+<li>compound 相关的变量用于复合页（Compound Page），就是将物理上连续的两个或多个页看成一个独立的大页。</li>
+</ul>
+<h3 id="小块内存使用"><a href="#小块内存使用" class="headerlink" title="小块内存使用"></a>小块内存使用</h3><p>有时候，我们不需要一下子分配这么多的内存，例如分配一个 task_struct 结构，只需要分配小块的内存，去存储这个进程描述结构的对象。为了满足对这种小内存块的需要，Linux 系统采用了一种被称为 slab allocator 的技术，用于分配称为 slab 的一小块内存。它的基本原理是从内存管理模块申请一整块页，然后划分成多个小块的存储池，用复杂的队列来维护这些小块的状态（状态包括：被分配了 / 被放回池子 / 应该被回收）。</p>
+<p>如果某一页是用于分割成一小块一小块的内存进行分配的使用模式，则会使用 union 中的以下变量：</p>
+<ul>
+<li>s_mem 是已经分配了正在使用的 slab 的第一个对象；</li>
+<li>freelist 是池子中的空闲对象；</li>
+<li>rcu_head 是需要释放的列表。</li>
+</ul>
+<p>最后还要看一下页的分配， 涉及到一个内存分配系统 - 伙伴系统。几句话讲不清楚，后面专门搞个文章好好小结一下。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1752,28 +1807,21 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
-    <url>/2020/12/28/linux13-processnew/</url>
-    <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
+    <title>墨菲定律的应验</title>
+    <url>/2021/01/25/mofei/</url>
+    <content><![CDATA[<h1 id="墨菲定律的应验"><a href="#墨菲定律的应验" class="headerlink" title="墨菲定律的应验"></a>墨菲定律的应验</h1><p>其实第一次接触这个概念是在科幻电影《星际穿越》里，没看过的同学可以去看一下。“墨菲定律”的根本内容是“凡是可能出错的事有很大几率会出错”，指的是任何一个事件，只要具有大于零的机率，就不能够假设它不会发生。</p>
 <a id="more"></a>
+<p>最近呢， 项目里面也有这么个类似的问题出现了。 功能就是就是多线程对数据条目进行管理，根据添加时间对数据项进行删除操作。首先会根据数据项的元信息生成key，按key把数据项的索引信息存入到一张hash表中，数据项的内容存在一个线性的地址池中，索引就是数据项所在地址的下标。一般而言，如果对数据项进行添加删除，需要同时对hash表和地址池进行加锁保护，之前的版本也的确是这样子。结果呢，由于项目的性能不满足需求，同组的同事就希望可以取巧，通过设置标志位的方式，减少对地址池数据项的加锁保护。进行了一系列的操作:</p>
 <ul>
-<li>申请新的task_struct， 申请新的内核栈空间，赋值给 task_struct 的 void *stack 成员变量；拷贝task_struct的内容， 调用 setup_thread_stack 设置 thread_info。</li>
-<li>调用copy_creds，设置权限相关的配置</li>
-<li>重新设置进程运行的统计量</li>
-<li>设置调度相关的变量 sched_fork， 设置状态、优先级、运行量，调度类等。是否可抢占。</li>
-<li>初始化与文件和文件系统相关的变量。复制一个进程打开的文件信息。复制一个进程的目录信息。</li>
-<li>初始化与信号相关的变量。 拷贝信号处理函数</li>
-<li>复制进程内存空间</li>
-<li>分配 pid，设置 tid，group_leader，并且建立进程之间的亲缘关系。</li>
+<li>在老化之前读取标志位，如果标志位有效，则对hash表加锁，判断是否达到老化时间，删除hash表项，并修改标志为为0，解锁hash表。删除结束。</li>
+<li>添加的时候加锁查询hash表是否存在表项，如果不存在则添加到hash表中，先解锁hash表。然后再修改标志位为1. 添加结束。</li>
 </ul>
-<p>第二步，唤醒新的进程wake_up_new_task。</p>
-<ul>
-<li>将进程的状态设置为 TASK_RUNNING</li>
-<li>将 sched_entity 加入到红黑树里面，然后将 se-&gt;on_rq = 1 设置在队列上。</li>
-<li>调用 check_preempt_curr，看是否能够抢占当前进程。如果可以抢占，给当前进程设置标志。</li>
-</ul>
-<p>OK， fork系统调用结束后，触发抢占。</p>
-<p><img src="/images/202012/linux13_fork.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>本来以为代码跑的是这样子的。<br><img src="/images/202101/mofei0.jpeg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
+<p>结果跑成这样了。</p>
+<p><img src="/images/202101/mofei1.jpeg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
+<p>按数字过一下，应该就可以发现最终标志位和hash表并不是一致的。标志位为1的时候，hash表中不一定有对应的表项。</p>
+<p>多线程，并不是说只有2个线程，是多个线程，这种时序是不可控的。该加锁的东西就加锁,像这种临界资源，一定要确保互斥，不能搞一半放一半的。</p>
+<p>这个问题，同事修改之后还是有做了认真的自验的， 我在自己搭建的环境上也帮忙跑了一两天都没有复现出问题，但是测试那边跑个一段时间就出现了。^_^  写代码的时候先设计好还是很重要的，不能想当然。 后面把锁的范围恢复到之前那样，问题也就不再复现了。。。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
