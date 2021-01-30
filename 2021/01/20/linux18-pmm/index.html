@@ -27,10 +27,12 @@
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="物理内存管理物理内存的组织方式把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-01-27T12:25:38.525Z">
+<meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_buddy.jpeg">
+<meta property="og:updated_time" content="2021-01-30T03:03:33.861Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(十八) -物理内存管理">
 <meta name="twitter:description" content="物理内存管理物理内存的组织方式把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202101/mm_buddy.jpeg">
 
 <link rel="canonical" href="http://fishmwei.github.io/2021/01/20/linux18-pmm/">
 
@@ -266,7 +268,7 @@
 <p>ZONE_MOVABLE 是可移动区域，通过将物理内存划分为可移动分配区域和不可移动分配区域来避免内存碎片。</p>
 <p>这边对于区域的划分，都是针对物理内存的。</p>
 <p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对于这部分的处理。 TODO:</p>
-<p>就像区域或者页一样，节点也是存在一个数组里面的。 </p>
+<p>就像区域或者页一样，节点也是存在一个数组里面的。 至于这个节点数，跟具体cpu数一致。每个CPU分配一个节点。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pglist_data</span> *<span class="title">node_data</span>[<span class="title">MAX_NUMNODES</span>] __<span class="title">read_mostly</span>;</span> <span class="comment">// numa.c</span></span><br></pre></td></tr></table></figure>
 <h2 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span>;</span></span><br></pre></td></tr></table></figure>
 <p>在一个 zone 里面，zone_start_pfn 表示属于这个 zone 的第一个页。</p>
@@ -293,7 +295,14 @@
 <li>freelist 是池子中的空闲对象；</li>
 <li>rcu_head 是需要释放的列表。</li>
 </ul>
-<p>最后还要看一下页的分配， 涉及到一个内存分配系统 - 伙伴系统。几句话讲不清楚，后面专门搞个文章好好小结一下。</p>
+<h1 id="页分配"><a href="#页分配" class="headerlink" title="页分配"></a>页分配</h1><p>对于要分配比较大的内存，例如到分配页级别的，可以使用伙伴系统（Buddy System）。</p>
+<p>针对页级别的分配，把所有的空闲页分组为 11 个页块链表，每个块链表分别包含很多个大小的页块，有 1、2、4、8、16、32、64、128、256、512 和 1024 个连续页的页块。最大可以申请 1024 个连续页，对应 4MB 大小的连续内存。每个页块的第一个页的物理地址是该页块大小的整数倍。</p>
+<p><img src="/images/202101/mm_buddy.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>在<code>struct zone</code>里面有这样的定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">free_area</span>  <span class="title">free_area</span>[<span class="title">MAX_ORDER</span>];</span></span><br></pre></td></tr></table></figure>
+<p>存储每个区域不同指数级空闲的内存。</p>
+<p>当向内核请求分配 (2^(i-1)，2^i]数目的页块时，按照 2^i 页块请求处理。如果对应的页块链表中没有空闲页块，那我们就在更大的页块链表中去找。当分配的页块中有多余的页时，伙伴系统会根据多余的页块大小插入到对应的空闲页块链表中。</p>
+<p>具体的分配算法可以看alloc_pages_current(mm/mempolicy.c)函数， 其实没有什么高深的， 如我此等常人页看得明白。复杂的东西都是由简单的器件组合而成的。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -378,7 +387,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#物理内存管理"><span class="nav-number">1.</span> <span class="nav-text">物理内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#物理内存的组织方式"><span class="nav-number">1.1.</span> <span class="nav-text">物理内存的组织方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点"><span class="nav-number">1.2.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区域"><span class="nav-number">1.3.</span> <span class="nav-text">区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页"><span class="nav-number">1.4.</span> <span class="nav-text">页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整页使用"><span class="nav-number">1.4.1.</span> <span class="nav-text">整页使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小块内存使用"><span class="nav-number">1.4.2.</span> <span class="nav-text">小块内存使用</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#物理内存管理"><span class="nav-number">1.</span> <span class="nav-text">物理内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#物理内存的组织方式"><span class="nav-number">1.1.</span> <span class="nav-text">物理内存的组织方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点"><span class="nav-number">1.2.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#区域"><span class="nav-number">1.3.</span> <span class="nav-text">区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页"><span class="nav-number">1.4.</span> <span class="nav-text">页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整页使用"><span class="nav-number">1.4.1.</span> <span class="nav-text">整页使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小块内存使用"><span class="nav-number">1.4.2.</span> <span class="nav-text">小块内存使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#页分配"><span class="nav-number">2.</span> <span class="nav-text">页分配</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
