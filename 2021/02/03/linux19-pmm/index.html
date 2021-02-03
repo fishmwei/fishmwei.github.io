@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202102/slabinfo.jpeg">
 <meta property="og:image" content="http://fishmwei.github.io/images/202102/slabnode.jpeg">
-<meta property="og:updated_time" content="2021-02-03T02:03:54.440Z">
+<meta property="og:updated_time" content="2021-02-03T03:26:50.713Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(十九) -物理内存管理">
 <meta name="twitter:description" content="物理内存管理前面讲了内存页的分配机制，还有小块内存的分配机制。">
@@ -258,6 +258,16 @@
 <p>有2个成员用来管理缓存，分别是kmem_cache_cpu 和 kmem_cache_node，它们都是每个 NUMA 节点上有一个，我们只需要看一个节点里面的情况。</p>
 <p><img src="/images/202102/slabnode.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <p>在分配缓存块的时候，要分两种路径，fast path 和 slow path，也就是快速通道和普通通道。其中 kmem_cache_cpu 就是快速通道，kmem_cache_node 是普通通道。每次分配的时候，要先从 kmem_cache_cpu 进行分配。如果 kmem_cache_cpu 里面没有空闲的块，那就到 kmem_cache_node 中进行分配；如果还是没有空闲的块，才去伙伴系统分配新的页。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kmem_cache_cpu</span> &#123;</span></span><br><span class="line">  <span class="keyword">void</span> **freelist;  <span class="comment">/* Pointer to next available object */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> tid;  <span class="comment">/* Globally unique transaction id */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">page</span> *<span class="title">page</span>;</span>  <span class="comment">/* The slab from which we are allocating */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SLUB_CPU_PARTIAL</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">page</span> *<span class="title">partial</span>;</span>  <span class="comment">/* Partially allocated frozen slabs */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在这里，page 指向大内存块的第一个页，缓存块就是从里面分配的。freelist 指向大内存块里面第一个空闲的项。按照上面说的，这一项会有指针指向下一个空闲的项，最终所有空闲的项会形成一个链表。partial 指向的也是大内存块的第一个页，之所以名字叫 partial（部分），就是因为它里面部分被分配出去了，部分是空的。这是一个备用列表，当 page 满了，就会从这里找。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kmem_cache_node</span> &#123;</span></span><br><span class="line">  <span class="keyword">spinlock_t</span> list_lock;</span><br><span class="line">......</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SLUB</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> nr_partial;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">partial</span>;</span></span><br><span class="line">......</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里面也有一个 partial，是一个链表。这个链表里存放的是部分空闲的内存块。这是 kmem_cache_cpu 里面的 partial 的备用列表，如果那里没有，就到这里来找。</p>
+<p>分配整个过程很冗长， 总的来说就是一级级的申请内存，如果申请不到 就到上一级申请，成功之后然后继续申请。</p>
+<h2 id="页面换出"><a href="#页面换出" class="headerlink" title="页面换出"></a>页面换出</h2><p>由于物理内存大小有限，一段时间不被使用的页面会被暂时换出到磁盘，然后将空出的物理内存，交给活跃的进程去使用。</p>
+<h3 id="触发页面换出的时机"><a href="#触发页面换出的时机" class="headerlink" title="触发页面换出的时机"></a>触发页面换出的时机</h3><p>最常见的情况就是，分配内存的时候，发现没有地方了，就试图回收一下。</p>
+<p>还有一种情况，就是作为内存管理系统应该主动去做的，而不能等真的出了事儿再做，这就是内核线程 kswapd。这个内核线程，在系统初始化的时候就被创建。这样它会进入一个无限循环，直到系统停止。在这个循环中，如果内存使用没有那么紧张，那它就可以放心睡大觉；如果内存紧张了，就需要去检查一下内存，看看是否需要换出一些内存页。</p>
+<p>调用链是 balance_pgdat-&gt;kswapd_shrink_node-&gt;shrink_node，是以内存节点为单位的，最后也是调用 shrink_node。所有的页面都被挂在 LRU 列表中。LRU 是 Least Recent Use，也就是最近最少使用。也就是说，这个列表里面会按照活跃程度进行排序，这样就容易把不怎么用的内存页拿出来做处理。shrink_list 会先缩减活跃页面列表，再压缩不活跃的页面列表。对于不活跃列表的缩减，shrink_inactive_list 就需要对页面进行回收；对于匿名页来讲，需要分配 swap，将内存页写入文件系统；对于内存映射关联了文件的，我们需要将在内存中对于文件的修改写回到文件中。</p>
+<p>通过配置cat /proc/sys/vm/swappiness 来确定swap的使用时机，该值默认值是60.<br>swappiness=0的时候表示最大限度使用物理内存，然后才是 swap空间，<br>swappiness＝100的时候表示积极的使用swap分区，并且把内存上的数据及时的搬运到swap空间里面。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -339,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#物理内存管理"><span class="nav-number">1.</span> <span class="nav-text">物理内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小块内存分配"><span class="nav-number">1.1.</span> <span class="nav-text">小块内存分配</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#物理内存管理"><span class="nav-number">1.</span> <span class="nav-text">物理内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小块内存分配"><span class="nav-number">1.1.</span> <span class="nav-text">小块内存分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面换出"><span class="nav-number">1.2.</span> <span class="nav-text">页面换出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#触发页面换出的时机"><span class="nav-number">1.2.1.</span> <span class="nav-text">触发页面换出的时机</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
