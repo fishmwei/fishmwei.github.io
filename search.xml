@@ -96,6 +96,37 @@
       </tags>
   </entry>
   <entry>
+    <title>fork库Git代码同步</title>
+    <url>/2019/06/04/synGitRepo/</url>
+    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
+<a id="more"></a>
+<ol>
+<li><p>clone当前库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置源库 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取远程仓库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换到master库， 合并远程库修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把本地库推送上去。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>同步完成。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>工具</tag>
+        <tag>React-Native</tag>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Bugly RN调用栈 - C的弱符号</title>
     <url>/2019/06/11/weak-attribute-C/</url>
     <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
@@ -351,37 +382,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fork库Git代码同步</title>
-    <url>/2019/06/04/synGitRepo/</url>
-    <content><![CDATA[<p>做RN开发，需要fork一份官网的库，来做一些修修改改以满足业务需求。同样的， 在开发中也需要fork一些库，然后就修改。在源库不断演进之后，我们需要同步自身库的代码。 就需要进行代码同步了。</p>
-<a id="more"></a>
-<ol>
-<li><p>clone当前库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:fishmwei/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置源库 </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git remote -v </span><br><span class="line">git remote add upstream https://github.com/facebook/react-native.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>获取远程仓库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>切换到master库， 合并远程库修改</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git checkout master </span><br><span class="line">git merge upstream/master</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把本地库推送上去。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push </span><br><span class="line">git push --tag</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>同步完成。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>工具</tag>
-        <tag>React-Native</tag>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS接口的单元测试</title>
     <url>/2019/10/23/iosunit-IOS/</url>
     <content><![CDATA[<h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
@@ -426,6 +426,57 @@
       <tags>
         <tag>iOS</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>todo</title>
+    <url>/2020/02/13/todo/</url>
+    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
+<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
+<li style="list-style: none"><input type="checkbox"> socket</li>
+<li style="list-style: none"><input type="checkbox"> 线程创建</li>
+</ul>
+<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
+<li style="list-style: none"><input type="checkbox"> tcpdump</li>
+</ul>
+<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
+<li style="list-style: none"><input type="checkbox"> makefile使用</li>
+<li style="list-style: none"><input type="checkbox" checked> coredump</li>
+<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
+</ul>
+<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
+<li style="list-style: none"><input type="checkbox"> radius</li>
+<li style="list-style: none"><input type="checkbox"> lldp</li>
+<li style="list-style: none"><input type="checkbox"> mpls</li>
+<li style="list-style: none"><input type="checkbox"> sctp</li>
+<li style="list-style: none"><input type="checkbox"> ppp</li>
+<li style="list-style: none"><input type="checkbox"> pppoe</li>
+<li style="list-style: none"><input type="checkbox"> ip相关</li>
+<li style="list-style: none"><input type="checkbox"> ah协议</li>
+<li style="list-style: none"><input type="checkbox"> gre</li>
+<li style="list-style: none"><input type="checkbox"> gtp</li>
+<li style="list-style: none"><input type="checkbox"> hdlc</li>
+<li style="list-style: none"><input type="checkbox"> teredo</li>
+<li style="list-style: none"><input type="checkbox"> 报文分片</li>
+<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
+</ul>
+<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
+<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
+<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>CoreDump的使用</title>
@@ -576,6 +627,38 @@
       </categories>
   </entry>
   <entry>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《C程序设计语言》读后感</title>
+    <url>/2020/06/22/reflection4c/</url>
+    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
+<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
+<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -596,74 +679,6 @@
         <category>技术</category>
         <category>C基础</category>
       </categories>
-  </entry>
-  <entry>
-    <title>todo</title>
-    <url>/2020/02/13/todo/</url>
-    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
-<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
-<li style="list-style: none"><input type="checkbox"> socket</li>
-<li style="list-style: none"><input type="checkbox"> 线程创建</li>
-</ul>
-<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
-<li style="list-style: none"><input type="checkbox"> tcpdump</li>
-</ul>
-<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
-<li style="list-style: none"><input type="checkbox"> makefile使用</li>
-<li style="list-style: none"><input type="checkbox" checked> coredump</li>
-<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
-</ul>
-<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
-<li style="list-style: none"><input type="checkbox"> radius</li>
-<li style="list-style: none"><input type="checkbox"> lldp</li>
-<li style="list-style: none"><input type="checkbox"> mpls</li>
-<li style="list-style: none"><input type="checkbox"> sctp</li>
-<li style="list-style: none"><input type="checkbox"> ppp</li>
-<li style="list-style: none"><input type="checkbox"> pppoe</li>
-<li style="list-style: none"><input type="checkbox"> ip相关</li>
-<li style="list-style: none"><input type="checkbox"> ah协议</li>
-<li style="list-style: none"><input type="checkbox"> gre</li>
-<li style="list-style: none"><input type="checkbox"> gtp</li>
-<li style="list-style: none"><input type="checkbox"> hdlc</li>
-<li style="list-style: none"><input type="checkbox"> teredo</li>
-<li style="list-style: none"><input type="checkbox"> 报文分片</li>
-<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
-</ul>
-<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
-<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
-<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《C程序设计语言》读后感</title>
-    <url>/2020/06/22/reflection4c/</url>
-    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
-<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
-<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>读后感</tag>
-      </tags>
   </entry>
   <entry>
     <title>程序员自我修养读后感-1</title>
@@ -778,21 +793,6 @@
       </categories>
   </entry>
   <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -882,6 +882,26 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-5</title>
     <url>/2020/07/23/reflection4self-5/</url>
     <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
@@ -936,26 +956,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-8</title>
     <url>/2020/07/29/reflection4self-8/</url>
     <content><![CDATA[<h1 id="运行库"><a href="#运行库" class="headerlink" title="运行库"></a>运行库</h1><p>每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。</p>
@@ -977,6 +977,58 @@
 <p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
 <p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
 <blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>grep命令使用</title>
+    <url>/2020/09/19/grep/</url>
+    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
+<a id="more"></a>
+<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
+<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
+<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
+<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
+<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
+<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
+<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
+<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
+<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
+<pre><code>0  有匹配的行
+1  没有任何行匹配
+&gt;1  命令执行错误
+</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
+<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
+</code></pre><blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1032,50 +1084,16 @@
       </categories>
   </entry>
   <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+    <title>《趣谈linux操作系统》小结(二)</title>
+    <url>/2020/11/18/linux2/</url>
+    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
 <a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
+<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
+<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
+<p>Linux 命令行</p>
+<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>grep命令使用</title>
-    <url>/2020/09/19/grep/</url>
-    <content><![CDATA[<p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
-<a id="more"></a>
-<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
-<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep/awk/sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
-<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
-<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br></pre></td></tr></table></figure>
-<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
-<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
-<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
-<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e '^Hello*' -e '^aa'  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude '*.md'  -R './' --exclude-dir '2' </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include '*.md' ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i 'hello' -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i 'hello' -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br></pre></td></tr></table></figure>
-<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GREP_OPTIONS=&apos;-i -n -H&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &apos;hello&apos; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$</span><br></pre></td></tr></table></figure>
-<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
-<pre><code>0  有匹配的行
-1  没有任何行匹配
-&gt;1  命令执行错误
-</code></pre><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">grep &apos;patricia&apos; file_name</span><br><span class="line"></span><br><span class="line">grep &apos;^\.Pp&apos; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &apos;foo&apos; -e &apos;bar&apos; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &apos;19|20|25&apos; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &apos;[0-9]\&#123;1,3\&#125;&apos; sed.md --color</span><br></pre></td></tr></table></figure>
-<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
-<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
-</code></pre><blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1183,55 +1201,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(一)</title>
-    <url>/2020/10/20/linux1/</url>
-    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
-<a id="more"></a>
-<p>照例学习完了，做一个小结。</p>
-<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
-<li>学习linux命令行</li>
-<li>系统调用的学习</li>
-<li>Linux内核机制了解</li>
-<li>Linux源码学习， 场景分析</li>
-<li>真实开发, 动手巩固</li>
-<li>持续学习</li>
-</ul>
-<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
-<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
-<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU分为运算单元、数据单元和控制单元。</p>
-<p>统一开放的硬件平台， x86。</p>
-<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(二)</title>
-    <url>/2020/11/18/linux2/</url>
-    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
-<a id="more"></a>
-<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
-<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
-<p>Linux 命令行</p>
-<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(三)</title>
     <url>/2020/11/21/linux3/</url>
     <content><![CDATA[<h2 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h2><p>操作系统内核给软件提供接口的方式主要就是系统调用。系统调用提供了许多功能，这里只讲一些开发常用的。</p>
@@ -1256,6 +1225,37 @@
 <h3 id="Glibc"><a href="#Glibc" class="headerlink" title="Glibc"></a>Glibc</h3><p>Glibc是linux系统下的一个C标准库，Glibc封装了许多系统调用，屏蔽了一些底层的细节，更便于开发者调用。</p>
 <p>有时候，Glibc 一个单独的 API 可能调用多个系统调用，比如说，Glibc 提供的 printf 函数就会调用如 sys_open、sys_mmap、sys_write、sys_close 等等系统调用。也有时候，多个 API 也可能只对应同一个系统调用，如 Glibc 下实现的 malloc、calloc、free 等函数用来分配和释放内存，都利用了内核的 sys_brk 的系统调用。</p>
 <h3 id="strace"><a href="#strace" class="headerlink" title="strace"></a>strace</h3><p>strace命令可以跟着程序的系统调用情况。显示系统调用的记录，还是比较详细的。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(一)</title>
+    <url>/2020/10/20/linux1/</url>
+    <content><![CDATA[<p>这个月有时间刷完了一遍极客时间上面订阅的《趣谈linux操作系统》这个专栏， 可以说比较系统的梳理了一下操作系统相关的基础知识。这个专栏是去年12.04号订阅的了， 订阅这个专栏的初衷是当时在准备换工作，发现工作后操作系统的知识只剩大学操作系统课程学习后的遗留映像，很多东西都模糊了，想着要好好全面的补一把相关知识，陆陆续续的学习了近10个月了，里面的内容应该还算是干货满满， 从原理到代码的讲解还是比较细节的。刷完一遍感觉收获多多，不论是复习巩固，还是温故而知新，都有所得。后面还需要安排二刷、三刷。里面有一个很好的观点， 读书先把书读厚，再把书读薄，又把书读厚。。。 其实，一直以来我学习也是按照这个套路来学习，一万小时定律嘛。</p>
+<a id="more"></a>
+<p>照例学习完了，做一个小结。</p>
+<h2 id="学习指南"><a href="#学习指南" class="headerlink" title="学习指南"></a>学习指南</h2><ul>
+<li>学习linux命令行</li>
+<li>系统调用的学习</li>
+<li>Linux内核机制了解</li>
+<li>Linux源码学习， 场景分析</li>
+<li>真实开发, 动手巩固</li>
+<li>持续学习</li>
+</ul>
+<h2 id="Linux系统综述"><a href="#Linux系统综述" class="headerlink" title="Linux系统综述"></a>Linux系统综述</h2><p>计算机实体由多种硬件组成， 操作系统是控制系统的灵魂与核心。</p>
+<p><img src="/images/202010/pchd.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>操作系统还是一个软件平台， 控制多个软件的运行。内核是操作系统的核心。通过驱动对接输入输出设备，系统调用提供内核接口。中断响应事件等。文件管理系统保存二进制程序，进程管理子系统管理软件运行时调度，内存管理子系统分配资源。还有网络子系统，设备子系统等。</p>
+<p><img src="/images/202010/osystem.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202010/kernalcode.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h2><p>计算机各个组件通过总线相连：<br><img src="/images/202010/osconnect.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU分为运算单元、数据单元和控制单元。</p>
+<p>统一开放的硬件平台， x86。</p>
+<p>计算机断电重置地址 –》 ROM 开始运行BIOS –》Grub Linxu启动管理器</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1318,38 +1318,6 @@
       </categories>
   </entry>
   <entry>
-    <title>C程序的命令行参数处理函数getopt</title>
-    <url>/2020/06/13/c-command/</url>
-    <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>工作中，存在着这么一个问题。开发提供给测试的二进制版本，都是记录在一个excel表中，保存着对应版本的提测日期和文件的Md5值、以及对应的svn标签信息。但是，文件这种东西，是需要靠人来填写的。许多临时的版本，就没有记录了。经常出现测试的文件找不到对应的记录，不知道是何时提供、解决了什么问题。 那么，就有这么个需求，把对应的信息保存到二进制文件，在编译的时候，获取编译的时间，svn版本号，编译机器的用户名(一般可以对应到开发人员)等信息，自动生成源代码文件，记入编译文件。然后，还需要提供一种方式读取这些信息，让二进制文件支持参数处理是一个不错的方式。</p>
-<a id="more"></a>
-<p>之前代码中有一些可变的配置也是可以通过运行时入参实现的，已经有对参数的处理代码了，不过是通过手动解析argv入参的，方式比较粗暴。远没有系统提供的getopt函数优雅，我们要做一个有追求的程序员，改!</p>
-<h1 id="自动获取编译信息"><a href="#自动获取编译信息" class="headerlink" title="自动获取编译信息"></a>自动获取编译信息</h1><p>首先在makefile中通过执行shell脚本把编译信息获取到生成信息文件。 这里自动生成了一个version.h文件。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">main: version.h main.c</span><br><span class="line">	gcc main.c -o main</span><br><span class="line"></span><br><span class="line"># 生成version.h文件</span><br><span class="line">version.h:</span><br><span class="line">	sh ./genversion.sh</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	@rm -fr main version.h</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#</span>!/bin/sh</span><br><span class="line"></span><br><span class="line">FILENAME=./version.h</span><br><span class="line"></span><br><span class="line">echo '#ifndef _VERSION_H_'&gt;$FILENAME</span><br><span class="line">echo '#define _VERSION_H_'&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">build_date=`date +"%k:%M:%S %m-%d-%Y"`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo "#define BUILD_DATE  \"$&#123;build_date&#125;\""&gt;&gt;$FILENAME</span><br><span class="line">echo "#define BUILD_LINUX_USER \"$&#123;USER&#125;\""&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo '#endif'&gt;&gt;$FILENAME</span><br></pre></td></tr></table></figure>
-<h1 id="命令行参数处理"><a href="#命令行参数处理" class="headerlink" title="命令行参数处理"></a>命令行参数处理</h1><h2 id="头文件及内容说明"><a href="#头文件及内容说明" class="headerlink" title="头文件及内容说明"></a>头文件及内容说明</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;getopt.h&gt;  </span></span></span><br><span class="line"><span class="comment">// linux 一般在系统的 /usr/include/getopt.h</span></span><br><span class="line"><span class="comment">// mac 在 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/getopt.h</span></span><br></pre></td></tr></table></figure>
-<p>contents:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _GETOPT_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GETOPT_H_</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/cdefs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * GNU-like getopt_long()/getopt_long_only() with 4.4BSD optreset extension.</span></span><br><span class="line"><span class="comment"> * getopt() is declared here too for GNU programs.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> no_argument        0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> required_argument  1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> optional_argument  2</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">option</span> &#123;</span></span><br><span class="line">	<span class="comment">/* name of long option */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * one of no_argument, required_argument, and optional_argument:</span></span><br><span class="line"><span class="comment">	 * whether option takes an argument</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">int</span> has_arg;</span><br><span class="line">	<span class="comment">/* if not NULL, set *flag to val when option found */</span></span><br><span class="line">	<span class="keyword">int</span> *flag;</span><br><span class="line">	<span class="comment">/* if flag not NULL, value to set *flag to; else return value */</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">__BEGIN_DECLS</span><br><span class="line"><span class="function"><span class="keyword">int</span>	<span class="title">getopt_long</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> *, <span class="keyword">const</span> <span class="keyword">char</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> struct option *, <span class="keyword">int</span> *)</span></span>;  <span class="comment">// 只处理 --prefix 和短选项</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>	<span class="title">getopt_long_only</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> *, <span class="keyword">const</span> <span class="keyword">char</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> struct option *, <span class="keyword">int</span> *)</span></span>;  <span class="comment">// 处理 --prefix , -prefix 和短选项</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _GETOPT</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	_GETOPT</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>	 <span class="title">getopt</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> [], <span class="keyword">const</span> <span class="keyword">char</span> *)</span> __<span class="title">DARWIN_ALIAS</span><span class="params">(getopt)</span></span>; <span class="comment">// 只处理 -a 短选项</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *optarg;			<span class="comment">/* getopt(3) external variables */</span> <span class="comment">// 指向当前选项的参数 如果没有则为NULL</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> optind, opterr, optopt; </span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">optind —— 再次调用 getopt() 时的下一个 argv指针的索引。</span></span><br><span class="line"><span class="comment">optopt —— 最后一个未知选项。</span></span><br><span class="line"><span class="comment">opterr ­—— 如果不希望getopt()打印出错信息，则只要将全域变量opterr设为0即可。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _OPTRESET</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	_OPTRESET</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> optreset;			<span class="comment">/* getopt(3) external variable */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">__END_DECLS</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* !_GETOPT_H_ */</span></span></span><br></pre></td></tr></table></figure>
-<h2 id="option结构"><a href="#option结构" class="headerlink" title="option结构"></a>option结构</h2><p>用来配置长选项，可以设置对应的短选项，是否有参数。 短选项最好添加到optstring里</p>
-<h2 id="optstring"><a href="#optstring" class="headerlink" title="optstring"></a>optstring</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char *optstring = “ab:c::”;</span><br><span class="line">单个字符a         表示选项a没有参数            格式：-a即可，不加参数</span><br><span class="line">单字符加冒号b:     表示选项b有且必须加参数      格式：-b 100或-b100,但-b=100错</span><br><span class="line">单字符加2冒号c::   表示选项c可以有，也可以无     格式：-c200 其它格式错误</span><br></pre></td></tr></table></figure>
-<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>如果所有命令行选项都解析完毕，返回 -1；<br>如果选项成功找到，返回选项字母(长选项返回对应短字母)；如果遇到选项字符不在 optstring 中，且在长选项也找不到，返回字符’?’; 如果遇到丢失参数，那么返回值依赖于 optstring 中第一个字符，如果第一个字符是 ‘:’ 则返回’:’，否则返回’?’并提示出错误信息。</p>
-<p>针对长选项，如果不存在对应的短字母，可以参考使用 option_index来解析。</p>
-<p>示例代码：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;getopt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NO_LETTER   (1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INVALID_VALUE (0xFFFFFFFF)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</span><br><span class="line">  reqargIndex = <span class="number">0</span>,</span><br><span class="line">  optargIndex,</span><br><span class="line">  noargIndex,</span><br><span class="line">  noletterIndex,</span><br><span class="line">  nullIndex</span><br><span class="line">&#125; <span class="keyword">option_index_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">long_options</span>[] =</span></span><br><span class="line"><span class="class">&#123;</span>  </span><br><span class="line">    &#123;<span class="string">"reqarg"</span>, required_argument,<span class="literal">NULL</span>, <span class="string">'r'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"optarg"</span>, optional_argument,<span class="literal">NULL</span>, <span class="string">'o'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"noarg"</span>,  no_argument,         <span class="literal">NULL</span>,<span class="string">'n'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"noletter"</span>, no_argument, <span class="literal">NULL</span>, NO_LETTER &#125;,</span><br><span class="line">    &#123;<span class="literal">NULL</span>,     <span class="number">0</span>,                      <span class="literal">NULL</span>, NO_LETTER&#125;,</span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> b_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> c_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> d_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> r_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> o_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> n_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> no_letter = INVALID_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="comment">// return 1: break, 0:continue</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setOption</span><span class="params">(<span class="keyword">int</span> opt, <span class="keyword">char</span> *optarg, <span class="keyword">char</span> *argv[], <span class="keyword">int</span> option_index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(opt) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'a'</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          a_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          a_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'b'</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            b_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'c'</span>:</span><br><span class="line">        c_val = atoi(optarg);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'d'</span>:</span><br><span class="line">        d_val = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">"warnning:option d no require argument. ignore value %s\n"</span>, optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'r'</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            r_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'o'</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          o_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          o_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      case 'n‘:</span><br><span class="line">        n_val = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">"warnning:option n no require argument. ignore value %s\n"</span>, optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> NO_LETTER:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">switch</span>(option_index) &#123;</span><br><span class="line">            <span class="keyword">case</span>  noletterIndex:</span><br><span class="line">              no_letter = <span class="number">1</span>;</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span>  nullIndex:</span><br><span class="line"></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> showV(x)  printf(#x<span class="meta-string">"=%d\n"</span>, x)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">showValues</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=========\n"</span>);</span><br><span class="line">  showV(a_val);</span><br><span class="line">  showV(b_val);</span><br><span class="line">  showV(c_val);</span><br><span class="line">  showV(d_val);</span><br><span class="line">  showV(r_val);</span><br><span class="line">  showV(o_val);</span><br><span class="line">  showV(n_val);</span><br><span class="line">  showV(no_letter);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=========\n"</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> option_index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *<span class="built_in">string</span> = <span class="string">"a::b:c:dr:o::n"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//initValues();</span></span><br><span class="line">    <span class="keyword">while</span>((opt =getopt_long_only(argc,argv,<span class="built_in">string</span>,long_options,&amp;option_index))!= <span class="number">-1</span>)</span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"opt = %c\t\t"</span>, opt);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"optarg = %s\t\t"</span>,optarg);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"optind = %d\t\t"</span>,optind);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"argv[optind] =%s\t\t"</span>, argv[optind]);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"option_index = %d\n"</span>,option_index);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (setOption(opt, optarg, argv, option_index)) &#123;</span><br><span class="line">            showValues();</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    showValues();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:syscall keep$ ./a -reqarg 3  # 匹配长选项 带参数 -</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg 3 # 匹配长选项 带参数 --</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg # 不匹配长选项 带参数 --</span><br><span class="line">a: option `--reqarg' requires an argument</span><br><span class="line">opt = ?         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --optarg   # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg 9 # 不匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =9         option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg=9 # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -optarg=9  # 匹配长选项 可选参数 -</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3   # 匹配长选项 无参数 -  跳过3</span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3 -optarg=9   </span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">opt = o         optarg = 9              optind = 4              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -a999    # 匹配短选项 可选参数 -</span><br><span class="line">opt = a         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999  # 匹配短选项 可选参数 错误 -</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b999  # 匹配短选项 带参数 -</span><br><span class="line">opt = b         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b=999 # 匹配短选项 带参数 错误 -</span><br><span class="line">opt = b         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -b 999</span><br><span class="line">opt = b         optarg = 999            optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -o=999</span><br><span class="line">opt = o         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999 -n</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =-n                option_index = 0</span><br><span class="line">opt = n         optarg = (null)         optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$</span><br></pre></td></tr></table></figure>
-<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>使用getopt_long_only时，会自动最长前缀匹配，存在唯一长选项时，即使没有敲全命令 也认为是匹配上了。 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  会自动匹配到help选项</span><br></pre></td></tr></table></figure>
-<p>使用getopt_long时，会自动按字符依次匹配。 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  分配按序匹配 h , e, l 三个字符</span><br></pre></td></tr></table></figure>
-<p>代码参考： </p>
-<p><a href="https://github.com/fishmwei/blog_code/tree/master/getopt" target="_blank" rel="noopener">https://github.com/fishmwei/blog_code/tree/master/getopt</a></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(六)</title>
     <url>/2020/12/09/linux6/</url>
     <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
@@ -1365,6 +1333,29 @@
 <p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
 <p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
 <p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(七)</title>
+    <url>/2020/12/10/linux7/</url>
+    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
+<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
+<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
+<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
+<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
+<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
+<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1409,29 +1400,6 @@
 <li>ip报文长度错误</li>
 <li>ip报文checksum错误</li>
 </ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(七)</title>
-    <url>/2020/12/10/linux7/</url>
-    <content><![CDATA[<h2 id="系统调用流程"><a href="#系统调用流程" class="headerlink" title="系统调用流程"></a>系统调用流程</h2><p>32位的系统调用的过程，首先保存参数、系统调用号到寄存器，然后触发中断int80 ，调用中断处理服务函数，然后取到寄存器里的参数，根据系统调用号获取执行函数，传入参数执行。执行完成后，iret恢复用户态执行上下文，继续执行。<br><a id="more"></a></p>
-<p><img src="/images/202012/linux_syscall32.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>64位系统调用流程和32位的有区别，他是通过syscall指令，而不是中断来触发调用的，相应的寄存器也不相同了。syscall使用了特殊的模块寄存器MSR，用来保存64位系统调用函数的地址。syscall指令会从MSR中读取函数地址来执行系统调用号对应的函数， 地址是在初始化的时候写入的start_kernel–&gt;cpu_init–&gt;syscall_init。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);</span><br></pre></td></tr></table></figure>
-<p>最后调用sysiretq 恢复用户态执行上下文，继续执行。</p>
-<p><img src="/images/202012/linux_syscall64.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="系统调用表"><a href="#系统调用表" class="headerlink" title="系统调用表"></a>系统调用表</h2><p>系统调用函数都是从系统调用表中根据系统调用号找到的。那么系统调用表sys_call_table是个什么鬼呢？</p>
-<p>32 位的系统调用表定义在 arch/x86/entry/syscalls/syscall_32.tbl 文件里。64 位的系统调用定义在另一个文件 arch/x86/entry/syscalls/syscall_64.tbl 里。</p>
-<p>系统调用在内核中的实现函数要有一个声明。声明往往在 include/linux/syscalls.h 文件中。例如 sys_open 是这样声明的：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">asmlinkage <span class="keyword">long</span> <span class="title">sys_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> __user *filename,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">int</span> flags, <span class="keyword">umode_t</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>一般程序调用glibc封装的系统调用， 比如open函数的一个调用流程如图：</p>
-<p><img src="/images/202012/linux_syscall_open.jpg" alt="图片替换文本" width="600" height="913" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1586,6 +1554,32 @@
       </categories>
   </entry>
   <entry>
+    <title>暂时解放了</title>
+    <url>/2021/01/05/sjs/</url>
+    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+<a id="more"></a>
+<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
+<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
+<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
+<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
+<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
+<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
+<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
+<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
+<p>注意身体，伙伴们。 （20201223写）</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十一) - 进程调度</title>
     <url>/2020/12/23/linux-schedule/</url>
     <content><![CDATA[<p>进程分为实时进程和普通进程。 实时进程需要立刻执行返回结果，普通进程没有这个需求。</p>
@@ -1662,32 +1656,6 @@
       </categories>
   </entry>
   <entry>
-    <title>暂时解放了</title>
-    <url>/2021/01/05/sjs/</url>
-    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
-<a id="more"></a>
-<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
-<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
-<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
-<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
-<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
-<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
-<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
-<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
-<p>注意身体，伙伴们。 （20201223写）</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
     <url>/2020/12/28/linux14-thread/</url>
     <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
@@ -1711,6 +1679,30 @@
 <h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
 <p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
 <p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十五) - 内存管理</title>
+    <url>/2021/01/06/linux15-mm/</url>
+    <content><![CDATA[<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><p>每个进程应该自己的内存空间。内存空间都是独立的、相互隔离的。对于每个进程来讲，看起来应该都是独占的。每个程序对内存的操作都是一致的，内存的管理是进程无关的， 不会因为进程的不同而区别对待，而都是一视同仁的。在最开始的时候，已经了解到程序对内存的操作都是通过虚拟地址实现的，就比如一个大数组，比如超过4kb的大小，已经超过一个页了，但是虚拟地址一定是连续的。只是物理地址就不大可能会是连续的了，通过分段分页的虚拟地址映射实现了物理地址的复用。</p>
+<a id="more"></a>
+<h2 id="独立内存空间"><a href="#独立内存空间" class="headerlink" title="独立内存空间"></a>独立内存空间</h2><p>程序的二进制格式都是一致的，仅仅内容、大小不一样而已。进程就是运行的程序，运行过程中还会产生一些数据，运行程序和数据都是放在内存里面的。内存有分页机制，通过虚拟地址和物理的地址的映射可以定位到物理地址。物理地址对进程是不可见的，操作系统的内存管理帮忙作了工作。操作系统会给进程分配一个虚拟地址。所有进程看到的这个地址都是一样的，里面的内存都是从 0 开始编号。在程序里面，指令写入的地址是虚拟地址。当程序要访问虚拟地址的时候，由内核的数据结构进行转换，转换成不同的物理地址，这样不同的进程运行的时候，写入的是不同的物理地址，这样就不会冲突了。</p>
+<h2 id="规划虚拟地址空间"><a href="#规划虚拟地址空间" class="headerlink" title="规划虚拟地址空间"></a>规划虚拟地址空间</h2><p>操作系统的内存管理，主要分为三个方面。</p>
+<p>第一，虚拟内存空间的管理，每个进程看到的是独立的、互不干扰的虚拟地址空间；</p>
+<p>第二，物理内存的管理，物理内存地址只有内存管理模块能够使用；</p>
+<p>第三，内存映射，需要将虚拟内存和物理内存映射、关联起来。</p>
+<p>如果是 32 位，有 2^32 = 4G 的内存空间都是我的，不管内存是不是真的有 4G。如果是 64 位，在 x86_64 下面，其实只使用了 48 位，那也挺恐怖的。48 位地址长度也就是对应了 256TB 的地址空间。至少目前还不需求这么大，过个十几二十年时间没准会突破吧，历史经验。</p>
+<p>虚拟空间一切二，一部分用来放内核的东西，称为内核空间，一部分用来放进程的东西，称为用户空间。用户空间在下，在低地址.内核空间在上，在高地址.</p>
+<p>用户态空间从最低位开始排起，先是 Text Segment、Data Segment 和 BSS Segment。Text Segment 是存放二进制可执行代码的位置，Data Segment 存放静态常量，BSS Segment 存放未初始化的静态变量。接下来是堆（Heap）段。堆是往高地址增长的，是用来动态分配内存的区域，malloc 就是在这里面分配的。接下来的区域是 Memory Mapping Segment。这块地址可以用来把文件映射进内存用的，如果二进制的执行文件依赖于某个动态链接库，就是在这个区域里面将 so 文件映射到了内存中。再下面就是栈（Stack）地址段。主线程的函数调用的函数栈就是用这里的。</p>
+<p><img src="/images/202101/mm0.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
+<p><code>cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1754,21 +1746,18 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十五) - 内存管理</title>
-    <url>/2021/01/06/linux15-mm/</url>
-    <content><![CDATA[<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><p>每个进程应该自己的内存空间。内存空间都是独立的、相互隔离的。对于每个进程来讲，看起来应该都是独占的。每个程序对内存的操作都是一致的，内存的管理是进程无关的， 不会因为进程的不同而区别对待，而都是一视同仁的。在最开始的时候，已经了解到程序对内存的操作都是通过虚拟地址实现的，就比如一个大数组，比如超过4kb的大小，已经超过一个页了，但是虚拟地址一定是连续的。只是物理地址就不大可能会是连续的了，通过分段分页的虚拟地址映射实现了物理地址的复用。</p>
+    <title>2020年小结</title>
+    <url>/2021/02/01/design/</url>
+    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
 <a id="more"></a>
-<h2 id="独立内存空间"><a href="#独立内存空间" class="headerlink" title="独立内存空间"></a>独立内存空间</h2><p>程序的二进制格式都是一致的，仅仅内容、大小不一样而已。进程就是运行的程序，运行过程中还会产生一些数据，运行程序和数据都是放在内存里面的。内存有分页机制，通过虚拟地址和物理的地址的映射可以定位到物理地址。物理地址对进程是不可见的，操作系统的内存管理帮忙作了工作。操作系统会给进程分配一个虚拟地址。所有进程看到的这个地址都是一样的，里面的内存都是从 0 开始编号。在程序里面，指令写入的地址是虚拟地址。当程序要访问虚拟地址的时候，由内核的数据结构进行转换，转换成不同的物理地址，这样不同的进程运行的时候，写入的是不同的物理地址，这样就不会冲突了。</p>
-<h2 id="规划虚拟地址空间"><a href="#规划虚拟地址空间" class="headerlink" title="规划虚拟地址空间"></a>规划虚拟地址空间</h2><p>操作系统的内存管理，主要分为三个方面。</p>
-<p>第一，虚拟内存空间的管理，每个进程看到的是独立的、互不干扰的虚拟地址空间；</p>
-<p>第二，物理内存的管理，物理内存地址只有内存管理模块能够使用；</p>
-<p>第三，内存映射，需要将虚拟内存和物理内存映射、关联起来。</p>
-<p>如果是 32 位，有 2^32 = 4G 的内存空间都是我的，不管内存是不是真的有 4G。如果是 64 位，在 x86_64 下面，其实只使用了 48 位，那也挺恐怖的。48 位地址长度也就是对应了 256TB 的地址空间。至少目前还不需求这么大，过个十几二十年时间没准会突破吧，历史经验。</p>
-<p>虚拟空间一切二，一部分用来放内核的东西，称为内核空间，一部分用来放进程的东西，称为用户空间。用户空间在下，在低地址.内核空间在上，在高地址.</p>
-<p>用户态空间从最低位开始排起，先是 Text Segment、Data Segment 和 BSS Segment。Text Segment 是存放二进制可执行代码的位置，Data Segment 存放静态常量，BSS Segment 存放未初始化的静态变量。接下来是堆（Heap）段。堆是往高地址增长的，是用来动态分配内存的区域，malloc 就是在这里面分配的。接下来的区域是 Memory Mapping Segment。这块地址可以用来把文件映射进内存用的，如果二进制的执行文件依赖于某个动态链接库，就是在这个区域里面将 so 文件映射到了内存中。再下面就是栈（Stack）地址段。主线程的函数调用的函数栈就是用这里的。</p>
-<p><img src="/images/202101/mm0.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
-<p><code>cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
+<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
+<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
+<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
+<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。</p>
+<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
+<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，2021年回福州去了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
+<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1778,20 +1767,19 @@
       </categories>
   </entry>
   <entry>
-    <title>2020年小结</title>
-    <url>/2021/02/01/design/</url>
-    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
+    <title>《趣谈linux操作系统》小结(十九) -物理内存管理</title>
+    <url>/2021/02/03/linux19-pmm/</url>
+    <content><![CDATA[<h1 id="物理内存管理"><a href="#物理内存管理" class="headerlink" title="物理内存管理"></a>物理内存管理</h1><p>前面讲了内存页的分配机制，还有小块内存的分配机制。</p>
 <a id="more"></a>
-<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
-<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
-<p>讲一讲对公司的感受：</p>
-<p>首先，公司也不存在着技术分享培训之类的活动，对员工的技能发展方面关心还是不够，在技术上基本属于放羊式培养，对于那些刚毕业或者是工作经验尚短的人而言，技术氛围还是差一点。平常讨论的基本上属于业务功能方面设计，如果没有自身业余花时间扩展学习，基本上工作个几年之后，技术很难有大的长进。虽然说业务分工明确，但是这样对个人成长还会很不利的。另外，缺乏针对整体系统的全局方案文档，很难让员工了解整个系统的全貌，经常遇到问题都需要聊天大群里吼一下，然后对应的人员再来看，解决问题的人累，遇到问题的也累，心累。第三，就是整体的项目管理上，还有很大的改进空间。由于设备环境紧缺的，前端的许多同事开发完功能后，基本上没有自验，从主控到交换，然后到业务的控制面，最后转发面功能，都没有人主动联调，整个业务流程的调试都是我一个人来推动，阻力还是挺大的，毕竟我也就是个普通开发，遇到个问题卡一下等人解决一下，从联调到结束，前后发现了120多个问题(不含有我的问题)，一个个做到跟踪闭环掉。结果呢，就像吃大锅饭一样，做好做坏都一个样，多劳又不多得，项目进度缓慢。人家下班，你加班。领导总是追我要进度，回答都是卡在哪边哪边，呵呵。第四，缺乏结对编程，人员备份，许多时候一个人员请假调休，项目就进行不了了。第五呢， 缺失严谨有效的研发流程。代码没有作code review， 细节方案没有文档化，缺少基础的编程规范等。第六，项目组这边没有一个成体系的晋升机制，当然也没有培养体系了，员工真的仅仅是打工人了，呵呵，没有多大的盼头。有点做一天和尚敲一天钟的感觉。</p>
-<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
-<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。</p>
-<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
-<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，只是2021年得要回福州了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
-<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
+<h2 id="小块内存分配"><a href="#小块内存分配" class="headerlink" title="小块内存分配"></a>小块内存分配</h2><p>遇到小的对象，会使用 slub 分配器进行分配。</p>
+<p>创建进程的时候，会调用 dup_task_struct，它想要试图复制一个 task_struct 对象，需要先调用 alloc_task_struct_node，分配一个 task_struct 对象。调用了 kmem_cache_alloc_node 函数，在 task_struct 的缓存区域 task_struct_cachep 分配了一块内存。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kmem_cache</span> // 缓存结构</span></span><br></pre></td></tr></table></figure>
+<p>缓存结构里面，包含了缓存的名称， 缓存对象的大小等信息。</p>
+<p>对于缓存来讲，其实就是分配了连续几页的大内存块，然后根据缓存对象的大小，切成小内存块。slba缓存的信息可以通过查看/proc/slabinfo查看系统创建的所有slab缓存。</p>
+<p><img src="/images/202102/slabinfo.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>有2个成员用来管理缓存，分别是kmem_cache_cpu 和 kmem_cache_node，它们都是每个 NUMA 节点上有一个，我们只需要看一个节点里面的情况。</p>
+<p><img src="/images/202102/slabnode.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>在分配缓存块的时候，要分两种路径，fast path 和 slow path，也就是快速通道和普通通道。其中 kmem_cache_cpu 就是快速通道，kmem_cache_node 是普通通道。每次分配的时候，要先从 kmem_cache_cpu 进行分配。如果 kmem_cache_cpu 里面没有空闲的块，那就到 kmem_cache_node 中进行分配；如果还是没有空闲的块，才去伙伴系统分配新的页。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1816,6 +1804,38 @@
 <p>按数字过一下，应该就可以发现最终标志位和hash表并不是一致的。标志位为1的时候，hash表中不一定有对应的表项。</p>
 <p>多线程，并不是说只有2个线程，是多个线程，这种时序是不可控的。该加锁的东西就加锁,像这种临界资源，一定要确保互斥，不能搞一半放一半的。</p>
 <p>这个问题，同事修改之后还是有做了认真的自验的， 我在自己搭建的环境上也帮忙跑了一两天都没有复现出问题，但是测试那边跑个一段时间就出现了。^_^  写代码的时候先设计好还是很重要的，不能想当然。 后面把锁的范围恢复到之前那样，问题也就不再复现了。。。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>C程序的命令行参数处理函数getopt</title>
+    <url>/2020/06/13/c-command/</url>
+    <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>工作中，存在着这么一个问题。开发提供给测试的二进制版本，都是记录在一个excel表中，保存着对应版本的提测日期和文件的Md5值、以及对应的svn标签信息。但是，文件这种东西，是需要靠人来填写的。许多临时的版本，就没有记录了。经常出现测试的文件找不到对应的记录，不知道是何时提供、解决了什么问题。 那么，就有这么个需求，把对应的信息保存到二进制文件，在编译的时候，获取编译的时间，svn版本号，编译机器的用户名(一般可以对应到开发人员)等信息，自动生成源代码文件，记入编译文件。然后，还需要提供一种方式读取这些信息，让二进制文件支持参数处理是一个不错的方式。</p>
+<a id="more"></a>
+<p>之前代码中有一些可变的配置也是可以通过运行时入参实现的，已经有对参数的处理代码了，不过是通过手动解析argv入参的，方式比较粗暴。远没有系统提供的getopt函数优雅，我们要做一个有追求的程序员，改!</p>
+<h1 id="自动获取编译信息"><a href="#自动获取编译信息" class="headerlink" title="自动获取编译信息"></a>自动获取编译信息</h1><p>首先在makefile中通过执行shell脚本把编译信息获取到生成信息文件。 这里自动生成了一个version.h文件。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">main: version.h main.c</span><br><span class="line">	gcc main.c -o main</span><br><span class="line"></span><br><span class="line"># 生成version.h文件</span><br><span class="line">version.h:</span><br><span class="line">	sh ./genversion.sh</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	@rm -fr main version.h</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#</span>!/bin/sh</span><br><span class="line"></span><br><span class="line">FILENAME=./version.h</span><br><span class="line"></span><br><span class="line">echo '#ifndef _VERSION_H_'&gt;$FILENAME</span><br><span class="line">echo '#define _VERSION_H_'&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">build_date=`date +"%k:%M:%S %m-%d-%Y"`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo "#define BUILD_DATE  \"$&#123;build_date&#125;\""&gt;&gt;$FILENAME</span><br><span class="line">echo "#define BUILD_LINUX_USER \"$&#123;USER&#125;\""&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo '#endif'&gt;&gt;$FILENAME</span><br></pre></td></tr></table></figure>
+<h1 id="命令行参数处理"><a href="#命令行参数处理" class="headerlink" title="命令行参数处理"></a>命令行参数处理</h1><h2 id="头文件及内容说明"><a href="#头文件及内容说明" class="headerlink" title="头文件及内容说明"></a>头文件及内容说明</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;getopt.h&gt;  </span></span></span><br><span class="line"><span class="comment">// linux 一般在系统的 /usr/include/getopt.h</span></span><br><span class="line"><span class="comment">// mac 在 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/getopt.h</span></span><br></pre></td></tr></table></figure>
+<p>contents:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _GETOPT_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _GETOPT_H_</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/cdefs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * GNU-like getopt_long()/getopt_long_only() with 4.4BSD optreset extension.</span></span><br><span class="line"><span class="comment"> * getopt() is declared here too for GNU programs.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> no_argument        0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> required_argument  1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> optional_argument  2</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">option</span> &#123;</span></span><br><span class="line">	<span class="comment">/* name of long option */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * one of no_argument, required_argument, and optional_argument:</span></span><br><span class="line"><span class="comment">	 * whether option takes an argument</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">int</span> has_arg;</span><br><span class="line">	<span class="comment">/* if not NULL, set *flag to val when option found */</span></span><br><span class="line">	<span class="keyword">int</span> *flag;</span><br><span class="line">	<span class="comment">/* if flag not NULL, value to set *flag to; else return value */</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">__BEGIN_DECLS</span><br><span class="line"><span class="function"><span class="keyword">int</span>	<span class="title">getopt_long</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> *, <span class="keyword">const</span> <span class="keyword">char</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> struct option *, <span class="keyword">int</span> *)</span></span>;  <span class="comment">// 只处理 --prefix 和短选项</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>	<span class="title">getopt_long_only</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> *, <span class="keyword">const</span> <span class="keyword">char</span> *,</span></span></span><br><span class="line"><span class="function"><span class="params">	<span class="keyword">const</span> struct option *, <span class="keyword">int</span> *)</span></span>;  <span class="comment">// 处理 --prefix , -prefix 和短选项</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _GETOPT</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	_GETOPT</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>	 <span class="title">getopt</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span> * <span class="keyword">const</span> [], <span class="keyword">const</span> <span class="keyword">char</span> *)</span> __<span class="title">DARWIN_ALIAS</span><span class="params">(getopt)</span></span>; <span class="comment">// 只处理 -a 短选项</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *optarg;			<span class="comment">/* getopt(3) external variables */</span> <span class="comment">// 指向当前选项的参数 如果没有则为NULL</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> optind, opterr, optopt; </span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">optind —— 再次调用 getopt() 时的下一个 argv指针的索引。</span></span><br><span class="line"><span class="comment">optopt —— 最后一个未知选项。</span></span><br><span class="line"><span class="comment">opterr ­—— 如果不希望getopt()打印出错信息，则只要将全域变量opterr设为0即可。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _OPTRESET</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	_OPTRESET</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> optreset;			<span class="comment">/* getopt(3) external variable */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">__END_DECLS</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* !_GETOPT_H_ */</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="option结构"><a href="#option结构" class="headerlink" title="option结构"></a>option结构</h2><p>用来配置长选项，可以设置对应的短选项，是否有参数。 短选项最好添加到optstring里</p>
+<h2 id="optstring"><a href="#optstring" class="headerlink" title="optstring"></a>optstring</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">char *optstring = “ab:c::”;</span><br><span class="line">单个字符a         表示选项a没有参数            格式：-a即可，不加参数</span><br><span class="line">单字符加冒号b:     表示选项b有且必须加参数      格式：-b 100或-b100,但-b=100错</span><br><span class="line">单字符加2冒号c::   表示选项c可以有，也可以无     格式：-c200 其它格式错误</span><br></pre></td></tr></table></figure>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>如果所有命令行选项都解析完毕，返回 -1；<br>如果选项成功找到，返回选项字母(长选项返回对应短字母)；如果遇到选项字符不在 optstring 中，且在长选项也找不到，返回字符’?’; 如果遇到丢失参数，那么返回值依赖于 optstring 中第一个字符，如果第一个字符是 ‘:’ 则返回’:’，否则返回’?’并提示出错误信息。</p>
+<p>针对长选项，如果不存在对应的短字母，可以参考使用 option_index来解析。</p>
+<p>示例代码：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;getopt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NO_LETTER   (1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INVALID_VALUE (0xFFFFFFFF)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;</span><br><span class="line">  reqargIndex = <span class="number">0</span>,</span><br><span class="line">  optargIndex,</span><br><span class="line">  noargIndex,</span><br><span class="line">  noletterIndex,</span><br><span class="line">  nullIndex</span><br><span class="line">&#125; <span class="keyword">option_index_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">long_options</span>[] =</span></span><br><span class="line"><span class="class">&#123;</span>  </span><br><span class="line">    &#123;<span class="string">"reqarg"</span>, required_argument,<span class="literal">NULL</span>, <span class="string">'r'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"optarg"</span>, optional_argument,<span class="literal">NULL</span>, <span class="string">'o'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"noarg"</span>,  no_argument,         <span class="literal">NULL</span>,<span class="string">'n'</span>&#125;,</span><br><span class="line">    &#123;<span class="string">"noletter"</span>, no_argument, <span class="literal">NULL</span>, NO_LETTER &#125;,</span><br><span class="line">    &#123;<span class="literal">NULL</span>,     <span class="number">0</span>,                      <span class="literal">NULL</span>, NO_LETTER&#125;,</span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> b_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> c_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> d_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> r_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> o_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> n_val = INVALID_VALUE;</span><br><span class="line"><span class="keyword">int</span> no_letter = INVALID_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="comment">// return 1: break, 0:continue</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setOption</span><span class="params">(<span class="keyword">int</span> opt, <span class="keyword">char</span> *optarg, <span class="keyword">char</span> *argv[], <span class="keyword">int</span> option_index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(opt) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'a'</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          a_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          a_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'b'</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            b_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'c'</span>:</span><br><span class="line">        c_val = atoi(optarg);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'d'</span>:</span><br><span class="line">        d_val = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">"warnning:option d no require argument. ignore value %s\n"</span>, optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'r'</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            r_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'o'</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          o_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          o_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      case 'n‘:</span><br><span class="line">        n_val = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">"warnning:option n no require argument. ignore value %s\n"</span>, optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> NO_LETTER:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">switch</span>(option_index) &#123;</span><br><span class="line">            <span class="keyword">case</span>  noletterIndex:</span><br><span class="line">              no_letter = <span class="number">1</span>;</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span>  nullIndex:</span><br><span class="line"></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> showV(x)  printf(#x<span class="meta-string">"=%d\n"</span>, x)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">showValues</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=========\n"</span>);</span><br><span class="line">  showV(a_val);</span><br><span class="line">  showV(b_val);</span><br><span class="line">  showV(c_val);</span><br><span class="line">  showV(d_val);</span><br><span class="line">  showV(r_val);</span><br><span class="line">  showV(o_val);</span><br><span class="line">  showV(n_val);</span><br><span class="line">  showV(no_letter);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"=========\n"</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> opt;</span><br><span class="line">    <span class="keyword">int</span> option_index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *<span class="built_in">string</span> = <span class="string">"a::b:c:dr:o::n"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//initValues();</span></span><br><span class="line">    <span class="keyword">while</span>((opt =getopt_long_only(argc,argv,<span class="built_in">string</span>,long_options,&amp;option_index))!= <span class="number">-1</span>)</span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"opt = %c\t\t"</span>, opt);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"optarg = %s\t\t"</span>,optarg);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"optind = %d\t\t"</span>,optind);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"argv[optind] =%s\t\t"</span>, argv[optind]);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"option_index = %d\n"</span>,option_index);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (setOption(opt, optarg, argv, option_index)) &#123;</span><br><span class="line">            showValues();</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    showValues();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:syscall keep$ ./a -reqarg 3  # 匹配长选项 带参数 -</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg 3 # 匹配长选项 带参数 --</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg # 不匹配长选项 带参数 --</span><br><span class="line">a: option `--reqarg' requires an argument</span><br><span class="line">opt = ?         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --optarg   # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg 9 # 不匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =9         option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg=9 # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -optarg=9  # 匹配长选项 可选参数 -</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3   # 匹配长选项 无参数 -  跳过3</span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3 -optarg=9   </span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">opt = o         optarg = 9              optind = 4              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -a999    # 匹配短选项 可选参数 -</span><br><span class="line">opt = a         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999  # 匹配短选项 可选参数 错误 -</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b999  # 匹配短选项 带参数 -</span><br><span class="line">opt = b         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b=999 # 匹配短选项 带参数 错误 -</span><br><span class="line">opt = b         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -b 999</span><br><span class="line">opt = b         optarg = 999            optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -o=999</span><br><span class="line">opt = o         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999 -n</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =-n                option_index = 0</span><br><span class="line">opt = n         optarg = (null)         optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$</span><br></pre></td></tr></table></figure>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>使用getopt_long_only时，会自动最长前缀匹配，存在唯一长选项时，即使没有敲全命令 也认为是匹配上了。 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  会自动匹配到help选项</span><br></pre></td></tr></table></figure>
+<p>使用getopt_long时，会自动按字符依次匹配。 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  分配按序匹配 h , e, l 三个字符</span><br></pre></td></tr></table></figure>
+<p>代码参考： </p>
+<p><a href="https://github.com/fishmwei/blog_code/tree/master/getopt" target="_blank" rel="noopener">https://github.com/fishmwei/blog_code/tree/master/getopt</a></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
