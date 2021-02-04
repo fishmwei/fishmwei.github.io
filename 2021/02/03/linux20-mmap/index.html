@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="用户态内存映射mmap123struct mm_struct &amp;#123;   struct vm_area_struct *mmap; /* list of VMAs */......&amp;#125; 在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-02-04T00:38:36.734Z">
+<meta property="og:updated_time" content="2021-02-04T01:11:23.528Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(二十) -内存映射">
 <meta name="twitter:description" content="用户态内存映射mmap123struct mm_struct &amp;#123;   struct vm_area_struct *mmap; /* list of VMAs */......&amp;#125; 在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。">
@@ -260,6 +260,7 @@
 <p>只有访问虚拟内存的时候，发现没有映射到物理内存，页表也没有创建过，才触发缺页异常。进入内核调用 do_page_fault，一直调用到 <strong>handle_mm_fault。原来没有创建过页表，那只好补上这一课。于是，</strong>handle_mm_fault 调用 pud_alloc 和 pmd_alloc，来创建相应的页目录项，最后调用 handle_pte_fault 来创建页表项。</p>
 <p>大体上就是先找一遍页表，找不到就创建，直到把物理地址的映射写到页表里面，再根据基地址加偏移的方式获取对应的物理地址，然后访问。 这边如果是映射的文件， 那就是对应找到文件在内存中的缓存页，读取里面的内容。 如果页被换出了，那就把它换入 再定位。 具体的流程很长，但是逻辑还是清晰的， 不同类型的页作不同的动作，最终都会获取到一个内存的物理地址。</p>
 <p>从这块逻辑看，其实用的就是缓存的技术，懒加载，定时换入换出等逻辑。先找没有找再去创建。同样的，为了提高映射速度，我们引入了 TLB（Translation Lookaside Buffer），我们经常称为快表，专门用来做地址映射的硬件设备。它不在内存中，可存储的数据比较少，但是比内存要快。所以，我们可以想象，TLB 就是页表的 Cache，其中存储了当前最可能被访问到的页表项，其内容是部分页表项的一个副本。有了 TLB 之后，地址映射的过程就像图中画的。我们先查块表，块表中有映射关系，然后直接转换为物理地址。如果在 TLB 查不到映射关系时，才会到内存中查询页表。</p>
+<p>我编写了一个mmap系统调用的文件共享内存，代码在github上，有兴趣的同学可以看看。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -281,7 +282,10 @@
     <a href="/2021/02/03/linux19-pmm/" rel="prev" title="《趣谈linux操作系统》小结(十九) -物理内存管理">
       <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(十九) -物理内存管理
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/04/linux21-mmap/" rel="next" title="《趣谈linux操作系统》小结(二十一) -内存映射">
+      《趣谈linux操作系统》小结(二十一) -内存映射 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -356,7 +360,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
