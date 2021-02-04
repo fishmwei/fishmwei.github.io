@@ -20,21 +20,19 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
+  <meta name="description" content="用户态内存映射mmap123struct mm_struct &amp;#123;   struct vm_area_struct *mmap; /* list of VMAs */......&amp;#125; 在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ps命令使用小结">
-<meta property="og:url" content="http://fishmwei.github.io/2020/12/15/ps/index.html">
+<meta property="og:title" content="《趣谈linux操作系统》小结(二十) -内存映射">
+<meta property="og:url" content="http://fishmwei.github.io/2021/02/03/linux20-mmap/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
+<meta property="og:description" content="用户态内存映射mmap123struct mm_struct &amp;#123;   struct vm_area_struct *mmap; /* list of VMAs */......&amp;#125; 在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://fishmwei.github.io/images/202012/ps_help.jpg">
-<meta property="og:updated_time" content="2020-12-23T11:40:56.510Z">
+<meta property="og:updated_time" content="2021-02-04T00:38:36.734Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ps命令使用小结">
-<meta name="twitter:description" content="ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。 1ps --help">
-<meta name="twitter:image" content="http://fishmwei.github.io/images/202012/ps_help.jpg">
+<meta name="twitter:title" content="《趣谈linux操作系统》小结(二十) -内存映射">
+<meta name="twitter:description" content="用户态内存映射mmap123struct mm_struct &amp;#123;   struct vm_area_struct *mmap; /* list of VMAs */......&amp;#125; 在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/12/15/ps/">
+<link rel="canonical" href="http://fishmwei.github.io/2021/02/03/linux20-mmap/">
 
 
 <script id="page-configurations">
@@ -47,7 +45,7 @@
   };
 </script>
 
-  <title>ps命令使用小结 | IT攻城狮小明</title>
+  <title>《趣谈linux操作系统》小结(二十) -内存映射 | IT攻城狮小明</title>
   
 
 
@@ -186,7 +184,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/12/15/ps/">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2021/02/03/linux20-mmap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -199,7 +197,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ps命令使用小结
+          《趣谈linux操作系统》小结(二十) -内存映射
         </h1>
 
         <div class="post-meta">
@@ -209,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-15 14:57:12" itemprop="dateCreated datePublished" datetime="2020-12-15T14:57:12+08:00">2020-12-15</time>
+              <time title="创建时间：2021-02-03 11:40:34" itemprop="dateCreated datePublished" datetime="2021-02-03T11:40:34+08:00">2021-02-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -230,8 +228,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/12/15/ps/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/15/ps/" itemprop="commentCount"></span>
+    <a title="valine" href="/2021/02/03/linux20-mmap/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/03/linux20-mmap/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -246,39 +244,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>ps命令大家最熟悉不过了，经常用来查看系统资源及进程的基础信息。 使用管道导出结果到grep， xarg等命令，实现一些定位的目的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps --help</span><br></pre></td></tr></table></figure>
+        <h1 id="用户态内存映射"><a href="#用户态内存映射" class="headerlink" title="用户态内存映射"></a>用户态内存映射</h1><h2 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> &#123;</span> </span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">mmap</span>;</span> <span class="comment">/* list of VMAs */</span></span><br><span class="line">......&#125;</span><br></pre></td></tr></table></figure>
+<p>在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。</p>
 <a id="more"></a>
-<p><img src="/images/202012/ps_help.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>可以看到<code>ps</code>命令后面的选项大概分为5种， 简单选择项，指定选择项，输出格式项，指定长选项和混合选项。正常情况下，前面的4种选项，只能选择其中的一个选项参数，不同的种类间可以混合设置。基于兼容处理，如果有选项不能混合的话， 会显示一行warning，然后再继续显示。</p>
-<p>具体的还可以看一下 <code>man ps</code></p>
-<p><code>ps</code>显示当前进程的一个快照信息。可以通过选项设置显示的进程，如果希望持续更新显示进程信息可以使用<code>top</code>命令。</p>
-<p>不同版本的<code>ps</code>可以支持多种种类的选项。</p>
+<p>如果申请一大块内存，就要用 mmap。对于堆的申请来讲，mmap 是映射内存空间到物理内存。另外，如果一个进程想映射一个文件到自己的虚拟内存空间，也要通过 mmap 系统调用。这个时候 mmap 是映射内存空间到物理内存再到文件。</p>
+<p>mmap系统调用的调用链是 vm_mmap_pgoff-&gt;do_mmap_pgoff-&gt;do_mmap。这里面主要干了两件事情：</p>
 <ul>
-<li>UNIX选项格式， 必须使用<code>-</code>连接，可以组合多个选项</li>
-<li>BSD选项格式，不能使用<code>-</code>连接，可以组合多个选项</li>
-<li>GNU类型长选项，需要两个<code>-</code>作为前导符号</li>
+<li>调用 get_unmapped_area 找到一个没有映射的区域；</li>
+<li>调用 mmap_region 映射这个区域。</li>
 </ul>
-<p>不同种类的选项可能一起出现，但是可能会出现冲突。不同格式的有些选项功能是相同的，ps也会作兼容处理。</p>
-<p>默认的，ps会显示相同用户id下的所有进程(euid=EUID)和当前终端启动的进程，输出的进程一般是未作排序的。ps会显示PID、关联的终端名TTY、累积的CPU运行时间(实际的还是总的？)TIME、可执行文件名(CMD)。</p>
-<p>BSD格式的选项，还会显示进程的状态STAT, 使用进程名加参数的形式替换可执行文件名，当然这是可以设置的，可以设置环境变量PS_FORMAT(没试过，后面补充看看)。</p>
-<p>默认的许多进程是不被显示的，只有通过设置了选项，符合选项设置的进程信息才能显示出来。</p>
-<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">查看每个进程的信息，标准格式</span><br><span class="line">ps -e</span><br><span class="line">ps -ef</span><br><span class="line">ps -eF</span><br><span class="line">ps -ely</span><br><span class="line"></span><br><span class="line">查看每个进程的信息， BSD格式</span><br><span class="line">ps ax</span><br><span class="line">ps axu</span><br><span class="line"></span><br><span class="line">查看进程树</span><br><span class="line">ps -ejH</span><br><span class="line">ps axjf</span><br><span class="line"></span><br><span class="line">获取线程的信息</span><br><span class="line">ps -eLf</span><br><span class="line">ps axms</span><br><span class="line"></span><br><span class="line">显示安全信息? // TODO需要了解一下 内核中进程的结构</span><br><span class="line">ps -axZ</span><br><span class="line">ps -eM</span><br><span class="line"></span><br><span class="line">作为root用户运行的进程，用户格式</span><br><span class="line">ps -U root -u root u</span><br><span class="line"></span><br><span class="line">使用用户自定义的格式查看每个进程</span><br><span class="line">ps -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wcha:14,comm </span><br><span class="line">ps axo stat,euid,ruid,tty,comm</span><br><span class="line">ps -eopid,tt,user,fname,tmout,f,wchan</span><br><span class="line"></span><br><span class="line">只查看指定进程名的pid的信息</span><br><span class="line">ps -C init -o pid=</span><br><span class="line"></span><br><span class="line">只查看进程id为42的进程名</span><br><span class="line">ps -p 42 -o comm=</span><br></pre></td></tr></table></figure></p>
-<p>更多的功能，可以组合选项尝试输出一下。</p>
-<h2 id="CPU运行时间"><a href="#CPU运行时间" class="headerlink" title="CPU运行时间"></a>CPU运行时间</h2><p>运行时间分几种，一种是程序结束的时间减去程序开始的时间，即自然时间 Wall Clock Time. 还有一种是实际占用CPU的运行时间，因为CPU同时需要运行多个程序，不断的在程序间切换。可以使用time命令查看某个程序的运行时间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Keep:~ keep$ time ps</span><br><span class="line">  PID TTY           TIME CMD</span><br><span class="line">  455 ttys000    0:00.01 /bin/bash -l</span><br><span class="line">  456 ttys001    0:00.01 /bin/bash -l</span><br><span class="line">  906 ttys002    0:00.03 -bash</span><br><span class="line"></span><br><span class="line">real	0m0.017s</span><br><span class="line">user	0m0.002s</span><br><span class="line">sys	0m0.011s</span><br></pre></td></tr></table></figure>
-<p>第一个是 real time，也就是我们说的 Wall Clock Time，也就是运行程序整个过程中流逝掉的时间；第二个是 user time，也就是 CPU 在运行你的程序，在用户态运行指令的时间；第三个是 sys time，是 CPU 在运行你的程序，在操作系统内核里运行指令的时间。而程序实际花费的 CPU 执行时间（CPU Time），就是 user time 加上 sys time, ps中显示的就是这个时间。</p>
-<h2 id="小常识"><a href="#小常识" class="headerlink" title="小常识"></a>小常识</h2><p>近期项目在测试过程中，经常出现一些包解析错误的问题。主要是通过测试仪构造了一些mac、ip或者端口递增的报文。由于某一些ip或者端口是有特殊用途的，导致在报文解析的过程中，由于这些报文的格式不符合规范而被解析成错误报文。</p>
-<p>主要有这几个问题：</p>
-<ul>
-<li>源mac为组播mac</li>
-<li>源ip为组播ip</li>
-<li>源ip为回环口ip， ipv4 127.0.0.1 ipv6 ::1</li>
-<li>源目ip相同</li>
-<li>端口号为2152 信令隧道报文，实际报文错误</li>
-<li>ip报文长度错误</li>
-<li>ip报文checksum错误</li>
-</ul>
+<p>通过mmap，我们主要就是建立了空间的访问逻辑所需要的一些结构，还没有涉及到具体的物理内存映射。</p>
+<h2 id="用户态缺页"><a href="#用户态缺页" class="headerlink" title="用户态缺页"></a>用户态缺页</h2><p>一旦开始访问虚拟内存的某个地址，如果我们发现，并没有对应的物理页，那就触发缺页中断，调用 do_page_fault。<br>在 __do_page_fault 里面，先要判断缺页中断是否发生在内核， 地址是否大于TASK_SIZE_MAX。如果发生在内核则调用 vmalloc_fault，在内核里面，vmalloc 区域需要内核页表映射到物理页。在用户空间里面，找到你访问的那个地址所在的区域 vm_area_struct，然后调用 handle_mm_fault 来映射这个区域。</p>
+<p>handle_mm_fault函数里面会设置进程对应的页表的几级目录信息。当进程在CPU上运行时，会在上下文切换时调用load_new_mm_cr3，保存pgd地址到cr3寄存器，如果 CPU 的指令要访问进程的虚拟内存，它就会自动从 cr3 里面得到 pgd 在物理内存的地址，然后根据里面的页表解析虚拟内存的地址为物理内存，从而访问真正的物理内存上的数据。</p>
+<p>用户进程在运行的过程中，访问虚拟内存中的数据，会被 cr3 里面指向的页表转换为物理地址后，才在物理内存中访问数据，这个过程都是在用户态运行的，地址转换的过程无需进入内核态。</p>
+<p>只有访问虚拟内存的时候，发现没有映射到物理内存，页表也没有创建过，才触发缺页异常。进入内核调用 do_page_fault，一直调用到 <strong>handle_mm_fault。原来没有创建过页表，那只好补上这一课。于是，</strong>handle_mm_fault 调用 pud_alloc 和 pmd_alloc，来创建相应的页目录项，最后调用 handle_pte_fault 来创建页表项。</p>
+<p>大体上就是先找一遍页表，找不到就创建，直到把物理地址的映射写到页表里面，再根据基地址加偏移的方式获取对应的物理地址，然后访问。 这边如果是映射的文件， 那就是对应找到文件在内存中的缓存页，读取里面的内容。 如果页被换出了，那就把它换入 再定位。 具体的流程很长，但是逻辑还是清晰的， 不同类型的页作不同的动作，最终都会获取到一个内存的物理地址。</p>
+<p>从这块逻辑看，其实用的就是缓存的技术，懒加载，定时换入换出等逻辑。先找没有找再去创建。同样的，为了提高映射速度，我们引入了 TLB（Translation Lookaside Buffer），我们经常称为快表，专门用来做地址映射的硬件设备。它不在内存中，可存储的数据比较少，但是比内存要快。所以，我们可以想象，TLB 就是页表的 Cache，其中存储了当前最可能被访问到的页表项，其内容是部分页表项的一个副本。有了 TLB 之后，地址映射的过程就像图中画的。我们先查块表，块表中有映射关系，然后直接转换为物理地址。如果在 TLB 查不到映射关系时，才会到内存中查询页表。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -297,13 +278,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/10/linux7/" rel="prev" title="《趣谈linux操作系统》小结(七)">
-      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(七)
+    <a href="/2021/02/03/linux19-pmm/" rel="prev" title="《趣谈linux操作系统》小结(十九) -物理内存管理">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(十九) -物理内存管理
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/12/16/linux8/" rel="next" title="《趣谈linux操作系统》小结(八)">
-      《趣谈linux操作系统》小结(八) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -363,7 +341,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU运行时间"><span class="nav-number">1.</span> <span class="nav-text">CPU运行时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小常识"><span class="nav-number">2.</span> <span class="nav-text">小常识</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#用户态内存映射"><span class="nav-number">1.</span> <span class="nav-text">用户态内存映射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mmap"><span class="nav-number">1.1.</span> <span class="nav-text">mmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户态缺页"><span class="nav-number">1.2.</span> <span class="nav-text">用户态缺页</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

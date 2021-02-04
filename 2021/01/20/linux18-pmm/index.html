@@ -28,7 +28,7 @@
 <meta property="og:description" content="物理内存管理物理内存的组织方式把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202101/mm_buddy.jpeg">
-<meta property="og:updated_time" content="2021-01-30T03:04:06.418Z">
+<meta property="og:updated_time" content="2021-02-03T06:12:23.241Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(十八) -物理内存管理">
 <meta name="twitter:description" content="物理内存管理物理内存的组织方式把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct">
@@ -267,7 +267,7 @@
 <p>ZONE_HIGHMEM 是高端内存区，对于 32 位系统来说超过 896M 的地方，对于 64 位没必要有的一段区域。</p>
 <p>ZONE_MOVABLE 是可移动区域，通过将物理内存划分为可移动分配区域和不可移动分配区域来避免内存碎片。</p>
 <p>这边对于区域的划分，都是针对物理内存的。</p>
-<p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对于这部分的处理。 TODO:</p>
+<p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对应这部分的处理。 TODO:</p>
 <p>就像区域或者页一样，节点也是存在一个数组里面的。 至于这个节点数，跟具体cpu数一致。每个CPU分配一个节点。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pglist_data</span> *<span class="title">node_data</span>[<span class="title">MAX_NUMNODES</span>] __<span class="title">read_mostly</span>;</span> <span class="comment">// numa.c</span></span><br></pre></td></tr></table></figure>
 <h2 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span>;</span></span><br></pre></td></tr></table></figure>
@@ -402,7 +402,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>开盘了</title>
+    <url>/2019/05/23/201805-helloWorld/</url>
+    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
+<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
+<blockquote>
+<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
+</blockquote>
+<blockquote>
+<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
+</blockquote>
+<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Deprecated js库</title>
     <url>/2019/05/24/Deprecated-Js/</url>
     <content><![CDATA[<p>我们在install一些库的时候， 可能会看到一些提示， 表明这个js库已经废弃了， 让大家去用xx库的。</p>
@@ -58,24 +76,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>开盘了</title>
-    <url>/2019/05/23/201805-helloWorld/</url>
-    <content><![CDATA[<h1 id="终于开盘了"><a href="#终于开盘了" class="headerlink" title="终于开盘了"></a>终于开盘了</h1><p><strong>Hello EveryOne!</strong></p>
-<p>很久以前就萌生了要创建一个独立的个人博客，由于个人的懒惰，迟迟没有付诸实现。在此之前， 在QQ空间、百度空间、chinaUnix博客、简书上零零散散的发布着文章， 终了感觉还是需要一个属于自己搭建的专业的博客，经过漫长的岁月，近期终于铆足了劲，花了些时间在github上搭建好博客了。同时也创建了自己的个人公众号。从此就有一个发布个人博文的小天地了，不再流浪。</p>
-<blockquote>
-<p>ChinaUnix博客地址： <a href="http://blog.chinaunix.net/uid/24459558.html" target="_blank" rel="noopener">http://blog.chinaunix.net/uid/24459558.html</a></p>
-</blockquote>
-<blockquote>
-<p>简书地址： <a href="https://www.jianshu.com/u/1eaa68a7efc1" target="_blank" rel="noopener">https://www.jianshu.com/u/1eaa68a7efc1</a></p>
-</blockquote>
-<p>开篇是一个立Flag的时机， 嗯， 这个博客用来记录分享个人技术生涯的一些学习总结、经验分享以及想法杂谈，欢迎拍砖。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei (IT攻城狮小明)，欢迎沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -428,6 +428,57 @@
       </tags>
   </entry>
   <entry>
+    <title>todo</title>
+    <url>/2020/02/13/todo/</url>
+    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
+<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
+<li style="list-style: none"><input type="checkbox"> socket</li>
+<li style="list-style: none"><input type="checkbox"> 线程创建</li>
+</ul>
+<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
+<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
+<li style="list-style: none"><input type="checkbox"> tcpdump</li>
+</ul>
+<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
+<li style="list-style: none"><input type="checkbox"> makefile使用</li>
+<li style="list-style: none"><input type="checkbox" checked> coredump</li>
+<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
+</ul>
+<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
+<li style="list-style: none"><input type="checkbox"> radius</li>
+<li style="list-style: none"><input type="checkbox"> lldp</li>
+<li style="list-style: none"><input type="checkbox"> mpls</li>
+<li style="list-style: none"><input type="checkbox"> sctp</li>
+<li style="list-style: none"><input type="checkbox"> ppp</li>
+<li style="list-style: none"><input type="checkbox"> pppoe</li>
+<li style="list-style: none"><input type="checkbox"> ip相关</li>
+<li style="list-style: none"><input type="checkbox"> ah协议</li>
+<li style="list-style: none"><input type="checkbox"> gre</li>
+<li style="list-style: none"><input type="checkbox"> gtp</li>
+<li style="list-style: none"><input type="checkbox"> hdlc</li>
+<li style="list-style: none"><input type="checkbox"> teredo</li>
+<li style="list-style: none"><input type="checkbox"> 报文分片</li>
+<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
+</ul>
+<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
+<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
+<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>CoreDump的使用</title>
     <url>/2019/12/24/CoreDump-JOB/</url>
     <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
@@ -510,57 +561,6 @@
       </tags>
   </entry>
   <entry>
-    <title>todo</title>
-    <url>/2020/02/13/todo/</url>
-    <content><![CDATA[<h1 id="2020年-TODO列表"><a href="#2020年-TODO列表" class="headerlink" title="2020年 TODO列表"></a>2020年 TODO列表</h1><a id="more"></a>
-<h2 id="编程基础"><a href="#编程基础" class="headerlink" title="编程基础"></a>编程基础</h2><ul>
-<li style="list-style: none"><input type="checkbox"> socket</li>
-<li style="list-style: none"><input type="checkbox"> 线程创建</li>
-</ul>
-<h2 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> sed命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> awk命令使用</li>
-<li style="list-style: none"><input type="checkbox" checked> grep命令使用</li>
-<li style="list-style: none"><input type="checkbox"> tcpdump</li>
-</ul>
-<h2 id="编译相关"><a href="#编译相关" class="headerlink" title="编译相关"></a>编译相关</h2><ul>
-<li style="list-style: none"><input type="checkbox"> makefile使用</li>
-<li style="list-style: none"><input type="checkbox" checked> coredump</li>
-<li style="list-style: none"><input type="checkbox" checked> 包大小</li>
-</ul>
-<h2 id="网络协议"><a href="#网络协议" class="headerlink" title="网络协议"></a>网络协议</h2><ul>
-<li style="list-style: none"><input type="checkbox"> radius</li>
-<li style="list-style: none"><input type="checkbox"> lldp</li>
-<li style="list-style: none"><input type="checkbox"> mpls</li>
-<li style="list-style: none"><input type="checkbox"> sctp</li>
-<li style="list-style: none"><input type="checkbox"> ppp</li>
-<li style="list-style: none"><input type="checkbox"> pppoe</li>
-<li style="list-style: none"><input type="checkbox"> ip相关</li>
-<li style="list-style: none"><input type="checkbox"> ah协议</li>
-<li style="list-style: none"><input type="checkbox"> gre</li>
-<li style="list-style: none"><input type="checkbox"> gtp</li>
-<li style="list-style: none"><input type="checkbox"> hdlc</li>
-<li style="list-style: none"><input type="checkbox"> teredo</li>
-<li style="list-style: none"><input type="checkbox"> 报文分片</li>
-<li style="list-style: none"><input type="checkbox"> TCP/UDP系列？</li>
-</ul>
-<h2 id="开发经验-想法"><a href="#开发经验-想法" class="headerlink" title="开发经验/想法"></a>开发经验/想法</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 单例重构</li>
-<li style="list-style: none"><input type="checkbox"> 关于看书的经验</li>
-<li style="list-style: none"><input type="checkbox" checked> getopt，C命令行参数</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li style="list-style: none"><input type="checkbox"> 正则表达式</li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>换城市工作切换的感受</title>
     <url>/2020/06/03/newjob-JOB/</url>
     <content><![CDATA[<h2 id="杂谈"><a href="#杂谈" class="headerlink" title="杂谈"></a>杂谈</h2><p>很快，从去年11月份到现在已经半年多了，新工作的第一个项目也大抵结束了，近来有时间来说一说感想。</p>
@@ -574,20 +574,6 @@
       <tags>
         <tag>杂谈</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>项目性能优化</title>
@@ -627,6 +613,35 @@
       </tags>
   </entry>
   <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>关于</title>
+    <url>/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
+      </categories>
+  </entry>
+  <entry>
     <title>结构体偏移</title>
     <url>/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -649,21 +664,6 @@
       </categories>
   </entry>
   <entry>
-    <title>关于</title>
-    <url>/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《C程序设计语言》读后感</title>
     <url>/2020/06/22/reflection4c/</url>
     <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
@@ -679,6 +679,26 @@
       <tags>
         <tag>读后感</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-1</title>
@@ -770,26 +790,6 @@
 ]]></content>
       <categories>
         <category>读后感</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -910,17 +910,24 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-6</title>
-    <url>/2020/07/24/reflection4self-6/</url>
-    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
+    <title>近期工作回顾</title>
+    <url>/2020/08/17/layer/</url>
+    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
 <a id="more"></a>
-<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
-<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
-<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
-<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
+<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
+<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
+<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
+<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>头文件只要多次被引用了， 编译时就会报错。</p>
+<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
+<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
+<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
+<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
+<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -985,24 +992,17 @@
       </categories>
   </entry>
   <entry>
-    <title>近期工作回顾</title>
-    <url>/2020/08/17/layer/</url>
-    <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
+    <title>程序员自我修养读后感-6</title>
+    <url>/2020/07/24/reflection4self-6/</url>
+    <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/" target="_blank" rel="noopener">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -o main -lname // -lname 表示需要链接libname.so.a.b.c, 具体的版本由编译环境决定</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>项目还是基于老项目的代码开工的， 对旧的项目框架，总归是有一些感觉不合理的地方，抽时间梳理了一下，特别是这个代码架构。一个main.c文件包罗万象，各种代码参差在一起，总让人感觉到乱。对内对外的头文件没有区分，一股脑全部暴露出去。针对这个情况， 我采用了软件架构上的万金油 - 分层。 首先，根据业务把代码进行了分层， 理清楚各个模块之间的调用关系； 然后根据不同的层，把相关的代码分散到不同的文件。 第三， 把对内对外的接口分离开，分散到不同的文件中。具体实现如下：</p>
-<h3 id="分层"><a href="#分层" class="headerlink" title="分层"></a>分层</h3><p>根据整理把代码分层不同的模块， 分别为 最上层进行逻辑组织的应用模块， 报文解析处理的报文模块， 业务相关的业务模块， 配置相关的配置模块，通用的工具模块，还有就是系统芯片的SDK模块。</p>
-<p> <img src="/images/202008/layer.jpg" width="400" height="300" alt="图片名称" align="center"></p>
-<h3 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h3><p>针对嵌入式系统，为了提高程序运行的效率， 减少不必要的函数出入栈操作，项目大部分的函数都是static inline类型的，整个模块除了一个main.c文件其他都是头文件。针对这种情况，从main.c文件剥离出来的各个模块的代码也都是以头文件的形式存在的。 如： packet.h, bus.h, common.h。 另外，由于配置模块一般都是在程序运行时进行调用处理的，性能要求不高，可以独立出一个config.c + config.h的文件。</p>
-<p>然后根据调用关系， 在main.c文件中按顺序引用各个模块的头文件， 针对需要互相引用的地方， 使用函数声明的方式来保证调用的到。这样， 在预处理的时候，其实大部分模块的代码会直接展开到main.c文件， 可以正常使用。 为了保证模块间不互心依赖头文件， 我使用了宏判断，进行报错。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#ifdef _PACKET_H_</span><br><span class="line"></span><br><span class="line">#pragma message(__FILE__&quot; must be included in main.c, only once&quot;)</span><br><span class="line"></span><br><span class="line">&quot;packet.h 只能在main.c文件中包含&quot;</span><br><span class="line">#else</span><br><span class="line">#define _PACKET_H_</span><br><span class="line"></span><br><span class="line">// ... code statememts ...</span><br><span class="line"></span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
-<p>头文件只要多次被引用了， 编译时就会报错。</p>
-<p>同理，其他的内部头文件也进行同样的处理， 保证在main.c中唯一引用头文件即可。各个模块的文件不需要再引用任何头文件， 由main.c组织依赖关系。</p>
-<p>这样逻辑就清晰多了， 代码也不会混杂在一起。</p>
-<h2 id="sizeof-宏替换"><a href="#sizeof-宏替换" class="headerlink" title="sizeof 宏替换"></a>sizeof 宏替换</h2><p>代码中充斥着许多对结构体进行sizeof求大小的代码，实际上这些都是可以节省下来的，使用宏进行统一定义与处理。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define UDP_HEADER_LEN (8) // udp头部长度为8   sizeof(udp_header_t)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 代码启动时进行assert</span><br><span class="line">assert(UDP_HEADER_LEN==sizeof(udp_header_t));</span><br></pre></td></tr></table></figure>
-<p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
-<p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方案无法解决依赖的次版本比实际运行次版本高的问题。次版本号只保证向后兼容， 不保证向前兼容， 可能出现某些接口找不到的问题，需要注意。</p>
+<h2 id="共享库的查找路径"><a href="#共享库的查找路径" class="headerlink" title="共享库的查找路径"></a>共享库的查找路径</h2><p>程序依赖的共享库会被保存到.dynamic段中， 然后加载的时候由动态链接器进行加载，如果保存的是绝对路径，直接按路径加载；如果是相对路径或者纯文件名，则按/lib, /usr/lib, 和/etc/ld.so.conf配置的路径查找。还有基于ldconfig的缓存优先查找。</p>
+<p>还可以基于环境变量LD_LIBRARY_PATH设置优先查找路径</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_LIBRARY_PATH=/home/lib /bin/ld  ./exec_file</span><br></pre></td></tr></table></figure>
+<p>查看共享库的查找过程可以设置环境变量 LD_DEBUG, 然后执行程序 会有具体的信息输出。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LD_DEBUG=files  ./exec_file</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前段时间在12123App上申请的驾驶证到期换证，前几天就收到了新驾照，直接从南京邮寄到手，互联网+政务的应用的确使得广大公民收益匪浅，省去了许多繁杂的流程。相信IT技术在生活中的应用将越来越广阔，生活会越来越美好，科技发展很有前景。套用老东家的愿景，科技将会丰富人们的沟通与生活。科技在未来很长一段时间内，依旧会是一个好的，并且会越来越好的一个赛道。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1023,6 +1023,28 @@
 <h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
 <p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1128,28 +1150,6 @@
       </categories>
   </entry>
   <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>awk命令使用</title>
     <url>/2020/09/30/awk/</url>
     <content><![CDATA[<h1 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h1><p>awk是一个用于模式匹配和处理的语言，有相应的语法。</p>
@@ -1174,6 +1174,24 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">netstat | awk &apos;/^tcp.*keep/&apos;</span><br></pre></td></tr></table></figure>
 <p>网络上的博客挺完整的 <a href="https://www.cnblogs.com/ginvip/p/6352157.html" target="_blank" rel="noopener">链接</a></p>
 <h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>至此， 终于把linux命令三剑客粗略的过了一遍。使用的时候再查一下，达到会基本使用的地步了。Great!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(二)</title>
+    <url>/2020/11/18/linux2/</url>
+    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
+<a id="more"></a>
+<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
+<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
+<p>Linux 命令行</p>
+<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1214,15 +1232,23 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(二)</title>
-    <url>/2020/11/18/linux2/</url>
-    <content><![CDATA[<h2 id="系统内核体系结构"><a href="#系统内核体系结构" class="headerlink" title="系统内核体系结构"></a>系统内核体系结构</h2><p>操作系统是一个挺复杂的软件平台， 运行在其上的程序本身需要存储，涉及到文件管理子系统；运行时需要资源，涉及到内存管理子系统、进程管理子系统、系统调用子系统；如果程序与其他机器通信， 涉及网络子系统。运行时需要与用户交互，如显示 涉及设备子系统。 操作系统的内核主要就包含了这些子系统。</p>
+    <title>《趣谈linux操作系统》小结(四)</title>
+    <url>/2020/12/08/linux4/</url>
+    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
 <a id="more"></a>
-<p><img src="/images/202011/linux2_system.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<h2 id="Linux-命令行"><a href="#Linux-命令行" class="headerlink" title="Linux 命令行"></a>Linux 命令行</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">passwd // 更新密码</span><br><span class="line"></span><br><span class="line">useradd sovran // 添加用户sovran, 可以到/etc/passwd 查看</span><br><span class="line"></span><br><span class="line">passwd sovran //为sovran设置密码</span><br><span class="line"></span><br><span class="line">ls 查看文件目录</span><br><span class="line"></span><br><span class="line">chmod +x file //修改文件属性 添加可执行</span><br><span class="line"></span><br><span class="line">chown 更新用户 </span><br><span class="line"></span><br><span class="line">rpm -i jdk-XXX_linux-x64_bin.rpm  // centos 进行安装  下载的rpm软件包</span><br><span class="line">dpkg -i jdk-XXX_linux-x64_bin.deb  // centos 进行安装 下载的deb软件包</span><br><span class="line"></span><br><span class="line">ps -ef | grep program-name | awk `&#123;print $2&#125;` | xargs kill -9 // kill 指定名称的进程</span><br><span class="line"></span><br><span class="line">nohub command</span><br></pre></td></tr></table></figure>
-<p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
-<p>Linux 命令行</p>
-<p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
+<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
+<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
+<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
+<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
+<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
+<p>16位的处理器大概就是这样子的。</p>
+<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
+<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
+<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1265,23 +1291,21 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(四)</title>
-    <url>/2020/12/08/linux4/</url>
-    <content><![CDATA[<h2 id="计算机的工作模式"><a href="#计算机的工作模式" class="headerlink" title="计算机的工作模式"></a>计算机的工作模式</h2><p>计算机由CPU、内存、硬盘以及其它各种硬件组成。CPU与内存、硬盘等设备通过总线来交互。</p>
+    <title>《趣谈linux操作系统》小结(六)</title>
+    <url>/2020/12/09/linux6/</url>
+    <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
 <a id="more"></a>
-<p><img src="/images/202012/linux_connect.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>CPU包含运算单元、数据单元和控制单元。运算单元用于计算、数据单元保存数据， 控制单元存放指令地址。</p>
-<p><img src="/images/202012/linux_cpu.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>同样的，总线上主要有两类数据，一个是地址数据，也就是我想拿内存中哪个位置的数据，这类总线叫地址总线（Address Bus）；另一类是真正的数据，这类总线叫数据总线（Data Bus）。</p>
-<h2 id="X86历史"><a href="#X86历史" class="headerlink" title="X86历史"></a>X86历史</h2><p>最早地址总线设计成20位， 可以访问的地址大小为 起始地址&lt;&lt;4+偏移</p>
-<p><img src="/images/202012/linux_cpu2.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>数据单元，CPU内部包含了8个通用寄存器，用于保存数据。这些寄存器比较灵活，其中 AX、BX、CX、DX 可以分成两个 8 位的寄存器来使用，分别是 AH、AL、BH、BL、CH、CL、DH、DL，其中 H 就是 High（高位），L 就是 Low（低位）的意思。</p>
-<p>控制单元，IP地址指令寄存器。有四个 16 位的段寄存器，分别是 CS、DS、SS、ES。</p>
-<p>16位的处理器大概就是这样子的。</p>
-<h3 id="32位处理器"><a href="#32位处理器" class="headerlink" title="32位处理器"></a>32位处理器</h3><p>大部分寄存器扩展为32位，栈寄存器保存为段选择子，用于选择段起始地址。</p>
-<p><img src="/images/202012/linux_cpu3.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>到了 32 位的系统架构下，我们将前一种模式称为实模式（Real Pattern），后一种模式称为保护模式（Protected Pattern）。</p>
-<p>直接操作寄存器可以通过汇编指令，大学时用汇编代码编写过跑马灯小程序，感觉还是挺cool的。操作系统或者许多嵌入式的系统使用了许多汇编代码直接操作寄存器，可以显著的提高程序执行的效率，只是不大可读。需要辅助注释。</p>
+<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
+<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
+<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
+<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
+<p>系统调用资源需要保存，调用之后再恢复。</p>
+<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
+<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
+<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1318,21 +1342,17 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(六)</title>
-    <url>/2020/12/09/linux6/</url>
-    <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init/main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+    <title>《趣谈linux操作系统》小结(八)</title>
+    <url>/2020/12/16/linux8/</url>
+    <content><![CDATA[<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
 <a id="more"></a>
-<p><img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
-<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
-<p><img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
-<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
-<p>系统调用资源需要保存，调用之后再恢复。</p>
-<p><img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
-<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
-<p><img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>线程的创建：</p>
+<p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
+<p><img src="/images/202012/linux_thread_data.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);</span><br></pre></td></tr></table></figure>
+<h2 id="线程的数据保护"><a href="#线程的数据保护" class="headerlink" title="线程的数据保护"></a>线程的数据保护</h2><p>数据保护一般通过互斥量处理。pthread_mutex_t<br><img src="/images/202012/linux_thread_mutex.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>互斥量和条件变量结合使用，可以提高cpu处理性能。不用一直条件判断，而是等待条件触发再判断条件。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1400,26 +1420,6 @@
 <li>ip报文长度错误</li>
 <li>ip报文checksum错误</li>
 </ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(八)</title>
-    <url>/2020/12/16/linux8/</url>
-    <content><![CDATA[<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>进程是系统资源调度和分配的基本单位，实现了操作系统的并发； 线程是CPU资源调度与分配的基本单位，实现进程内部的并发。线程属于进程的一部分，是进程的子任务。一个进程至少包含一个线程，相同进程下的线程共享地址空间等资源。每个线程拥有自己的栈段，栈段又叫运行时段，用来存放所有局部变量和临时变量。</p>
-<a id="more"></a>
-<p>线程的创建：</p>
-<p><img src="/images/202012/linux_thread.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<h2 id="线程的数据"><a href="#线程的数据" class="headerlink" title="线程的数据"></a>线程的数据</h2><p>线程就是有一个好处，使得一个进程可以并行做多件事。线程间需要共享数据，需要做好数据的同步与互斥。我们称共享的数据为临界区，临界区需要作保护。线程自身也有私有的数据，保存在线程的栈空间内,比如局部变量，默认栈空间为8MB，可以使用ulimit -a查看具体的配置，当然也可以通过设置修改栈的空间大小。还有一种独立的私有数据，通过key设置，不同的线程通过key获取到的值是可能不一样的，各个线程独立保存。</p>
-<p><img src="/images/202012/linux_thread_data.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int pthread_attr_setstacksize(pthread_attr_t *attr, size_t stacksize);</span><br></pre></td></tr></table></figure>
-<h2 id="线程的数据保护"><a href="#线程的数据保护" class="headerlink" title="线程的数据保护"></a>线程的数据保护</h2><p>数据保护一般通过互斥量处理。pthread_mutex_t<br><img src="/images/202012/linux_thread_mutex.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>互斥量和条件变量结合使用，可以提高cpu处理性能。不用一直条件判断，而是等待条件触发再判断条件。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1499,25 +1499,6 @@
       </categories>
   </entry>
   <entry>
-    <title>关于工作经验</title>
-    <url>/2020/12/22/experience/</url>
-    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
-<a id="more"></a>
-<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
-<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
-<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
-<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
-<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
-<p>哦了，不瞎唠叨了。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
     <url>/2020/12/23/linux-schedule-active/</url>
     <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
@@ -1554,105 +1535,16 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十一) - 进程调度</title>
-    <url>/2020/12/23/linux-schedule/</url>
-    <content><![CDATA[<p>进程分为实时进程和普通进程。 实时进程需要立刻执行返回结果，普通进程没有这个需求。</p>
+    <title>关于工作经验</title>
+    <url>/2020/12/22/experience/</url>
+    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
 <a id="more"></a>
-<p>task_struct中有策略信息和优先级信息</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> policy;</span><br><span class="line"><span class="keyword">int</span> prio, static_prio, normal_prio;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> rt_priority;</span><br><span class="line"></span><br><span class="line"><span class="comment">// policy 取值如下</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_NORMAL    0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_FIFO    1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_RR    2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_BATCH    3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_IDLE    5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_DEADLINE    6</span></span><br></pre></td></tr></table></figure>
-<p>对于实时进程，优先级的范围是 0～99；对于普通进程，优先级的范围是 100～139。数值越小，优先级越高。</p>
-<h2 id="实时调度策略"><a href="#实时调度策略" class="headerlink" title="实时调度策略"></a>实时调度策略</h2><p>对于调度策略，其中 SCHED_FIFO、SCHED_RR、SCHED_DEADLINE 是实时进程的调度策略。</p>
-<ul>
-<li>SCHED_FIFO 就是交了相同钱的，先来先服务，但是有的加钱多，可以分配更高的优先级，也就是说，高优先级的进程可以抢占低优先级的进程，而相同优先级的进程，我们遵循先来先得。</li>
-<li>SCHED_RR 轮流调度算法，采用时间片，相同优先级的任务当用完时间片会被放到队列尾部，以保证公平性，而高优先级的任务也是可以抢占低优先级的任务。</li>
-<li>SCHED_DEADLINE，是按照任务的 deadline 进行调度的。当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行。</li>
-</ul>
-<h2 id="普通调度策略"><a href="#普通调度策略" class="headerlink" title="普通调度策略"></a>普通调度策略</h2><ul>
-<li>SCHED_NORMAL 是普通的进程</li>
-<li>SCHED_BATCH 是后台进程，几乎不需要和前端进行交互。这类项目可以默默执行，不要影响需要交互的进程，可以降低它的优先级。</li>
-<li>SCHED_IDLE 是特别空闲的时候才跑的进程</li>
-</ul>
-<h2 id="调度策略的实现者，-调度类"><a href="#调度策略的实现者，-调度类" class="headerlink" title="调度策略的实现者， 调度类"></a>调度策略的实现者， 调度类</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> *<span class="title">sched_class</span>;</span></span><br></pre></td></tr></table></figure>
-<p>sched_class 有几种实现：</p>
-<ul>
-<li>stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；</li>
-<li>dl_sched_class 就对应上面的 deadline 调度策略；</li>
-<li>rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct-&gt;policy 指定；</li>
-<li>fair_sched_class 就是普通进程的调度策略；</li>
-<li>idle_sched_class 就是空闲进程的调度策略。</li>
-</ul>
-<p>下面是普通进程的调度</p>
-<h2 id="完全公平调度算法-CFS"><a href="#完全公平调度算法-CFS" class="headerlink" title="完全公平调度算法 CFS"></a>完全公平调度算法 CFS</h2><p>计算根据进程的优先级分配不同的权重，然后计算每个进程的运行时间值。 对比运行的实际值，小的就优先运行。保证每个进程都可以运行到。</p>
-<h2 id="调度队列与调度实体"><a href="#调度队列与调度实体" class="headerlink" title="调度队列与调度实体"></a>调度队列与调度实体</h2><p>进程调度实体涉及的成员</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span> <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span> <span class="title">dl</span>;</span></span><br></pre></td></tr></table></figure>
-<p>CFS不同的进程通过把调度的实体挂在红黑树上实现快速的调度。所有可运行的进程通过不断地插入操作最终都存储在以运行时间vruntime为顺序的红黑树中，vruntime 最小的在树的左侧，vruntime 最多的在树的右侧。 CFS 调度策略会选择红黑树最左边的叶子节点作为下一个将获得 CPU 的任务。</p>
-<p>每个cpu都有自己的 struct rq 结构，其用于描述在此 CPU 上所运行的所有进程，其包括一个实时进程队列 rt_rq 和一个 CFS 运行队列 cfs_rq。在调度时，调度器首先会先去实时进程队列找是否有实时进程需要运行，如果没有才会去 CFS 运行队列找是否有进程需要运行。</p>
-<p><img src="/images/202012/linux_task_rq.jpeg" alt="图片替换文本" width="800" height="513" align="bottom"></p>
-<p>实现不同进程的调度，是通过按优先级从高到低来遍历调度类的方法来实现的。为了确保进程不被饿死，还需要动态更新进程的优先级，保证长时间未运行的进程随着时间变长而提升优先级，使之可以更快的被调用到。rt_sched_class 先被调用，它会在 rt_rq 上找下一个任务，只有找不到的时候，才轮到 fair_sched_class 被调用，它会在 cfs_rq 上找下一个任务。这样保证了实时任务的优先级永远大于普通任务。</p>
-<p><img src="/images/202012/linux_scedule_q.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
-    <url>/2020/12/28/linux13-processnew/</url>
-    <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
-<a id="more"></a>
-<ul>
-<li>申请新的task_struct， 申请新的内核栈空间，赋值给 task_struct 的 void *stack 成员变量；拷贝task_struct的内容， 调用 setup_thread_stack 设置 thread_info。</li>
-<li>调用copy_creds，设置权限相关的配置</li>
-<li>重新设置进程运行的统计量</li>
-<li>设置调度相关的变量 sched_fork， 设置状态、优先级、运行量，调度类等。是否可抢占。</li>
-<li>初始化与文件和文件系统相关的变量。复制一个进程打开的文件信息。复制一个进程的目录信息。</li>
-<li>初始化与信号相关的变量。 拷贝信号处理函数</li>
-<li>复制进程内存空间</li>
-<li>分配 pid，设置 tid，group_leader，并且建立进程之间的亲缘关系。</li>
-</ul>
-<p>第二步，唤醒新的进程wake_up_new_task。</p>
-<ul>
-<li>将进程的状态设置为 TASK_RUNNING</li>
-<li>将 sched_entity 加入到红黑树里面，然后将 se-&gt;on_rq = 1 设置在队列上。</li>
-<li>调用 check_preempt_curr，看是否能够抢占当前进程。如果可以抢占，给当前进程设置标志。</li>
-</ul>
-<p>OK， fork系统调用结束后，触发抢占。</p>
-<p><img src="/images/202012/linux13_fork.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
-    <url>/2020/12/28/linux14-thread/</url>
-    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
-<a id="more"></a>
-<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
-<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
-<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
-<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
-<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
-<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
-<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
-<ul>
-<li>files_struct 引用计数加一</li>
-<li>fs_struct 的用户数加一</li>
-<li>sighand_struct 引用计数加一</li>
-<li>mm直接指向了原来的 mm_struct</li>
-</ul>
-<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
-<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
-<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
-<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
+<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
+<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
+<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
+<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
+<p>哦了，不瞎唠叨了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1746,6 +1638,114 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
+    <url>/2020/12/28/linux13-processnew/</url>
+    <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
+<a id="more"></a>
+<ul>
+<li>申请新的task_struct， 申请新的内核栈空间，赋值给 task_struct 的 void *stack 成员变量；拷贝task_struct的内容， 调用 setup_thread_stack 设置 thread_info。</li>
+<li>调用copy_creds，设置权限相关的配置</li>
+<li>重新设置进程运行的统计量</li>
+<li>设置调度相关的变量 sched_fork， 设置状态、优先级、运行量，调度类等。是否可抢占。</li>
+<li>初始化与文件和文件系统相关的变量。复制一个进程打开的文件信息。复制一个进程的目录信息。</li>
+<li>初始化与信号相关的变量。 拷贝信号处理函数</li>
+<li>复制进程内存空间</li>
+<li>分配 pid，设置 tid，group_leader，并且建立进程之间的亲缘关系。</li>
+</ul>
+<p>第二步，唤醒新的进程wake_up_new_task。</p>
+<ul>
+<li>将进程的状态设置为 TASK_RUNNING</li>
+<li>将 sched_entity 加入到红黑树里面，然后将 se-&gt;on_rq = 1 设置在队列上。</li>
+<li>调用 check_preempt_curr，看是否能够抢占当前进程。如果可以抢占，给当前进程设置标志。</li>
+</ul>
+<p>OK， fork系统调用结束后，触发抢占。</p>
+<p><img src="/images/202012/linux13_fork.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
+    <url>/2020/12/28/linux14-thread/</url>
+    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
+<a id="more"></a>
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
+<ul>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
+</ul>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十一) - 进程调度</title>
+    <url>/2020/12/23/linux-schedule/</url>
+    <content><![CDATA[<p>进程分为实时进程和普通进程。 实时进程需要立刻执行返回结果，普通进程没有这个需求。</p>
+<a id="more"></a>
+<p>task_struct中有策略信息和优先级信息</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> policy;</span><br><span class="line"><span class="keyword">int</span> prio, static_prio, normal_prio;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> rt_priority;</span><br><span class="line"></span><br><span class="line"><span class="comment">// policy 取值如下</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_NORMAL    0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_FIFO    1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_RR    2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_BATCH    3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_IDLE    5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SCHED_DEADLINE    6</span></span><br></pre></td></tr></table></figure>
+<p>对于实时进程，优先级的范围是 0～99；对于普通进程，优先级的范围是 100～139。数值越小，优先级越高。</p>
+<h2 id="实时调度策略"><a href="#实时调度策略" class="headerlink" title="实时调度策略"></a>实时调度策略</h2><p>对于调度策略，其中 SCHED_FIFO、SCHED_RR、SCHED_DEADLINE 是实时进程的调度策略。</p>
+<ul>
+<li>SCHED_FIFO 就是交了相同钱的，先来先服务，但是有的加钱多，可以分配更高的优先级，也就是说，高优先级的进程可以抢占低优先级的进程，而相同优先级的进程，我们遵循先来先得。</li>
+<li>SCHED_RR 轮流调度算法，采用时间片，相同优先级的任务当用完时间片会被放到队列尾部，以保证公平性，而高优先级的任务也是可以抢占低优先级的任务。</li>
+<li>SCHED_DEADLINE，是按照任务的 deadline 进行调度的。当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行。</li>
+</ul>
+<h2 id="普通调度策略"><a href="#普通调度策略" class="headerlink" title="普通调度策略"></a>普通调度策略</h2><ul>
+<li>SCHED_NORMAL 是普通的进程</li>
+<li>SCHED_BATCH 是后台进程，几乎不需要和前端进行交互。这类项目可以默默执行，不要影响需要交互的进程，可以降低它的优先级。</li>
+<li>SCHED_IDLE 是特别空闲的时候才跑的进程</li>
+</ul>
+<h2 id="调度策略的实现者，-调度类"><a href="#调度策略的实现者，-调度类" class="headerlink" title="调度策略的实现者， 调度类"></a>调度策略的实现者， 调度类</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span> *<span class="title">sched_class</span>;</span></span><br></pre></td></tr></table></figure>
+<p>sched_class 有几种实现：</p>
+<ul>
+<li>stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；</li>
+<li>dl_sched_class 就对应上面的 deadline 调度策略；</li>
+<li>rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct-&gt;policy 指定；</li>
+<li>fair_sched_class 就是普通进程的调度策略；</li>
+<li>idle_sched_class 就是空闲进程的调度策略。</li>
+</ul>
+<p>下面是普通进程的调度</p>
+<h2 id="完全公平调度算法-CFS"><a href="#完全公平调度算法-CFS" class="headerlink" title="完全公平调度算法 CFS"></a>完全公平调度算法 CFS</h2><p>计算根据进程的优先级分配不同的权重，然后计算每个进程的运行时间值。 对比运行的实际值，小的就优先运行。保证每个进程都可以运行到。</p>
+<h2 id="调度队列与调度实体"><a href="#调度队列与调度实体" class="headerlink" title="调度队列与调度实体"></a>调度队列与调度实体</h2><p>进程调度实体涉及的成员</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span> <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span> <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span> <span class="title">dl</span>;</span></span><br></pre></td></tr></table></figure>
+<p>CFS不同的进程通过把调度的实体挂在红黑树上实现快速的调度。所有可运行的进程通过不断地插入操作最终都存储在以运行时间vruntime为顺序的红黑树中，vruntime 最小的在树的左侧，vruntime 最多的在树的右侧。 CFS 调度策略会选择红黑树最左边的叶子节点作为下一个将获得 CPU 的任务。</p>
+<p>每个cpu都有自己的 struct rq 结构，其用于描述在此 CPU 上所运行的所有进程，其包括一个实时进程队列 rt_rq 和一个 CFS 运行队列 cfs_rq。在调度时，调度器首先会先去实时进程队列找是否有实时进程需要运行，如果没有才会去 CFS 运行队列找是否有进程需要运行。</p>
+<p><img src="/images/202012/linux_task_rq.jpeg" alt="图片替换文本" width="800" height="513" align="bottom"></p>
+<p>实现不同进程的调度，是通过按优先级从高到低来遍历调度类的方法来实现的。为了确保进程不被饿死，还需要动态更新进程的优先级，保证长时间未运行的进程随着时间变长而提升优先级，使之可以更快的被调用到。rt_sched_class 先被调用，它会在 rt_rq 上找下一个任务，只有找不到的时候，才轮到 fair_sched_class 被调用，它会在 cfs_rq 上找下一个任务。这样保证了实时任务的优先级永远大于普通任务。</p>
+<p><img src="/images/202012/linux_scedule_q.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>墨菲定律的应验</title>
     <url>/2021/01/25/mofei/</url>
     <content><![CDATA[<h1 id="墨菲定律的应验"><a href="#墨菲定律的应验" class="headerlink" title="墨菲定律的应验"></a>墨菲定律的应验</h1><p>其实第一次接触这个概念是在科幻电影《星际穿越》里，没看过的同学可以去看一下。“墨菲定律”的根本内容是“凡是可能出错的事有很大几率会出错”，指的是任何一个事件，只要具有大于零的机率，就不能够假设它不会发生。</p>
@@ -1761,27 +1761,6 @@
 <p>按数字过一下，应该就可以发现最终标志位和hash表并不是一致的。标志位为1的时候，hash表中不一定有对应的表项。</p>
 <p>多线程，并不是说只有2个线程，是多个线程，这种时序是不可控的。该加锁的东西就加锁,像这种临界资源，一定要确保互斥，不能搞一半放一半的。</p>
 <p>这个问题，同事修改之后还是有做了认真的自验的， 我在自己搭建的环境上也帮忙跑了一两天都没有复现出问题，但是测试那边跑个一段时间就出现了。^_^  写代码的时候先设计好还是很重要的，不能想当然。 后面把锁的范围恢复到之前那样，问题也就不再复现了。。。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>2020年小结</title>
-    <url>/2021/02/01/design/</url>
-    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
-<a id="more"></a>
-<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
-<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
-<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
-<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。</p>
-<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
-<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，2021年回福州去了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
-<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1823,6 +1802,54 @@
       </categories>
   </entry>
   <entry>
+    <title>2020年小结</title>
+    <url>/2021/02/01/design/</url>
+    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
+<a id="more"></a>
+<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
+<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
+<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
+<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。</p>
+<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
+<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，2021年回福州去了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
+<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(二十) -内存映射</title>
+    <url>/2021/02/03/linux20-mmap/</url>
+    <content><![CDATA[<h1 id="用户态内存映射"><a href="#用户态内存映射" class="headerlink" title="用户态内存映射"></a>用户态内存映射</h1><h2 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> &#123;</span> </span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">mmap</span>;</span> <span class="comment">/* list of VMAs */</span></span><br><span class="line">......&#125;</span><br></pre></td></tr></table></figure>
+<p>在进程的mm_struct有一个mmap的成员, 是内存映射的一个重要结构。内存映射不仅仅是物理内存和虚拟内存之间的映射，还包括将文件中的内容映射到虚拟内存空间。</p>
+<a id="more"></a>
+<p>如果申请一大块内存，就要用 mmap。对于堆的申请来讲，mmap 是映射内存空间到物理内存。另外，如果一个进程想映射一个文件到自己的虚拟内存空间，也要通过 mmap 系统调用。这个时候 mmap 是映射内存空间到物理内存再到文件。</p>
+<p>mmap系统调用的调用链是 vm_mmap_pgoff-&gt;do_mmap_pgoff-&gt;do_mmap。这里面主要干了两件事情：</p>
+<ul>
+<li>调用 get_unmapped_area 找到一个没有映射的区域；</li>
+<li>调用 mmap_region 映射这个区域。</li>
+</ul>
+<p>通过mmap，我们主要就是建立了空间的访问逻辑所需要的一些结构，还没有涉及到具体的物理内存映射。</p>
+<h2 id="用户态缺页"><a href="#用户态缺页" class="headerlink" title="用户态缺页"></a>用户态缺页</h2><p>一旦开始访问虚拟内存的某个地址，如果我们发现，并没有对应的物理页，那就触发缺页中断，调用 do_page_fault。<br>在 __do_page_fault 里面，先要判断缺页中断是否发生在内核， 地址是否大于TASK_SIZE_MAX。如果发生在内核则调用 vmalloc_fault，在内核里面，vmalloc 区域需要内核页表映射到物理页。在用户空间里面，找到你访问的那个地址所在的区域 vm_area_struct，然后调用 handle_mm_fault 来映射这个区域。</p>
+<p>handle_mm_fault函数里面会设置进程对应的页表的几级目录信息。当进程在CPU上运行时，会在上下文切换时调用load_new_mm_cr3，保存pgd地址到cr3寄存器，如果 CPU 的指令要访问进程的虚拟内存，它就会自动从 cr3 里面得到 pgd 在物理内存的地址，然后根据里面的页表解析虚拟内存的地址为物理内存，从而访问真正的物理内存上的数据。</p>
+<p>用户进程在运行的过程中，访问虚拟内存中的数据，会被 cr3 里面指向的页表转换为物理地址后，才在物理内存中访问数据，这个过程都是在用户态运行的，地址转换的过程无需进入内核态。</p>
+<p>只有访问虚拟内存的时候，发现没有映射到物理内存，页表也没有创建过，才触发缺页异常。进入内核调用 do_page_fault，一直调用到 <strong>handle_mm_fault。原来没有创建过页表，那只好补上这一课。于是，</strong>handle_mm_fault 调用 pud_alloc 和 pmd_alloc，来创建相应的页目录项，最后调用 handle_pte_fault 来创建页表项。</p>
+<p>大体上就是先找一遍页表，找不到就创建，直到把物理地址的映射写到页表里面，再根据基地址加偏移的方式获取对应的物理地址，然后访问。 这边如果是映射的文件， 那就是对应找到文件在内存中的缓存页，读取里面的内容。 如果页被换出了，那就把它换入 再定位。 具体的流程很长，但是逻辑还是清晰的， 不同类型的页作不同的动作，最终都会获取到一个内存的物理地址。</p>
+<p>从这块逻辑看，其实用的就是缓存的技术，懒加载，定时换入换出等逻辑。先找没有找再去创建。同样的，为了提高映射速度，我们引入了 TLB（Translation Lookaside Buffer），我们经常称为快表，专门用来做地址映射的硬件设备。它不在内存中，可存储的数据比较少，但是比内存要快。所以，我们可以想象，TLB 就是页表的 Cache，其中存储了当前最可能被访问到的页表项，其内容是部分页表项的一个副本。有了 TLB 之后，地址映射的过程就像图中画的。我们先查块表，块表中有映射关系，然后直接转换为物理地址。如果在 TLB 查不到映射关系时，才会到内存中查询页表。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>C程序的命令行参数处理函数getopt</title>
     <url>/2020/06/13/c-command/</url>
     <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>工作中，存在着这么一个问题。开发提供给测试的二进制版本，都是记录在一个excel表中，保存着对应版本的提测日期和文件的Md5值、以及对应的svn标签信息。但是，文件这种东西，是需要靠人来填写的。许多临时的版本，就没有记录了。经常出现测试的文件找不到对应的记录，不知道是何时提供、解决了什么问题。 那么，就有这么个需求，把对应的信息保存到二进制文件，在编译的时候，获取编译的时间，svn版本号，编译机器的用户名(一般可以对应到开发人员)等信息，自动生成源代码文件，记入编译文件。然后，还需要提供一种方式读取这些信息，让二进制文件支持参数处理是一个不错的方式。</p>
@@ -1855,55 +1882,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十七) - 虚拟内存管理</title>
-    <url>/2021/01/16/linux17-mm/</url>
-    <content><![CDATA[<h1 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h1><p>整个虚拟内存空间要一分为二，一部分是用户态地址空间，一部分是内核态地址空间，那这两部分的分界线在哪里呢？这就要 task_size 来定义。<br><a id="more"></a></p>
-<p><img src="/images/202101/mm1.jpg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
-<p>在内核任务结构 struct task_struct里面有一个成员保存内存管理信息的</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct mm_struct    *mm;</span><br></pre></td></tr></table></figure>
-<h2 id="用户态布局"><a href="#用户态布局" class="headerlink" title="用户态布局"></a>用户态布局</h2><p>用户态虚拟空间里面有几类数据，例如代码、全局变量、堆、栈、内存映射区等。在 struct mm_struct 里面，有下面这些变量定义了这些区域的统计信息和位置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> mmap_base;  <span class="comment">/* base of mmap area */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> total_vm;    <span class="comment">/* Total pages mapped */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> locked_vm;  <span class="comment">/* Pages that have PG_mlocked set */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> pinned_vm;  <span class="comment">/* Refcount permanently increased */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> data_vm;    <span class="comment">/* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> exec_vm;    <span class="comment">/* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> stack_vm;    <span class="comment">/* VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> start_code, end_code, start_data, end_data;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> start_brk, brk, start_stack;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> arg_start, arg_end, env_start, env_end;</span><br></pre></td></tr></table></figure>
-<p>total_vm 是总共映射的页的数目。我们知道，这么大的虚拟地址空间，不可能都有真实内存对应，所以这里是映射的数目。当内存吃紧的时候，有些页可以换出到硬盘上，有的页因为比较重要，不能换出。locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</p>
-<p>data_vm 是存放数据的页的数目，exec_vm 是存放可执行文件的页的数目，stack_vm 是栈所占的页的数目。</p>
-<p>start_code 和 end_code 表示可执行代码的开始和结束位置，start_data 和 end_data 表示已初始化数据的开始位置和结束位置。</p>
-<p>start_brk 是堆的起始位置，brk 是堆当前的结束位置。</p>
-<p>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</p>
-<p>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</p>
-<p>mmap_base 表示虚拟地址空间中用于内存映射的起始地址。</p>
-<p><img src="/images/202101/mm_usr.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
-<p>除了位置信息之外，struct mm_struct 里面还专门有一个结构 vm_area_struct，来描述这些区域的属性。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/* The first cache line has the info for VMA tree walking. */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> vm_start;    <span class="comment">/* Our start address within vm_mm. */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> vm_end;    <span class="comment">/* The first byte after our end address within vm_mm. */</span></span><br><span class="line">  <span class="comment">/* linked list of VM areas per task, sorted by address */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">vm_next</span>, *<span class="title">vm_prev</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span> <span class="title">vm_rb</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">vm_mm</span>;</span>  <span class="comment">/* The address space we belong to. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">anon_vma_chain</span>;</span> <span class="comment">/* Serialized by mmap_sem &amp;</span></span><br><span class="line"><span class="comment">            * page_table_lock */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">anon_vma</span> *<span class="title">anon_vma</span>;</span>  <span class="comment">/* Serialized by page_table_lock */</span></span><br><span class="line">  <span class="comment">/* Function pointers to deal with this struct. */</span></span><br><span class="line">  <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">vm_operations_struct</span> *<span class="title">vm_ops</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> * <span class="title">vm_file</span>;</span>    <span class="comment">/* File we map to (can be NULL). */</span></span><br><span class="line">  <span class="keyword">void</span> * vm_private_data;    <span class="comment">/* was vm_pte (shared mem) */</span></span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
-<p>vm_start 和 vm_end 指定了该区域在用户空间中的起始和结束地址。vm_next 和 vm_prev 将这个区域串在链表上。vm_rb 将这个区域放在红黑树上。vm_ops 里面是对这个内存区域可以做的操作的定义。</p>
-<p>虚拟内存区域可以映射到物理内存，也可以映射到文件，映射到物理内存的时候称为匿名映射，anon_vma 中，anoy 就是 anonymous，匿名的意思，映射到文件就需要有 vm_file 指定被映射的文件。</p>
-<p>内存的映射建立是由函数load_elf_binary来完成的。</p>
-<p><img src="/images/202101/mm_map.jpeg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
-<p>执行 brk 处理内存申请的操作，实现的入口是 sys_brk 函数。sys_brk 函数的参数 brk 是新的堆顶位置，而当前的 mm-&gt;brk 是原来堆顶的位置。</p>
-<p>将原来的堆顶和现在的堆顶，都按照页对齐地址，然后比较大小。如果两者相同，说明这次增加的堆的量很小，还在一个页里面，不需要另行分配页，直接跳到 set_brk 那里，设置 mm-&gt;brk 为新的 brk 就可以了。如果发现新旧堆顶不在一个页里面，麻烦了，这下要跨页了。</p>
-<p>如果发现新堆顶小于旧堆顶，这说明不是新分配内存了，而是释放内存了，释放的还不小，至少释放了一页，于是调用 do_munmap 将这一页的内存映射去掉。</p>
-<p>如果堆将要扩大，就要调用 find_vma。如果打开这个函数，看到的是对红黑树的查找，找到的是原堆顶所在的 vm_area_struct 的下一个 vm_area_struct，看当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页。如果不能，没办法只好直接退出返回，内存空间都被占满了。如果还有空间，就调用 do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</p>
-<p>在 do_brk 中，调用 find_vma_links 找到将来的 vm_area_struct 节点在红黑树的位置，找到它的父节点、前序节点。接下来调用 vma_merge，看这个新节点是否能够和现有树中的节点合并。如果地址是连着的，能够合并，则不用创建新的 vm_area_struct 了，直接跳到 out，更新统计值即可；如果不能合并，则创建新的 vm_area_struct，既加到 anon_vma_chain 链表中，也加到红黑树中。</p>
-<h2 id="内核态布局"><a href="#内核态布局" class="headerlink" title="内核态布局"></a>内核态布局</h2><p>内核态的虚拟空间和某一个进程没有关系，所有进程通过系统调用进入到内核之后，看到的虚拟地址空间都是一样的。内核态空间只有一份，共享的。</p>
-<p><img src="/images/202101/mm_kernel.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
-<p>32 位的内核态虚拟地址空间一共就 1G，占绝大部分的前 896M，我们称为直接映射区。所谓的直接映射区，就是这一块空间是连续的，和物理内存是非常简单的映射关系，其实就是虚拟内存地址减去 3G，就得到物理内存的位置。</p>
-<p>这 896M 还需要仔细分解。在系统启动的时候，物理内存的前 1M 已经被占用了，从 1M 开始加载内核代码段，然后就是内核的全局变量、BSS 等，也是 ELF 里面涵盖的。这样内核的代码段，全局变量，BSS 也就会被映射到 3G 后的虚拟地址空间里面。具体的物理内存布局可以查看 /proc/iomem。</p>
-<p>创建进程的系统调用会创建一个task_struct的实例， 这个实例就是保存在内核的直接映射区域内 即896MB的内存中。</p>
-<p>内核态地址：</p>
-<p>在 896M 到 VMALLOC_START 之间有 8M 的空间。VMALLOC_START 到 VMALLOC_END 之间称为内核动态映射空间，也即内核想像用户态进程一样 malloc 申请内存，在内核里面可以使用 vmalloc。假设物理内存里面，896M 到 1.5G 之间已经被用户态进程占用了，并且映射关系放在了进程的页表中，内核 vmalloc 的时候，只能从分配物理内存 1.5G 开始，就需要使用这一段的虚拟地址进行映射，映射关系放在专门给内核自己用的页表里面。</p>
-<p>PKMAP_BASE 到 FIXADDR_START 的空间称为持久内核映射。使用 alloc_pages() 函数的时候，在物理内存的高端内存得到 struct page 结构，可以调用 kmap 将其映射到这个区域。</p>
-<p>FIXADDR_START 到 FIXADDR_TOP(0xFFFF F000) 的空间，称为固定映射区域，主要用于满足特殊需求。</p>
-<p>在最后一个区域可以通过 kmap_atomic 实现临时内核映射。如果要把文件内容写入物理内存，这件事情要内核来干了，这就只好通过 kmap_atomic 做一个临时映射，写入物理内存完毕后，再 kunmap_atomic 来解映射即可。</p>
-<p>64位系统的内核布局也是同样的道理，不过是大小不一样，设计的功能区不一样。</p>
-<p><img src="/images/202101/mm_kernel64.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
-<p>进程虚拟内存的布局和物理内存的布局， 分别通过查看proc/$PID/maps 和 /proc/iomem。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十八) -物理内存管理</title>
     <url>/2021/01/20/linux18-pmm/</url>
     <content><![CDATA[<h1 id="物理内存管理"><a href="#物理内存管理" class="headerlink" title="物理内存管理"></a>物理内存管理</h1><h2 id="物理内存的组织方式"><a href="#物理内存的组织方式" class="headerlink" title="物理内存的组织方式"></a>物理内存的组织方式</h2><p>把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct page 结构。整个物理内存的布局就非常简单、易管理，这就是最经典的平坦内存模型（Flat Memory Model）。</p>
@@ -1927,7 +1905,7 @@
 <p>ZONE_HIGHMEM 是高端内存区，对于 32 位系统来说超过 896M 的地方，对于 64 位没必要有的一段区域。</p>
 <p>ZONE_MOVABLE 是可移动区域，通过将物理内存划分为可移动分配区域和不可移动分配区域来避免内存碎片。</p>
 <p>这边对于区域的划分，都是针对物理内存的。</p>
-<p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对于这部分的处理。 TODO:</p>
+<p>nr_zones 表示当前节点的区域的数量。node_zonelists 是备用节点和它的内存区域的情况。具体如何搞的备用节点，需要抽空看一下源码对应这部分的处理。 TODO:</p>
 <p>就像区域或者页一样，节点也是存在一个数组里面的。 至于这个节点数，跟具体cpu数一致。每个CPU分配一个节点。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pglist_data</span> *<span class="title">node_data</span>[<span class="title">MAX_NUMNODES</span>] __<span class="title">read_mostly</span>;</span> <span class="comment">// numa.c</span></span><br></pre></td></tr></table></figure>
 <h2 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">zone</span>;</span></span><br></pre></td></tr></table></figure>
@@ -1963,6 +1941,55 @@
 <p>存储每个区域不同指数级空闲的内存。</p>
 <p>当向内核请求分配 (2^(i-1)，2^i]数目的页块时，按照 2^i 页块请求处理。如果对应的页块链表中没有空闲页块，那我们就在更大的页块链表中去找。当分配的页块中有多余的页时，伙伴系统会根据多余的页块大小插入到对应的空闲页块链表中。</p>
 <p>具体的分配算法可以看alloc_pages_current(mm/mempolicy.c)函数， 其实没有什么高深的， 如我此等常人页看得明白。复杂的东西都是由简单的器件组合而成的。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十七) - 虚拟内存管理</title>
+    <url>/2021/01/16/linux17-mm/</url>
+    <content><![CDATA[<h1 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h1><p>整个虚拟内存空间要一分为二，一部分是用户态地址空间，一部分是内核态地址空间，那这两部分的分界线在哪里呢？这就要 task_size 来定义。<br><a id="more"></a></p>
+<p><img src="/images/202101/mm1.jpg" alt="图片替换文本" width="600" height="413" align="bottom"></p>
+<p>在内核任务结构 struct task_struct里面有一个成员保存内存管理信息的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">struct mm_struct    *mm;</span><br></pre></td></tr></table></figure>
+<h2 id="用户态布局"><a href="#用户态布局" class="headerlink" title="用户态布局"></a>用户态布局</h2><p>用户态虚拟空间里面有几类数据，例如代码、全局变量、堆、栈、内存映射区等。在 struct mm_struct 里面，有下面这些变量定义了这些区域的统计信息和位置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> mmap_base;  <span class="comment">/* base of mmap area */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> total_vm;    <span class="comment">/* Total pages mapped */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> locked_vm;  <span class="comment">/* Pages that have PG_mlocked set */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> pinned_vm;  <span class="comment">/* Refcount permanently increased */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> data_vm;    <span class="comment">/* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> exec_vm;    <span class="comment">/* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> stack_vm;    <span class="comment">/* VM_STACK */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> start_code, end_code, start_data, end_data;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> start_brk, brk, start_stack;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">long</span> arg_start, arg_end, env_start, env_end;</span><br></pre></td></tr></table></figure>
+<p>total_vm 是总共映射的页的数目。我们知道，这么大的虚拟地址空间，不可能都有真实内存对应，所以这里是映射的数目。当内存吃紧的时候，有些页可以换出到硬盘上，有的页因为比较重要，不能换出。locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</p>
+<p>data_vm 是存放数据的页的数目，exec_vm 是存放可执行文件的页的数目，stack_vm 是栈所占的页的数目。</p>
+<p>start_code 和 end_code 表示可执行代码的开始和结束位置，start_data 和 end_data 表示已初始化数据的开始位置和结束位置。</p>
+<p>start_brk 是堆的起始位置，brk 是堆当前的结束位置。</p>
+<p>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</p>
+<p>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</p>
+<p>mmap_base 表示虚拟地址空间中用于内存映射的起始地址。</p>
+<p><img src="/images/202101/mm_usr.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
+<p>除了位置信息之外，struct mm_struct 里面还专门有一个结构 vm_area_struct，来描述这些区域的属性。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/* The first cache line has the info for VMA tree walking. */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> vm_start;    <span class="comment">/* Our start address within vm_mm. */</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">long</span> vm_end;    <span class="comment">/* The first byte after our end address within vm_mm. */</span></span><br><span class="line">  <span class="comment">/* linked list of VM areas per task, sorted by address */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">vm_next</span>, *<span class="title">vm_prev</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span> <span class="title">vm_rb</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">vm_mm</span>;</span>  <span class="comment">/* The address space we belong to. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">anon_vma_chain</span>;</span> <span class="comment">/* Serialized by mmap_sem &amp;</span></span><br><span class="line"><span class="comment">            * page_table_lock */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">anon_vma</span> *<span class="title">anon_vma</span>;</span>  <span class="comment">/* Serialized by page_table_lock */</span></span><br><span class="line">  <span class="comment">/* Function pointers to deal with this struct. */</span></span><br><span class="line">  <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">vm_operations_struct</span> *<span class="title">vm_ops</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> * <span class="title">vm_file</span>;</span>    <span class="comment">/* File we map to (can be NULL). */</span></span><br><span class="line">  <span class="keyword">void</span> * vm_private_data;    <span class="comment">/* was vm_pte (shared mem) */</span></span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+<p>vm_start 和 vm_end 指定了该区域在用户空间中的起始和结束地址。vm_next 和 vm_prev 将这个区域串在链表上。vm_rb 将这个区域放在红黑树上。vm_ops 里面是对这个内存区域可以做的操作的定义。</p>
+<p>虚拟内存区域可以映射到物理内存，也可以映射到文件，映射到物理内存的时候称为匿名映射，anon_vma 中，anoy 就是 anonymous，匿名的意思，映射到文件就需要有 vm_file 指定被映射的文件。</p>
+<p>内存的映射建立是由函数load_elf_binary来完成的。</p>
+<p><img src="/images/202101/mm_map.jpeg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
+<p>执行 brk 处理内存申请的操作，实现的入口是 sys_brk 函数。sys_brk 函数的参数 brk 是新的堆顶位置，而当前的 mm-&gt;brk 是原来堆顶的位置。</p>
+<p>将原来的堆顶和现在的堆顶，都按照页对齐地址，然后比较大小。如果两者相同，说明这次增加的堆的量很小，还在一个页里面，不需要另行分配页，直接跳到 set_brk 那里，设置 mm-&gt;brk 为新的 brk 就可以了。如果发现新旧堆顶不在一个页里面，麻烦了，这下要跨页了。</p>
+<p>如果发现新堆顶小于旧堆顶，这说明不是新分配内存了，而是释放内存了，释放的还不小，至少释放了一页，于是调用 do_munmap 将这一页的内存映射去掉。</p>
+<p>如果堆将要扩大，就要调用 find_vma。如果打开这个函数，看到的是对红黑树的查找，找到的是原堆顶所在的 vm_area_struct 的下一个 vm_area_struct，看当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页。如果不能，没办法只好直接退出返回，内存空间都被占满了。如果还有空间，就调用 do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</p>
+<p>在 do_brk 中，调用 find_vma_links 找到将来的 vm_area_struct 节点在红黑树的位置，找到它的父节点、前序节点。接下来调用 vma_merge，看这个新节点是否能够和现有树中的节点合并。如果地址是连着的，能够合并，则不用创建新的 vm_area_struct 了，直接跳到 out，更新统计值即可；如果不能合并，则创建新的 vm_area_struct，既加到 anon_vma_chain 链表中，也加到红黑树中。</p>
+<h2 id="内核态布局"><a href="#内核态布局" class="headerlink" title="内核态布局"></a>内核态布局</h2><p>内核态的虚拟空间和某一个进程没有关系，所有进程通过系统调用进入到内核之后，看到的虚拟地址空间都是一样的。内核态空间只有一份，共享的。</p>
+<p><img src="/images/202101/mm_kernel.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
+<p>32 位的内核态虚拟地址空间一共就 1G，占绝大部分的前 896M，我们称为直接映射区。所谓的直接映射区，就是这一块空间是连续的，和物理内存是非常简单的映射关系，其实就是虚拟内存地址减去 3G，就得到物理内存的位置。</p>
+<p>这 896M 还需要仔细分解。在系统启动的时候，物理内存的前 1M 已经被占用了，从 1M 开始加载内核代码段，然后就是内核的全局变量、BSS 等，也是 ELF 里面涵盖的。这样内核的代码段，全局变量，BSS 也就会被映射到 3G 后的虚拟地址空间里面。具体的物理内存布局可以查看 /proc/iomem。</p>
+<p>创建进程的系统调用会创建一个task_struct的实例， 这个实例就是保存在内核的直接映射区域内 即896MB的内存中。</p>
+<p>内核态地址：</p>
+<p>在 896M 到 VMALLOC_START 之间有 8M 的空间。VMALLOC_START 到 VMALLOC_END 之间称为内核动态映射空间，也即内核想像用户态进程一样 malloc 申请内存，在内核里面可以使用 vmalloc。假设物理内存里面，896M 到 1.5G 之间已经被用户态进程占用了，并且映射关系放在了进程的页表中，内核 vmalloc 的时候，只能从分配物理内存 1.5G 开始，就需要使用这一段的虚拟地址进行映射，映射关系放在专门给内核自己用的页表里面。</p>
+<p>PKMAP_BASE 到 FIXADDR_START 的空间称为持久内核映射。使用 alloc_pages() 函数的时候，在物理内存的高端内存得到 struct page 结构，可以调用 kmap 将其映射到这个区域。</p>
+<p>FIXADDR_START 到 FIXADDR_TOP(0xFFFF F000) 的空间，称为固定映射区域，主要用于满足特殊需求。</p>
+<p>在最后一个区域可以通过 kmap_atomic 实现临时内核映射。如果要把文件内容写入物理内存，这件事情要内核来干了，这就只好通过 kmap_atomic 做一个临时映射，写入物理内存完毕后，再 kunmap_atomic 来解映射即可。</p>
+<p>64位系统的内核布局也是同样的道理，不过是大小不一样，设计的功能区不一样。</p>
+<p><img src="/images/202101/mm_kernel64.jpg" alt="图片替换文本" width="600" height="713" align="bottom"></p>
+<p>进程虚拟内存的布局和物理内存的布局， 分别通过查看proc/$PID/maps 和 /proc/iomem。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
