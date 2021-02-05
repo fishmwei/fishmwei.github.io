@@ -127,31 +127,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Bugly RN调用栈 - C的弱符号</title>
-    <url>/2019/06/11/weak-attribute-C/</url>
-    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
-<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
-<a id="more"></a>
-<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
-<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
-<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
-<p>相当于增加了一个默认函数。</p>
-<p>原理：链接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
-<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
-<p><img src="/images/machoview-weak.png" alt></p>
-<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
-<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
-<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>React-Native</tag>
-        <tag>Bugly</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS知识点(1) - NSCache</title>
     <url>/2019/06/19/NSCache-iOS/</url>
     <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
@@ -223,82 +198,6 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一种获取客户端程序的代码版本的方法</title>
-    <url>/2019/09/27/versionScheme-common/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
-<a id="more"></a>
-<h2 id="背景技术"><a href="#背景技术" class="headerlink" title="背景技术"></a>背景技术</h2><p>目前主流的程序软件开发，都是依赖多个不同的代码库而构建的，有开源代码库、也有自研的代码库。不同版本的程序，依赖代码库的不同版本。目前流行的移动app还支持基于js的混合开发，程序可以通过下载最新的js代码运行新功能或者修复已知问题，同一个版本的app根据用户或者设备、平台等信息的不同，还可能更新到不同的js代码运行。</p>
-<p>一般情况下，使用的代码库信息在构建生成二进制文件之后，没有进行保存。当出现问题时，开发人员根据最新的代码库不一定能够复现问题， 时间很久的话，又很难找到当初构建app的工程，导致问题较难定位。另外，对于支持js热更新的业务，没有有效的方式获取移动app运行的js的版本，常常无法证明js版本是否更新。针对此类问题的运维手段较缺乏。</p>
-<h2 id="方案描述"><a href="#方案描述" class="headerlink" title="方案描述"></a>方案描述</h2><p>我们在构建移动app及其js代码时，把对应的依赖库版本信息与移动端app或者js代码的版本上传到专门的服务器保存。服务器提供接口查询，客户端app带上版本、包Id等信息，通过接口请求获取代码依赖库的版本信息，然后在客户端进行展示。技术实现简单，但是一旦实施，对问题定位是大有裨益的，快速定位问题出现版本，结合现象很容易分析出问题根因。</p>
-<p>基本流程如下：</p>
-<h3 id="1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"><a href="#1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。" class="headerlink" title="1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"></a>1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</h3><p>移动app代码工程构建前，都需要根据配置的依赖代码库版本信息(一般由一个特定的文件来配置，如iOS的podfile文件)，来拉取对应的代码库。并生成一个相关的依赖文件， 比如iOS的podfile.lock、js的npm-shrinkwrap.json或者package-lock.json等记录最终使用的代码版本信息。然后，进行编译构建出最终的可执行文件包。<br>我们在构建成功后，把对应的版本信息文件和构建的app版本等信息上传到服务器，服务器解析后保存到数据库中。</p>
-<p>最终信息层次可以参考如下：</p>
-<p>一个移动app的信息：<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;   </span><br><span class="line">    bundleId: com.apple.app.diary,</span><br><span class="line">    appName: 移动app，</span><br><span class="line">    platform: ios, <span class="comment">// 系统类型， android和iOS是分开编译的，其解析方式、依赖组件的名称及版本都是不一样的</span></span><br><span class="line">    nativeInfoList: [ <span class="comment">// 原生代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.1</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.2</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    jsInfoList: [  <span class="comment">// js代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            name: personalPage, <span class="comment">// 个人主页业务js</span></span><br><span class="line">            versions: &#123;</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.1</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.2</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>参考流程：</p>
-<p><img src="/images/versionScheme.png" alt></p>
-<h3 id="2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息"><a href="#2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息" class="headerlink" title="2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息"></a>2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</h3><p>服务器开发一个接口，支持通过移动app上传app包Id，版本、平台、以及查询的js版本(如果有)信息，获取代码依赖版本信息。找不到则返回具体的错误(不存在的app、不存在的版本、不存在js版本等)。</p>
-<h3 id="3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"><a href="#3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息" class="headerlink" title="3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"></a>3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</h3><p>移动app保存有当前的版本号及运行的js版本(更新的时候，需要保存更新后的版本)信息。测人人员通过某些方式(比如：通过IM聊天窗口的链接功能访问，也可以使用某些隐藏的方式触发访问，点击版本号10次之类的)跳转到UI展示页面，展示当前app的版本已经运行的所有js的版本。 点击具体的项目，发起对应的请求，然后进行结果展示。</p>
-<p>如此，我们就可以准确的获取移动app对应的依赖代码库的版本列表，快速定位问题版本。</p>
-<h2 id="场景举例"><a href="#场景举例" class="headerlink" title="场景举例"></a>场景举例</h2><p>以下通过具体场景，描述上述算法的具体实现：</p>
-<h3 id="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"><a href="#场景一：bug已修复，但是业务方依旧经常反馈相同的问题。" class="headerlink" title="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"></a>场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</h3><p>在工作中，常常会遇到如题所述的场景。某些bug已经在某个库版本中发布解决了，但是还是会有相同的问题反馈。我们之前需要找到对应移动app的构建环境，然后确认其配置是否引用的是已修复的代码版本。有时候，甚至会找不到构建环境了， 业务方仅能够提供移动app的程序，给问题定位带来很大的困难。通过本方案，我们可以快速确认发生问题的移动app引用的版本，确认问题版本号，然后再针对具体版本代码分析。</p>
-<p>流程：</p>
-<ul>
-<li><ol>
-<li>从业务方获取移动app，登录</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>启动app，打开版本信息界面</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>连续点击版本号10次，跳转版本获取页面</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>点击具体的条目，获取版本代码依赖信息</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>确认问题是否由于未引用新的版本代码导致。如果是由于版本为更新引起的，告知业务方原因，通知其采用新的代码版本。</li>
-</ol>
-</li>
-<li><ol start="6">
-<li>如果是新的版本也有问题，采用问题版本进行复现定位。</li>
-</ol>
-</li>
-</ul>
-<h3 id="场景二：业务方反馈热更新不生效，导致其功能异常"><a href="#场景二：业务方反馈热更新不生效，导致其功能异常" class="headerlink" title="场景二：业务方反馈热更新不生效，导致其功能异常"></a>场景二：业务方反馈热更新不生效，导致其功能异常</h3><p>有时候，业务方会反馈称基本的js版本更新功能不生效，导致其功能无法通过热更新修复。其实不然，也有可能因为其代码修改未覆盖所有异常情况导致的，我们可以通过获取js依赖代码版本信息，证明代码已更新。</p>
-<ul>
-<li><ol>
-<li>从业务方获取问题复现环境(设备啊， 帐户啊)</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>启动app，打开版本信息界面</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>点击具体的条目，获取版本代码依赖信息</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>确认运行的js版本及代码依赖信息，告知业务方，以确认更新功能是否异常。如果更新功能正常，转业务开发人员继续定位</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>如果更新功能异常，查找异常原因并解决。</li>
-</ol>
-</li>
-</ul>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>构思方案</tag>
-        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -377,8 +276,84 @@
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 ]]></content>
       <tags>
-        <tag>开发经验</tag>
         <tag>软件设计</tag>
+        <tag>开发经验</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一种获取客户端程序的代码版本的方法</title>
+    <url>/2019/09/27/versionScheme-common/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
+<a id="more"></a>
+<h2 id="背景技术"><a href="#背景技术" class="headerlink" title="背景技术"></a>背景技术</h2><p>目前主流的程序软件开发，都是依赖多个不同的代码库而构建的，有开源代码库、也有自研的代码库。不同版本的程序，依赖代码库的不同版本。目前流行的移动app还支持基于js的混合开发，程序可以通过下载最新的js代码运行新功能或者修复已知问题，同一个版本的app根据用户或者设备、平台等信息的不同，还可能更新到不同的js代码运行。</p>
+<p>一般情况下，使用的代码库信息在构建生成二进制文件之后，没有进行保存。当出现问题时，开发人员根据最新的代码库不一定能够复现问题， 时间很久的话，又很难找到当初构建app的工程，导致问题较难定位。另外，对于支持js热更新的业务，没有有效的方式获取移动app运行的js的版本，常常无法证明js版本是否更新。针对此类问题的运维手段较缺乏。</p>
+<h2 id="方案描述"><a href="#方案描述" class="headerlink" title="方案描述"></a>方案描述</h2><p>我们在构建移动app及其js代码时，把对应的依赖库版本信息与移动端app或者js代码的版本上传到专门的服务器保存。服务器提供接口查询，客户端app带上版本、包Id等信息，通过接口请求获取代码依赖库的版本信息，然后在客户端进行展示。技术实现简单，但是一旦实施，对问题定位是大有裨益的，快速定位问题出现版本，结合现象很容易分析出问题根因。</p>
+<p>基本流程如下：</p>
+<h3 id="1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"><a href="#1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。" class="headerlink" title="1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"></a>1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</h3><p>移动app代码工程构建前，都需要根据配置的依赖代码库版本信息(一般由一个特定的文件来配置，如iOS的podfile文件)，来拉取对应的代码库。并生成一个相关的依赖文件， 比如iOS的podfile.lock、js的npm-shrinkwrap.json或者package-lock.json等记录最终使用的代码版本信息。然后，进行编译构建出最终的可执行文件包。<br>我们在构建成功后，把对应的版本信息文件和构建的app版本等信息上传到服务器，服务器解析后保存到数据库中。</p>
+<p>最终信息层次可以参考如下：</p>
+<p>一个移动app的信息：<br><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;   </span><br><span class="line">    bundleId: com.apple.app.diary,</span><br><span class="line">    appName: 移动app，</span><br><span class="line">    platform: ios, <span class="comment">// 系统类型， android和iOS是分开编译的，其解析方式、依赖组件的名称及版本都是不一样的</span></span><br><span class="line">    nativeInfoList: [ <span class="comment">// 原生代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.1</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            version: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">            denpendencies: [</span><br><span class="line">                AFNetWorking: <span class="number">3.0</span><span class="number">.2</span>,</span><br><span class="line">                FMDB: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    jsInfoList: [  <span class="comment">// js代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            name: personalPage, <span class="comment">// 个人主页业务js</span></span><br><span class="line">            versions: &#123;</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.1</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    Ver: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">                    dependencies: [</span><br><span class="line">                        react: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-native: <span class="number">0.60</span><span class="number">.2</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>参考流程：</p>
+<p><img src="/images/versionScheme.png" alt></p>
+<h3 id="2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息"><a href="#2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息" class="headerlink" title="2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息"></a>2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</h3><p>服务器开发一个接口，支持通过移动app上传app包Id，版本、平台、以及查询的js版本(如果有)信息，获取代码依赖版本信息。找不到则返回具体的错误(不存在的app、不存在的版本、不存在js版本等)。</p>
+<h3 id="3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"><a href="#3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息" class="headerlink" title="3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"></a>3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</h3><p>移动app保存有当前的版本号及运行的js版本(更新的时候，需要保存更新后的版本)信息。测人人员通过某些方式(比如：通过IM聊天窗口的链接功能访问，也可以使用某些隐藏的方式触发访问，点击版本号10次之类的)跳转到UI展示页面，展示当前app的版本已经运行的所有js的版本。 点击具体的项目，发起对应的请求，然后进行结果展示。</p>
+<p>如此，我们就可以准确的获取移动app对应的依赖代码库的版本列表，快速定位问题版本。</p>
+<h2 id="场景举例"><a href="#场景举例" class="headerlink" title="场景举例"></a>场景举例</h2><p>以下通过具体场景，描述上述算法的具体实现：</p>
+<h3 id="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"><a href="#场景一：bug已修复，但是业务方依旧经常反馈相同的问题。" class="headerlink" title="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"></a>场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</h3><p>在工作中，常常会遇到如题所述的场景。某些bug已经在某个库版本中发布解决了，但是还是会有相同的问题反馈。我们之前需要找到对应移动app的构建环境，然后确认其配置是否引用的是已修复的代码版本。有时候，甚至会找不到构建环境了， 业务方仅能够提供移动app的程序，给问题定位带来很大的困难。通过本方案，我们可以快速确认发生问题的移动app引用的版本，确认问题版本号，然后再针对具体版本代码分析。</p>
+<p>流程：</p>
+<ul>
+<li><ol>
+<li>从业务方获取移动app，登录</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>连续点击版本号10次，跳转版本获取页面</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>确认问题是否由于未引用新的版本代码导致。如果是由于版本为更新引起的，告知业务方原因，通知其采用新的代码版本。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>如果是新的版本也有问题，采用问题版本进行复现定位。</li>
+</ol>
+</li>
+</ul>
+<h3 id="场景二：业务方反馈热更新不生效，导致其功能异常"><a href="#场景二：业务方反馈热更新不生效，导致其功能异常" class="headerlink" title="场景二：业务方反馈热更新不生效，导致其功能异常"></a>场景二：业务方反馈热更新不生效，导致其功能异常</h3><p>有时候，业务方会反馈称基本的js版本更新功能不生效，导致其功能无法通过热更新修复。其实不然，也有可能因为其代码修改未覆盖所有异常情况导致的，我们可以通过获取js依赖代码版本信息，证明代码已更新。</p>
+<ul>
+<li><ol>
+<li>从业务方获取问题复现环境(设备啊， 帐户啊)</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>确认运行的js版本及代码依赖信息，告知业务方，以确认更新功能是否异常。如果更新功能正常，转业务开发人员继续定位</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>如果更新功能异常，查找异常原因并解决。</li>
+</ol>
+</li>
+</ul>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>开发经验</tag>
+        <tag>构思方案</tag>
       </tags>
   </entry>
   <entry>
@@ -425,6 +400,88 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CoreDump的使用</title>
+    <url>/2019/12/24/CoreDump-JOB/</url>
+    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
+<a id="more"></a>
+<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
+<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
+<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
+<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
+<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
+<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
+<p>macos 的core文件默认生成到/cores/目录下</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
+<p>问题代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
+<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>一次被坑的惨痛经历</title>
+    <url>/2020/01/19/problem/</url>
+    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
+<ul>
+<li>由A填写， B来读取</li>
+<li>由B填写， A来读取</li>
+<li>B自己读写</li>
+<li>A自己读写</li>
+</ul>
+<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
+<a id="more"></a>
+<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
+<p>为什么会花费这么长时间才会定位出问题呢？</p>
+<ol>
+<li>刚接触项目，我对系统的内存使用情况不清晰</li>
+<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
+</ol>
+<p>为什么会出现这么低级的错误？</p>
+<ol>
+<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
+<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
+<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
+</ol>
+<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
+<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>开发经验</tag>
       </tags>
   </entry>
   <entry>
@@ -477,88 +534,6 @@
       <categories>
         <category>技术</category>
       </categories>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>CoreDump的使用</title>
-    <url>/2019/12/24/CoreDump-JOB/</url>
-    <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
-<a id="more"></a>
-<p>coredump文件是在程序出错而异常中断时，系统保存的状态文件。工程师可以通过gdb相应的程序，跟上coredump文件，还原程序崩溃时的状态，正常都可以从中查看到崩溃时的调用栈。</p>
-<h2 id="如何使系统创建coredump文件"><a href="#如何使系统创建coredump文件" class="headerlink" title="如何使系统创建coredump文件"></a>如何使系统创建coredump文件</h2><p>默认系统时不会开启coredump功能的， 需要我们使用命令打开</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 使用ulimit -c 查看是否打开coredump， 如果返回为0则没有打开</span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">// 我们可以使用ulimit -c unlimited 打开coredump功能，并且不限制文件大小。 也可以指定一个数值， 单位为KB</span><br><span class="line"></span><br><span class="line">Keep:raw_blog keep$ ulimit -c unlimited</span><br><span class="line">Keep:raw_blog keep$ </span><br><span class="line">Keep:raw_blog keep$ ulimit -c</span><br><span class="line">unlimited</span><br><span class="line">Keep:raw_blog keep$</span><br></pre></td></tr></table></figure>
-<p>使用命令打开的话， 只有当前终端生效。 如果要使系统生效的话， 需要修改/etc/security/limits.conf文件</p>
-<h2 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h2><p>默认coredump文件在程序所在目录下生成，并且文件名为core。 可以通过修改/proc/sys/kernel/core_pattern来控制生成的路径及文件名。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/temp/core-%e-%p-%t  // 在temp目录下， 文件名为 core-程序名-pid-时间</span><br></pre></td></tr></table></figure>
-<p>还可以通过在程序中，调用系统函数设置coredump的文件大小<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int setrlimit(int resource, const struct rlimit *rlimt);</span><br></pre></td></tr></table></figure></p>
-<h2 id="调试命令"><a href="#调试命令" class="headerlink" title="调试命令"></a>调试命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 生成core文件后， 使用gdb查看信息</span><br><span class="line"></span><br><span class="line">gdb  program corefile</span><br></pre></td></tr></table></figure>
-<p>macos 的core文件默认生成到/cores/目录下</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>由于mac上面没有安装gdb， 就用lldb来演示了</p>
-<p>问题代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">errorFunction</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (i&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        i--;</span><br><span class="line">        sum /= i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    errorFunction();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Keep:temp keep$ lldb ./m -c /cores/core.1172 </span><br><span class="line">(lldb) target create &quot;./m&quot; --core &quot;/cores/core.1172&quot;</span><br><span class="line">Core file &apos;/cores/core.1172&apos; (x86_64) was loaded.</span><br><span class="line">(lldb) bt</span><br><span class="line">* thread #1, stop reason = signal SIGSTOP</span><br><span class="line">  * frame #0: 0x0000000101497f84 m`errorFunction + 52</span><br><span class="line">    frame #1: 0x0000000101497fa4 m`main + 20</span><br><span class="line">    frame #2: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">    frame #3: 0x00007fff6f43d3d5 libdyld.dylib`start + 1</span><br><span class="line">(lldb)</span><br></pre></td></tr></table></figure>
-<p>我们从中可以看到栈顶函数是errorFunction， 结合代码分析一下，很容易发现问题。</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>一次被坑的惨痛经历</title>
-    <url>/2020/01/19/problem/</url>
-    <content><![CDATA[<p>事情是这样的，项目在同一个系统下运行着2个程序A和B，A由同事负责，B由我负责。 A和B会有共享的一块内存， 内存主要分成几种情况：</p>
-<ul>
-<li>由A填写， B来读取</li>
-<li>由B填写， A来读取</li>
-<li>B自己读写</li>
-<li>A自己读写</li>
-</ul>
-<p>各部分内存没有机制保证被合法读写， 只能通过代码写入的地址保证。 这种情况下， 应该各自封装接口，对地址越界的情况进行判断，然后通过接口调用，这样才能保证内存的安全访问。</p>
-<a id="more"></a>
-<p>然后，问题是这样的，程序在开启某个功能的时候， B程序肯定就会崩溃。 通过调用栈分析，是由于某个全局指针变量的内容被改写了， 然后程序使用错误的地址访问内存，导致崩溃。通过B程序代码的各种分析，也无法查到任何内存会被改写的情况。和组内另一个资深员工，分析了很多场景都无法搞清楚问题的原因。甚至祭出了回滚代码，二分查找问题的土方法了， 竟然发现很早之前的代码也存在问题，实在是匪夷所思。就这样过了快一周，惭愧还是没有头绪。最后我翻出了系统手册，分析了内存之间的使用关系，才开始怀疑是A程序导致的问题， 回滚A程序的代码，发现问题没有了。通过GDB断点A程序写内容的函数，证实是A程序地址计算错误，往B程序使用内存写入内容导致问题的。就是这么一个缺乏入参判断的接口，导致了这么一个无厘头的问题，还搭上了大概2人周的时间去定位，真的是代价巨大。</p>
-<p>为什么会花费这么长时间才会定位出问题呢？</p>
-<ol>
-<li>刚接触项目，我对系统的内存使用情况不清晰</li>
-<li>资深老员工对系统的内存机制也不了解？ 以往的经验诱导了他使用代码定位问题，没有从根本上分析问题。</li>
-</ol>
-<p>为什么会出现这么低级的错误？</p>
-<ol>
-<li>A程序由一个刚毕业的同事负责，对代码要求不高，经验欠缺。自己的功能都没有测试，内容写错地址了都不知道。。。</li>
-<li>A程序代码入库没有四眼检视，但凡有一个稍有经验的人进行代码检视，这种低级问题应该是可以被拦截在此阶段的。</li>
-<li>A程序地址写内容的接口不健壮，缺少基本的入参判断， 历史的锅？</li>
-</ol>
-<p>终于，问题是解决了，但是不知道未来还有多少坑。要锻造出健壮的代码，和程序员的编程素质相关，跟公司的开发流程相关。程序员需要对系统机制了解的足够深透，实现的功能需要通过充分的自测才跟他人联调，代码入库一定需要四眼检视。</p>
-<p>在以往的公司，这些都是基本的流程，然而，以往终究是以往，自己还是需要保持好这些习惯。遇事要敢于怀疑别人。。。 呵呵~</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-      <tags>
-        <tag>开发经验</tag>
-      </tags>
   </entry>
   <entry>
     <title>换城市工作切换的感受</title>
@@ -627,20 +602,50 @@
       </categories>
   </entry>
   <entry>
-    <title>《C程序设计语言》读后感</title>
-    <url>/2020/06/22/reflection4c/</url>
-    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
-<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
-<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+    <title>结构体偏移</title>
+    <url>/2020/06/17/memberoffsetof/</url>
+    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
+<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>assert说明</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
+<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>C基础</category>
       </categories>
+  </entry>
+  <entry>
+    <title>Bugly RN调用栈 - C的弱符号</title>
+    <url>/2019/06/11/weak-attribute-C/</url>
+    <content><![CDATA[<p><strong>react-native: 0.49.3</strong></p>
+<p>推广RN之后， 经常收到Bugly指派过来的bug， 只是因为调用栈中包含了RN的一个符号 RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<a id="more"></a>
+<p>看了一下代码， RCTFBQuickPerformanceLoggerConfigureHooks这个函数是个空函数， 没有任何实现。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RCTBridget.m</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(__unused JSGlobalContextRef ctx)</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// RCTBridge+Private.h</span></span><br><span class="line"></span><br><span class="line">RCT_EXTERN __attribute__((weak)) <span class="function"><span class="keyword">void</span> <span class="title">RCTFBQuickPerformanceLoggerConfigureHooks</span><span class="params">(JSGlobalContextRef ctx)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>在头文件中， 通过 <strong>attribute</strong>((weak)) 修饰了函数声明。 </p>
+<p>将本模块的RCTFBQuickPerformanceLoggerConfigureHooks转成弱符号类型，如果遇到强符号类型（即外部模块定义了RCTFBQuickPerformanceLoggerConfigureHooks），那么我们在本模块执行的RCTFBQuickPerformanceLoggerConfigureHooks将会是外部模块定义的RCTFBQuickPerformanceLoggerConfigureHooks。</p>
+<p>如果外部模块没有定义，那么，将会调用这个弱符号，也就是在本地定义的RCTFBQuickPerformanceLoggerConfigureHooks </p>
+<p>相当于增加了一个默认函数。</p>
+<p>原理：链接器发现同时存在弱符号和强符号，优先选择强符号，如果发现不存在强符号，只存在弱符号，则选择弱符号。如果都不存在：静态链接，恭喜，编译时报错，动态链接：对不起，系统无法启动。</p>
+<p>我们通过machoView可以看到即使是release的二进制文件， 符号中也存在RCTFBQuickPerformanceLoggerConfigureHooks这个符号。</p>
+<p><img src="/images/machoview-weak.png" alt></p>
+<p>堆栈符号化是根据地址相离最近的符号来解析的， 在没有上传符号表时，许多堆栈都会解析成 RCTFBQuickPerformanceLoggerConfigureHooks + 偏移地址。无形中加大了RN维护人员的问题定位的时间成本。</p>
+<p>删掉这个RCTFBQuickPerformanceLoggerConfigureHooks函数的声明与实现。从此，再没有bug来骚扰。 </p>
+<p>另外，最新版本的react-native已经删除RCTFBQuickPerformanceLoggerConfigureHooks的实现了。<br>github删除该段代码的记录:<br><a href="https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2" target="_blank" rel="noopener">https://github.com/facebook/react-native/commit/c49d3653ef35bb3b932055027af0c0a6bab91d84#diff-3694567fdb59b754cc845377d26f6ee2</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
       <tags>
-        <tag>读后感</tag>
+        <tag>React-Native</tag>
+        <tag>Bugly</tag>
       </tags>
   </entry>
   <entry>
@@ -657,6 +662,23 @@
       <categories>
         <category>关于</category>
       </categories>
+  </entry>
+  <entry>
+    <title>《C程序设计语言》读后感</title>
+    <url>/2020/06/22/reflection4c/</url>
+    <content><![CDATA[<p><img src="/images/202006/reflection4C.jpeg" alt="图片替换文本" width="200" height="313" align="bottom"></p>
+<p>看这边书的初衷是要重新复习一下C语言基础的语法，毕竟很长一段的工作没有用到C语言(严格的说OC也算是类C的语言吧)的，这本书也很适合初学者入门C语言， 感觉比谭xx的好一点吧，虽然我大学入门C语言的时候也是用的谭xx的书。</p>
+<p>原本以为自己会从中学到一些遗漏的知识，结果却没有，看来C语言的基础在脑海中还是比较记忆深刻。每个章节后面是带有习题的，前几年也买过这个书，习题也都做过了，这次只是过一下内容，没有花时间做习题。只是粗粗的浏览了一下这本书。毕竟不需要在基础上面花太多时间，没有太大的意义。这个阶段，主要看书的所得应该是思想架构这类的，而不是太具体的实现细节,主要还是时间有限，O(∩_∩)O哈哈~。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>读后感</tag>
+      </tags>
   </entry>
   <entry>
     <title>程序员自我修养读后感-1</title>
@@ -684,48 +706,6 @@
       <tags>
         <tag>读后感</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>结构体偏移</title>
-    <url>/2020/06/17/memberoffsetof/</url>
-    <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
-<a id="more"></a>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 结构如下：</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> a;</span><br><span class="line">  <span class="keyword">int</span> b;</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>]; <span class="comment">// 各个阶段共用的，不希望被覆盖的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regionB</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">8</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">regsionC</span>&#123;</span></span><br><span class="line">  <span class="keyword">char</span> c;</span><br><span class="line">  <span class="keyword">char</span> resv[<span class="number">7</span>];</span><br><span class="line">  <span class="keyword">char</span> globalData[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">union</span> sharedRegion &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionA</span> <span class="title">areaA</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionB</span> <span class="title">areaB</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">regionC</span> <span class="title">areaC</span>;</span></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>之前都是通过人工手动计算保证globalData在各个结构中的偏移保持不变。 针对简单的结构可以算出来，复杂一点的就容易出错了，因此，我们需要一种方式保证偏移的准确性。默认头文件sys/_types.h中提供了 __builtin_offsetof的实现，可以支持快速计算成员的偏移.</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__GNUC__) &amp;&amp; (__GNUC__ == 3 &amp;&amp; __GNUC_MINOR__ &gt;= 5 || __GNUC__ &gt; 3)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) __builtin_offsetof(type, field)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* !(gcc &gt;= 3.5) */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __offsetof(type, field) ((size_t)(&amp;((type *)0)-&gt;field))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* (gcc &gt;= 3.5) */</span></span></span><br></pre></td></tr></table></figure>
-<p>如此，我们就可以定义一个宏,再通过asset来保证各个结构体的偏移是一样的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> memberOffsetof(TYPE, MEMBER) ((size_t)(&amp;((TYPE *)0)-&gt;MEMBER))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionB, globalData));</span><br><span class="line">assert(memberOffsetof(struct regionA, globalData) == memberOffsetof(struct regionC, globalData));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>assert说明</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">assert</span><span class="params">( <span class="keyword">int</span> expression )</span></span>;</span><br><span class="line"></span><br><span class="line">assert的作用是现计算表达式 expression ，如果其值为假（即为<span class="number">0</span>），那么它先向<span class="built_in">stderr</span>打印一条出错信息，然后通过调用 <span class="built_in">abort</span> 来终止程序运行。</span><br></pre></td></tr></table></figure>
-<p>频繁的调用会极大的影响程序的性能，增加额外的开销。在调试结束后，可以通过在包含#include &lt;assert.h&gt;的语句之前插入 #define NDEBUG 来禁用assert调用，示例代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#define NDEBUG</span><br><span class="line">#include &lt;assert.h&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">如果使用makefile， 那么可以在make的时候添加 -DNDEBUG选项</span><br></pre></td></tr></table></figure></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>C基础</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -793,6 +773,26 @@
       </categories>
   </entry>
   <entry>
+    <title>代码洁癖</title>
+    <url>/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感-3</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -857,34 +857,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-5</title>
-    <url>/2020/07/23/reflection4self-5/</url>
-    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
-<a id="more"></a>
-<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
-<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
-<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
-<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
-<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
-<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
-<p>动态链接器的信息由elf中的.interp段保存。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
-<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
-<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
-<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-4</title>
     <url>/2020/07/17/reflection4self-4/</url>
     <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
@@ -910,23 +882,25 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-7</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+    <title>程序员自我修养读后感-5</title>
+    <url>/2020/07/23/reflection4self-5/</url>
+    <content><![CDATA[<h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
 <a id="more"></a>
-<ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
-</ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
-<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
+<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
+<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
+<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
+<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量/函数的地址。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
+<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
+<p>动态链接器的信息由elf中的.interp段保存。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br></pre></td></tr></table></figure>
+<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
+<p>可以使用 dlopen/dlclose/dlsym函数操作。灵活的替换使用的库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -985,28 +959,6 @@
       </categories>
   </entry>
   <entry>
-    <title>位域左移溢出问题</title>
-    <url>/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>近期工作回顾</title>
     <url>/2020/08/17/layer/</url>
     <content><![CDATA[<h1 id="近期工作回顾"><a href="#近期工作回顾" class="headerlink" title="近期工作回顾"></a>近期工作回顾</h1><p>新项目红红火火的开展了，前一阵子也忙了一下，嗯，现在自己这部分的代码终于吭哧吭哧的完成的差不多了，其他同事的工作离完成还善待时日。可以抽出空来对这段时间的编程工作做个小小的回顾。</p>
@@ -1025,6 +977,48 @@
 <p>使用了UDP_HEADER_LEN替换了 <code>sizeof(udp_header_t)</code> 的地方， 同时在编译debug的程序时， 进行了assert断言。</p>
 <p>还有一种使用宏的方法， 调试过程中， 我们把结构体大小以及对应的宏常量打印出来, 人工看一下大小对不对。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#define SHOWSTRUCTSIZE(type)  printf(&quot;%s, size %d\r\n&quot;, #type, (int)sizeof(type))</span><br><span class="line"></span><br><span class="line">#define SHOWMACROVALUE(macro) printf(&quot;%s = %d\r\n&quot;, #macro, macro)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void showStructInfo()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  SHOWSTRUCTSIZE(udp_header_t);</span><br><span class="line">  SHOWMACROVALUE(UDP_HEADER_LEN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(void) &#123;</span><br><span class="line"></span><br><span class="line">  showStructInfo();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>学以致用</title>
+    <url>/2020/08/28/skills/</url>
+    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
+<a id="more"></a>
+<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
+<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1056,26 +1050,6 @@
 <h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
 <h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
 </code></pre><blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>学以致用</title>
-    <url>/2020/08/28/skills/</url>
-    <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
-<a id="more"></a>
-<h2 id="弱类型作为开关的妙用"><a href="#弱类型作为开关的妙用" class="headerlink" title="弱类型作为开关的妙用"></a>弱类型作为开关的妙用</h2><p>程序存在多个模块，每个模块都是一个单独的库，且每个模块都存在日志的打印。 希望可以通过一个地方统一控制不同模块的日志开关。通过在main.c的强符号变量，替换各个模块内的弱符号变量，控制各个不同模块的日志打印。主函数内，通过执行不同的命令变更强符号变量的值， 动态控制不同模块的日志打印。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// module_a</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_a_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_A_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_a_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// module_b</span></span><br><span class="line">__attribute__(weak) <span class="keyword">bool</span> module_b_log_enable = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MODULE_B_LOG(...)  do &#123;\</span></span><br><span class="line">	<span class="keyword">if</span> (module_b_log_enable) &#123;\</span><br><span class="line">		logFunc(__VA_ARGS__);\</span><br><span class="line">	&#125;\</span><br><span class="line">&#125;\</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> module_a_log_enable = <span class="literal">true</span>;</span><br><span class="line"><span class="keyword">bool</span> module_b_log_enable = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
-<h2 id="二分查找与插入算法的运用"><a href="#二分查找与插入算法的运用" class="headerlink" title="二分查找与插入算法的运用"></a>二分查找与插入算法的运用</h2><p>接收配置，依据id从小到大保存配置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// return 0 exist , insert fail. 1 insert success</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insertData</span><span class="params">(<span class="keyword">int</span> *datas, <span class="keyword">int</span> curDataCount, <span class="keyword">int</span> newData)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> min = <span class="number">0</span>, max = curDataCount - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> middle, i;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// find position</span></span><br><span class="line">	<span class="keyword">while</span> (min &lt; max) &#123;</span><br><span class="line">		middle = (max - min)/<span class="number">2</span> + min;</span><br><span class="line">		<span class="keyword">if</span> (datas[middle] &lt; newData) &#123;</span><br><span class="line">			min = middle + <span class="number">1</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (datas[middle] == newData) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			max = middle - <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert </span></span><br><span class="line">	<span class="keyword">if</span> (min &gt;= curDataCount) &#123;</span><br><span class="line">		datas[curDataCount] = newData;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (datas[min] &lt; newData) &#123;</span><br><span class="line">			min++;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (i = count; i &gt; min; i--) &#123;</span><br><span class="line">			datas[i] = datas[i - <span class="number">1</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		datas[min] = newData;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
-<p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1223,6 +1197,32 @@
 <p>如果需要了解具体命令行的详细使用， 可以使用 <code>man command</code> 查看</p>
 <p>Linux 命令行</p>
 <p><img src="/images/202011/linux2_cmd.jpg" alt="图片替换文本" width="600" height="350" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感-7</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+<a id="more"></a>
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+<p> <img src="/images/202007/memstruct.jpeg" width="300" height="600" alt="图片名称" align="center"></p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1475,42 +1475,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
-    <url>/2020/12/23/linux-schedule-active/</url>
-    <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
-<a id="more"></a>
-<h1 id="主动调度"><a href="#主动调度" class="headerlink" title="主动调度"></a>主动调度</h1><p>在操作外部设备的时候，一般需要让出CPU。</p>
-<p>主动调度，在linux源码内部调用的schedule函数来主动让出cpu<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">asmlinkage __visible <span class="keyword">void</span> __<span class="function">sched <span class="title">schedule</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">tsk</span> = <span class="title">current</span>;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  sched_submit_work(tsk);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    preempt_disable();</span><br><span class="line">    __schedule(<span class="literal">false</span>);</span><br><span class="line">    sched_preempt_enable_no_resched();</span><br><span class="line">  &#125; <span class="keyword">while</span> (need_resched());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>主要调动逻辑在__schedule函数，步骤：</p>
-<ul>
-<li>取出当前cpu的任务队列rq,rq里面有不同的任务队列 cfs, rt, dl等。</li>
-<li>获取下一个执行任务</li>
-<li>如果下一个执行任务和当前任务不一致，进行上下文切换</li>
-</ul>
-<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>上下文切换主要干两件事情，一是切换进程空间，也即虚拟内存；二是切换寄存器和 CPU 上下文。</p>
-<p>寄存器和栈的切换，它调用到了 __switch_to_asm。这是一段汇编代码，主要用于栈的切换。<br>对于 32 位操作系统来讲，切换的是栈顶指针 esp。<br>对于 64 位操作系统来讲，切换的是栈顶指针 rsp。</p>
-<p>在 x86 体系结构中，提供了一种以硬件的方式进行进程切换的模式，对于每个进程，x86 希望在内存里面维护一个 TSS（Task State Segment，任务状态段）结构。这里面有所有的寄存器。</p>
-<p>另外，还有一个特殊的寄存器 TR（Task Register，任务寄存器），指向某个进程的 TSS。更改 TR 的值，将会触发硬件保存 CPU 所有寄存器的值到当前进程的 TSS 中，然后从新进程的 TSS 中读出所有寄存器值，加载到 CPU 对应的寄存器中。</p>
-<p>所谓的进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</p>
-<h2 id="指令指针的保存与恢复"><a href="#指令指针的保存与恢复" class="headerlink" title="指令指针的保存与恢复"></a>指令指针的保存与恢复</h2><p>实际在切换的过程中，指令指针寄存器的值没有改变，只是其他寄存器切成了新进程的值，这样指令指针寄存器运行时，用的全部都是新进程相关的值，也就理所当然的成为新进程的指令指针寄存器。挺绕的，实际就是人还是同一个人，在不同环境下他的地位不一样了，是父亲，是儿子，是丈夫。。。 </p>
-<h1 id="抢占式调度"><a href="#抢占式调度" class="headerlink" title="抢占式调度"></a>抢占式调度</h1><p>常见的现象就是一个进程执行时间太长了，是时候切换到另一个进程了。在计算机里面有一个时钟，会过一段时间触发一次时钟中断，通知操作系统，时间又过去一个时钟周期，这是个很好的方式，可以查看是否是需要抢占的时间点。</p>
-<p>时钟中断处理函数会调用 scheduler_tick()。函数先取出当前 CPU 的运行队列，然后得到这个队列上当前正在运行中的进程的 task_struct，然后调用这个 task_struct 的调度类的 task_tick 函数。先是调用 sched_slice 函数计算出的 ideal_runtime。判断在这个时间周期内，当前进程占用的时间是否超过了idealtime，超过就需要被抢占了。这个条件之外，还会通过 __pick_first_entity 取出红黑树中最小的进程。如果当前进程的 vruntime 大于红黑树中最小的进程的 vruntime，且差值大于 ideal_runtime，也应该被抢占了。这里只是给任务置了一个标志。</p>
-<p>另外一种现象是当一个进程被唤醒的时候。当 I/O 到来的时候，进程往往会被唤醒。这个时候是一个时机。当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占。这里也只是给当前运行的任务置了一个标志。</p>
-<h2 id="抢占的时机"><a href="#抢占的时机" class="headerlink" title="抢占的时机"></a>抢占的时机</h2><p>真正的抢占还需要时机，也就是需要那么一个时刻，让正在运行中的进程有机会调用一下 __schedule。</p>
-<p>不可能某个进程代码运行着，突然要去调用 __schedule，代码里面不可能这么写，所以一定要规划几个时机，这个时机分为用户态和内核态。</p>
-<h3 id="用户态的抢占时机"><a href="#用户态的抢占时机" class="headerlink" title="用户态的抢占时机"></a>用户态的抢占时机</h3><p>主要是在系统调用返回和中断处理函数返回的时候，如果有标志位，则进行调用 schedule函数进行调度。可以查看函数exit_to_usermode_loop的实现。</p>
-<h3 id="内核态的抢占时机"><a href="#内核态的抢占时机" class="headerlink" title="内核态的抢占时机"></a>内核态的抢占时机</h3><p>对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。</p>
-<p>同样的，内核态处理中断返回时，也可以触发检查抢占，进行schedule调度。</p>
-<p>实际工作中，也用了许多这种设置标记的情况。比如，相同配置连续下发的时候，处理耗时又比较长，每个处理都是不可被中断的。那么，就只能保存最新的那条配置，然后设置标记为需要更新。当配置更新完成后，检查标志位，如果需要更新，再启动新一轮的处理流程。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十)</title>
     <url>/2020/12/21/linux10/</url>
     <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
@@ -1554,47 +1518,33 @@
       </categories>
   </entry>
   <entry>
-    <title>暂时解放了</title>
-    <url>/2021/01/05/sjs/</url>
-    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+    <title>《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</title>
+    <url>/2020/12/23/linux-schedule-active/</url>
+    <content><![CDATA[<p>CPU切换主要有两种方式， 一种是主动释放CPU， 另外一种就是其他进程抢占CPU。</p>
 <a id="more"></a>
-<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
-<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
-<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
-<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
-<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
-<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
-<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
-<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
-<p>注意身体，伙伴们。 （20201223写）</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(十五) - 内存管理</title>
-    <url>/2021/01/06/linux15-mm/</url>
-    <content><![CDATA[<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><p>每个进程应该自己的内存空间。内存空间都是独立的、相互隔离的。对于每个进程来讲，看起来应该都是独占的。每个程序对内存的操作都是一致的，内存的管理是进程无关的， 不会因为进程的不同而区别对待，而都是一视同仁的。在最开始的时候，已经了解到程序对内存的操作都是通过虚拟地址实现的，就比如一个大数组，比如超过4kb的大小，已经超过一个页了，但是虚拟地址一定是连续的。只是物理地址就不大可能会是连续的了，通过分段分页的虚拟地址映射实现了物理地址的复用。</p>
-<a id="more"></a>
-<h2 id="独立内存空间"><a href="#独立内存空间" class="headerlink" title="独立内存空间"></a>独立内存空间</h2><p>程序的二进制格式都是一致的，仅仅内容、大小不一样而已。进程就是运行的程序，运行过程中还会产生一些数据，运行程序和数据都是放在内存里面的。内存有分页机制，通过虚拟地址和物理的地址的映射可以定位到物理地址。物理地址对进程是不可见的，操作系统的内存管理帮忙作了工作。操作系统会给进程分配一个虚拟地址。所有进程看到的这个地址都是一样的，里面的内存都是从 0 开始编号。在程序里面，指令写入的地址是虚拟地址。当程序要访问虚拟地址的时候，由内核的数据结构进行转换，转换成不同的物理地址，这样不同的进程运行的时候，写入的是不同的物理地址，这样就不会冲突了。</p>
-<h2 id="规划虚拟地址空间"><a href="#规划虚拟地址空间" class="headerlink" title="规划虚拟地址空间"></a>规划虚拟地址空间</h2><p>操作系统的内存管理，主要分为三个方面。</p>
-<p>第一，虚拟内存空间的管理，每个进程看到的是独立的、互不干扰的虚拟地址空间；</p>
-<p>第二，物理内存的管理，物理内存地址只有内存管理模块能够使用；</p>
-<p>第三，内存映射，需要将虚拟内存和物理内存映射、关联起来。</p>
-<p>如果是 32 位，有 2^32 = 4G 的内存空间都是我的，不管内存是不是真的有 4G。如果是 64 位，在 x86_64 下面，其实只使用了 48 位，那也挺恐怖的。48 位地址长度也就是对应了 256TB 的地址空间。至少目前还不需求这么大，过个十几二十年时间没准会突破吧，历史经验。</p>
-<p>虚拟空间一切二，一部分用来放内核的东西，称为内核空间，一部分用来放进程的东西，称为用户空间。用户空间在下，在低地址.内核空间在上，在高地址.</p>
-<p>用户态空间从最低位开始排起，先是 Text Segment、Data Segment 和 BSS Segment。Text Segment 是存放二进制可执行代码的位置，Data Segment 存放静态常量，BSS Segment 存放未初始化的静态变量。接下来是堆（Heap）段。堆是往高地址增长的，是用来动态分配内存的区域，malloc 就是在这里面分配的。接下来的区域是 Memory Mapping Segment。这块地址可以用来把文件映射进内存用的，如果二进制的执行文件依赖于某个动态链接库，就是在这个区域里面将 so 文件映射到了内存中。再下面就是栈（Stack）地址段。主线程的函数调用的函数栈就是用这里的。</p>
-<p><img src="/images/202101/mm0.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
-<p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
-<p><code>cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
+<h1 id="主动调度"><a href="#主动调度" class="headerlink" title="主动调度"></a>主动调度</h1><p>在操作外部设备的时候，一般需要让出CPU。</p>
+<p>主动调度，在linux源码内部调用的schedule函数来主动让出cpu<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">asmlinkage __visible <span class="keyword">void</span> __<span class="function">sched <span class="title">schedule</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">tsk</span> = <span class="title">current</span>;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  sched_submit_work(tsk);</span><br><span class="line">  <span class="keyword">do</span> &#123;</span><br><span class="line">    preempt_disable();</span><br><span class="line">    __schedule(<span class="literal">false</span>);</span><br><span class="line">    sched_preempt_enable_no_resched();</span><br><span class="line">  &#125; <span class="keyword">while</span> (need_resched());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要调动逻辑在__schedule函数，步骤：</p>
+<ul>
+<li>取出当前cpu的任务队列rq,rq里面有不同的任务队列 cfs, rt, dl等。</li>
+<li>获取下一个执行任务</li>
+<li>如果下一个执行任务和当前任务不一致，进行上下文切换</li>
+</ul>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><p>上下文切换主要干两件事情，一是切换进程空间，也即虚拟内存；二是切换寄存器和 CPU 上下文。</p>
+<p>寄存器和栈的切换，它调用到了 __switch_to_asm。这是一段汇编代码，主要用于栈的切换。<br>对于 32 位操作系统来讲，切换的是栈顶指针 esp。<br>对于 64 位操作系统来讲，切换的是栈顶指针 rsp。</p>
+<p>在 x86 体系结构中，提供了一种以硬件的方式进行进程切换的模式，对于每个进程，x86 希望在内存里面维护一个 TSS（Task State Segment，任务状态段）结构。这里面有所有的寄存器。</p>
+<p>另外，还有一个特殊的寄存器 TR（Task Register，任务寄存器），指向某个进程的 TSS。更改 TR 的值，将会触发硬件保存 CPU 所有寄存器的值到当前进程的 TSS 中，然后从新进程的 TSS 中读出所有寄存器值，加载到 CPU 对应的寄存器中。</p>
+<p>所谓的进程切换，就是将某个进程的 thread_struct 里面的寄存器的值，写入到 CPU 的 TR 指向的 tss_struct，对于 CPU 来讲，这就算是完成了切换。</p>
+<h2 id="指令指针的保存与恢复"><a href="#指令指针的保存与恢复" class="headerlink" title="指令指针的保存与恢复"></a>指令指针的保存与恢复</h2><p>实际在切换的过程中，指令指针寄存器的值没有改变，只是其他寄存器切成了新进程的值，这样指令指针寄存器运行时，用的全部都是新进程相关的值，也就理所当然的成为新进程的指令指针寄存器。挺绕的，实际就是人还是同一个人，在不同环境下他的地位不一样了，是父亲，是儿子，是丈夫。。。 </p>
+<h1 id="抢占式调度"><a href="#抢占式调度" class="headerlink" title="抢占式调度"></a>抢占式调度</h1><p>常见的现象就是一个进程执行时间太长了，是时候切换到另一个进程了。在计算机里面有一个时钟，会过一段时间触发一次时钟中断，通知操作系统，时间又过去一个时钟周期，这是个很好的方式，可以查看是否是需要抢占的时间点。</p>
+<p>时钟中断处理函数会调用 scheduler_tick()。函数先取出当前 CPU 的运行队列，然后得到这个队列上当前正在运行中的进程的 task_struct，然后调用这个 task_struct 的调度类的 task_tick 函数。先是调用 sched_slice 函数计算出的 ideal_runtime。判断在这个时间周期内，当前进程占用的时间是否超过了idealtime，超过就需要被抢占了。这个条件之外，还会通过 __pick_first_entity 取出红黑树中最小的进程。如果当前进程的 vruntime 大于红黑树中最小的进程的 vruntime，且差值大于 ideal_runtime，也应该被抢占了。这里只是给任务置了一个标志。</p>
+<p>另外一种现象是当一个进程被唤醒的时候。当 I/O 到来的时候，进程往往会被唤醒。这个时候是一个时机。当被唤醒的进程优先级高于 CPU 上的当前进程，就会触发抢占。这里也只是给当前运行的任务置了一个标志。</p>
+<h2 id="抢占的时机"><a href="#抢占的时机" class="headerlink" title="抢占的时机"></a>抢占的时机</h2><p>真正的抢占还需要时机，也就是需要那么一个时刻，让正在运行中的进程有机会调用一下 __schedule。</p>
+<p>不可能某个进程代码运行着，突然要去调用 __schedule，代码里面不可能这么写，所以一定要规划几个时机，这个时机分为用户态和内核态。</p>
+<h3 id="用户态的抢占时机"><a href="#用户态的抢占时机" class="headerlink" title="用户态的抢占时机"></a>用户态的抢占时机</h3><p>主要是在系统调用返回和中断处理函数返回的时候，如果有标志位，则进行调用 schedule函数进行调度。可以查看函数exit_to_usermode_loop的实现。</p>
+<h3 id="内核态的抢占时机"><a href="#内核态的抢占时机" class="headerlink" title="内核态的抢占时机"></a>内核态的抢占时机</h3><p>对内核态的执行中，被抢占的时机一般发生在 preempt_enable() 中。在内核态的执行中，有的操作是不能被中断的，所以在进行这些操作之前，总是先调用 preempt_disable() 关闭抢占，当再次打开的时候，就是一次内核态代码被抢占的机会。</p>
+<p>同样的，内核态处理中断返回时，也可以触发检查抢占，进行schedule调度。</p>
+<p>实际工作中，也用了许多这种设置标记的情况。比如，相同配置连续下发的时候，处理耗时又比较长，每个处理都是不可被中断的。那么，就只能保存最新的那条配置，然后设置标记为需要更新。当配置更新完成后，检查标志位，如果需要更新，再启动新一轮的处理流程。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1680,6 +1630,88 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
+    <url>/2020/12/28/linux14-thread/</url>
+    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
+<a id="more"></a>
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
+<ul>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
+</ul>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>暂时解放了</title>
+    <url>/2021/01/05/sjs/</url>
+    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+<a id="more"></a>
+<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
+<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
+<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
+<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
+<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
+<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
+<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
+<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
+<p>注意身体，伙伴们。 （20201223写）</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十五) - 内存管理</title>
+    <url>/2021/01/06/linux15-mm/</url>
+    <content><![CDATA[<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><p>每个进程应该自己的内存空间。内存空间都是独立的、相互隔离的。对于每个进程来讲，看起来应该都是独占的。每个程序对内存的操作都是一致的，内存的管理是进程无关的， 不会因为进程的不同而区别对待，而都是一视同仁的。在最开始的时候，已经了解到程序对内存的操作都是通过虚拟地址实现的，就比如一个大数组，比如超过4kb的大小，已经超过一个页了，但是虚拟地址一定是连续的。只是物理地址就不大可能会是连续的了，通过分段分页的虚拟地址映射实现了物理地址的复用。</p>
+<a id="more"></a>
+<h2 id="独立内存空间"><a href="#独立内存空间" class="headerlink" title="独立内存空间"></a>独立内存空间</h2><p>程序的二进制格式都是一致的，仅仅内容、大小不一样而已。进程就是运行的程序，运行过程中还会产生一些数据，运行程序和数据都是放在内存里面的。内存有分页机制，通过虚拟地址和物理的地址的映射可以定位到物理地址。物理地址对进程是不可见的，操作系统的内存管理帮忙作了工作。操作系统会给进程分配一个虚拟地址。所有进程看到的这个地址都是一样的，里面的内存都是从 0 开始编号。在程序里面，指令写入的地址是虚拟地址。当程序要访问虚拟地址的时候，由内核的数据结构进行转换，转换成不同的物理地址，这样不同的进程运行的时候，写入的是不同的物理地址，这样就不会冲突了。</p>
+<h2 id="规划虚拟地址空间"><a href="#规划虚拟地址空间" class="headerlink" title="规划虚拟地址空间"></a>规划虚拟地址空间</h2><p>操作系统的内存管理，主要分为三个方面。</p>
+<p>第一，虚拟内存空间的管理，每个进程看到的是独立的、互不干扰的虚拟地址空间；</p>
+<p>第二，物理内存的管理，物理内存地址只有内存管理模块能够使用；</p>
+<p>第三，内存映射，需要将虚拟内存和物理内存映射、关联起来。</p>
+<p>如果是 32 位，有 2^32 = 4G 的内存空间都是我的，不管内存是不是真的有 4G。如果是 64 位，在 x86_64 下面，其实只使用了 48 位，那也挺恐怖的。48 位地址长度也就是对应了 256TB 的地址空间。至少目前还不需求这么大，过个十几二十年时间没准会突破吧，历史经验。</p>
+<p>虚拟空间一切二，一部分用来放内核的东西，称为内核空间，一部分用来放进程的东西，称为用户空间。用户空间在下，在低地址.内核空间在上，在高地址.</p>
+<p>用户态空间从最低位开始排起，先是 Text Segment、Data Segment 和 BSS Segment。Text Segment 是存放二进制可执行代码的位置，Data Segment 存放静态常量，BSS Segment 存放未初始化的静态变量。接下来是堆（Heap）段。堆是往高地址增长的，是用来动态分配内存的区域，malloc 就是在这里面分配的。接下来的区域是 Memory Mapping Segment。这块地址可以用来把文件映射进内存用的，如果二进制的执行文件依赖于某个动态链接库，就是在这个区域里面将 so 文件映射到了内存中。再下面就是栈（Stack）地址段。主线程的函数调用的函数栈就是用这里的。</p>
+<p><img src="/images/202101/mm0.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
+<p><code>cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十六) - 内存映射</title>
     <url>/2021/01/12/linux16-mm/</url>
     <content><![CDATA[<h1 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h1><h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><p>在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。</p>
@@ -1738,29 +1770,18 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
-    <url>/2020/12/28/linux14-thread/</url>
-    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
+    <title>2020年小结</title>
+    <url>/2021/02/01/design/</url>
+    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
 <a id="more"></a>
-<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="keyword">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="keyword">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="keyword">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="keyword">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="keyword">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="keyword">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="keyword">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="keyword">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="keyword">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
-<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
-<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
-<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
-<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
-<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
-<h3 id="资源赋值-设置"><a href="#资源赋值-设置" class="headerlink" title="资源赋值/设置"></a>资源赋值/设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数/引用加一，内存指向原本的内存。</p>
-<ul>
-<li>files_struct 引用计数加一</li>
-<li>fs_struct 的用户数加一</li>
-<li>sighand_struct 引用计数加一</li>
-<li>mm直接指向了原来的 mm_struct</li>
-</ul>
-<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
-<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
-<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
-<p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
-<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
+<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
+<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
+<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
+<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。准备考个软件架构师证书。</p>
+<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
+<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，2021年回福州去了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
+<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1855,27 +1876,6 @@
       </categories>
   </entry>
   <entry>
-    <title>2020年小结</title>
-    <url>/2021/02/01/design/</url>
-    <content><![CDATA[<h1 id="2020年小结"><a href="#2020年小结" class="headerlink" title="2020年小结"></a>2020年小结</h1><p>嗯，的确这个年度小结来的有点儿迟了。2021年都过了一个月了，惭愧。在过去的一个多月里面，一直在忙着作新项目的性能优化工作，在不断的试验(Start-&gt;编译-重启-配置-测试-&gt;Start 循环)中渡过，会发现每天时间都过得很快。 还是有点怀念华为的补丁技术，以及RN的动态更新功能。虽然本人也花了点时间了解了一下补丁技术，奈何对系统平台还有这个交叉编译器没有足够的知识储备，性能优化的任务也比较急，只能一遍遍的重启验证，呵呵。</p>
-<a id="more"></a>
-<p>2020年应该算个大灾之年了，笼罩着疫情的阴霾。怎么也想不到，竟然戴着口罩渡过了这么一年。</p>
-<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，经历了两三个项目的开发与维护，可以熟练的、自如的应对工作了，没有遇到特别大的困难。除了熟悉了一些业务，对系统的模块分工也有了更多一点的了解。还有一块打的工作，就是做的性能优化了。 有做了算法逻辑的优化，代码架构的优化，还有就是代码语法层面的优化。效果还是有的，近期那个项目提升了百分之一百五十，很不错了。从30多GB蹭一下到了80多GB。</p>
-<h2 id="学习-读书"><a href="#学习-读书" class="headerlink" title="学习/读书"></a>学习/读书</h2><p>年初疫情的时候，在微信读书上面完整的细读了一遍《明朝那些事儿》、《羊皮卷》。</p>
-<p>技术上面，复习了一下《C语言程序设计语言》。 重读了一遍《程序员的自我修养-链接、装载与库》，并在之后粗粗的再过了一遍，并写了些博文小结。 在极客时间上面，又刷了一遍王铮的《数据结构与算法》专栏，活跃了一下脑回路；范学雷的《代码精进之路》，产生了许多共鸣。刘建国的《技术管理实战36讲》，学习一下技术人的处世方法。宋宁的《说透敏捷》，重温了下在华为的敏捷开发流程。还刷了两遍《趣谈Linux操作系统》， 目前还在博文小结阶段。说实话，极客时间上面的专栏质量都挺不错的， 只要静下心来学，还是有收获的，毕竟付费的嘛，作者还是会下点功夫，搞点干货的。目前学习的目标还是想把基础捡起来，稍微巩固一下。2021年的话，学习的目标应该转向架构，系统这块，深入钻研一下Linux代码，然后读一些管理方面的书,当然还有工作所需的新知识。准备考个软件架构师证书。</p>
-<h2 id="经济"><a href="#经济" class="headerlink" title="经济"></a>经济</h2><p>经济上，一家四口都指着我的那微薄的工资和前几年攒下的十几万老本，年底的时候首付了台车，^_^ 老本快折腾完了。今年大好的股市行情，基本上完美踏空了，上半年挣了个七八千 就匆匆撤退了，理财这个东西，还是得坚持滴，而且得用真正的闲钱。今年没有结余，仅剩负债了。月月入不敷出，得改变一下子了。</p>
-<h2 id="生活-运动"><a href="#生活-运动" class="headerlink" title="生活/运动"></a>生活/运动</h2><p>家有两宝，在家的生活重心就是带娃、带娃、带娃。一般晚上下班之后，回到家就没有个人的时间了。首先，回家先得看看有没有菜，么有的话就去楼下的生鲜店买点菜啊，肉啊。 老婆只管着煮饭，烧菜的事基本上就是我来了，一般七点到家，七点半煮好饭，吃完饭的话就八点了。小孩子喜欢玩，就陪着玩玩，晚上的时间过得很快，轮流洗洗澡，就十点多、快十一点的样子了，然后睡觉了。第二天，长沙的天还没亮就起床洗漱一下，七点半出门，八点过几分到办公大厦，楼下吃个早点，然后上班，一天就又开始了。时间过的相当充实了，有时候要学习的话 就留在公司自我充电一下，八点半再回去。 周末的话，由于上班大小周，也没多少个休息日。周末上午，小孩子睡懒觉，我自己看会儿书或者听听音频，^_^ 基本上出不了门，老婆做做家务啥的。吃过午饭出去走走逛逛，一天就过去了。 至于运动， 呵呵， 在福州的时候还可以利用一下早上的时间，奈何长沙这天亮的太迟了，七点半才全亮，早晨的运动时间就没了。一整年就跑了两三次步吧，一身肥肉又上身了，哎！！！欣慰的是，可恶的肾结石终于在药物的作用下，加长时间的喝水习惯，biubiu出来了。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>年底的时候，收获了一份还不错的岗位，还是做嵌入式开发，嗯，2021年回福州去了。 长沙我来过了，试过了，没什么遗憾了。小孩不是很适应这边的气候，基本上每个月都会感冒发烧，两个娃不是一起中招就是前后接力，伤身费钱。工作上面的确没有很大的提升，尽管当前所在的行业属于一个旱涝保收的赛道，但是我还是希望能够有更好的发展，接受更大的挑战，提升自我。尽管这边的工作量不是很大(一般不会强制加班，最迟也就到八点半的样子)。OK，就这样了。人生就像下面这照片一样，朦胧的，抬头看看还可以感觉到有高度，有目标要追求，加油!!</p>
-<p><img src="/images/202101/WechatIMG97.jpeg" alt="图片替换文本" width="300" height="613" align="bottom"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(二十二) - 文件系统</title>
     <url>/2021/02/04/linux22-fm/</url>
     <content><![CDATA[<h1 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h1><p>对于运行的进程来说，内存就像一个纸箱子，仅仅是一个暂存数据的地方，而且空间有限。如果我们想要进程结束之后，数据依然能够保存下来，就不能只保存在内存里，而是应该保存在外部存储中，比如磁盘，数据是以文件的形式保存在硬盘上的。文件系统就是对文件进行管理的模块。</p>
@@ -1913,6 +1913,48 @@
 <p>函数 stat 和 lstat 返回的是通过文件名查到的状态信息。这两个方法区别在于，stat 没有处理符号链接（软链接）的能力。如果一个文件是符号链接，stat 会直接返回它所指向的文件的属性，而 lstat 返回的就是这个符号链接的内容，fstat 则是通过文件描述符获取文件对应的属性。</p>
 <p>文件系统概要：</p>
 <p><img src="/images/202102/file_summary.png" alt="图片替换文本" width="600" height="713" align="bottom"></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>趣谈linux操作系统》小结(二十四) - 虚拟文件系统</title>
+    <url>/2021/02/05/linux24-vfs/</url>
+    <content><![CDATA[<h1 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h1><p>进程要想往文件系统里面读写数据，需要很多层的组件一起合作。</p>
+<a id="more"></a>
+<ul>
+<li>在应用层，进程在进行文件读写操作时，可通过系统调用如 sys_open、sys_read、sys_write 等。</li>
+<li>在内核，每个进程都需要为打开的文件，维护一定的数据结构。</li>
+<li>在内核，整个系统打开的文件，也需要维护一定的数据结构。</li>
+<li>Linux 可以支持多达数十种不同的文件系统。Linux 内核向用户空间提供了虚拟文件系统这个统一的接口，来对文件系统进行操作。它提供了常见的文件系统对象模型，例如 inode、directory entry、mount 等，以及操作这些对象的方法，例如 inode operations、directory operations、file operations 等。</li>
+<li>读写 ext4 文件系统，要通过块设备 I/O 层，也即 BIO 层。这是文件系统层和块设备驱动的接口。</li>
+<li>为了加快块设备的读写效率，我们还有一个缓存层。</li>
+<li>最下层是块设备驱动程序。</li>
+</ul>
+<p><img src="/images/202102/vfs_layer.jpg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
+<p>这里涉及到几个概念， mount， file， inode， 对应的operations, dentry。</p>
+<h2 id="挂载文件系统"><a href="#挂载文件系统" class="headerlink" title="挂载文件系统"></a>挂载文件系统</h2><p>想要操作文件系统，第一件事情就是挂载文件系统。每种文件系统都有一个结构file_system_type保存文件系统的信息及操作：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">register_filesystem(&amp;ext4_fs_type);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_system_type</span> <span class="title">ext4_fs_type</span> = &#123;</span></span><br><span class="line">  .owner    = THIS_MODULE,</span><br><span class="line">  .name    = <span class="string">"ext4"</span>,</span><br><span class="line">  .mount    = ext4_mount,</span><br><span class="line">  .kill_sb  = kill_block_super,</span><br><span class="line">  .fs_flags  = FS_REQUIRES_DEV,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>注册过文件系统之后， 需要把文件系统mount到一个目录下， 才可以访问文件系统。通过系统调用mount来完成， do_mount-&gt;do_new_mount-&gt;vfs_kern_mount。</p>
+<p>vfs_kern_mount 先是创建 struct mount 结构，每个挂载的文件系统都对应于这样一个结构。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mount</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">hlist_node</span> <span class="title">mnt_hash</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mount</span> *<span class="title">mnt_parent</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dentry</span> *<span class="title">mnt_mountpoint</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vfsmount</span> <span class="title">mnt</span>;</span></span><br><span class="line">  <span class="keyword">union</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span> <span class="title">mnt_rcu</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">llist_node</span> <span class="title">mnt_llist</span>;</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">mnt_mounts</span>;</span>  <span class="comment">/* list of children, anchored here */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">mnt_child</span>;</span>  <span class="comment">/* and going through their mnt_child */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">mnt_instance</span>;</span>  <span class="comment">/* mount instance on sb-&gt;s_mounts */</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *mnt_devname;  <span class="comment">/* Name of device e.g. /dev/dsk/hda1 */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">mnt_list</span>;</span></span><br><span class="line">......</span><br><span class="line">&#125; __randomize_layout;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vfsmount</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dentry</span> *<span class="title">mnt_root</span>;</span>  <span class="comment">/* root of the mounted tree */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">super_block</span> *<span class="title">mnt_sb</span>;</span>  <span class="comment">/* pointer to superblock */</span></span><br><span class="line">  <span class="keyword">int</span> mnt_flags;</span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+<p>mnt_parent 是装载点所在的父文件系统，mnt_mountpoint 是装载点在父文件系统中的 dentry；struct dentry 表示目录，并和目录的 inode 关联；mnt_root 是当前文件系统根目录的 dentry，mnt_sb 是指向超级块的指针。最终调用文件系统类型的mount回调函数。</p>
+<p>每个文件都由一个struct file来描述， struct file里面有mnt和dentry的指针， mnt表示文件系统的挂载点信息，dentry就是保存文件的inode 等信息的结构。通过指针构成一个复杂的网状结构。 </p>
+<p>下面是一张图， 假设根文件系统下面有一个目录 home，有另外一个文件系统 A 挂载在这个目录 home 下面。在文件系统 A 的根目录下面有另外一个文件夹 hello。由于文件系统 A 已经挂载到了目录 home 下面，所以我们就有了目录 /home/hello，然后有另外一个文件系统 B 挂载在 /home/hello 下面。在文件系统 B 的根目录下面有另外一个文件夹 world，在 world 下面有个文件夹 data。由于文件系统 B 已经挂载到了 /home/hello 下面，所以我们就有了目录 /home/hello/world/data。</p>
+<p><img src="/images/202102/vfs_hello.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><p>要打开一个文件，首先要通过 get_unused_fd_flags 得到一个没有用的文件描述符。 每个进程的task_struct里面都会有一个指针files:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>    *<span class="title">files</span>;</span></span><br></pre></td></tr></table></figure>
+<p>files_struct 里面最重要的是一个文件描述符列表，每打开一个文件，就会在这个列表中分配一项，下标就是文件描述符。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> __<span class="title">rcu</span> * <span class="title">fd_array</span>[<span class="title">NR_OPEN_DEFAULT</span>];</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>默认情况下，文件描述符 0 表示 stdin 标准输入，文件描述符 1 表示 stdout 标准输出，文件描述符 2 表示 stderr 标准错误输出。另外，再打开的文件，都会从这个列表中找一个空闲位置分配给它。</p>
+<p>打开文件的操作，就是创建一个struct file结构，然后和fd关联起来，最后设置struct file的成员。这中间， 查找dentry又是一个缓存和老化的方案，提高查找效率。</p>
+<p><img src="/images/202102/dentry_cache.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>有关文件的数据结构层次多，而且很复杂，就得到了下面这张图</p>
+<p><img src="/images/202102/file_relation.png" alt="图片替换文本" width="600" height="513" align="bottom"></p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
