@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="硬盘文件系统常见的硬盘是这幅图左边的样子，中间圆的部分是磁盘的盘片，右边的图是抽象出来的图。每一层里分多个磁道，每个磁道分多个扇区，每个扇区是 512 个字节。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《趣谈linux操作系统》小结(二十三) - 硬盘文件系统">
+<meta property="og:url" content="http://fishmwei.github.io/2021/02/04/linux23-diskf/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="硬盘文件系统常见的硬盘是这幅图左边的样子，中间圆的部分是磁盘的盘片，右边的图是抽象出来的图。每一层里分多个磁道，每个磁道分多个扇区，每个扇区是 512 个字节。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/disk.jpg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/inode_level.jpeg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/Exents.jpeg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/disk_fs.jpeg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/inode_index.jpeg">
+<meta property="og:image" content="http://fishmwei.github.io/images/202102/inode_link.jpeg">
+<meta property="og:updated_time" content="2021-02-05T06:31:07.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《趣谈linux操作系统》小结(二十三) - 硬盘文件系统">
+<meta name="twitter:description" content="硬盘文件系统常见的硬盘是这幅图左边的样子，中间圆的部分是磁盘的盘片，右边的图是抽象出来的图。每一层里分多个磁道，每个磁道分多个扇区，每个扇区是 512 个字节。">
+<meta name="twitter:image" content="http://fishmwei.github.io/images/202102/disk.jpg">
+
+<link rel="canonical" href="http://fishmwei.github.io/2021/02/04/linux23-diskf/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《趣谈linux操作系统》小结(二十三) - 硬盘文件系统 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" placeholder="搜索..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2021/02/04/linux23-diskf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《趣谈linux操作系统》小结(二十三) - 硬盘文件系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-04 17:51:12" itemprop="dateCreated datePublished" datetime="2021-02-04T17:51:12+08:00">2021-02-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/04/linux23-diskf/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/04/linux23-diskf/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="硬盘文件系统"><a href="#硬盘文件系统" class="headerlink" title="硬盘文件系统"></a>硬盘文件系统</h1><p>常见的硬盘是这幅图左边的样子，中间圆的部分是磁盘的盘片，右边的图是抽象出来的图。每一层里分多个磁道，每个磁道分多个扇区，每个扇区是 512 个字节。</p>
+<a id="more"></a>
+<p><img src="/images/202102/disk.jpg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>Linux 下最主流的文件系统格式——ext 系列</p>
+<h2 id="inode-与块的存储"><a href="#inode-与块的存储" class="headerlink" title="inode 与块的存储"></a>inode 与块的存储</h2><p>硬盘分成相同大小的单元，我们称为块（Block）。一块的大小是扇区大小的整数倍，默认是 4K。在格式化的时候，这个值是可以设定的。</p>
+<p>一大块硬盘被分成了一个个小的块，用来存放文件的数据部分。这样一来，如果我们像存放一个文件，就不用给他分配一块连续的空间了。我们可以分散成一个个小块进行存放。这样就灵活得多，也比较容易添加、删除和插入数据。</p>
+<p>但是文件的数据存放得太散，找起来就比较困难，我们就需要有个地方存储这些信息，这就是inode。我们每个文件都会对应一个 inode；一个文件夹就是一个文件，也对应一个 inode。</p>
+<p>对于ext的文件系统， 就有ext4_inode这个结构体:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ext4_inode</span> &#123;</span></span><br><span class="line">  __le16  i_mode;    <span class="comment">/* File mode */</span></span><br><span class="line">  __le16  i_uid;    <span class="comment">/* Low 16 bits of Owner Uid */</span></span><br><span class="line">  __le32  i_size_lo;  <span class="comment">/* Size in bytes */</span></span><br><span class="line">  __le32  i_atime;  <span class="comment">/* Access time */</span></span><br><span class="line">  __le32  i_ctime;  <span class="comment">/* Inode Change time */</span></span><br><span class="line">  __le32  i_mtime;  <span class="comment">/* Modification time */</span></span><br><span class="line">  __le32  i_dtime;  <span class="comment">/* Deletion Time */</span></span><br><span class="line">  __le16  i_gid;    <span class="comment">/* Low 16 bits of Group Id */</span></span><br><span class="line">  __le16  i_links_count;  <span class="comment">/* Links count */</span></span><br><span class="line">  __le32  i_blocks_lo;  <span class="comment">/* Blocks count */</span></span><br><span class="line">  __le32  i_flags;  <span class="comment">/* File flags */</span></span><br><span class="line">......</span><br><span class="line">  __le32  i_block[EXT4_N_BLOCKS];<span class="comment">/* Pointers to blocks */</span></span><br><span class="line">  __le32  i_generation;  <span class="comment">/* File version (for NFS) */</span></span><br><span class="line">  __le32  i_file_acl_lo;  <span class="comment">/* File ACL */</span></span><br><span class="line">  __le32  i_size_high;</span><br><span class="line">......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>“某个文件分成几块、每一块在哪里”，这些在 inode 里面，应该保存在 i_block 里面。</p>
+<p>EXT4_N_BLOCKS 有如下的定义，计算下来一共有 15 项。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  EXT4_NDIR_BLOCKS    12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  EXT4_IND_BLOCK      EXT4_NDIR_BLOCKS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  EXT4_DIND_BLOCK      (EXT4_IND_BLOCK + 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  EXT4_TIND_BLOCK      (EXT4_DIND_BLOCK + 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  EXT4_N_BLOCKS      (EXT4_TIND_BLOCK + 1)</span></span><br></pre></td></tr></table></figure>
+<p>在 ext2 和 ext3 中，其中前 12 项直接保存了块的位置，也就是说，我们可以通过 i_block[0-11]，直接得到保存文件内容的块。如果文件较大，12个块放不下，让 i_block[12]指向一个块，这个块里面不放数据块，而是放数据块的位置，这个块我们称为间接块。也就是说，我们在 i_block[12]里面放间接块的位置，通过 i_block[12]找到间接块后，间接块里面放数据块的位置，通过间接块可以找到数据块。</p>
+<p>如果文件再大一些，i_block[13]会指向一个块，我们可以用二次间接块。二次间接块里面存放了间接块的位置，间接块里面存放了数据块的位置，数据块里面存放的是真正的数据。如果文件再大一些，i_block[14]会指向三次间接块。原理和上面都是一样的，就像一层套一层的俄罗斯套娃，一层一层打开，才能拿到最中心的数据块。</p>
+<p><img src="/images/202102/inode_level.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>这里面有一个非常显著的问题，对于大文件来讲，我们要多次读取硬盘才能找到相应的块，这样访问速度就会比较慢。为了解决这个问题，ext4 做了一定的改变。它引入了一个新的概念，叫做 Extents。我们来解释一下 Extents。比方说，一个文件大小为 128M，如果使用 4k 大小的块进行存储，需要 32k 个块。如果按照 ext2 或者 ext3 那样散着放，数量太大了。但是 Extents 可以用于存放连续的块，也就是说，我们可以把 128M 放在一个 Extents 里面。这样的话，对大文件的读写性能提高了，文件碎片也减少了。</p>
+<p><img src="/images/202102/Exents.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>可以看出Exents可以分成两种节点， 索引节点和叶子节点。 索引节点指向新的一个索引，叶子节点指向具体的块。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * This is the extent on-disk structure.</span></span><br><span class="line"><span class="comment"> * It's used at the bottom of the tree.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ext4_extent</span> &#123;</span></span><br><span class="line">  __le32  ee_block;  <span class="comment">/* first logical block extent covers */</span></span><br><span class="line">  __le16  ee_len;    <span class="comment">/* number of blocks covered by extent */</span></span><br><span class="line">  __le16  ee_start_hi;  <span class="comment">/* high 16 bits of physical block */</span></span><br><span class="line">  __le32  ee_start_lo;  <span class="comment">/* low 32 bits of physical block */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * This is index on-disk structure.</span></span><br><span class="line"><span class="comment"> * It's used at all the levels except the bottom.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ext4_extent_idx</span> &#123;</span></span><br><span class="line">  __le32  ei_block;  <span class="comment">/* index covers logical blocks from 'block' */</span></span><br><span class="line">  __le32  ei_leaf_lo;  <span class="comment">/* pointer to the physical block of the next *</span></span><br><span class="line"><span class="comment">         * level. leaf or next index could be there */</span></span><br><span class="line">  __le16  ei_leaf_hi;  <span class="comment">/* high 16 bits of physical block */</span></span><br><span class="line">  __u16  ei_unused;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>eh_depth 为 0，也即 inode 里面的就是叶子节点，树高度为 0。eh_depth&gt;0 的节点就是索引节点，其中根节点深度最大，在 inode 中。</p>
+<p>除了根节点，其他的节点都保存在一个块 4k 里面，4k 扣除 ext4_extent_header 的 12 个 byte，剩下的能够放 340 项，每个 extent 最大能表示 128MB 的数据，340 个 extent 会使你表示的文件达到 42.5GB。这已经非常大了，如果再大，我们可以增加树的深度。</p>
+<h2 id="inode-位图和块位图"><a href="#inode-位图和块位图" class="headerlink" title="inode 位图和块位图"></a>inode 位图和块位图</h2><p>在文件系统里面，我们专门弄了一个块来保存 inode 的位图。在这 4k 里面，每一位对应一个 inode。如果是 1，表示这个 inode 已经被用了；如果是 0，则表示没被用。同样，我们也弄了一个块保存 block 的位图。</p>
+<p>我们调用open函数的时候，如果传入了参数 包含 O_CREAT， 那么在文件不存在的时候会创建文件， open实际上调用的是sys_open系统调用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SYSCALL_DEFINE3(open, <span class="keyword">const</span> <span class="keyword">char</span> __user *, filename, <span class="keyword">int</span>, flags, <span class="keyword">umode_t</span>, mode)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (force_o_largefile())</span><br><span class="line">    flags |= O_LARGEFILE;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> do_sys_open(AT_FDCWD, filename, flags, mode);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用链：do_sys_open-&gt; do_filp_open-&gt;path_openat-&gt;do_last-&gt;lookup_open。这个调用链的逻辑是，要打开一个文件，先要根据路径找到文件夹。如果发现文件夹下面没有这个文件，同时又设置了 O_CREAT，就说明我们要在这个文件夹下面创建一个文件，那我们就需要一个新的 inode。主要逻辑就是在inode位图中找到一个空的位，然后使用该inode，设置为已占用，然后填写各种信息。具体的是调用dir_inode对应的回调函数。</p>
+<h2 id="文件系统的格式"><a href="#文件系统的格式" class="headerlink" title="文件系统的格式"></a>文件系统的格式</h2><p><img src="/images/202102/disk_fs.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<p>文件系统的结构大概就是这样子， 我们可以看到，分级的概念在linux整体的架构中随处可见， 果然是万金油。实际上，在大多数的项目开发中，这种分级思想也是应用很广泛。</p>
+<h2 id="目录的存储格式"><a href="#目录的存储格式" class="headerlink" title="目录的存储格式"></a>目录的存储格式</h2><p>普通文件的块里面保存的是文件数据，而目录文件的块里面保存的是目录里面一项一项的文件信息。这些信息我们称为 ext4_dir_entry。从代码来看，有两个版本，在成员来讲几乎没有差别，只不过第二个版本 ext4_dir_entry_2 是将一个 16 位的 name_len，变成了一个 8 位的 name_len 和 8 位的 file_type。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ext4_dir_entry</span> &#123;</span></span><br><span class="line">  __le32  inode;      <span class="comment">/* Inode number */</span></span><br><span class="line">  __le16  rec_len;    <span class="comment">/* Directory entry length */</span></span><br><span class="line">  __le16  name_len;    <span class="comment">/* Name length */</span></span><br><span class="line">  <span class="keyword">char</span>  name[EXT4_NAME_LEN];  <span class="comment">/* File name */</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ext4_dir_entry_2</span> &#123;</span></span><br><span class="line">  __le32  inode;      <span class="comment">/* Inode number */</span></span><br><span class="line">  __le16  rec_len;    <span class="comment">/* Directory entry length */</span></span><br><span class="line">  __u8  name_len;    <span class="comment">/* Name length */</span></span><br><span class="line">  __u8  file_type;</span><br><span class="line">  <span class="keyword">char</span>  name[EXT4_NAME_LEN];  <span class="comment">/* File name */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>每一项都会保存这个目录的下一级的文件的文件名和对应的 inode，通过这个 inode，就能找到真正的文件。第一项是“.”，表示当前目录，第二项是“…”，表示上一级目录，接下来就是一项一项的文件名和 inode。</p>
+<p>同样的，如果目录下文件太多， linxu又采用了索引的方式解决查找慢的问题。</p>
+<p>如果在 inode 中设置 EXT4_INDEX_FL 标志，则目录文件的块的组织形式将发生变化，变成了下面定义的这个样子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dx_root</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">fake_dirent</span> <span class="title">dot</span>;</span></span><br><span class="line">  <span class="keyword">char</span> dot_name[<span class="number">4</span>];</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">fake_dirent</span> <span class="title">dotdot</span>;</span></span><br><span class="line">  <span class="keyword">char</span> dotdot_name[<span class="number">4</span>];</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dx_root_info</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line">    __le32 reserved_zero;</span><br><span class="line">    u8 hash_version;</span><br><span class="line">    u8 info_length; <span class="comment">/* 8 */</span></span><br><span class="line">    u8 indirect_levels;</span><br><span class="line">    u8 unused_flags;</span><br><span class="line">  &#125;</span><br><span class="line">  info;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dx_entry</span>  <span class="title">entries</span>[0];</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>索引项 dx_entry。这个也很简单，其实就是文件名的哈希值和数据块的一个映射关系。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dx_entry</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  __le32 hash;</span><br><span class="line">  __le32 block;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>通过hash找到块， 然后打开这个块，如果里面不再是索引，而是索引树的叶子节点的话，那里面还是 ext4_dir_entry_2 的列表，我们只要一项一项找文件名就行。通过索引树，我们可以将一个目录下面的 N 多的文件分散到很多的块里面，可以很快地进行查找。这个就是利用了hash表的查找原理，比数组遍历高效多了。</p>
+<p><img src="/images/202102/inode_index.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<h2 id="软链接和硬链接的存储格式"><a href="#软链接和硬链接的存储格式" class="headerlink" title="软链接和硬链接的存储格式"></a>软链接和硬链接的存储格式</h2><p>所谓的链接（Link），我们可以认为是文件的别名，而链接又可分为两种，硬链接与软链接。通过下面的命令可以创建。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ln [参数][源文件或目录][目标文件或目录]</span><br></pre></td></tr></table></figure>
+<p>ln -s 创建的是软链接，不带 -s 创建的是硬链接。 // soft</p>
+<p>硬链接与原始文件共用一个 inode 的，但是 inode 是不跨文件系统的，每个文件系统都有自己的 inode 列表，因而硬链接是没有办法跨文件系统的。</p>
+<p>而软链接不同，软链接相当于重新创建了一个文件。这个文件也有独立的 inode，只不过打开这个文件看里面内容的时候，内容指向另外的一个文件。这就很灵活了。我们可以跨文件系统，甚至目标文件被删除了，链接文件还是在的，只不过指向的文件找不到了而已。</p>
+<p><img src="/images/202102/inode_link.jpeg" alt="图片替换文本" width="600" height="513" align="bottom"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">查看文件inode:stat filename</span><br><span class="line">查看目录inode:stat dirname</span><br><span class="line">查看磁盘inode:df -i</span><br></pre></td></tr></table></figure>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/04/linux22-fm/" rel="prev" title="《趣谈linux操作系统》小结(二十二) - 文件系统">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(二十二) - 文件系统
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#硬盘文件系统"><span class="nav-number">1.</span> <span class="nav-text">硬盘文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#inode-与块的存储"><span class="nav-number">1.1.</span> <span class="nav-text">inode 与块的存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inode-位图和块位图"><span class="nav-number">1.2.</span> <span class="nav-text">inode 位图和块位图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统的格式"><span class="nav-number">1.3.</span> <span class="nav-text">文件系统的格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录的存储格式"><span class="nav-number">1.4.</span> <span class="nav-text">目录的存储格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软链接和硬链接的存储格式"><span class="nav-number">1.5.</span> <span class="nav-text">软链接和硬链接的存储格式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明" src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
