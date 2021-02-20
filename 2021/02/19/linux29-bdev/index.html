@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://fishmwei.github.io/images/202102/dev_disk.png">
 <meta property="og:image" content="http://fishmwei.github.io/images/202102/disk_mount.png">
-<meta property="og:updated_time" content="2021-02-20T00:35:41.496Z">
+<meta property="og:updated_time" content="2021-02-20T00:38:42.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《趣谈linux操作系统》小结(二十九) - 块设备">
 <meta name="twitter:description" content="块设备输入输出系统的设备包括字符设备和块设备。块设备也和字符设备类似，需要注册、打开、读写操作。">
@@ -249,12 +249,12 @@
       
         <h1 id="块设备"><a href="#块设备" class="headerlink" title="块设备"></a>块设备</h1><p>输入输出系统的设备包括字符设备和块设备。块设备也和字符设备类似，需要注册、打开、读写操作。</p>
 <a id="more"></a>
-<p>硬盘是最常见的块设备。块设备一般需要被格式化为文件系统，然后通过文件系统接口调用操作。块设备的操作涉及三个文件系统。 </p>
+<p>硬盘是最常见的块设备。块设备一般需要被格式化为文件系统，然后通过文件系统接口调用操作。 </p>
 <p>块设备也需要mknod到/dev/xxx下面，/dev 路径下面是 devtmpfs 文件系统。和字符设备一样，需要为/dev/xxx分配一个inode，inode 里面的 i_rdev 被设置成了块设备的设备号 dev_t。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init_special_inode</span><span class="params">(struct inode *inode, <span class="keyword">umode_t</span> mode, <span class="keyword">dev_t</span> rdev)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  inode-&gt;i_mode = mode;</span><br><span class="line">  <span class="keyword">if</span> (S_ISCHR(mode)) &#123;</span><br><span class="line">    inode-&gt;i_fop = &amp;def_chr_fops;</span><br><span class="line">    inode-&gt;i_rdev = rdev;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (S_ISBLK(mode)) &#123;</span><br><span class="line">    inode-&gt;i_fop = &amp;def_blk_fops;</span><br><span class="line">    inode-&gt;i_rdev = rdev;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (S_ISFIFO(mode))</span><br><span class="line">    inode-&gt;i_fop = &amp;pipefifo_fops;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (S_ISSOCK(mode))</span><br><span class="line">    ;  <span class="comment">/* leave it no_open_fops */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这个inode是不能操作文件系统的， 我们需要把他mount到一个文件夹下面。如果这个块设备原来被格式化为一种文件系统的格式，例如 ext4，那我们调用的就是 ext4 相应的 mount 操作。ext4文件系统就是调用的ext4_mount函数，然后调用mount_bdev。mount_bdev主要就是做了2个工作：</p>
 <ul>
-<li>调用blkdev_get_by_path 根据 /dev/xxx 这个名字，找到相应的设备并打开它；块设备是在这里打开的，不是调用的file_ops.</li>
+<li>调用blkdev_get_by_path 根据 /dev/xxx 这个名字，找到相应的设备并打开它；块设备是在这里打开的，不是调用的file_ops的函数.</li>
 <li>sget 根据打开的设备文件，填充 ext4 文件系统的 super_block</li>
 </ul>
 <p>如果块设备分区了，分别格式化成不同的文件系统， 就有下面这张复杂的关系图了。</p>
