@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 3.8.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
-  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/bloggit/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/bloggit/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/bloggit/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/bloggit/assets/img/headerIcon.jpg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/bloggit/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/bloggit/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"fishmwei.gitee.io","root":"/bloggit/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sed命令使用">
-<meta property="og:url" content="http://fishmwei.github.io/2020/09/24/sed/index.html">
+<meta property="og:url" content="https://fishmwei.gitee.io/2020/09/24/sed/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 <meta property="og:locale" content="zh-CN">
@@ -32,7 +32,7 @@
 <meta name="twitter:title" content="sed命令使用">
 <meta name="twitter:description" content="sedstream editor 顾名思义为流编辑工具。通过正则表达式匹配到行，并进行相应处理，输出新行。用于自动编辑文件。 概要1sed 【OPTION】 ... &amp;#123;script-only-if-no-other-script&amp;#125; &amp;#123;input-file&amp;#125; ...">
 
-<link rel="canonical" href="http://fishmwei.github.io/2020/09/24/sed/">
+<link rel="canonical" href="https://fishmwei.gitee.io/2020/09/24/sed/">
 
 
 <script id="page-configurations">
@@ -94,7 +94,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/bloggit/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">IT攻城狮小明</h1>
       <span class="logo-line-after"><i></i></span>
@@ -115,17 +115,17 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+    <a href="/bloggit/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+    <a href="/bloggit/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+    <a href="/bloggit/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -184,10 +184,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fishmwei.github.io/2020/09/24/sed/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2020/09/24/sed/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="image" content="/bloggit/assets/img/headerIcon.jpg">
       <meta itemprop="name" content="IT攻城狮小明">
       <meta itemprop="description" content="技术博客">
     </span>
@@ -215,7 +215,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                  <a href="/bloggit/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
                 </span>
             </span>
 
@@ -228,8 +228,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/09/24/sed/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/24/sed/" itemprop="commentCount"></span>
+    <a title="valine" href="/bloggit/2020/09/24/sed/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/bloggit/2020/09/24/sed/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -317,11 +317,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/09/19/grep/" rel="prev" title="grep命令使用">
+    <a href="/bloggit/2020/09/19/grep/" rel="prev" title="grep命令使用">
       <i class="fa fa-chevron-left"></i> grep命令使用
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/09/30/awk/" rel="next" title="awk命令使用">
+    <a href="/bloggit/2020/09/30/awk/" rel="next" title="awk命令使用">
       awk命令使用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -389,14 +389,14 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明" src="/assets/img/headerIcon.jpg">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明" src="/bloggit/assets/img/headerIcon.jpg">
   <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
   <div class="site-description" itemprop="description">技术博客</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/bloggit/archives/">
         
           <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
@@ -457,12 +457,12 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
-<script src="/js/schemes/pisces.js"></script>
-<script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+  <script src="/bloggit/lib/anime.min.js"></script>
+  <script src="/bloggit/lib/velocity/velocity.min.js"></script>
+  <script src="/bloggit/lib/velocity/velocity.ui.min.js"></script>
+<script src="/bloggit/js/utils.js"></script><script src="/bloggit/js/motion.js"></script>
+<script src="/bloggit/js/schemes/pisces.js"></script>
+<script src="/bloggit/js/next-boot.js"></script><script src="/bloggit/js/bookmark.js"></script>
 
 
 
@@ -471,7 +471,7 @@
 
 
 
-  <script src="/js/local-search.js"></script>
+  <script src="/bloggit/js/local-search.js"></script>
 
 
 
