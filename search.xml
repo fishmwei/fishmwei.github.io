@@ -202,6 +202,30 @@
       </tags>
   </entry>
   <entry>
+    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
+    <url>/blog/2019/08/18/OCCopy-iOS/</url>
+    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
+<a id="more"></a>
+<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
+<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
+<p>你可以这样实现方法：</p>
+<ol>
+<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
+<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
+<li>如果类是不可变的， 直接返回自身也可以。</li>
+</ol>
+<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
+<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
+<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>YTKKeyValueStore开源库使用</title>
     <url>/blog/2019/08/30/kvStore-iOS/</url>
     <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
@@ -251,30 +275,6 @@
       <tags>
         <tag>iOS</tag>
         <tag>开源代码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
-    <url>/blog/2019/08/18/OCCopy-iOS/</url>
-    <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy/mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying/NSMutableCopying协议来实现对应的功能。</p>
-<a id="more"></a>
-<h2 id="NSCopying"><a href="#NSCopying" class="headerlink" title="NSCopying"></a>NSCopying</h2><p>用于对象实现自身复制的协议。复制得到一个独立的对象，所有的属性值与该对象一样。</p>
-<p>NSCopying协议声明了一个方法 copyWithZone:。 但是所有继承NSObject的类都通过调用copy方法，间接调用copyWithZone: 实现复制。</p>
-<p>你可以这样实现方法：</p>
-<ol>
-<li>方法中通过alloc和init返回一个新的对象， 不继承copyWithZone:</li>
-<li>通过调用父类的copyWithZone:， 然后再设置额外的属性</li>
-<li>如果类是不可变的， 直接返回自身也可以。</li>
-</ol>
-<p>如果子类也实现了NSCopying协议， 父类也有实现NSCopying， 那么子类必须重新copyWithZone：方法，调用父类的copyWithZone后，再处理自身的属性赋值。</p>
-<h2 id="NSMutableCopying"><a href="#NSMutableCopying" class="headerlink" title="NSMutableCopying"></a>NSMutableCopying</h2><p>NSMutableCopying协议提供一个可变副本的拷贝。只有当类存在可变与不可变区别的时候才需要实现NSMutableCopying协议，否则，只需要实现NSCopying协议就可以了。 通过mutableCopy方法创建的对象，属性是可变的。</p>
-<p>其实，具体实现还是有开发者决定。 看你在copyWithZone:/mutableCopyWithZone:中返回的是什么对象。 当然，最好还是按照苹果的规则来实现。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface CopyObjectBaseManager : NSObject &lt;NSCopying&gt;</span><br><span class="line">&#123;</span><br><span class="line">@protected</span><br><span class="line">    </span><br><span class="line">    BOOL _finishParse;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSMutableDictionary&lt;NSString *, __kindof BaseCopyObject *&gt; *allConfig;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation CopyObjectBaseManager</span><br><span class="line"></span><br><span class="line">- (id)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableDictionary *)allConfig &#123;</span><br><span class="line">    if (!_allConfig) &#123;</span><br><span class="line">        _allConfig = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return _allConfig;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;</span><br><span class="line">    CopyObjectBaseManager *manager = [[self class] allocWithZone:zone];</span><br><span class="line">    manager-&gt;_finishParse = _finishParse;</span><br><span class="line">    manager.allConfig = [self.allConfig mutableCopy]; // allConfig 是可变的</span><br><span class="line">    </span><br><span class="line">    return manager;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList" target="_blank" rel="noopener">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
       </tags>
   </entry>
   <entry>
@@ -428,26 +428,6 @@
       </tags>
   </entry>
   <entry>
-    <title>2020书单</title>
-    <url>/blog/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
-<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
-  </entry>
-  <entry>
     <title>CoreDump的使用</title>
     <url>/blog/2019/12/24/CoreDump-JOB/</url>
     <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
@@ -508,6 +488,26 @@
       <tags>
         <tag>开发经验</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>2020书单</title>
+    <url>/blog/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间/知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 《数学之美》 实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li style="list-style: none"><input type="checkbox" checked> 《程序员的自我修养》 实体书 2020.06 </li>
+<li style="list-style: none"><input type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li style="list-style: none"><input type="checkbox" checked> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li style="list-style: none"><input type="checkbox"> 巨人三传 // 贝多芬传、米开朗基罗传、托尔斯泰传 </li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
   </entry>
   <entry>
     <title>todo</title>
@@ -635,21 +635,6 @@
       </categories>
   </entry>
   <entry>
-    <title>关于</title>
-    <url>/blog/2020/06/20/about/</url>
-    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
-<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
-<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
-<p>欢迎交流！</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>关于</category>
-      </categories>
-  </entry>
-  <entry>
     <title>结构体偏移</title>
     <url>/blog/2020/06/17/memberoffsetof/</url>
     <content><![CDATA[<h1 id="结构体偏移"><a href="#结构体偏移" class="headerlink" title="结构体偏移"></a>结构体偏移</h1><p>项目通过定义union联合体使用同一块内存， 在代码运行的不同阶段访问具体的成员。针对一些希望跨阶段存在的数据在不同的结构中保持了一份相同的成员，保证在不同的阶段都可以方便的访问到该内容。要实现这样的目的，必须使各个结构中的相同成员在整个联合体的偏移是一样的。</p>
@@ -669,6 +654,21 @@
       <categories>
         <category>技术</category>
         <category>C基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>关于</title>
+    <url>/blog/2020/06/20/about/</url>
+    <content><![CDATA[<p>欢迎访问博客，我是IT工程师小明，网名：fishmwei，是一个奋斗在一线的老程序员。</p>
+<p>工作涉及网络设备、iOS开发。 用过C/C++/JS/OC语言。</p>
+<p>我的个人博客，平常用来记录一些工作经验，对工作的灵感、思考以及学习的心得等文章。</p>
+<p>欢迎交流！</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>关于</category>
       </categories>
   </entry>
   <entry>
@@ -714,26 +714,6 @@
       <tags>
         <tag>读后感</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>代码洁癖</title>
-    <url>/blog/2020/07/08/codeclean/</url>
-    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
-<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
-<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
-<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
-<p>这就是代码洁癖吧，我觉得挺好。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>程序员自我修养读后感-2</title>
@@ -798,6 +778,26 @@
 ]]></content>
       <categories>
         <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>代码洁癖</title>
+    <url>/blog/2020/07/08/codeclean/</url>
+    <content><![CDATA[<p>最近修改了同事写的一块算法处理代码，有一个地方看得很不舒服，如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (likely(offset)) &#123;</span><br><span class="line">  offset = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>本意是想着如果offset不为0的话，则赋值为0。 代码逻辑没有问题， 但是这个判断实在是多此一举。 既然用了likely，那么代码就是表示大部分情况offset是非0的，让编译器在编译的时候，把赋值指令紧跟在判断语句之后， 条件不成立时才作跳转。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offset = 0;</span><br></pre></td></tr></table></figure>
+<p>既然大部分情况offset不为0， 那就是这个逻辑大部分情况要执行2条语句，干脆直接赋值算了，这样所有情况都执行一条语句。</p>
+<p>一条语句明显执行的更快。// 大概差1-2s的样子 500w次循环</p>
+<p>顺带把原先代码中的tab全部替换为空格， 代码进行对齐，顿时清爽了许多。</p>
+<p>这就是代码洁癖吧，我觉得挺好。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -938,35 +938,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感-8</title>
-    <url>/blog/2020/07/29/reflection4self-8/</url>
-    <content><![CDATA[<h1 id="运行库"><a href="#运行库" class="headerlink" title="运行库"></a>运行库</h1><p>每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。</p>
-<a id="more"></a>
-<p>运行库glibc的入库为_start， 由链接器设置。</p>
-<p>运行库功能包含</p>
-<ul>
-<li>程序的启动与退出</li>
-<li>标准函数库</li>
-<li>IO库封装</li>
-<li>堆的实现</li>
-<li>语言实现，语言功能</li>
-<li>调试</li>
-</ul>
-<h2 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h2><p>运行库提供IO文件的操作，存在fd、FILE指针、内核对象等概念。</p>
-<p> <img src="/images/202007/IOrelation.jpeg" width="400" height="300" alt="图片名称" align="center"></p>
-<p>运行库在调用用户代码之前， 会进行IO初始化，创建fd与FILE等的对应关系， 这样就可以在用户代码中调用printf, scanf等函数。</p>
-<h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
-<p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
-<p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感-7</title>
     <url>/blog/2020/07/27/reflection4self-7/</url>
     <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
@@ -1020,6 +991,35 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感-8</title>
+    <url>/blog/2020/07/29/reflection4self-8/</url>
+    <content><![CDATA[<h1 id="运行库"><a href="#运行库" class="headerlink" title="运行库"></a>运行库</h1><p>每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。</p>
+<a id="more"></a>
+<p>运行库glibc的入库为_start， 由链接器设置。</p>
+<p>运行库功能包含</p>
+<ul>
+<li>程序的启动与退出</li>
+<li>标准函数库</li>
+<li>IO库封装</li>
+<li>堆的实现</li>
+<li>语言实现，语言功能</li>
+<li>调试</li>
+</ul>
+<h2 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h2><p>运行库提供IO文件的操作，存在fd、FILE指针、内核对象等概念。</p>
+<p> <img src="/images/202007/IOrelation.jpeg" width="400" height="300" alt="图片名称" align="center"></p>
+<p>运行库在调用用户代码之前， 会进行IO初始化，创建fd与FILE等的对应关系， 这样就可以在用户代码中调用printf, scanf等函数。</p>
+<h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
+<p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
+<p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>学以致用</title>
     <url>/blog/2020/08/28/skills/</url>
     <content><![CDATA[<p>最近工作使用了几个小skill，优化了代码，还帮团队的小伙子搞定了插入排序的功能。现在有些年轻人技术有点不足啊， 一个二分查找插入搞了快一周还没完成， 汗！！！</p>
@@ -1031,28 +1031,6 @@
 <h2 id="穷举二维数组的排列组合"><a href="#穷举二维数组的排列组合" class="headerlink" title="穷举二维数组的排列组合"></a>穷举二维数组的排列组合</h2><p>有一个二维数组 a[n][m], 0 &lt; n, m &lt;= 8.每行的有效元素个数不固定，且单行内的元素不重复。 要求从每一行取一个有效数字，组成一个一维数组result[n]。 计算出所有可能的组合。</p>
 <p>算法： 使用递归， 依次选取第0，1, … n行的元素，直到第n+1行结束， 每行都有column[n]个选择方法。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> *a[<span class="number">8</span>], <span class="keyword">int</span> rowCount, <span class="keyword">int</span> *column, <span class="keyword">int</span> curRow, <span class="keyword">int</span> *output)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (curRow &gt; rowCount - <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">static</span> <span class="keyword">int</span> resultCount = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		resultCount++;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"r\r\nesult %d: "</span>, resultCount);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; rowCount; i++) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>, output[i]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; column[curRow]; i++) &#123;</span><br><span class="line">		output[curRow] = a[curRow][i];</span><br><span class="line">		select(a, rowCount, column, curRow+<span class="number">1</span>, output);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>位域左移溢出问题</title>
-    <url>/blog/2020/09/14/overflow/</url>
-    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
-<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序执行结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
-<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
-<p>通过代码汇编可以看出具体实现：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
-<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1084,6 +1062,28 @@
 <h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
 <h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code>The grep command first appeared in Version 6 AT&amp;T UNIX.
 </code></pre><blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>位域左移溢出问题</title>
+    <url>/blog/2020/09/14/overflow/</url>
+    <content><![CDATA[<p>上一周，我在调试项目性能指标时遇到了一个问题，支持的节点数在到达60718644时，程序就出错了。由于节点索引是一个27位的结构体位域，当值为60718644时，最高位为1，此时，代码中有一个转换函数，作了对位域的左移操作并赋给一个更大空间类型的变量，使得最后的结果不是预期的。show u code:</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">typedef union src_s &#123;</span><br><span class="line">    unsigned int rawdata;</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned int  type: 1,                    </span><br><span class="line">                    id: 4,</span><br><span class="line">                    index: 27;</span><br><span class="line">                    </span><br><span class="line">    &#125;;</span><br><span class="line">&#125; src_t;</span><br><span class="line"></span><br><span class="line">typedef union dst_s &#123;</span><br><span class="line">    unsigned int rawdata[2];</span><br><span class="line">    struct &#123;</span><br><span class="line">        unsigned : 28;</span><br><span class="line">        unsigned high: 4;</span><br><span class="line">        unsigned int data;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125; dst_t;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    src_t data;</span><br><span class="line">    data.type = 0;</span><br><span class="line">    data.id = 0;</span><br><span class="line">    data.index = 67108869; // 最高位当作符号位了?</span><br><span class="line"></span><br><span class="line">    printf(&quot;base rawdata 0x%x index %x\r\n&quot;, data.rawdata, data.index);</span><br><span class="line">    //unsigned long long result = ((unsigned long long)data.index &lt;&lt; 5) + 9;</span><br><span class="line">    unsigned long long result = (data.index &lt;&lt; 5) + 9;</span><br><span class="line">    printf(&quot;result  %llx %llu high32 %llx \r\n&quot;, result, result, result&gt;&gt;32);</span><br><span class="line"></span><br><span class="line">    dst_t dst;</span><br><span class="line">    dst.data = result;</span><br><span class="line">    dst.high = result&gt;&gt;32;</span><br><span class="line">    printf(&quot;result [0] 0x%x [1] 0x%x\r\n&quot;, dst.rawdata[0], dst.rawdata[1]);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序执行结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  ffffffff80000009 18446744071562067977 high32 ffffffff </span><br><span class="line">result [0] 0xf0000000 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p><code>(data.index &lt;&lt; 5) + 9;</code>运算的结果 并不是预期的 80000009，而是高位全为f的ffffffff80000009。 此时如果对data.index进行强转，再左移则结果正确.</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Keep:test keep$ ./a</span><br><span class="line">base rawdata 0x80000000 index 4000000</span><br><span class="line">result  80000009 2147483657 high32 0 </span><br><span class="line">result [0] 0x0 [1] 0x80000009</span><br></pre></td></tr></table></figure>
+<p>可见，编译器把位域的值强转为了一个有符号的数进行左移，然后赋值给一个更大地址空间的类型。</p>
+<p>通过代码汇编可以看出具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">unsigned long a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       48 63 c8        movslq  %eax, %rcx   // 高位符号扩展 赋值</span><br><span class="line">      3b:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ; unsigned  a = data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       c1 e0 05        shll    $5, %eax</span><br><span class="line">      38:       89 45 f4        movl    %eax, -12(%rbp) // 直接赋值</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">; unsigned long a = (unsigned long)data.index &lt;&lt; 5;</span><br><span class="line">      2f:       8b 45 f8        movl    -8(%rbp), %eax</span><br><span class="line">      32:       c1 e8 05        shrl    $5, %eax</span><br><span class="line">      35:       89 c0   movl    %eax, %eax</span><br><span class="line">      37:       89 c1   movl    %eax, %ecx</span><br><span class="line">      39:       48 c1 e1 05     shlq    $5, %rcx		// 逻辑左移</span><br><span class="line">      3d:       48 89 4d f0     movq    %rcx, -16(%rbp)</span><br></pre></td></tr></table></figure>
+<p>针对位域左移，赋值给更大地址空间的情况，最好进行类型强转一下再左移。</p>
+<blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
 ]]></content>
@@ -1483,6 +1483,25 @@
       </categories>
   </entry>
   <entry>
+    <title>关于工作经验</title>
+    <url>/blog/2020/12/22/experience/</url>
+    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
+<a id="more"></a>
+<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
+<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
+<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
+<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
+<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
+<p>哦了，不瞎唠叨了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十)</title>
     <url>/blog/2020/12/21/linux10/</url>
     <content><![CDATA[<h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread_info</span>    <span class="title">thread_info</span>;</span></span><br><span class="line"><span class="keyword">void</span>  *<span class="built_in">stack</span>;</span><br></pre></td></tr></table></figure>
@@ -1498,25 +1517,6 @@
 <p><img src="/images/202012/linux_stack2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
 <p>内核栈里面保存了当前寄存器的内容，调用返回后，再恢复寄存器的值。</p>
 <p>在内核态里的调用都有和用户态相似的过程。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>关于工作经验</title>
-    <url>/blog/2020/12/22/experience/</url>
-    <content><![CDATA[<p>自从工作以来，渐渐的已经有大概十个年头了。时间真的是很快。自身也在不经意间不断的成长。在程序员这个行当里，有一个广为流传的35岁危机。在我看来，实际只是那些没有成长的人才需要担心。一年的经验用十年和扎扎实实地积累十年工作经验完全是两回事。</p>
-<a id="more"></a>
-<p>注重自身成长的程序员，即使没有混上个管理者而转型，我觉得也不是什么事，干一行爱一行，喜好在一线编码，走技术路线也是不错的事。国外许多程序员都是过了半百的，依旧在一线挥洒着自己的才华，为改变世界而编码。 哈哈， 有一点儿夸大了。 只是有感而发罢了。</p>
-<p>最近现在的公司要切换版本管理工具了， 之前使用svn，后续要更换为git了。用惯svn的员工会觉得多此一举，有点儿抵触的情绪。 而我呢，工作了这么久， svn和git都用过了， 明显感觉git好用嘛。 虽然自己对git的掌握没有达到炉火纯青的地步， 但是应付日常工作还是绰绰有余的。git针对特性开发，多人协作的优势十分明显。 使用git于我而言，这也算是一种工作经验的积累。在他人为了解git的使用而忙碌时，瞬间感觉经验真是个好东西。就像骑单车、开汽车这种经验一样，平常看着没什么，大家想用的时候就去学嘛，挺简单的。但是，实际在需要的时候，是没有那么多的时间给你学习的，而是希望你立马上手。这就解释了，为什么企业希望招那种有工作经验的人，并且某些岗位经验越久越吃香。</p>
-<p>同样的，学历也是一种经验的体现。科班出生的，经过完整的系统的学科培养的，基础往往更加扎实。由于有系统的学习经验，尽管当时可能是为了应付考试而学习，终究对课程涉及的理论还是有一定的理解。至于学校的好坏，也很大程度上可以方便的为用人单位提供证明自己比大部分同龄人优秀或者是理解力更好。所以，大部分公司招聘岗位都会要求专业对口，211或者985大学毕业。</p>
-<p>另外，在经验的不断累积过程中，善于思考的人大概率会总结出自己的一套做事情的方法，许多未知的领域，只要按自己的方法，花时间认真学习一下，也是可以快速上手的。这就是为什么工作久的人，悟性比较高，容易适应新的工作岗位的原因。</p>
-<p>当然，我想说工作经验不仅仅是工作上累积的经验， 还包括自身业余时间学习获得的经验。通过学习，我们可以快速吸收前人的经验，避免走许多弯路。对自身职业生涯有了一定的规划之后， 就制定计划，按步骤步步为营的去实现。时间花在哪儿，你的成就就在哪儿，一万小时定律。如果知道自己的弱项，却不去加强，那么总有一天栽在这里，墨菲定律。正是因为如此，这两年我也不断的在捡起书本学习，扩展自身的知识面。同样一个知识点，懂得的人和不懂的人看事情的角度就是不一样。有经验的人，正是因为经验所以知道哪些坑可以避开，正是因为经验所以知道怎么做事情效果更好，遇到新事物的时候，有自己的一套做事方法，不至于抓瞎。</p>
-<p>哦了，不瞎唠叨了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1638,6 +1638,32 @@
       </categories>
   </entry>
   <entry>
+    <title>暂时解放了</title>
+    <url>/blog/2021/01/05/sjs/</url>
+    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
+<a id="more"></a>
+<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
+<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
+<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
+<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
+<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
+<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
+<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
+<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
+<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
+<p>注意身体，伙伴们。 （20201223写）</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
     <url>/blog/2020/12/28/linux14-thread/</url>
     <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
@@ -1661,32 +1687,6 @@
 <h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
 <p><img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom"></p>
 <p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>暂时解放了</title>
-    <url>/blog/2021/01/05/sjs/</url>
-    <content><![CDATA[<h1 id="暂时解放了"><a href="#暂时解放了" class="headerlink" title="暂时解放了"></a>暂时解放了</h1><p>O(∩_∩)O哈哈~，舒坦啊。折磨了我快一年多的肾结石终于出来了。</p>
-<a id="more"></a>
-<p>还记得去年的这个时候的一个周日，天气很冷，躺在被窝里，腰酸疼的不行，上卫生间的时候发现小bian还带血，以为出了什么大的事情了。后来想到不久前的体检，右边肾脏中下盏有一颗大小为0.72cmX0.57cm的结石，上知乎查了一下，知道这个是血尿了，估计和自己近期频繁跑步有关，结石进入了输尿管，划破流血了。</p>
-<p>然后大概今年三、四个月的时候，第一次发作时还在上班，右腰有点钻心的疼，汗液也止不住的流啊，扛不住的我第一次因病立马放弃工作，请假回家休息，在床上趴了一段时间才慢慢好转，那时候只有自己一个人在长沙，真是孤独凄惨~。就这样过去了。</p>
-<p>到五月份左右，腰部又开始疼痛的，感觉事态有点大了，预约了几天后去医院检查。到医院做了个B超，显示距离肾门69mm处有一个10X6mm的强光团，好家伙 长大了不少啊。医生建议做手术，我先谢绝了，回家想想。上知乎继续查，手术貌似挺可怕的，不打算做，继续忍忍吧。淘宝上开始买排石的茶喝了。</p>
-<p><img src="/images/202012/sjs0.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs1.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>期间买了跳绳开始跳，又过了一个月再去检查一下。这次B超竟然说没找到了，估计跑下去了一点。回家后，上京东买了一盒日本的优客龙吃，直到吃完，期间也有继续喝排石茶，一直没有排出来。哎！不过暂时也没有腰痛的情况了。</p>
-<p>直到这个月初，感觉堵在了下体。还隐约流了一点血，可能快出来了吧，这个时候尿频，下体还挺疼的。然后大量喝水，依旧没有出来，同时再在京东上买了一盒优客龙。周末回去福州参加了大学同学的婚礼，在福州家里面的时候，感觉快出来了，一天在卫生间蹲好几个小时，不过下体没有那么疼了，还以为是不是出来了。周日下午就坐动车来长沙上班，在卫生间又发现尿血了，赶紧喝水，继续等待它出来。然后就是今天了，早上刚睡醒，上卫生间，噗通一声，感觉有东西碰到马桶，还有一点舒坦的感觉。xxx略过。 看下这个折磨我一年多的家伙吧，少儿不宜，O(∩_∩)O哈哈~。</p>
-<p><img src="/images/202012/sjs2.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p><img src="/images/202012/sjs3.jpeg" alt="图片替换文本" width="600" height="313" align="bottom"></p>
-<p>好家伙，竟然有12X6mm这么大了。可怕可怕。这玩意也没有很硬，用纸包住，用力捏一下就碎掉了。看来喝茶吃药还是有效果的。</p>
-<p>终于解放了，至少短时间内腰应该不会疼了。 坚持+科学的锻炼喝水吃药，最终还是会迎来胜利的。以后还是需要多注意饮水，多运动。</p>
-<p>虽然艰难，但省了手术，省了遭罪。。。 </p>
-<p>注意身体，伙伴们。 （20201223写）</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -2119,7 +2119,7 @@
   <entry>
     <title>博客迁移</title>
     <url>/blog/2021/02/28/notice/</url>
-    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.github.io/" target="_blank" rel="noopener">码云</a>上去。</p>
+    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.gitee.io/blog">码云</a>上去。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
