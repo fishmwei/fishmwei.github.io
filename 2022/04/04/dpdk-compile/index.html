@@ -22,19 +22,17 @@
 
   <meta name="description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="周谈(12)-TCP知识小结(2)">
-<meta property="og:url" content="https://fishmwei.gitee.io/2022/03/03/weekly/index.html">
+<meta property="og:title" content="周谈(17) - DPDK编译运行">
+<meta property="og:url" content="https://fishmwei.gitee.io/2022/04/04/dpdk-compile/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fishmwei.gitee.io/images/202203/aiqiao.jpeg">
-<meta property="article:published_time" content="2022-03-03T03:16:25.000Z">
-<meta property="article:modified_time" content="2022-04-04T02:07:17.213Z">
+<meta property="article:published_time" content="2022-04-04T02:15:56.000Z">
+<meta property="article:modified_time" content="2022-04-04T02:58:09.904Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://fishmwei.gitee.io/images/202203/aiqiao.jpeg">
 
-<link rel="canonical" href="https://fishmwei.gitee.io/2022/03/03/weekly/">
+<link rel="canonical" href="https://fishmwei.gitee.io/2022/04/04/dpdk-compile/">
 
 
 <script id="page-configurations">
@@ -47,7 +45,7 @@
   };
 </script>
 
-  <title>周谈(12)-TCP知识小结(2) | IT攻城狮小明</title>
+  <title>周谈(17) - DPDK编译运行 | IT攻城狮小明</title>
   
 
 
@@ -193,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2022/03/03/weekly/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2022/04/04/dpdk-compile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -206,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          周谈(12)-TCP知识小结(2)
+          周谈(17) - DPDK编译运行
         </h1>
 
         <div class="post-meta">
@@ -216,7 +214,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-03-03 11:16:25" itemprop="dateCreated datePublished" datetime="2022-03-03T11:16:25+08:00">2022-03-03</time>
+              <time title="创建时间：2022-04-04 10:15:56" itemprop="dateCreated datePublished" datetime="2022-04-04T10:15:56+08:00">2022-04-04</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,7 +226,7 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8A%80%E6%9C%AF/tcp/" itemprop="url" rel="index"><span itemprop="name">TCP</span></a>
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/dpdk/" itemprop="url" rel="index"><span itemprop="name">DPDK</span></a>
                 </span>
             </span>
 
@@ -241,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2022/03/03/weekly/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/03/03/weekly/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/04/04/dpdk-compile/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/04/04/dpdk-compile/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -260,29 +258,40 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
 <span id="more"></span>
 
-<p>这是第十二篇。</p>
-<h1 id="TCP知识小结"><a href="#TCP知识小结" class="headerlink" title="TCP知识小结"></a>TCP知识小结</h1><p>拔掉网线后，TCP状态会发生什么改变？</p>
-<p>正常情况下，拔掉网线TCP状态并不会马上改变，状态的改变取决后TCP后续的动作。具体的：</p>
-<h2 id="继续发送数据"><a href="#继续发送数据" class="headerlink" title="继续发送数据"></a>继续发送数据</h2><p>如果TCP继续发送数据，而网线保持断开的状态，那么发送方发送的报文不会被接收方收到，发送方也就不会收到应答报文。发送方会启动重传机制，如果在重传了一定次数或者总时间超过了设定的值，那么发送方就会断开连接。之后再插回网线的话，另一方发送的数据被接收后，由于接收方已经断开连接，那么就会回一个RST报文，发送方也断开连接。</p>
-<h2 id="不再发送数据"><a href="#不再发送数据" class="headerlink" title="不再发送数据"></a>不再发送数据</h2><p>如果双方都没有开启保活机制，那么状态将一直保持不变。</p>
-<p>如果双方都开启了保活机制，那么在网线断开后，TCP的保活机制会开始探测，一直没有插回去的话就会探测到连接断开。在探测过程中，又插回去了，那么连接状态保持不变。</p>
-<p>保活机制在上一周的文章里面说过了，这里不继续深究。</p>
-<h2 id="杀死进程状态会怎么样"><a href="#杀死进程状态会怎么样" class="headerlink" title="杀死进程状态会怎么样"></a>杀死进程状态会怎么样</h2><p>如果一个进程被杀死了，那么内核会发送FIN报文，进行四次挥手，连接断开。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>没上班的时候，感觉每天过得有点儿没计划。睡觉睡到自然醒，然后临时想着要去哪里就去了。三餐和作息都有一点儿打乱了。这个不是一个健康的状态，大概还要过一周多才去入职，想着开始规划一下作息。不知道大家是怎么做的，我就是决定每天早睡早起， 大概就是22：00-07：00， 早晨起的早天气好的话就去跑个几公里步。然后再想一下今天要做什么，在文本里面用markdown格式记录一下今天的计划。然后就是去按部就班了，过个一段时间再回顾一下，知道自己最近干了啥。</p>
-<p>上面是每天的日志。再长一点的计划呢，就是以下几点：</p>
-<ul>
-<li>好好的把TCP&#x2F;IP的内容回看一下</li>
-<li>读完《加密与解密》这本书</li>
-<li>今年考个系统架构设计师，应该是下半年了</li>
-<li>读完那本吃了好久灰的《Nginx高性能Web服务器详解》了</li>
-</ul>
-<p>以上是愿景吧，随着工作的需要可能会把更多的精力放在工作相关的内容上面。</p>
-<p>最近又开始了跑步，今天在路上跑过了一个高架桥，桥底比较矮吧，悟出一个道理，在人生的道路上，会有许多的困难就像高架桥这样的，如果想要前进就需要低下头来，好好看路，注意脚下，对人生做一下阶段性的回顾总结与计划展望。</p>
-<p><img src="/images/202203/aiqiao.jpeg" alt="avatar"></p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
+<p>这是第十七篇。</p>
+<h1 id="DPDK编译"><a href="#DPDK编译" class="headerlink" title="DPDK编译"></a>DPDK编译</h1><p>上周在Ubuntu上面编译安装DPDK这个开源库，配置运行了一下简单的几个application。记录一下。</p>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wget http://fast.dpdk.org/rel/dpdk-21.11.tar.xz</span><br><span class="line">tar dpdk-21.11.tar.xz</span><br><span class="line">cd dpdk-21.11</span><br><span class="line">meson build </span><br><span class="line">cd build</span><br><span class="line">ninja</span><br><span class="line">ninja install</span><br><span class="line">ldconfig</span><br></pre></td></tr></table></figure>
 
+<p>编译的步骤比较简单，具体的DPDK最新的版本使用了meson+ninja的编译工具。需要安装meson, ninja。还对其他库有依赖，主要如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">项目	版本	安装命令</span><br><span class="line">GCC	9.2.1	</span><br><span class="line">pkg-config	&gt;0.27	apt install build-essential</span><br><span class="line">python	&gt;3.5	               apt install python3.6   </span><br><span class="line">meson 	&gt;0.49.2	pip3 install meson</span><br><span class="line">ninja	1.9.0	pip3 install  ninja</span><br><span class="line">pyelftools	&gt; 0.22	pip3 install pyelftools</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面这些是基础的依赖，对应到不同的component，还有其他的依赖，可以查看官方文档或者根据编译错误自行安装对应的包。</p>
+<p>编译安装完成之后，很多二进制执行文件都会被拷贝到bin目录，在终端下面直接敲dpdk然后tab键可以看到相关的命令。</p>
+<h2 id="大页配置"><a href="#大页配置" class="headerlink" title="大页配置"></a>大页配置</h2><p>运行之前必须做的一个是大页内存的配置。</p>
+<p>可以通过命令dpdk-hugepages.py -s查看配置的情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:~# dpdk-hugepages.py -s</span><br><span class="line">Node Pages Size Total</span><br><span class="line">0    4     2Mb    8Mb</span><br><span class="line"></span><br><span class="line">Hugepages mounted on /dev/hugepages</span><br><span class="line">root@keep-VirtualBox:~#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>有对应的Pages就是正常的， 上面这个说明系统已经配置了2MB大小的大页，最多支持4个页。否则需要先配置。</p>
+<p>可以通过往配置文件写入pages数目，或者使用dpdk-hugepages.py脚本配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo 4 &gt; /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages</span><br><span class="line"></span><br><span class="line">dpdk-hugepages.py --setup 8M</span><br></pre></td></tr></table></figure>
+<p>这种方式只在当次配置后生效，系统重启后就重置了。</p>
+<p>还可以通过内核启动参数配置，就是要写入grub，保证系统启动的时候就分配hugepage内存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/default/grub</span><br><span class="line"># 在GRUB_CMDLINE_LINUX后添加hugepage=4</span><br><span class="line">GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet splashi hugepages=4 iommu=pt intel_iommu=on&quot;</span><br><span class="line"></span><br><span class="line">update-grub</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+
+<p>系统并不是支持任意大小的pagesz,针对intel的cpu可以通过查看cpu flags来确定，如果有pse则表示支持2MB大小，有pdpe1gb 则支持1GB的大小。IBM power架构支持16MB和16GB。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:/# cat /proc/cpuinfo | grep flags</span><br><span class="line">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch vmmcall fsgsbase avx2 invpcid rdseed clflushopt arat nrip_save flushbyasid decodeassists</span><br><span class="line">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch vmmcall fsgsbase avx2 invpcid rdseed clflushopt arat nrip_save flushbyasid decodeassists</span><br><span class="line">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch vmmcall fsgsbase avx2 invpcid rdseed clflushopt arat nrip_save flushbyasid decodeassists</span><br><span class="line">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch vmmcall fsgsbase avx2 invpcid rdseed clflushopt arat nrip_save flushbyasid decodeassists</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看到我的虚拟机平台 cpu flags只有pse的。只支持2MB大小的pagesz。</p>
+<h2 id="helloworld运行"><a href="#helloworld运行" class="headerlink" title="helloworld运行"></a>helloworld运行</h2><p>直接进入example目录编译运行即可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:/# cd /root/dpdk/examples/helloworld/</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld# make</span><br><span class="line">ln -sf helloworld-shared build/helloworld</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld#</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld#</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld#</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld# ./build/helloworld</span><br><span class="line">EAL: Detected CPU lcores: 4</span><br><span class="line">EAL: Detected NUMA nodes: 1</span><br><span class="line">EAL: Detected shared linkage of DPDK</span><br><span class="line">EAL: Multi-process socket /var/run/dpdk/rte/mp_socket</span><br><span class="line">EAL: Selected IOVA mode &#x27;PA&#x27;</span><br><span class="line">EAL: VFIO support initialized</span><br><span class="line">TELEMETRY: No legacy callbacks, legacy socket not created</span><br><span class="line">hello from core 1</span><br><span class="line">hello from core 2</span><br><span class="line">hello from core 3</span><br><span class="line">hello from core 0</span><br><span class="line">root@keep-VirtualBox:~/dpdk/examples/helloworld#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>今天小结了一下DPDK的源码编译安装、大页配置及helloworld的运行。</p>
+<p>清明节放假，宅家里好好学习，天天向上！活到老，学到老了。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
 
     </div>
 
@@ -298,13 +307,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/02/27/weekly/" rel="prev" title="周谈(11)-TCP知识小结(1)">
-      <i class="fa fa-chevron-left"></i> 周谈(11)-TCP知识小结(1)
+    <a href="/2022/04/02/kernel/" rel="prev" title="周谈(16) - Linux 内核编译，终于实践了">
+      <i class="fa fa-chevron-left"></i> 周谈(16) - Linux 内核编译，终于实践了
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/03/03/wtcp/" rel="next" title="TCP知识小结(3)">
-      TCP知识小结(3) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -364,7 +370,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP%E7%9F%A5%E8%AF%86%E5%B0%8F%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">TCP知识小结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E7%BB%AD%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.</span> <span class="nav-text">继续发送数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%86%8D%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE"><span class="nav-number">2.2.</span> <span class="nav-text">不再发送数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%80%E6%AD%BB%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7"><span class="nav-number">2.3.</span> <span class="nav-text">杀死进程状态会怎么样</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DPDK%E7%BC%96%E8%AF%91"><span class="nav-number">2.</span> <span class="nav-text">DPDK编译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E9%A1%B5%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">大页配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#helloworld%E8%BF%90%E8%A1%8C"><span class="nav-number">2.3.</span> <span class="nav-text">helloworld运行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
