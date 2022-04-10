@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            性能优化-sysrepo笔记(6) |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">性能优化-sysrepo笔记(6)</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2021-10-15 07:52:47</span>
+        <span class="mobile">2021-10-15 07:52</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.2k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>4 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>几个月前了吧，团队有人测试了一下通过netconf给list类型的节点添加2w条表项，发现随着表项数目的增加，后面创建新表项的时间几乎呈一个线性的增长。到最后，每增加一个配置，大概就要耗时8s左右的时间，很显然，这是一个比较严重的性能问题。另外，即使你修改其他模块的配置，这个耗时也要6s左右的时间。就是如果一个模块的配置量很大，还会影响到其他模块的处理，这个就更严重了。</p>
+<span id="more"></span>
+
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>通过分析，耗时长的函数主要就是sr_modinfo_data_load、lyd_validate_modules、sr_modinfo_data_store。 其实很容易就可以看出来，在配置量巨大的情况下，保存的配置的数据量就更多，这样就导致加载&#x2F;校验&#x2F;保存的时间更长了。</p>
+<p>这样看来，sysrepo的框架已经决定了它不适合大量配置的情形，动不动就上千万的配置就更不可能了。通过后期对代码的深入，我总结了几点sysrepo性能问题的根因：</p>
+<ul>
+<li>内容是否更改是通过字符串比对来实现的(参考函数lyd_anydata_equal实现), 配置大的时候，生成的字符串很长，比对耗时</li>
+<li>顶级模块相同的不同模块配置保存在同一个文件(顶级模块的文件), 很多下级模块其实是对一个顶级模块的argument，这些下级模块的配置并没有拆分到独立的文件，某一个模块数据量很大的时候，加载配置文件就很慢，还会影响其他的模块</li>
+<li>每次修改保存都重新写入文件，我们知道IO是一个比较慢的操作，数据量越大那么时间就更长了</li>
+<li>共享内存文件锁，只要有一个进程在读取大数据配置，锁就会占用，其他进程就挂在那儿了</li>
+<li>yang数据是一棵树，每一级其实都是一个双向链表，我们知道双向链表的查找效率是O(n)，这个也导致在数据检索和修改的耗时长。</li>
+</ul>
+<p>总的来说，框架的总体设计已经决定了sysrepo的瓶颈。综合看上面几个原因，也就只能通过拆分各个模块的数据，优化模块间相互依赖的问题了。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>针对我们项目的配置都在一个顶级模块下面，那么我就从次级模块进行了拆分， 顶级模块文件只保留其自身模块的数据，而次级模块文件保留顶级模块的部分数据和自身模块的数据。这样，就是顶级模块会有多个备份，每个有数据的次级模块几乎都会存一份顶级模块的数据。只能这样了，通过空间换时间吧。 </p>
+<p>对配置的操作，需要根据请求的配置，加载对应模块及其依赖模块的数据(用于校验)，然后进行数据变更，相互依赖的配置还是会有影响的。</p>
+<p>另外在处理逻辑上，需要在删除&#x2F;替换顶级模块配置的时候，同时同步到所有次级模块，也就是需要加载其下的所有模块。为了正确性，这个是没有办法避免的。</p>
+<p>嗯， sysrepo还提供了缓存的功能，在缓存的处理上和拆分下级模块是一样的，不同的是，之前缓存的是running数据库的整个数据森林，只有一份。 但之前数据文件会有多份，因为有多个顶级模块。这个也没有多复杂，就是缓存按模块来分，除了项目的顶级模块只存自身数据外，其他顶级模及其下级模块不进行拆分，平常不需要用到。</p>
+<p>拆分的示意图，我简单手绘了一下：</p>
+<img src="/images/202110/sysrepo_split.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<h2 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h2><p>sysrepo的优化前后耗时快一个半月了，sysrepo库总体代码量大概3w行，前面三周几乎都是在熟悉代码，后面按思路进行编码拆分，中间遇到很多问题，前后得有30个上下吧。昨天才把基本的逻辑调试完，今天小结一下。 还得设计一下测试用例，后面两周按照用例过一下，然后再优化一下代码。后面估计还有许多坑，加油吧!</p>
+<p>这段时间，天天都很忙，在不停的调试问题，逢山开路，遇水搭桥。 国庆假期都贡献了2天免费加班了，精神高度集中，脑袋超负荷运转，真是有点儿疲惫不堪。终于快到尾声了，飒!!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/10/17/wrlock/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">读写锁的源码解读-sysrepo笔记(7)</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/10/05/filelock/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">文件锁-sysrepo笔记(5)</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AF%9D"><span class="nav-number">4.</span> <span class="nav-text">后话</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

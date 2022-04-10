@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            周谈(13) - 系统架构师教程读书笔记(1) |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">周谈(13) - 系统架构师教程读书笔记(1)</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-03-12 13:13:04</span>
+        <span class="mobile">2022-03-12 13:13</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.5k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>4 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十三篇。</p>
+<p>这一周主要就是看了系统架构师教程的前面四章，在专业知识层面上没有其他值得讲的。今天就当作是对本周看书的小结吧。</p>
+<h1 id="系统架构设计师教程"><a href="#系统架构设计师教程" class="headerlink" title="系统架构设计师教程"></a>系统架构设计师教程</h1><p><img src="/images/202203/systemdesign.jpeg" alt="avatar"></p>
+<p>下面分4个小结简单小结一下。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>系统架构的概念及发展历史。</p>
+<p>架构的三要素是构件、模式和规划。</p>
+<p>软件系统架构是关于软件系统的结构、行为和属性的高级抽象。描述阶段主要就是描述构成系统的抽象组件、各个构件的连接规则。实现阶段指定软件系统的组织结构和拓扑，显示系统需求和构成组件的对应关系，基本原理。文字看起来比较抽象。</p>
+<p>系统架构设计师的定义及职业素养。系统架构师主要着眼于实现和考虑系统的组织协调。要求有对应的技术素质和管理素质。主要配合项目管理师和系统分析师的工作。统筹技术实现及组织协调方面的工作吧。</p>
+<h2 id="计算机与网络基础知识"><a href="#计算机与网络基础知识" class="headerlink" title="计算机与网络基础知识"></a>计算机与网络基础知识</h2><p>操作系统的基础知识，操作系统的分类及主要功能。 主要功能：进程管理、文件管理、存储管理、设备管理和作业管理。</p>
+<p>数据库系统基础知识，数据库的分类：关系数据库系统、面向对象的数据库系统、对象关系数据库系统。平常用的基本是关系数据库系统多一些。E-R图， 数据库设计步骤等。(需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库应用程序设计)。</p>
+<p>计算机网络基础知识：OSI网络体系结构和TCP&#x2F;IP结构。</p>
+<p>多媒体技术及应用。</p>
+<p>系统性能： 性能指标、性能计算、性能设计、性能评估。不同的部件有不同的性能指标。性能计算的方法有定义法、公式法、程序检测法和仪器检测法。性能设计讲的就是如何进行性能调整，识别约束。阿姆达定律计算系统性能的改进。性能评估，按照一定的步骤，选用一定的度量项目，通过建模和实验，对系统的性能进行各项检测，形成一份结果文档，供性能优化参考。</p>
+<p>系统监视， 使用系统命令、查阅系统记录文件、集成命令和文件记录及可视化技术的应用程序。</p>
+<h2 id="信息系统基础知识"><a href="#信息系统基础知识" class="headerlink" title="信息系统基础知识"></a>信息系统基础知识</h2><p>信息的定义， 信息是对客观事物变化和特性的反映，是客观事物之间的相互作用和联系的表征，是客观事物经过感知或认识后的再现。看起来是很抽象的。</p>
+<p>讲了信息化的定义，内容及对其经济社会的意义。</p>
+<p>信息系统工程总体规划， 信息系统工程总体规划的软件架构组成：文件服务器架构、典型的客户&#x2F;服务器两层架构，客户&#x2F;服务器N层架构、基于web的架构。总体架构的实现过程：按规划报告购置和安装计算机系统、建立数据库系统、程序设计、系统转换、试运行。信息化的典型应用有政府信息化的电子政务、企业信息化的电子商务、企业门户等。</p>
+<h2 id="系统开发基础知识"><a href="#系统开发基础知识" class="headerlink" title="系统开发基础知识"></a>系统开发基础知识</h2><p>软件开发方法， 软件开发的生命周期：软件定义时期、软件开发时期、软件运行与维护。软件开发过程模型，从某个特定角度提出的软件过程的简单描述：瀑布模型、原型模型、螺旋模型、基于可重用构建的模型、基于面向对象的模型、基于四代技术的模型。敏捷方法，强调以人为本，面向人而非过程，具有适应性和预设性。迭代增量的开发过程。</p>
+<p>需求管理，建立软件需求基线，需求规格说明进行版本控制、需求变更控制、需求跟踪。</p>
+<p>开发管理，项目的范围、时间、成本控制。配置管理、文档管理、软件开发质量和风险。</p>
+<p>设计方法，结构化分析和设计、面向对象的分析设计。</p>
+<p>软件的重用。</p>
+<p>逆向工程与重构工程。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>以上是大概看的一些知识点。大部分是抽象了一点，需要在正常的工作工程中，相互联系消化。除了操作系统、数据库和计算机基础知识、网络这些知识外，感觉其他的都偏抽象了。考系统架构设计师是一个大工程，万里之行始于足下，一切才刚刚开始呢。。。加油!</p>
+<p>这周除了看书，就是到几个景点转了转，橘子洲、烈士公园、西湖。然后就是准备一下入职的材料，去体检，上班踩点。办理了宽带，还入手了一个联想小新Pro16。现在的笔记本都是使用的SSD硬盘，16G内存，使用起来的速度都还不错的，笔记本主要用于带到办公室编码吧，目前感觉那个微软的系统做的也越来越好了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2022/03/20/weekly-dpdk/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">周谈(14) - DPDK原理</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2022/03/03/wtcp/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">TCP知识小结(3)</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%B8%88%E6%95%99%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">系统架构设计师教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%AA%E8%AE%BA"><span class="nav-number">2.1.</span> <span class="nav-text">绪论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.2.</span> <span class="nav-text">计算机与网络基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.3.</span> <span class="nav-text">信息系统基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.4.</span> <span class="nav-text">系统开发基础知识</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

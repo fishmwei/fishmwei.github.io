@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            nginx交叉编译问题 |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">nginx交叉编译问题</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2021-07-24 08:01:45</span>
+        <span class="mobile">2021-07-24 08:01</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>526 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>2 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行<code>make nginx</code>。</p>
+<p>以下是前段时间编译nginx遇到的一些问题：</p>
+<span id="more"></span>
+
+<h2 id="1-checking-for-C-compiler-…-found-but-is-not-workong"><a href="#1-checking-for-C-compiler-…-found-but-is-not-workong" class="headerlink" title="1. checking for C compiler … found but is not workong"></a>1. checking for C compiler … found but is not workong</h2><p>这个主要是测试C编译器的， 在编译机器上肯定不能执行。 我们修改一下<code>auto/cc/name</code>下的配置，设置ngx_feature_run&#x3D;no。</p>
+<h2 id="2-can-not-detect-int-size"><a href="#2-can-not-detect-int-size" class="headerlink" title="2. can not detect int size"></a>2. can not detect int size</h2><p>原因跟1一样， 直接修改<code>auto/types/sizeof</code> 设置ngx_size&#x3D;4</p>
+<h2 id="3-checking-for-PCRE-library-…-not-found"><a href="#3-checking-for-PCRE-library-…-not-found" class="headerlink" title="3. checking for PCRE library … not found"></a>3. checking for PCRE library … not found</h2><p>依赖PCRE， 需要首先编译PCRE， 在make menuconfig 选择pcre。 如果没有，需要拷贝pcre相关的脚本 进行编译。</p>
+<h2 id="4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><a href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt" class="headerlink" title="4. the HTTP XSLT module requires the libxml2&#x2F;libxslt"></a>4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</h2><p>同理，需要编译libxslt</p>
+<h2 id="5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><a href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org" class="headerlink" title="5. Could not find libxml2 anywhere, check ftp://xmlsoft.org/"></a>5. Could not find libxml2 anywhere, check <a class="link"   href="ftp://xmlsoft.org/" >ftp://xmlsoft.org/<i class="fas fa-external-link-alt"></i></a></h2><p>这个是由于我执行了make clean, host下依赖包都卸载了， 需要重新编译libxml2</p>
+<h2 id="6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory"><a href="#6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory" class="headerlink" title="6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory"></a>6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</h2><p>需要编译gd</p>
+<h2 id="7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><a href="#7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory" class="headerlink" title="7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory"></a>7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</h2><p>需要编译geoip</p>
+<h2 id="8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’"><a href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’" class="headerlink" title="8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’"></a>8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</h2><p>在添加头文件的目录时， 在目录前面添加${STAGING_DIR}</p>
+<h2 id="9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><a href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined" class="headerlink" title="9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !"></a>9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</h2><p>需要编译libatomic_ops。  修改<code>auto/lib/conf</code>  run&#x3D;no</p>
+<h2 id="10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’"><a href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’" class="headerlink" title="10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?"></a>10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</h2><p>出错的原因仍然是因为交叉编译程序无法本地运行，手动在<code>auto/linux</code>下增加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if [$ngx_found = no]; then</span><br><span class="line">  cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H</span><br><span class="line">#ifndef $ngx_feature_name</span><br><span class="line">#define $ngx_feature_name 132</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">END</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>具体的值可以看一下errno.h的宏</p>
+<h2 id="11-undefined-reference-to-gdImageCreateFromJpegPtr"><a href="#11-undefined-reference-to-gdImageCreateFromJpegPtr" class="headerlink" title="11. undefined reference to gdImageCreateFromJpegPtr"></a>11. undefined reference to <code>gdImageCreateFromJpegPtr</code></h2><p>gd版本升级  2.2.5 –&gt; 2.3.0</p>
+<h2 id="12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><a href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory" class="headerlink" title="12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package/nginx/nginx.logrotate: No such file or directory"></a>12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat <code>package/nginx/nginx.logrotate</code>: No such file or directory</h2><p>这个是目录错误了， 修改ngxin.mk。 相关<code>package/xxx</code>修改为<code>$(BR2_EXTERNAL_PATH)/package/xxx</code></p>
+<p>OK, 差不多就是这些问题， 然后就编译出了nginx包了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/08/28/dbus/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">浅谈dbus</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/07/17/systemd/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">谈谈Linux的systemd服务管理</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-checking-for-C-compiler-%E2%80%A6-found-but-is-not-workong"><span class="nav-number">1.</span> <span class="nav-text">1. checking for C compiler … found but is not workong</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-can-not-detect-int-size"><span class="nav-number">2.</span> <span class="nav-text">2. can not detect int size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-checking-for-PCRE-library-%E2%80%A6-not-found"><span class="nav-number">3.</span> <span class="nav-text">3. checking for PCRE library … not found</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><span class="nav-number">4.</span> <span class="nav-text">4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><span class="nav-number">5.</span> <span class="nav-text">5. Could not find libxml2 anywhere, check ftp:&#x2F;&#x2F;xmlsoft.org&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-checking-for-GD-library-%E2%80%A6objs-x2F-autotest-c-4-10-fatal-error-gd-h%EF%BC%9A-No-such-file-or-directory"><span class="nav-number">6.</span> <span class="nav-text">6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-checking-for-GeoIP-library-%E2%80%A6objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><span class="nav-number">7.</span> <span class="nav-text">7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-%E2%80%98-I%E2%80%99-%E2%80%98-x2F-usr-x2F-include-x2F-libxml2%E2%80%99"><span class="nav-number">8.</span> <span class="nav-text">8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><span class="nav-number">9.</span> <span class="nav-text">9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-%E2%80%98NGX-SYS-NERR%E2%80%99-undeclared-first-use-in-this-function-did-you-mean-%E2%80%98NGX-LOG-ERR%E2%80%99"><span class="nav-number">10.</span> <span class="nav-text">10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-undefined-reference-to-gdImageCreateFromJpegPtr"><span class="nav-number">11.</span> <span class="nav-text">11. undefined reference to gdImageCreateFromJpegPtr</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><span class="nav-number">12.</span> <span class="nav-text">12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package&#x2F;nginx&#x2F;nginx.logrotate: No such file or directory</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

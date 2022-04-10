@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            buildroot的简单使用（二） |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">buildroot的简单使用（二）</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2021-06-27 17:17:16</span>
+        <span class="mobile">2021-06-27 17:17</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E6%8A%80%E6%9C%AF/buildroot/">buildroot</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>835 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>3 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>前面一文主要讲了<code>buildroot</code>的使用及一些结构。 这里讲一下如何使用<code>buildroot</code>来编译一个<code>package</code>。</p>
+<span id="more"></span>
+
+
+<h2 id="Config-in和-mk"><a href="#Config-in和-mk" class="headerlink" title="Config.in和.mk"></a>Config.in和<package>.mk</h2><p>首先，编译package需要使用到2个主要的文件， <code>Config.in</code>和<code>&lt;package&gt;.mk</code>。</p>
+<h3 id="Config-in文件"><a href="#Config-in文件" class="headerlink" title="Config.in文件"></a>Config.in文件</h3><p><code>Config.in</code>文件包含了<code>buildroot</code>里面可配置的所有项目。</p>
+<p>范例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">config BR2_PACKAGE_LIBFOO</span><br><span class="line">        bool &quot;libfoo&quot;</span><br><span class="line">        depends on BR2_PACKAGE_LIBBAZ</span><br><span class="line">        select BR2_PACKAGE_LIBBAR</span><br><span class="line">        help</span><br><span class="line">          This is a comment that explains what libfoo is. The help text</span><br><span class="line">          should be wrapped.</span><br><span class="line"></span><br><span class="line">          http://foosoftware.org/libfoo/</span><br></pre></td></tr></table></figure>
+
+<p><code>Config.in</code>文件是<code>buildroot</code>配置工具的输入，使用的是<code>Kconfig</code>格式。具体见·<code>http://kernel.org/doc/Documentation/kbuild/kconfig-language.txt.</code></p>
+<p>可以通过<code>make menuconfig</code>命令选择编译的包。</p>
+<h3 id="mk文件"><a href="#mk文件" class="headerlink" title=".mk文件"></a>.mk文件</h3><p>开始是一个文件头，包含模块名，一般都是小写的，前后被80个#包含。头部后面紧跟着空行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">################################################################################</span><br><span class="line">#</span><br><span class="line"># libfoo</span><br><span class="line">#</span><br><span class="line">################################################################################</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后是赋值语句，等号两边有空格</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIBFOO_VERSION = 1.0</span><br><span class="line">LIBFOO_CONF_OPTS += --without-python-support</span><br></pre></td></tr></table></figure>
+
+<p>缩进使用tab符号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">define LIBFOO_REMOVE_DOC</span><br><span class="line">        $(RM) -fr $(TARGET_DIR)/usr/share/libfoo/doc \</span><br><span class="line">                $(TARGET_DIR)/usr/share/man/man3/libfoo*</span><br><span class="line">endef</span><br></pre></td></tr></table></figure>
+<p>命令前面必须是<code>tab</code>，才会被识别为命令。</p>
+<p>紧跟着是依赖和配置选项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ifeq ($(BR2_PACKAGE_PYTHON),y)</span><br><span class="line">LIBFOO_CONF_OPTS += --with-python-support</span><br><span class="line">LIBFOO_DEPENDENCIES += python</span><br><span class="line">else</span><br><span class="line">LIBFOO_CONF_OPTS += --without-python-support</span><br><span class="line">endif</span><br></pre></td></tr></table></figure>
+
+<p>最后是 <code>eval 语句</code>， 表示包是使用何种编译系统。</p>
+<h2 id="如何新增一个package到buildroot"><a href="#如何新增一个package到buildroot" class="headerlink" title="如何新增一个package到buildroot"></a>如何新增一个<code>package</code>到<code>buildroot</code></h2><h3 id="新增package目录"><a href="#新增package目录" class="headerlink" title="新增package目录"></a>新增<code>package</code>目录</h3><p>首先在<code>package</code>目录下创建对应的目录， 比如：<code>package/nginx</code>.</p>
+<p>然后再在该目录创建<code>Config.in</code>文件或者<code>Config.in.host</code>文件。</p>
+<h4 id="Config-in文件-1"><a href="#Config-in文件-1" class="headerlink" title="Config.in文件"></a><code>Config.in</code>文件</h4><p>用于编译运行在目标平台的包使用的<code>Config.in</code>文件。这个文件包含一些<code>package</code>相关的选项，并用于在配置工具中显示。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">config BR2_PACKAGE_LIBFOO</span><br><span class="line">        bool &quot;libfoo&quot;</span><br><span class="line">        help</span><br><span class="line">          This is a comment that explains what libfoo is. The help text</span><br><span class="line">          should be wrapped.</span><br><span class="line"></span><br><span class="line">          http://foosoftware.org/libfoo/</span><br></pre></td></tr></table></figure>
+
+<p>这些属性有相对固定的顺序：</p>
+<ul>
+<li>bool、string属性</li>
+<li>default值</li>
+<li>target 依赖</li>
+<li>toolchain依赖</li>
+<li>packages依赖</li>
+<li>select依赖</li>
+<li>help text</li>
+</ul>
+<p>然后再在外层的Config.in中添加引用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source &quot;package/libfoo/Config.in&quot;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Config-in-host文件"><a href="#Config-in-host文件" class="headerlink" title="Config.in.host文件"></a>Config.in.host文件</h4><p>用于编译运行在host的package， 使用的Config.in.host。</p>
+<p>略过</p>
+<p><code>Config.in</code>文件需要保证依赖的包.</p>
+<p>主要有2种选项， <code>depends on</code>和<code>select</code>。 </p>
+<p>A depends on B  ，只有A被选择了之后，B才可见（B是否可见取决于A）<br>B    select   C ，B被选择了，就会自动选择C（C的可见性与B无关）</p>
+<h4 id="mk文件-1"><a href="#mk文件-1" class="headerlink" title=".mk文件"></a>.mk文件</h4><p>.mk文件用于描述<code>package</code>是怎么下载， 配置、编译和安装的。根据<code>package</code>的类型， .mk文件使用不同的格式编写。</p>
+<h4 id="hash文件"><a href="#hash文件" class="headerlink" title=".hash文件"></a>.hash文件</h4><p>包含下载文件的hash值， 用于校验下载包。</p>
+<p>格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># Hashes from: http://www.foosoftware.org/download/libfoo-1.2.3.tar.bz2.&#123;sha1,sha256&#125;:</span><br><span class="line">sha1  486fb55c3efa71148fe07895fd713ea3a5ae343a  libfoo-1.2.3.tar.bz2</span><br><span class="line">sha256  efc8103cc3bcb06bda6a781532d12701eb081ad83e8f90004b39ab81b65d4369  libfoo-1.2.3.tar.bz2</span><br><span class="line"></span><br><span class="line"># md5 from: http://www.foosoftware.org/download/libfoo-1.2.3.tar.bz2.md5, sha256 locally computed:</span><br><span class="line">md5  2d608f3c318c6b7557d551a5a09314f03452f1a1  libfoo-data.bin</span><br><span class="line">sha256  01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b  libfoo-data.bin</span><br><span class="line"></span><br><span class="line"># Locally computed:</span><br><span class="line">sha256  ff52101fb90bbfc3fe9475e425688c660f46216d7e751c4bbdb1dc85cdccacb9  libfoo-fix-blabla.patch</span><br><span class="line"></span><br><span class="line"># No hash for 1234:</span><br><span class="line">none  xxx  libfoo-1234.tar.gz</span><br><span class="line"></span><br><span class="line"># Hash for license files:</span><br><span class="line">sha256  a45a845012742796534f7e91fe623262ccfb99460a2bd04015bd28d66fba95b8  COPYING</span><br><span class="line">sha256  01b1f9f2c8ee648a7a596a1abe8aa4ed7899b1c9e5551bda06da6e422b04aa55  doc/COPYING.LGPL</span><br></pre></td></tr></table></figure>
+
+
+<p>如果下载后比较了不匹配，那么下载包将被删除，并且放弃编译。</p>
+<p><code>buildroot</code>官网提供了一个完整的压缩包，里面包含了很多需要交叉编译的常用的包。可以下载来了看一下别人是怎么写的，这里贴一个最新的链接。</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://buildroot.org/downloads/buildroot-2021.02.3.tar.gz" >https://buildroot.org/downloads/buildroot-2021.02.3.tar.gz<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/07/01/vm-disk/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">virtualbox 磁盘扩容</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/06/27/buildroot/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">buildroot的简单使用（一）</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Config-in%E5%92%8C-mk"><span class="nav-number">1.</span> <span class="nav-text">Config.in和.mk</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Config-in%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">Config.in文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mk%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">.mk文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%96%B0%E5%A2%9E%E4%B8%80%E4%B8%AApackage%E5%88%B0buildroot"><span class="nav-number">2.</span> <span class="nav-text">如何新增一个package到buildroot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9Epackage%E7%9B%AE%E5%BD%95"><span class="nav-number">2.1.</span> <span class="nav-text">新增package目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Config-in%E6%96%87%E4%BB%B6-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">Config.in文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Config-in-host%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.2.</span> <span class="nav-text">Config.in.host文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mk%E6%96%87%E4%BB%B6-1"><span class="nav-number">2.1.3.</span> <span class="nav-text">.mk文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hash%E6%96%87%E4%BB%B6"><span class="nav-number">2.1.4.</span> <span class="nav-text">.hash文件</span></a></li></ol></li></ol></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

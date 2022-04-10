@@ -1,543 +1,1210 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.1">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
-  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            归档: 2020/7 |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
 
-<link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
 
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"fishmwei.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
   </script>
-
-  <meta name="description" content="技术博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="IT攻城狮小明">
-<meta property="og:url" content="https://fishmwei.gitee.io/archives/2020/07/index.html">
-<meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="技术博客">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="IT攻城狮小明">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://fishmwei.gitee.io/archives/2020/07/">
+<meta name="generator" content="Hexo 5.4.1"></head>
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : false,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>归档 | IT攻城狮小明</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">IT攻城狮小明</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/2020/06/20/20200620-about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-gitbook">
-
-    <a href="/2021/05/15/gitbook-index" rel="section"><i class="fa fa-fw fa-home"></i>gitbook</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
-
-  </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-    </header>
+<body>
+<div class="progress-bar-container">
+    
 
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
-
-  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+</div>
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
+<main class="page-container">
 
-          <div class="content archive">
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
             
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
 
-  
-  
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">很好! 目前共计 126 篇日志。 继续努力。</span>
-      </div>
-
-      
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class="active"
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-29T08:52:38+08:00"
-              content="2020-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/29/20200729-reflection4self-8/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(8)-运行时库</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-27T19:30:36+08:00"
-              content="2020-07-27">
-          07-27
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/27/20200727-reflection4self-7/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(7)-程序的内存布局</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-24T20:48:11+08:00"
-              content="2020-07-24">
-          07-24
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/24/20200724-reflection4self-6/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(6)-共享库的组织</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-23T23:09:07+08:00"
-              content="2020-07-23">
-          07-23
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/23/20200718-reflection4self-5/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(5)-动态链接</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-17T19:38:07+08:00"
-              content="2020-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/17/20200717-reflection4self-4/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(4)-可执行文件加载</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-16T19:07:11+08:00"
-              content="2020-07-16">
-          07-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/16/20200716-gdbserver/" itemprop="url">
-            <span itemprop="name">gdbserver</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-14T12:14:01+08:00"
-              content="2020-07-14">
-          07-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/14/20200714-reflection4self-3-md/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(3)-静态链接</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-08T20:26:08+08:00"
-              content="2020-07-08">
-          07-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/08/20200708-codeclean/" itemprop="url">
-            <span itemprop="name">代码洁癖</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-04T20:18:24+08:00"
-              content="2020-07-04">
-          07-04
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/07/04/20200704-reflection4self-2/" itemprop="url">
-            <span itemprop="name">程序员自我修养读后感(2)-静态链接</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class="active"
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
     </div>
-  </div>
-  
-  
-  
 
-  
+    <div class="window-mask"></div>
 
+</header>
 
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
 
         </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+        <div class="page-main-content-middle">
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
+            <div class="main-content">
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
-      src="/assets/img/headerIcon.jpg">
-  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
-  <div class="site-description" itemprop="description">技术博客</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+                
+                    <div class="fade-in-down-animation">
+    <div class="archive-container ">
         
-          <span class="site-state-item-count">126</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">分类</span>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">14</span>
-        <span class="site-state-item-name">标签</span>
-      </div>
-  </nav>
+<div class="archive-list-container">
+    
+        <section class="archive-item">
+            <div class="archive-item-header">
+                <span class="archive-year">2022</span>
+                <span class="archive-year-post-count">[18]</span>
+            </div>
+            <ul class="article-list">
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/04/05/tailq/"
+                        >TailQ的使用及ssh配置等skills</a>
+                        <span class="article-date">04-05</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/04/04/dpdk-compile/"
+                        >周谈(17) - DPDK编译运行</a>
+                        <span class="article-date">04-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/04/02/kernel/"
+                        >周谈(16) - Linux 内核编译，终于实践了</a>
+                        <span class="article-date">04-02</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/03/26/weekly-io/"
+                        >周谈(15) - Linux IO</a>
+                        <span class="article-date">03-26</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/03/20/weekly-dpdk/"
+                        >周谈(14) - DPDK原理</a>
+                        <span class="article-date">03-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/03/12/weekly-SA/"
+                        >周谈(13) - 系统架构师教程读书笔记(1)</a>
+                        <span class="article-date">03-12</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/03/03/wtcp/"
+                        >TCP知识小结(3)</a>
+                        <span class="article-date">03-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/03/03/weekly/"
+                        >周谈(12)-TCP知识小结(2)</a>
+                        <span class="article-date">03-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/27/weekly/"
+                        >周谈(11)-TCP知识小结(1)</a>
+                        <span class="article-date">02-27</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/24/linux38/"
+                        >《趣谈linux操作系统》小结(三十八) - 容器</a>
+                        <span class="article-date">02-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/23/linux37/"
+                        >《趣谈linux操作系统》小结(三十七) - 虚拟化</a>
+                        <span class="article-date">02-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/21/linux36/"
+                        >《趣谈linux操作系统》小结(三十六) - 网络通信</a>
+                        <span class="article-date">02-21</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/20/weekly/"
+                        >周谈(10)-数学与算法</a>
+                        <span class="article-date">02-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/02/09/weekly/"
+                        >周谈(9)-一台机子的TCP连接上限是多少？</a>
+                        <span class="article-date">02-09</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/01/30/weekly/"
+                        >周谈(8)-项目启动优化</a>
+                        <span class="article-date">01-30</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/01/16/weekly/"
+                        >周谈(7)-文档那些儿事</a>
+                        <span class="article-date">01-16</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/01/09/2021/"
+                        >2021小结</a>
+                        <span class="article-date">01-09</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2022/01/07/weekly/"
+                        >周谈(6)- yang版本升级兼容</a>
+                        <span class="article-date">01-07</span>
+                    </li>
+                
+            </ul>
+        </section>
+    
+        <section class="archive-item">
+            <div class="archive-item-header">
+                <span class="archive-year">2021</span>
+                <span class="archive-year-post-count">[52]</span>
+            </div>
+            <ul class="article-list">
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/12/25/weekly/"
+                        >周谈(5)-配置过多，服务启动不了</a>
+                        <span class="article-date">12-25</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/12/17/weekly/"
+                        >周谈（4）- 系统时间更改导致的问题</a>
+                        <span class="article-date">12-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/12/11/weekly/"
+                        >周谈（3）- python调试</a>
+                        <span class="article-date">12-11</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/12/01/weekly/"
+                        >周谈（2）- 管道写满导致程序阻塞</a>
+                        <span class="article-date">12-01</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/11/24/weekly/"
+                        >周谈（1）-一个yang解析错误问题</a>
+                        <span class="article-date">11-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/11/08/linux35-socket/"
+                        >《趣谈linux操作系统》小结(三十五) - 网络通信</a>
+                        <span class="article-date">11-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/11/06/linux34-net/"
+                        >《趣谈linux操作系统》小结(三十四) - 网络通信</a>
+                        <span class="article-date">11-06</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/31/linux33-sem/"
+                        >《趣谈linux操作系统》小结(三十三) - 信号量</a>
+                        <span class="article-date">10-31</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/23/timeout/"
+                        >超时实现-sysrepo笔记(8)</a>
+                        <span class="article-date">10-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/17/wrlock/"
+                        >读写锁的源码解读-sysrepo笔记(7)</a>
+                        <span class="article-date">10-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/15/timing/"
+                        >性能优化-sysrepo笔记(6)</a>
+                        <span class="article-date">10-15</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/05/filelock/"
+                        >文件锁-sysrepo笔记(5)</a>
+                        <span class="article-date">10-05</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/10/03/truncret-md/"
+                        >返回值截断-不要忽略编译器的警告</a>
+                        <span class="article-date">10-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/09/23/skills/"
+                        >近期使用的skills</a>
+                        <span class="article-date">09-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/09/21/plugin/"
+                        >动态库实现插件-sysrepo笔记(4)</a>
+                        <span class="article-date">09-21</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/09/12/nodetree/"
+                        >数据结构-sysrepo笔记(3)</a>
+                        <span class="article-date">09-12</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/09/12/mmap/"
+                        >共享内存文件的应用-sysrepo笔记(2)</a>
+                        <span class="article-date">09-12</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/09/02/pipeipc/"
+                        >管道的神操作(事件通知)-sysrepo笔记(1)</a>
+                        <span class="article-date">09-02</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/08/28/dbus/"
+                        >浅谈dbus</a>
+                        <span class="article-date">08-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/07/24/nginx-compile/"
+                        >nginx交叉编译问题</a>
+                        <span class="article-date">07-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/07/17/systemd/"
+                        >谈谈Linux的systemd服务管理</a>
+                        <span class="article-date">07-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/07/01/vm-disk/"
+                        >virtualbox 磁盘扩容</a>
+                        <span class="article-date">07-01</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/06/27/buildroot2/"
+                        >buildroot的简单使用（二）</a>
+                        <span class="article-date">06-27</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/06/27/buildroot/"
+                        >buildroot的简单使用（一）</a>
+                        <span class="article-date">06-27</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/06/20/daemon/"
+                        >普通进程、守护进程和后台进程</a>
+                        <span class="article-date">06-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/05/15/gitbook-index/"
+                        >gitbook笔记</a>
+                        <span class="article-date">05-15</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/05/15/gitbook/"
+                        >gitbook使用</a>
+                        <span class="article-date">05-15</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/05/01/middleplatform/"
+                        >谈谈中台</a>
+                        <span class="article-date">05-01</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/04/28/canopen/"
+                        >浅谈CAN</a>
+                        <span class="article-date">04-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/04/11/modbus/"
+                        >浅谈MODBUS协议</a>
+                        <span class="article-date">04-11</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/03/28/linux32-pipe/"
+                        >《趣谈linux操作系统》小结(三十二) - 管道</a>
+                        <span class="article-date">03-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/03/21/linux31-signal/"
+                        >《趣谈linux操作系统》小结(三十一) - 信号</a>
+                        <span class="article-date">03-21</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/28/notice/"
+                        >博客迁移</a>
+                        <span class="article-date">02-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/20/linux30-process/"
+                        >《趣谈linux操作系统》小结(三十) - 进程间通信方式</a>
+                        <span class="article-date">02-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/19/linux29-bdev/"
+                        >《趣谈linux操作系统》小结(二十九) - 块设备</a>
+                        <span class="article-date">02-19</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/19/linux28-int/"
+                        >《趣谈linux操作系统》小结(二十八) - 字符设备中断</a>
+                        <span class="article-date">02-19</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/08/linux27-driver/"
+                        >《趣谈linux操作系统》小结(二十七) - 字符设备驱动</a>
+                        <span class="article-date">02-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/07/linux26-inout/"
+                        >《趣谈linux操作系统》小结(二十六) - 输入输出系统</a>
+                        <span class="article-date">02-07</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/06/linux25-fileoperation/"
+                        >《趣谈linux操作系统》小结(二十五) - 文件读写</a>
+                        <span class="article-date">02-06</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/05/linux24-vfs/"
+                        >《趣谈linux操作系统》小结(二十四) - 虚拟文件系统</a>
+                        <span class="article-date">02-05</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/04/linux23-diskf/"
+                        >《趣谈linux操作系统》小结(二十三) - 硬盘文件系统</a>
+                        <span class="article-date">02-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/04/linux22-fm/"
+                        >《趣谈linux操作系统》小结(二十二) - 文件系统</a>
+                        <span class="article-date">02-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/04/linux21-mmap/"
+                        >《趣谈linux操作系统》小结(二十一) -内存映射</a>
+                        <span class="article-date">02-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/03/linux20-mmap/"
+                        >《趣谈linux操作系统》小结(二十) -内存映射</a>
+                        <span class="article-date">02-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/03/linux19-pmm/"
+                        >《趣谈linux操作系统》小结(十九) -物理内存管理</a>
+                        <span class="article-date">02-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/02/01/design/"
+                        >2020年小结</a>
+                        <span class="article-date">02-01</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/25/mofei/"
+                        >墨菲定律的应验</a>
+                        <span class="article-date">01-25</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/20/linux18-pmm/"
+                        >《趣谈linux操作系统》小结(十八) -物理内存管理</a>
+                        <span class="article-date">01-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/16/linux17-mm/"
+                        >《趣谈linux操作系统》小结(十七) - 虚拟内存管理</a>
+                        <span class="article-date">01-16</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/12/linux16-mm/"
+                        >《趣谈linux操作系统》小结(十六) - 内存映射</a>
+                        <span class="article-date">01-12</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/06/linux15-mm/"
+                        >《趣谈linux操作系统》小结(十五) - 内存管理</a>
+                        <span class="article-date">01-06</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2021/01/05/sjs/"
+                        >暂时解放了</a>
+                        <span class="article-date">01-05</span>
+                    </li>
+                
+            </ul>
+        </section>
+    
+        <section class="archive-item">
+            <div class="archive-item-header">
+                <span class="archive-year">2020</span>
+                <span class="archive-year-post-count">[42]</span>
+            </div>
+            <ul class="article-list">
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/28/linux14-thread/"
+                        >《趣谈linux操作系统》小结(十四) - thread_create线程创建</a>
+                        <span class="article-date">12-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/28/linux13-processnew/"
+                        >《趣谈linux操作系统》小结(十三) - fork进程创建</a>
+                        <span class="article-date">12-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/23/linux-schedule-active/"
+                        >《趣谈linux操作系统》小结(十二) - 主动进程调度/抢占式调度</a>
+                        <span class="article-date">12-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/23/linux-schedule/"
+                        >《趣谈linux操作系统》小结(十一) - 进程调度</a>
+                        <span class="article-date">12-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/22/experience/"
+                        >关于工作经验</a>
+                        <span class="article-date">12-22</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/21/linux10/"
+                        >《趣谈linux操作系统》小结(十)-进程数据结构</a>
+                        <span class="article-date">12-21</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/16/linux9/"
+                        >《趣谈linux操作系统》小结(九)-进程数据结构</a>
+                        <span class="article-date">12-16</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/16/linux8/"
+                        >《趣谈linux操作系统》小结(八)-进程与线程</a>
+                        <span class="article-date">12-16</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/15/ps/"
+                        >ps命令使用小结</a>
+                        <span class="article-date">12-15</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/10/linux7/"
+                        >《趣谈linux操作系统》小结(七)-系统调用流程</a>
+                        <span class="article-date">12-10</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/09/linux6/"
+                        >《趣谈linux操作系统》小结(六)-内核启动</a>
+                        <span class="article-date">12-09</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/08/linux5/"
+                        >《趣谈linux操作系统》小结(五)-BIOS启动</a>
+                        <span class="article-date">12-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/12/08/linux4/"
+                        >《趣谈linux操作系统》小结(四)-工作模式</a>
+                        <span class="article-date">12-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/11/21/linux3/"
+                        >《趣谈linux操作系统》小结(三)-系统调用</a>
+                        <span class="article-date">11-21</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/11/18/linux2/"
+                        >《趣谈linux操作系统》小结(二)-系统内核体系结构</a>
+                        <span class="article-date">11-18</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/10/20/linux1/"
+                        >《趣谈linux操作系统》小结(一)-感悟及简介</a>
+                        <span class="article-date">10-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/09/30/awk/"
+                        >awk命令使用</a>
+                        <span class="article-date">09-30</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/09/24/sed/"
+                        >sed命令使用</a>
+                        <span class="article-date">09-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/09/19/grep/"
+                        >grep命令使用</a>
+                        <span class="article-date">09-19</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/09/14/overflow/"
+                        >位域左移溢出问题</a>
+                        <span class="article-date">09-14</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/08/28/skills/"
+                        >学以致用</a>
+                        <span class="article-date">08-28</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/08/17/layer/"
+                        >近期工作回顾</a>
+                        <span class="article-date">08-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/29/reflection4self-8/"
+                        >程序员自我修养读后感(8)-运行时库</a>
+                        <span class="article-date">07-29</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/27/reflection4self-7/"
+                        >程序员自我修养读后感(7)-程序的内存布局</a>
+                        <span class="article-date">07-27</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/24/reflection4self-6/"
+                        >程序员自我修养读后感(6)-共享库的组织</a>
+                        <span class="article-date">07-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/23/reflection4self-5/"
+                        >程序员自我修养读后感(5)-动态链接</a>
+                        <span class="article-date">07-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/17/reflection4self-4/"
+                        >程序员自我修养读后感(4)-可执行文件加载</a>
+                        <span class="article-date">07-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/16/gdbserver/"
+                        >gdbserver</a>
+                        <span class="article-date">07-16</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/14/reflection4self-3-md/"
+                        >程序员自我修养读后感(3)-静态链接</a>
+                        <span class="article-date">07-14</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/08/codeclean/"
+                        >代码洁癖</a>
+                        <span class="article-date">07-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/07/04/reflection4self-2/"
+                        >程序员自我修养读后感(2)-静态链接</a>
+                        <span class="article-date">07-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/24/reflection4self-1/"
+                        >程序员自我修养读后感(1)-计算机基础</a>
+                        <span class="article-date">06-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/22/reflection4c/"
+                        >《C程序设计语言》读后感</a>
+                        <span class="article-date">06-22</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/20/about/"
+                        >关于【置顶】</a>
+                        <span class="article-date">06-20</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/17/memberoffsetof/"
+                        >结构体偏移</a>
+                        <span class="article-date">06-17</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/13/c-command/"
+                        >C程序的命令行参数处理函数getopt</a>
+                        <span class="article-date">06-13</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/09/tiny-program/"
+                        >二进制包大小优化思路</a>
+                        <span class="article-date">06-09</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/03/optimize-JOB/"
+                        >项目性能优化</a>
+                        <span class="article-date">06-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/06/03/newjob-JOB/"
+                        >换城市工作切换的感受</a>
+                        <span class="article-date">06-03</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/02/13/todo/"
+                        >todo</a>
+                        <span class="article-date">02-13</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/01/19/problem/"
+                        >一次被坑的惨痛经历</a>
+                        <span class="article-date">01-19</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2020/01/01/2020books/"
+                        >2020书单</a>
+                        <span class="article-date">01-01</span>
+                    </li>
+                
+            </ul>
+        </section>
+    
+        <section class="archive-item">
+            <div class="archive-item-header">
+                <span class="archive-year">2019</span>
+                <span class="archive-year-post-count">[14]</span>
+            </div>
+            <ul class="article-list">
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/12/24/CoreDump-JOB/"
+                        >CoreDump的使用</a>
+                        <span class="article-date">12-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/10/23/iosunit-IOS/"
+                        >iOS接口的单元测试</a>
+                        <span class="article-date">10-23</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/09/30/sharedInstance-JOB/"
+                        >一次单例模式的代码重构</a>
+                        <span class="article-date">09-30</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/09/27/versionScheme-common/"
+                        >一种获取客户端程序的代码版本的方法</a>
+                        <span class="article-date">09-27</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/08/30/kvStore-iOS/"
+                        >YTKKeyValueStore开源库使用</a>
+                        <span class="article-date">08-30</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/08/18/OCCopy-iOS/"
+                        >iOS知识点(3) - NSCopying/NSMutableCopying</a>
+                        <span class="article-date">08-18</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/08/08/autorotateiOS/"
+                        >iOS知识点(2) - iOS横竖屏旋转</a>
+                        <span class="article-date">08-08</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/06/19/NSCache-iOS/"
+                        >iOS知识点(1) - NSCache</a>
+                        <span class="article-date">06-19</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/06/11/weak-attribute-C/"
+                        >Bugly RN调用栈 - C的弱符号</a>
+                        <span class="article-date">06-11</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/06/04/RNTester-RN/"
+                        >React-Native Sample代码运行</a>
+                        <span class="article-date">06-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/06/04/synGitRepo/"
+                        >fork库Git代码同步</a>
+                        <span class="article-date">06-04</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/05/29/lumberjack-iOS/"
+                        >CocoaLumberJack源码学习</a>
+                        <span class="article-date">05-29</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/05/24/Deprecated-Js/"
+                        >Deprecated js库</a>
+                        <span class="article-date">05-24</span>
+                    </li>
+                
+                    <li class="article-item">
+                        <a class="article-title"
+                           href="/2019/05/23/201805-helloWorld/"
+                        >开盘了</a>
+                        <span class="article-date">05-23</span>
+                    </li>
+                
+            </ul>
+        </section>
+    
 </div>
-
-
-
-      </div>
 
     </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-fishmwei"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
-  </div>
 
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
         
 
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
 
 
 
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
+<script src="/js/main.js"></script>
 
+<script src="/js/header-shrink.js"></script>
 
-<script src="/js/schemes/pisces.js"></script>
+<script src="/js/back2top.js"></script>
 
-
-<script src="/js/next-boot.js"></script>
-
-<script src="/js/bookmark.js"></script>
-
+<script src="/js/dark-light-toggle.js"></script>
 
 
 
-  
-
-
-
-
-  
+    
 <script src="/js/local-search.js"></script>
 
 
@@ -546,44 +1213,11 @@
 
 
 
+<div class="post-scripts">
+    
+</div>
 
 
-
-
-
-
-  
-
-  
-
-
-<script>
-NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
-  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-    var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item => {
-      return GUEST.includes(item);
-    });
-    new Valine({
-      el         : '#valine-comments',
-      verify     : false,
-      notify     : false,
-      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
-      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
-      placeholder: "😜尽情吐槽吧~",
-      avatar     : 'mm',
-      meta       : guest,
-      pageSize   : '10' || 10,
-      visitor    : false,
-      lang       : '' || 'zh-cn',
-      path       : location.pathname,
-      recordIP   : false,
-      serverURLs : ''
-    });
-  }, window.Valine);
-});
-</script>
 
 </body>
 </html>

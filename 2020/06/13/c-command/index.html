@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            C程序的命令行参数处理函数getopt |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">C程序的命令行参数处理函数getopt</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2020-06-13 20:47:07</span>
+        <span class="mobile">2020-06-13 20:47</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>2k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>9 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>工作中，存在着这么一个问题。开发提供给测试的二进制版本，都是记录在一个excel表中，保存着对应版本的提测日期和文件的Md5值、以及对应的svn标签信息。但是，文件这种东西，是需要靠人来填写的。许多临时的版本，就没有记录了。经常出现测试的文件找不到对应的记录，不知道是何时提供、解决了什么问题。 那么，就有这么个需求，把对应的信息保存到二进制文件，在编译的时候，获取编译的时间，svn版本号，编译机器的用户名(一般可以对应到开发人员)等信息，自动生成源代码文件，记入编译文件。然后，还需要提供一种方式读取这些信息，让二进制文件支持参数处理是一个不错的方式。</p>
+<span id="more"></span>
+
+<p>之前代码中有一些可变的配置也是可以通过运行时入参实现的，已经有对参数的处理代码了，不过是通过手动解析argv入参的，方式比较粗暴。远没有系统提供的getopt函数优雅，我们要做一个有追求的程序员，改!</p>
+<h1 id="自动获取编译信息"><a href="#自动获取编译信息" class="headerlink" title="自动获取编译信息"></a>自动获取编译信息</h1><p>首先在makefile中通过执行shell脚本把编译信息获取到生成信息文件。 这里自动生成了一个version.h文件。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">main: version.h main.c</span><br><span class="line">	gcc main.c -o main</span><br><span class="line"></span><br><span class="line"># 生成version.h文件</span><br><span class="line">version.h:</span><br><span class="line">	sh ./genversion.sh</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	@rm -fr main version.h</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/sh</span></span><br><span class="line"></span><br><span class="line">FILENAME=./version.h</span><br><span class="line"></span><br><span class="line">echo &#x27;#ifndef _VERSION_H_&#x27;&gt;$FILENAME</span><br><span class="line">echo &#x27;#define _VERSION_H_&#x27;&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">build_date=`date +&quot;%k:%M:%S %m-%d-%Y&quot;`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &quot;#define BUILD_DATE  \&quot;$&#123;build_date&#125;\&quot;&quot;&gt;&gt;$FILENAME</span><br><span class="line">echo &quot;#define BUILD_LINUX_USER \&quot;$&#123;USER&#125;\&quot;&quot;&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &#x27;#endif&#x27;&gt;&gt;$FILENAME</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="命令行参数处理"><a href="#命令行参数处理" class="headerlink" title="命令行参数处理"></a>命令行参数处理</h1><h2 id="头文件及内容说明"><a href="#头文件及内容说明" class="headerlink" title="头文件及内容说明"></a>头文件及内容说明</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;getopt.h&gt;</span>  </span></span><br><span class="line"><span class="comment">// linux 一般在系统的 /usr/include/getopt.h</span></span><br><span class="line"><span class="comment">// mac 在 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/getopt.h  </span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>contents:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _GETOPT_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _GETOPT_H_</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/cdefs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * GNU-like getopt_long()/getopt_long_only() with 4.4BSD optreset extension.</span></span><br><span class="line"><span class="comment"> * getopt() is declared here too for GNU programs.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> no_argument        0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> required_argument  1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> optional_argument  2</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">option</span> &#123;</span></span><br><span class="line">	<span class="comment">/* name of long option */</span></span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *name;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * one of no_argument, required_argument, and optional_argument:</span></span><br><span class="line"><span class="comment">	 * whether option takes an argument</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="type">int</span> has_arg;</span><br><span class="line">	<span class="comment">/* if not NULL, set *flag to val when option found */</span></span><br><span class="line">	<span class="type">int</span> *flag;</span><br><span class="line">	<span class="comment">/* if flag not NULL, value to set *flag to; else return value */</span></span><br><span class="line">	<span class="type">int</span> val;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">__BEGIN_DECLS</span><br><span class="line"><span class="type">int</span>	<span class="title function_">getopt_long</span><span class="params">(<span class="type">int</span>, <span class="type">char</span> * <span class="type">const</span> *, <span class="type">const</span> <span class="type">char</span> *,</span></span><br><span class="line"><span class="params">	<span class="type">const</span> <span class="keyword">struct</span> option *, <span class="type">int</span> *)</span>;  <span class="comment">// 只处理 --prefix 和短选项</span></span><br><span class="line"><span class="type">int</span>	<span class="title function_">getopt_long_only</span><span class="params">(<span class="type">int</span>, <span class="type">char</span> * <span class="type">const</span> *, <span class="type">const</span> <span class="type">char</span> *,</span></span><br><span class="line"><span class="params">	<span class="type">const</span> <span class="keyword">struct</span> option *, <span class="type">int</span> *)</span>;  <span class="comment">// 处理 --prefix , -prefix 和短选项</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _GETOPT</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span>	_GETOPT</span></span><br><span class="line"><span class="type">int</span>	 <span class="title function_">getopt</span><span class="params">(<span class="type">int</span>, <span class="type">char</span> * <span class="type">const</span> [], <span class="type">const</span> <span class="type">char</span> *)</span> __<span class="title function_">DARWIN_ALIAS</span><span class="params">(getopt)</span>; <span class="comment">// 只处理 -a 短选项</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">char</span> *optarg;			<span class="comment">/* getopt(3) external variables */</span> <span class="comment">// 指向当前选项的参数 如果没有则为NULL</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> optind, opterr, optopt; </span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">optind —— 再次调用 getopt() 时的下一个 argv指针的索引。</span></span><br><span class="line"><span class="comment">optopt —— 最后一个未知选项。</span></span><br><span class="line"><span class="comment">opterr ­—— 如果不希望getopt()打印出错信息，则只要将全域变量opterr设为0即可。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _OPTRESET</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span>	_OPTRESET</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> optreset;			<span class="comment">/* getopt(3) external variable */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">__END_DECLS</span><br><span class="line"> </span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">/* !_GETOPT_H_ */</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="option结构"><a href="#option结构" class="headerlink" title="option结构"></a>option结构</h2><p>用来配置长选项，可以设置对应的短选项，是否有参数。 短选项最好添加到optstring里</p>
+<h2 id="optstring"><a href="#optstring" class="headerlink" title="optstring"></a>optstring</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">char *optstring = “ab:c::”;</span><br><span class="line">单个字符a         表示选项a没有参数            格式：-a即可，不加参数</span><br><span class="line">单字符加冒号b:     表示选项b有且必须加参数      格式：-b 100或-b100,但-b=100错</span><br><span class="line">单字符加2冒号c::   表示选项c可以有，也可以无     格式：-c200 其它格式错误</span><br></pre></td></tr></table></figure>
+
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>如果所有命令行选项都解析完毕，返回 -1；<br>如果选项成功找到，返回选项字母(长选项返回对应短字母)；如果遇到选项字符不在 optstring 中，且在长选项也找不到，返回字符’?’; 如果遇到丢失参数，那么返回值依赖于 optstring 中第一个字符，如果第一个字符是 ‘:’ 则返回’:’，否则返回’?’并提示出错误信息。</p>
+<p>针对长选项，如果不存在对应的短字母，可以参考使用 option_index来解析。</p>
+<p>示例代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;getopt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NO_LETTER   (1)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INVALID_VALUE (0xFFFFFFFF)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">  reqargIndex = <span class="number">0</span>,</span><br><span class="line">  optargIndex,</span><br><span class="line">  noargIndex,</span><br><span class="line">  noletterIndex,</span><br><span class="line">  nullIndex</span><br><span class="line">&#125; <span class="type">option_index_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">long_options</span>[] =</span></span><br><span class="line">&#123;  </span><br><span class="line">    &#123;<span class="string">&quot;reqarg&quot;</span>, required_argument,<span class="literal">NULL</span>, <span class="string">&#x27;r&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;optarg&quot;</span>, optional_argument,<span class="literal">NULL</span>, <span class="string">&#x27;o&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;noarg&quot;</span>,  no_argument,         <span class="literal">NULL</span>,<span class="string">&#x27;n&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;noletter&quot;</span>, no_argument, <span class="literal">NULL</span>, NO_LETTER &#125;,</span><br><span class="line">    &#123;<span class="literal">NULL</span>,     <span class="number">0</span>,                      <span class="literal">NULL</span>, NO_LETTER&#125;,</span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> a_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> b_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> c_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> d_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> r_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> o_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> n_val = INVALID_VALUE;</span><br><span class="line"><span class="type">int</span> no_letter = INVALID_VALUE;</span><br><span class="line"></span><br><span class="line"><span class="comment">// return 1: break, 0:continue</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">setOption</span><span class="params">(<span class="type">int</span> opt, <span class="type">char</span> *optarg, <span class="type">char</span> *argv[], <span class="type">int</span> option_index)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span>(opt) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          a_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          a_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            b_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;c&#x27;</span>:</span><br><span class="line">        c_val = atoi(optarg);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;d&#x27;</span>:</span><br><span class="line">        d_val = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">&quot;warnning:option d no require argument. ignore value %s\n&quot;</span>, optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;r&#x27;</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            r_val = atoi(optarg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span>:</span><br><span class="line">        <span class="keyword">if</span> (optarg) &#123;</span><br><span class="line">          o_val = atoi(optarg);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          o_val = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;n‘:</span></span><br><span class="line"><span class="string">        n_val = 1;</span></span><br><span class="line"><span class="string">        if (optarg) &#123;</span></span><br><span class="line"><span class="string">          printf(&quot;warnning:option n no require argument. ignore value %s\n&quot;, optarg);</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        break;</span></span><br><span class="line"><span class="string">      case NO_LETTER:</span></span><br><span class="line"><span class="string">        &#123;</span></span><br><span class="line"><span class="string">            switch(option_index) &#123;</span></span><br><span class="line"><span class="string">            case  noletterIndex:</span></span><br><span class="line"><span class="string">              no_letter = 1;</span></span><br><span class="line"><span class="string">              break;</span></span><br><span class="line"><span class="string">            case  nullIndex:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            break;</span></span><br><span class="line"><span class="string">            default:</span></span><br><span class="line"><span class="string">            break;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        break;</span></span><br><span class="line"><span class="string">      default:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        return 1;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    return 0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">#define showV(x)  printf(#x&quot;=%d\n&quot;, x)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void showValues() &#123;</span></span><br><span class="line"><span class="string">  printf(&quot;=========\n&quot;);</span></span><br><span class="line"><span class="string">  showV(a_val);</span></span><br><span class="line"><span class="string">  showV(b_val);</span></span><br><span class="line"><span class="string">  showV(c_val);</span></span><br><span class="line"><span class="string">  showV(d_val);</span></span><br><span class="line"><span class="string">  showV(r_val);</span></span><br><span class="line"><span class="string">  showV(o_val);</span></span><br><span class="line"><span class="string">  showV(n_val);</span></span><br><span class="line"><span class="string">  showV(no_letter);</span></span><br><span class="line"><span class="string">  printf(&quot;=========\n&quot;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">int main(int argc, char *argv[])</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">    int opt;</span></span><br><span class="line"><span class="string">    int option_index = 0;</span></span><br><span class="line"><span class="string">    char *string = &quot;a::b:c:dr:o::n&quot;;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    //initValues();</span></span><br><span class="line"><span class="string">    while((opt =getopt_long_only(argc,argv,string,long_options,&amp;option_index))!= -1)</span></span><br><span class="line"><span class="string">    &#123;  </span></span><br><span class="line"><span class="string">        printf(&quot;opt = %c\t\t&quot;, opt);</span></span><br><span class="line"><span class="string">        printf(&quot;optarg = %s\t\t&quot;,optarg);</span></span><br><span class="line"><span class="string">        printf(&quot;optind = %d\t\t&quot;,optind);</span></span><br><span class="line"><span class="string">        printf(&quot;argv[optind] =%s\t\t&quot;, argv[optind]);</span></span><br><span class="line"><span class="string">        printf(&quot;option_index = %d\n&quot;,option_index);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        if (setOption(opt, optarg, argv, option_index)) &#123;</span></span><br><span class="line"><span class="string">            showValues();</span></span><br><span class="line"><span class="string">            return -1;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125; </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    showValues();</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    return 0; </span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Keep:syscall keep$ ./a -reqarg 3  # 匹配长选项 带参数 -</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg 3 # 匹配长选项 带参数 --</span><br><span class="line">opt = r         optarg = 3              optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --reqarg # 不匹配长选项 带参数 --</span><br><span class="line">a: option `--reqarg&#x27; requires an argument</span><br><span class="line">opt = ?         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a --optarg   # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg 9 # 不匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = (null)         optind = 2              argv[optind] =9         option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a --optarg=9 # 匹配长选项 可选参数 --</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -optarg=9  # 匹配长选项 可选参数 -</span><br><span class="line">opt = o         optarg = 9              optind = 2              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3   # 匹配长选项 无参数 -  跳过3</span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">Keep:syscall keep$ ./a -noarg 3 -optarg=9   </span><br><span class="line">opt = n         optarg = (null)         optind = 2              argv[optind] =3         option_index = 2</span><br><span class="line">opt = o         optarg = 9              optind = 4              argv[optind] =(null)            option_index = 1</span><br><span class="line">Keep:syscall keep$ ./a -a999    # 匹配短选项 可选参数 -</span><br><span class="line">opt = a         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999  # 匹配短选项 可选参数 错误 -</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b999  # 匹配短选项 带参数 -</span><br><span class="line">opt = b         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -b=999 # 匹配短选项 带参数 错误 -</span><br><span class="line">opt = b         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -a=999</span><br><span class="line">opt = a         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -b 999</span><br><span class="line">opt = b         optarg = 999            optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line">Keep:syscall keep$ ./a -o=999</span><br><span class="line">opt = o         optarg = =999           optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ ./a -o999 -n</span><br><span class="line">opt = o         optarg = 999            optind = 2              argv[optind] =-n                option_index = 0</span><br><span class="line">opt = n         optarg = (null)         optind = 3              argv[optind] =(null)            option_index = 0</span><br><span class="line">Keep:syscall keep$ </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>使用getopt_long_only时，会自动最长前缀匹配，存在唯一长选项时，即使没有敲全命令 也认为是匹配上了。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  会自动匹配到help选项</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>使用getopt_long时，会自动按字符依次匹配。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">./a  -hel  分配按序匹配 h , e, l 三个字符</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>代码参考： </p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/fishmwei/blog_code/tree/master/getopt" >https://github.com/fishmwei/blog_code/tree/master/getopt<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/06/17/memberoffsetof/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">结构体偏移</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/06/09/tiny-program/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">二进制包大小优化思路</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E8%8E%B7%E5%8F%96%E7%BC%96%E8%AF%91%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">自动获取编译信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">命令行参数处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B4%E6%96%87%E4%BB%B6%E5%8F%8A%E5%86%85%E5%AE%B9%E8%AF%B4%E6%98%8E"><span class="nav-number">3.1.</span> <span class="nav-text">头文件及内容说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#option%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">option结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optstring"><span class="nav-number">3.3.</span> <span class="nav-text">optstring</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">3.4.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">3.5.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

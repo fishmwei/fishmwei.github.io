@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            《趣谈linux操作系统》小结(二十八) - 字符设备中断 |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">《趣谈linux操作系统》小结(二十八) - 字符设备中断</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2021-02-19 08:55:27</span>
+        <span class="mobile">2021-02-19 08:55</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.4k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>5 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h1 id="字符设备中断"><a href="#字符设备中断" class="headerlink" title="字符设备中断"></a>字符设备中断</h1><p>前面在学习文件读写的时候，如果是读取设备上的内容， 那么在读取完毕的时候，设备会发送一个中断告知CPU内容读取完毕。同样的，字符设备也是有中断来通知CPU处理事件， 比如鼠标设备就是通过中断来告知系统自己的位置和按键信息，传递给驱动程序。</p>
+<span id="more"></span>
+
+<h2 id="注册中断处理函数"><a href="#注册中断处理函数" class="headerlink" title="注册中断处理函数"></a>注册中断处理函数</h2><p>处理中断，需要一个中断的处理函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">logibm_open</span><span class="params">(<span class="keyword">struct</span> input_dev *dev)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (request_irq(logibm_irq, logibm_interrupt, <span class="number">0</span>, <span class="string">&quot;logibm&quot;</span>, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">    printk(KERN_ERR <span class="string">&quot;logibm.c: Can&#x27;t allocate irq %d\n&quot;</span>, logibm_irq);</span><br><span class="line">    <span class="keyword">return</span> -EBUSY;</span><br><span class="line">  &#125;</span><br><span class="line">  outb(LOGIBM_ENABLE_IRQ, LOGIBM_CONTROL_PORT);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">irqreturn_t</span> <span class="title function_">logibm_interrupt</span><span class="params">(<span class="type">int</span> irq, <span class="type">void</span> *dev_id)</span>&#123;</span><br><span class="line"> ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>鼠标的中断处理函数就是<code>logibm_interrupt</code>。通过<code>request_irq</code>函数注册中断处理函数。</p>
+<p>中断处理函数的返回值表示中断处理的结果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">irqreturn_t</span> (*<span class="type">irq_handler_t</span>)(<span class="type">int</span> irq, <span class="type">void</span> * dev_id);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * enum irqreturn</span></span><br><span class="line"><span class="comment"> * @IRQ_NONE    interrupt was not from this device or was not handled</span></span><br><span class="line"><span class="comment"> * @IRQ_HANDLED    interrupt was handled by this device</span></span><br><span class="line"><span class="comment"> * @IRQ_WAKE_THREAD  handler requests to wake the handler thread</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">irqreturn</span> &#123;</span></span><br><span class="line">  IRQ_NONE    = (<span class="number">0</span> &lt;&lt; <span class="number">0</span>),</span><br><span class="line">  IRQ_HANDLED    = (<span class="number">1</span> &lt;&lt; <span class="number">0</span>),</span><br><span class="line">  IRQ_WAKE_THREAD    = (<span class="number">1</span> &lt;&lt; <span class="number">1</span>),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里使用void指针参数， 可以达到同一个函数处理不同设备的中断事件，根据中断号可以区分是什么设备，然后强转为特定设备的结构，这种实现是很普遍的用在通过流程的入口函数的。</p>
+<p>这里的返回值有三种：IRQ_NONE 表示不是我的中断，不归我管；IRQ_HANDLED 表示处理完了的中断；IRQ_WAKE_THREAD 表示有一个进程正在等待这个中断，中断处理完了，应该唤醒它。</p>
+<p>鼠标的中断处理相对比较简单，没有耗时长的操作，整体也不是很复杂。在中断处理的过程中，这个中断信号是被关闭的， 如果连续来几个相同的中断，后续的中断可能不被即时响应，显得系统很慢。对于其他复杂的中断，可能需要分成关键处理部分和延迟处理部分，在中断处理函数中，仅仅处理关键部分，完成了就将中断信号打开，使得新的中断可以进来，需要比较长时间处理的部分，也即延迟部分，往往通过工作队列等方式慢慢处理。</p>
+<p><code>request_irq</code>函数注册中断处理函数。对于每一个中断，都有一个对中断的描述结构 struct irq_desc。它有一个重要的成员变量是 struct irqaction，用于表示处理这个中断的动作。处理动作可以有多个，通过 irqaction的next串起来。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">irq_desc</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">action</span>;</span>  <span class="comment">/* IRQ action list */</span></span><br><span class="line">......</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">module</span>    *<span class="title">owner</span>;</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span>    *name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * struct irqaction - per interrupt action descriptor</span></span><br><span class="line"><span class="comment"> * @handler:  interrupt handler function</span></span><br><span class="line"><span class="comment"> * @name:  name of the device</span></span><br><span class="line"><span class="comment"> * @dev_id:  cookie to identify the device</span></span><br><span class="line"><span class="comment"> * @percpu_dev_id:  cookie to identify the device</span></span><br><span class="line"><span class="comment"> * @next:  pointer to the next irqaction for shared interrupts</span></span><br><span class="line"><span class="comment"> * @irq:  interrupt number</span></span><br><span class="line"><span class="comment"> * @flags:  flags (see IRQF_* above)</span></span><br><span class="line"><span class="comment"> * @thread_fn:  interrupt handler function for threaded interrupts</span></span><br><span class="line"><span class="comment"> * @thread:  thread pointer for threaded interrupts</span></span><br><span class="line"><span class="comment"> * @secondary:  pointer to secondary irqaction (force threading)</span></span><br><span class="line"><span class="comment"> * @thread_flags:  flags related to @thread</span></span><br><span class="line"><span class="comment"> * @thread_mask:  bitmask for keeping track of @thread activity</span></span><br><span class="line"><span class="comment"> * @dir:  pointer to the proc/irq/NN/name entry</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span> &#123;</span></span><br><span class="line">  <span class="type">irq_handler_t</span>    handler;</span><br><span class="line">  <span class="type">void</span>      *dev_id;</span><br><span class="line">  <span class="type">void</span> __percpu    *percpu_dev_id;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">next</span>;</span></span><br><span class="line">  <span class="type">irq_handler_t</span>    thread_fn;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span>  *<span class="title">thread</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">secondary</span>;</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>    irq;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>    flags;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span>    thread_flags;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span>    thread_mask;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span>    *name;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span>  *<span class="title">dir</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这个desc结构可以通过中断号调用irq_to_desc函数来查找。当然这里的中断号也只是一个内核逻辑的中断编号，不同的设备实际发出的中断号可能不一样，这个有一个中断控制器控制。</p>
+<p>request_threaded_irq 函数分配了一个 struct irqaction，并且初始化它，接着调用 __setup_irq。在这个函数里面，如果 struct irq_desc 里面已经有 struct irqaction 了，我们就将新的 struct irqaction 挂在链表的末端。如果设定了以单独的线程运行中断处理函数，setup_irq_thread 就会创建这个内核线程，wake_up_process 会唤醒它。</p>
+<p>注册处理函数其实也不复杂，只是查找一下中断描述符，然后建立action链表。</p>
+<h2 id="触发中断处理"><a href="#触发中断处理" class="headerlink" title="触发中断处理"></a>触发中断处理</h2><p>中断触发有几个阶段</p>
+<ul>
+<li>外部设备给中断控制器发送物理中断信号</li>
+<li>中断控制器将物理中断信号转换成为中断向量 interrupt vector，发给各个 CPU。</li>
+<li>每个 CPU 都会有一个中断向量表，根据 interrupt vector 调用一个 IRQ 处理函数。</li>
+<li>在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq，调用中断信号 irq 对应的中断描述结构里面的 irq_handler_t。</li>
+</ul>
+<p>CPU 能够处理的中断总共 256 个，用宏 NR_VECTOR 或者 FIRST_SYSTEM_VECTOR 表示。</p>
+<p>CPU 硬件要求每一个 CPU 都有一个中断向量表，通过 load_idt 加载，里面记录着每一个中断对应的处理方法，这个中断向量表定义在文件 arch&#x2F;x86&#x2F;kernel&#x2F;traps.c 中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gate_desc idt_table[NR_VECTORS] __page_aligned_bss;</span><br></pre></td></tr></table></figure>
+
+<p>0-31是系统异常的中断，在内核初始化的时候 trap_init函数设置了中断函数。在trap_init还设置了127系统调用的中断处理函数。同时给used_vectors全局变量对应的位置位。其他设备的中断初始化调用的是init_IRQ函数。</p>
+<p>任何硬件中断向量处理最终都会调用到do_IRQ函数。do_IRQ就通过每个CPU对应的中断向量表获取最终全局的中断desc，然后调用对应的处理函数进行处理。</p>
+<img src="/images/202102/dev_irq.png" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+
+
+
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/02/19/linux29-bdev/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">《趣谈linux操作系统》小结(二十九) - 块设备</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/02/08/linux27-driver/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">《趣谈linux操作系统》小结(二十七) - 字符设备驱动</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E4%B8%AD%E6%96%AD"><span class="nav-number">1.</span> <span class="nav-text">字符设备中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">注册中断处理函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">触发中断处理</span></a></li></ol></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

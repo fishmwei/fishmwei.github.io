@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            读写锁的源码解读-sysrepo笔记(7) |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">读写锁的源码解读-sysrepo笔记(7)</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2021-10-17 14:34:31</span>
+        <span class="mobile">2021-10-17 14:34</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.7k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>8 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>sysrepo对资源的保护自己实现了一个读写锁， 支持多个线程同时读，只有一个线程在写的保护。使用的是互斥量加条件量来实现的。读写互斥使用一个变量控制。结构如下(基于1.4.87版本，新版本变了，原理差不多)：</p>
+<span id="more"></span>
+
+<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Lock mode.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span> <span class="title">sr_lock_mode_e</span> &#123;</span></span><br><span class="line">    SR_LOCK_NONE = <span class="number">0</span>,           <span class="comment">/**&lt; Not locked. */</span></span><br><span class="line">    SR_LOCK_READ,               <span class="comment">/**&lt; Read lock. */</span></span><br><span class="line">    SR_LOCK_WRITE,              <span class="comment">/**&lt; Write lock. */</span></span><br><span class="line">&#125; <span class="type">sr_lock_mode_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Sysrepo read-write lock.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">sr_rwlock_s</span> &#123;</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> mutex;          <span class="comment">/**&lt; Lock mutex. */</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> cond;            <span class="comment">/**&lt; Lock condition variable. */</span></span><br><span class="line">    <span class="type">uint16_t</span> readers;               <span class="comment">/**&lt; Current read-locked users. */</span></span><br><span class="line">&#125; <span class="type">sr_rwlock_t</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>对这个锁的操作主要有如下接口：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Initialize a sysrepo RW lock.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param[in,out] rwlock RW lock to initialize.</span></span><br><span class="line"><span class="comment"> * @param[in] shared Whether the RW lock will be shared between processes or not.</span></span><br><span class="line"><span class="comment"> * @return err_info, NULL on success.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">sr_error_info_t</span> *<span class="title function_">sr_rwlock_init</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">int</span> shared)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Destroy a sysrepo RW lock.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param[in] rwlock RW lock to destroy.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">sr_rwlock_destroy</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Lock a sysrepo RW lock.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param[in] rwlock RW lock to lock.</span></span><br><span class="line"><span class="comment"> * @param[in] timeout_ms Timeout in ms for locking.</span></span><br><span class="line"><span class="comment"> * @param[in] mode Whether to write-lock or read-lock.</span></span><br><span class="line"><span class="comment"> * @param[in] func Name of the calling function for logging.</span></span><br><span class="line"><span class="comment"> * @return err_info, NULL on success.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">sr_error_info_t</span> *<span class="title function_">sr_rwlock</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">int</span> timeout_ms, <span class="type">sr_lock_mode_t</span> mode, <span class="type">const</span> <span class="type">char</span> *func)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Unlock a sysrepo RW lock.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param[in] rwlock RW lock to unlock.</span></span><br><span class="line"><span class="comment"> * @param[in] mode Whether to write-unlock or read-unlock.</span></span><br><span class="line"><span class="comment"> * @param[in] func Name of the calling function for logging.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">sr_rwunlock</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">sr_lock_mode_t</span> mode, <span class="type">const</span> <span class="type">char</span> *func)</span>;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>通过一个互斥量和一个条件量，还有锁结构的读者数目实现控制读写交互。</p>
+<h3 id="加锁"><a href="#加锁" class="headerlink" title="加锁"></a>加锁</h3><p>如果是写加锁，首先通过获取互斥量，然后等待读者数为0或者条件量(等待过程中，超时会释放掉互斥量)，写加锁成功。 此时互斥量被写者占用。<br>在写加锁后，互斥量被占用。此时，再有其他写加锁或者读加锁，都获取不到互斥量，保证了写安全。</p>
+<p>如果是读加锁，首先通过获取互斥量，然后增加读者数，释放互斥量，读加锁成功。此时互斥量空闲。<br>在读加锁后，互斥量空闲。如果有其他写加锁来，那么互斥量被占用，但读者数目非0，读加锁操作会阻塞等待读者数为0。<br>如果有其他读加锁来，那么互斥量先被占用，增加读者数，然后释放互斥量。读加锁成功，此时同时有多个读者。</p>
+<h3 id="解锁"><a href="#解锁" class="headerlink" title="解锁"></a>解锁</h3><p>如果是写解锁，如果读者数为0，广播条件量，然后释放互斥量。之后，再有其他写加锁或者读加锁，可以获取到互斥量，进行操作。</p>
+<p>如果是读解锁，先获取互斥量，然后读者数减去1，如读者数为0，广播条件量，释放互斥量。之后，再有其他写加锁或者读加锁，可以获取到互斥量，进行操作。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="sr-rwlock-init"><a href="#sr-rwlock-init" class="headerlink" title="sr_rwlock_init"></a>sr_rwlock_init</h3><p>初始化接口， 主要对锁的结构体进行初始化。 这里有个shared表示这个锁支持进程间的互斥， 实际上就是这个锁结构在共享内存空间里面，可以支持多个进程对其进行操作。如果不在共享内存中， 就是进程的私有变量，shared就不能为1.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">sr_error_info_t</span> *</span><br><span class="line"><span class="title function_">sr_rwlock_init</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">int</span> shared)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">sr_error_info_t</span> *err_info = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((err_info = sr_mutex_init(&amp;rwlock-&gt;mutex, shared))) &#123;</span><br><span class="line">        <span class="keyword">return</span> err_info;</span><br><span class="line">    &#125;</span><br><span class="line">    rwlock-&gt;readers = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> ((err_info = sr_cond_init(&amp;rwlock-&gt;cond, shared))) &#123;</span><br><span class="line">        pthread_mutex_destroy(&amp;rwlock-&gt;mutex);</span><br><span class="line">        <span class="keyword">return</span> err_info;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">sr_error_info_t</span> *</span><br><span class="line"><span class="title function_">sr_mutex_init</span><span class="params">(<span class="type">pthread_mutex_t</span> *lock, <span class="type">int</span> shared)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">sr_error_info_t</span> *err_info = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">pthread_mutexattr_t</span> attr;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check address alignment */</span></span><br><span class="line">    <span class="keyword">if</span> (SR_MUTEX_ALIGN_CHECK(lock)) &#123;</span><br><span class="line">        sr_errinfo_new(&amp;err_info, SR_ERR_INTERNAL, <span class="literal">NULL</span>, <span class="string">&quot;Mutex address not aligned.&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> err_info;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (shared) &#123;</span><br><span class="line">        <span class="comment">/* init attr */</span></span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_mutexattr_init(&amp;attr))) &#123;</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread attr failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_mutexattr_setpshared(&amp;attr, PTHREAD_PROCESS_SHARED))) &#123;</span><br><span class="line">            pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Changing pthread attr failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_mutex_init(lock, &amp;attr))) &#123;</span><br><span class="line">            pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread mutex failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">        pthread_mutexattr_destroy(&amp;attr);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_mutex_init(lock, <span class="literal">NULL</span>))) &#123;</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread mutex failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Wrapper for pthread_cond_init().</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param[out] cond Condition variable to initialize.</span></span><br><span class="line"><span class="comment"> * @param[in] shared Whether the condition will be shared among processes.</span></span><br><span class="line"><span class="comment"> * @return err_info, NULL on error.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">static</span> <span class="type">sr_error_info_t</span> *</span><br><span class="line"><span class="title function_">sr_cond_init</span><span class="params">(<span class="type">pthread_cond_t</span> *cond, <span class="type">int</span> shared)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">sr_error_info_t</span> *err_info = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="type">pthread_condattr_t</span> attr;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check address alignment */</span></span><br><span class="line">    <span class="keyword">if</span> (SR_COND_ALIGN_CHECK(cond)) &#123;</span><br><span class="line">        sr_errinfo_new(&amp;err_info, SR_ERR_INTERNAL, <span class="literal">NULL</span>, <span class="string">&quot;Condition variable address not aligned.&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> err_info;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (shared) &#123;</span><br><span class="line">        <span class="comment">/* init attr */</span></span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_condattr_init(&amp;attr))) &#123;</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread attr failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_condattr_setpshared(&amp;attr, PTHREAD_PROCESS_SHARED))) &#123;</span><br><span class="line">            pthread_condattr_destroy(&amp;attr);</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Changing pthread attr failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_cond_init(cond, &amp;attr))) &#123;</span><br><span class="line">            pthread_condattr_destroy(&amp;attr);</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread rwlock failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">        pthread_condattr_destroy(&amp;attr);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ((ret = pthread_cond_init(cond, <span class="literal">NULL</span>))) &#123;</span><br><span class="line">            sr_errinfo_new(&amp;err_info, SR_ERR_SYS, <span class="literal">NULL</span>, <span class="string">&quot;Initializing pthread rwlock failed (%s).&quot;</span>, strerror(ret));</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到如果shared为1，会为pthread_mutex_t和pthread_cond_t设置属性attr， 设置PTHREAD_PROCESS_SHARED。这就是支持进程间互斥的条件量和互斥量。</p>
+<h3 id="sr-rwlock-destroy"><a href="#sr-rwlock-destroy" class="headerlink" title="sr_rwlock_destroy"></a>sr_rwlock_destroy</h3><p>销毁比较简单，就是释放pthread_mutex_t和pthread_cond_t的变量。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">sr_rwlock_destroy</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock)</span></span><br><span class="line">&#123;</span><br><span class="line">    pthread_mutex_destroy(&amp;rwlock-&gt;mutex);</span><br><span class="line">    pthread_cond_destroy(&amp;rwlock-&gt;cond);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="sr-rwlock"><a href="#sr-rwlock" class="headerlink" title="sr_rwlock"></a>sr_rwlock</h3><p>sr_rwlock这个函数实现了互斥量的获取和锁定，可以传入超时时间，在指定时间内未获取到互斥量则失败。如果是要对锁进行写操作，需要等所有的读锁释放掉。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">sr_error_info_t</span> *</span><br><span class="line"><span class="title function_">sr_rwlock</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">int</span> timeout_ms, <span class="type">sr_lock_mode_t</span> mode, <span class="type">const</span> <span class="type">char</span> *func)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">sr_error_info_t</span> *err_info = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">timeout_ts</span>;</span></span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">    assert(mode != SR_LOCK_NONE);</span><br><span class="line">    assert(timeout_ms &gt; <span class="number">0</span>);</span><br><span class="line">    sr_time_get(&amp;timeout_ts, timeout_ms);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MUTEX LOCK */</span></span><br><span class="line">    ret = pthread_mutex_timedlock(&amp;rwlock-&gt;mutex, &amp;timeout_ts);</span><br><span class="line">    <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">        SR_ERRINFO_LOCK(&amp;err_info, func, ret);</span><br><span class="line">        <span class="keyword">return</span> err_info;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode == SR_LOCK_WRITE) &#123;</span><br><span class="line">        <span class="comment">/* write lock */</span></span><br><span class="line">        ret = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 获取条件量失败或者还有读锁，继续等待</span></span><br><span class="line">        <span class="keyword">while</span> (!ret &amp;&amp; rwlock-&gt;readers) &#123;</span><br><span class="line">            <span class="comment">/* COND WAIT */</span></span><br><span class="line">            ret = pthread_cond_timedwait(&amp;rwlock-&gt;cond, &amp;rwlock-&gt;mutex, &amp;timeout_ts); <span class="comment">// pthread_cond_timedwait 这个函数进入等待会释放互斥量，成功后会获得互斥量</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">            <span class="comment">/* MUTEX UNLOCK */</span></span><br><span class="line">            pthread_mutex_unlock(&amp;rwlock-&gt;mutex);</span><br><span class="line"></span><br><span class="line">            SR_ERRINFO_COND(&amp;err_info, func, ret);</span><br><span class="line">            <span class="keyword">return</span> err_info;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* read lock */</span></span><br><span class="line">        ++rwlock-&gt;readers;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* MUTEX UNLOCK */</span></span><br><span class="line">        pthread_mutex_unlock(&amp;rwlock-&gt;mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="sr-rwunlock"><a href="#sr-rwunlock" class="headerlink" title="sr_rwunlock"></a>sr_rwunlock</h3><p>sr_rwunlock这个函数释放锁。释放读锁就是简单的对读者数减去1，当读者数为0发送一个条件量，然后释放互斥量。释放写锁就是当读者数为0发送一个条件量，然后释放互斥量。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">sr_rwunlock</span><span class="params">(<span class="type">sr_rwlock_t</span> *rwlock, <span class="type">sr_lock_mode_t</span> mode, <span class="type">const</span> <span class="type">char</span> *func)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">sr_error_info_t</span> *err_info = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">timeout_ts</span>;</span></span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">    assert(mode != SR_LOCK_NONE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mode == SR_LOCK_READ) &#123;</span><br><span class="line">        sr_time_get(&amp;timeout_ts, SR_RWLOCK_READ_TIMEOUT);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* MUTEX LOCK */</span></span><br><span class="line">        ret = pthread_mutex_timedlock(&amp;rwlock-&gt;mutex, &amp;timeout_ts);</span><br><span class="line">        <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">            SR_ERRINFO_LOCK(&amp;err_info, func, ret);</span><br><span class="line">            sr_errinfo_free(&amp;err_info);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!rwlock-&gt;readers) &#123;</span><br><span class="line">            SR_ERRINFO_INT(&amp;err_info);</span><br><span class="line">            sr_errinfo_free(&amp;err_info);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/* remove a reader */</span></span><br><span class="line">            --rwlock-&gt;readers;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* we are unlocking a write lock, there can be no readers */</span></span><br><span class="line">    assert((mode == SR_LOCK_READ) || !rwlock-&gt;readers);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!rwlock-&gt;readers) &#123;</span><br><span class="line">        <span class="comment">/* broadcast on condition */</span></span><br><span class="line">        pthread_cond_broadcast(&amp;rwlock-&gt;cond);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* MUTEX UNLOCK */</span></span><br><span class="line">    pthread_mutex_unlock(&amp;rwlock-&gt;mutex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这就是sysrepo的读写锁实现。学习一个开源库，挖挖其内部的算法结构的实现，还是一个很不错的学习机会。IT行业就是工作到老，学习到老。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+        </div>
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/10/23/timeout/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">超时实现-sysrepo笔记(8)</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/10/15/timing/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">性能优化-sysrepo笔记(6)</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">2.</span> <span class="nav-text">结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%94%81"><span class="nav-number">4.1.</span> <span class="nav-text">加锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E9%94%81"><span class="nav-number">4.2.</span> <span class="nav-text">解锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sr-rwlock-init"><span class="nav-number">5.1.</span> <span class="nav-text">sr_rwlock_init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sr-rwlock-destroy"><span class="nav-number">5.2.</span> <span class="nav-text">sr_rwlock_destroy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sr-rwlock"><span class="nav-number">5.3.</span> <span class="nav-text">sr_rwlock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sr-rwunlock"><span class="nav-number">5.4.</span> <span class="nav-text">sr_rwunlock</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>

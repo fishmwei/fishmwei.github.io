@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="技术博客">
+    <meta name="author" content="fishmwei">
+    
+    <title>
+        
+            项目性能优化 |
+        
+        IT攻城狮小明
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/assets/img/headerIcon.jpg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"fishmwei.gitee.io","root":"/","language":"zh-CN","path":"search.xml"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/assets/img/headerIcon.jpg","favicon":"/assets/img/headerIcon.jpg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/fishmwei.png","description":"行动，才不会被动!"},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+  </script>
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/assets/img/headerIcon.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                IT攻城狮小明
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/2020/06/20/about/"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/2020/06/20/about/">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">项目性能优化</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/assets/img/headerIcon.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">fishmwei</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2020-06-03 19:35:10</span>
+        <span class="mobile">2020-06-03 19:35</span>
+    </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">开发经验</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.1k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>3 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目完成的差不多了，主要的功能性需求也完成的差不多了，偶尔零星还接点需求，然后就是问题的修修改改。项目也开始转向非功能性需求了，比如性能、可维护性等。</p>
+<span id="more"></span>
+
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>粗略讲一下项目的功能吧，公司的网络安全设备主要用于网络报文解析、重定向输出到后端。设备并接到主干网络上，通过报文的解析处理，深度检测，达到网络流量分析、用户行为监控、流量分流的目的吧。我们知道，网络上的流量是很巨大的，那么对设备的性能就有很大的要求。甲方一般都对设备性能都有指标要求，因而产品在实现功能的前提下，还需要满足性能上的需求。</p>
+<p>性能提升的主要思路，就是把整体流程分步骤，然后依次测试各个步骤的性能，找出性能瓶颈，最终对相关的代码进行优化，验证。</p>
+<p>具体的验证都是体力活，这里把遇到的相关的问题讲一下。当然下面的问题，只是在当前平台下存在，其他平台情况可能不一样，仅供参考。</p>
+<h3 id="1-在条件语句中，尽量不进行位域值的运算"><a href="#1-在条件语句中，尽量不进行位域值的运算" class="headerlink" title="1. 在条件语句中，尽量不进行位域值的运算"></a>1. 在条件语句中，尽量不进行位域值的运算</h3><p>比如，我们要验证一个值是否为0，直接把值当做bool值判断就好了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="type">unsigned</span> flag:<span class="number">5</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> <span class="title">temp</span>;</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (temp.flag &amp; <span class="number">0x1f</span>) &#123; <span class="comment">// 不好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (temp.flag) &#123; <span class="comment">// 好的做法</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析是，第一种，进行按位与的操作时，会按位操作。第二种，直接取值与0进行对比，减少了位的操作。</p>
+<h3 id="2-减少移位操作"><a href="#2-减少移位操作" class="headerlink" title="2. 减少移位操作"></a>2. 减少移位操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> (a&gt;&gt;<span class="number">1</span> &amp; <span class="number">0x1</span>)  ===&gt; <span class="keyword">if</span> (a&amp;<span class="number">0x2</span>)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>少了一次移位的操作</p>
+<h3 id="3-减少位域的算术操作"><a href="#3-减少位域的算术操作" class="headerlink" title="3. 减少位域的算术操作"></a>3. 减少位域的算术操作</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">xxx</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="type">unsigned</span> flag:<span class="number">24</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (data.flag == <span class="number">0xffffff</span>) &#123;  <span class="comment">// 不好的做法</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 好的做法</span></span><br><span class="line"><span class="type">unsigned</span> flag = data.falg;</span><br><span class="line"><span class="keyword">if</span> (flag ==  <span class="number">0xffffff</span>) &#123;</span><br><span class="line">    <span class="comment">// statement</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>通过赋值再比较的方式，赋值的时候，直接拷贝了低24位到寄存器，然后再与整型0xffffff比较。而第一种做法，编译器会先取低24位的值，通过bmsk的操作获取位域的值。然后再跟再与整型0xffffff比较。 通过实际测试，发现bmsk的操作很耗时。</p>
+<h3 id="4-尽量减少内存的清除动作"><a href="#4-尽量减少内存的清除动作" class="headerlink" title="4. 尽量减少内存的清除动作"></a>4. 尽量减少内存的清除动作</h3><p>测试发现 memset(dstPtr, 0, size) 比直接赋值为0的效率低。</p>
+<h3 id="5-函数尽量使用static函数"><a href="#5-函数尽量使用static函数" class="headerlink" title="5. 函数尽量使用static函数"></a>5. 函数尽量使用static函数</h3><p>我们知道，static函数全局只会有一份，但是普通的函数在调用的地方都会维持一份拷贝。 使用static函数可以避免调用函数的压栈出栈，速度会比较快。</p>
+<h3 id="6-C语言的求模运算效率低"><a href="#6-C语言的求模运算效率低" class="headerlink" title="6. C语言的求模运算效率低 %"></a>6. C语言的求模运算效率低 %</h3><p>实际测试发现，使用平台库提供的mod函数效率比普通的求模%运算好太多。</p>
+<h2 id="可维护性"><a href="#可维护性" class="headerlink" title="可维护性"></a>可维护性</h2><p>这里主要讲一下代码的可读性， 设备命令的可读性。</p>
+<p>在之前，代码流程是个大杂烩吧， 在一个大函数里各种条件判断，很多流程都糅合在了一起，太多人写过这代码了，没人愿意拆分，怕结果是越来越乱，既然是新项目，我就来做个雷锋吧，改改改。</p>
+<p>设备命令可读性，我想讲的是，很多命令都是直接打印16进制内容，然后查看之后，还得对着设计文档一个个比特的去看是什么意思。做命令的小哥，也是照搬前人的逻辑，复制代码、粘贴代码，改改就来用。我催了不下十遍了，才给我改了一个用户友好的命令显示。哎，人微言轻，推不动啊。</p>
+<h2 id="叽叽歪歪"><a href="#叽叽歪歪" class="headerlink" title="叽叽歪歪"></a>叽叽歪歪</h2><p>在这里</p>
+<ol>
+<li>没有结对编程的概念</li>
+<li>代码不经检视可以直接入库、几乎不会主动发起代码检视</li>
+<li>缺少设计实现的讨论评审，基本面对面沟通</li>
+<li>输出文档少，归档不明确, 一般都是口口相传</li>
+<li>协作方式很原始</li>
+<li>小组几乎不开会 ~ OMG</li>
+<li>No training，No share 成员成长靠自我</li>
+</ol>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+
+        </div>
+
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/">#开发经验</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/06/09/tiny-program/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">二进制包大小优化思路</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/06/03/newjob-JOB/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">换城市工作切换的感受</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">fishmwei</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">性能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9C%A8%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5%E4%B8%AD%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%BF%9B%E8%A1%8C%E4%BD%8D%E5%9F%9F%E5%80%BC%E7%9A%84%E8%BF%90%E7%AE%97"><span class="nav-number">2.1.</span> <span class="nav-text">1. 在条件语句中，尽量不进行位域值的运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%87%8F%E5%B0%91%E7%A7%BB%E4%BD%8D%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">2. 减少移位操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%87%8F%E5%B0%91%E4%BD%8D%E5%9F%9F%E7%9A%84%E7%AE%97%E6%9C%AF%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.</span> <span class="nav-text">3. 减少位域的算术操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B0%BD%E9%87%8F%E5%87%8F%E5%B0%91%E5%86%85%E5%AD%98%E7%9A%84%E6%B8%85%E9%99%A4%E5%8A%A8%E4%BD%9C"><span class="nav-number">2.4.</span> <span class="nav-text">4. 尽量减少内存的清除动作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%87%BD%E6%95%B0%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8static%E5%87%BD%E6%95%B0"><span class="nav-number">2.5.</span> <span class="nav-text">5. 函数尽量使用static函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-C%E8%AF%AD%E8%A8%80%E7%9A%84%E6%B1%82%E6%A8%A1%E8%BF%90%E7%AE%97%E6%95%88%E7%8E%87%E4%BD%8E"><span class="nav-number">2.6.</span> <span class="nav-text">6. C语言的求模运算效率低 %</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E7%BB%B4%E6%8A%A4%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">可维护性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%BD%E5%8F%BD%E6%AD%AA%E6%AD%AA"><span class="nav-number">4.</span> <span class="nav-text">叽叽歪歪</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+        
+<script src="/js/left-side-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/toc.js"></script>
+
+    
+</div>
+
+
+
+</body>
+</html>
