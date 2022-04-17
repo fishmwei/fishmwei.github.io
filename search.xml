@@ -4950,4 +4950,51 @@
         <category>DPDK</category>
       </categories>
   </entry>
+  <entry>
+    <title>get新技能 - cmake基础使用</title>
+    <url>/2022/04/17/cmake/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近准备从零创建一个工程库，于是就准备专门学习这一块的知识,最主要的就是编译系统搭建了。之前很少进行这方面的系统学习，都是基于已有的工程上面修改，一般就是加个文件或者选项，都是比较简单的，主要工作还是在代码逻辑的编写。鉴于是一个新的C语言的工程，那就选择cmake来作工程编译工具了。周末两天花了些时间，在掘金上面看了一个系列的博客，然后再对比的官网的使用文档学习一下cmake。</p>
+<span id="more"></span>
+
+<p>成功地跟着博客文章走了一轮下来，掌握了一些基本的使用，嗯，这就来稍微整理一下：</p>
+<h1 id="CMake的使用"><a href="#CMake的使用" class="headerlink" title="CMake的使用"></a>CMake的使用</h1><h2 id="setup"><a href="#setup" class="headerlink" title="setup"></a>setup</h2><p>CMake最主要的就是CMakeLists.txt及相关的*.cmake的文件编写了。CMakeLists.txt是有层级的概念了， 可以通过include(dir)的方式把相关的CMakeLists.txt文件嵌套包含起来。这个方式跟shell脚本的引用类似。不过不同的CMakeLists.txt的工作目录在其所在的目录及build对应的目录下， 可以输出 CMAKE_CURRENT_SOURCE_DIR, CMAKE_CURRENT_BINARY_DIR变量查看。</p>
+<p>第一步就是创建一个新目录，然后创建一个CMakeLists.txt文件。</p>
+<p>根目录下的CMakeLists.txt必须填写工程名和cmake版本依赖, 还有可执行文件的创建：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">cmake_minimum_required (VERSION 3.16)</span><br><span class="line">project (hello </span><br><span class="line">		VERSION 0.0.2</span><br><span class="line">		DESCRIPTION &quot;project hello to learn cmake usage.&quot;</span><br><span class="line">		LANGUAGES C)</span><br><span class="line"></span><br><span class="line">add_executable(hello hello.c)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="构建程序"><a href="#构建程序" class="headerlink" title="构建程序"></a>构建程序</h2><p>创建一个hello.c的文件，里面简单输出个hello world。然后就是构建一个程序了。 构建的时候cmake自动生成一些文件，一般创建一个build目录，然后再在build目录下构建。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make </span><br><span class="line"></span><br><span class="line">./hello</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装程序"><a href="#安装程序" class="headerlink" title="安装程序"></a>安装程序</h2><p>构建之后创建的文件都在build目录下了，我们想要把hello文件拷贝到系统bin目录下，便于终端直接执行，需要用到install命令。在CMakeLists.txt下添加以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">install (TARGETS hello DESTINATION bin) # 默认会安装到 /usr/local/bin中</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重新执行命令</span></span><br><span class="line"></span><br><span class="line">cmake ..</span><br><span class="line">make </span><br><span class="line">make install </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">然后就可以直接执行了</span></span><br><span class="line">hello</span><br></pre></td></tr></table></figure>
+
+<h2 id="特定函数检测"><a href="#特定函数检测" class="headerlink" title="特定函数检测"></a>特定函数检测</h2><p>很多时候有些平台没有一些库，就不会提供部分函数功能。可以通过这个特性检测函数是否存在，设置到一个变量中，然后生成源程序文件中定义某个宏。我们在代码中根据这个宏来决定调用系统函数还是自定义函数。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">include (CheckFunctionExists)</span><br><span class="line">check_function_exists (log HAVE_LOG) # 如果有log函数 则HAVE_LOG有值，否则没有值</span><br><span class="line"></span><br><span class="line">configure_file (</span><br><span class="line">  &quot;$&#123;PROJECT_SOURCE_DIR&#125;/xxx.h.in&quot;</span><br><span class="line">  &quot;$&#123;PROJECT_BINARY_DIR&#125;/xxx.h&quot;</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">include_directories(&quot;$&#123;PROJECT_BINARY_DIR&#125;&quot;)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在xxx.h.in 文件中添加内容</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine HAVE_LOG  // 如果HAVE_LOG有值  这个会自动生成  <span class="comment">#define HAVE_LOG  否则 会生成注释/* undef HAVE_LOG */</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="文件生成"><a href="#文件生成" class="headerlink" title="文件生成"></a>文件生成</h2><p>一种方式是使用configure_file命令， 根据input文件及当前的变量生成output文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CMakeLists.txt包含如下内容</span></span><br><span class="line"></span><br><span class="line">configure_file(</span><br><span class="line">	&quot;config.h.in&quot;</span><br><span class="line">	&quot;config.h&quot;</span><br><span class="line">	)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">config.h.in 内容为</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine USE_MYMATH</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine HAVE_LOG</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine HAVE_MALLOC</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine NOT_EXIST</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">define V_MAJOR @VERSION_MAJOR@</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">define V_MINOR @VERSION_MINOR@</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">define V_PATCH @VERSION_PATCH@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>另外一种方式就是使用add_custom_command来通过执行命令生成文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建自定义的版本信息， 可以使用shell脚本来达成目标</span></span><br><span class="line">add_custom_command (</span><br><span class="line">	OUTPUT $&#123;PROJECT_BINARY_DIR&#125;/version.h</span><br><span class="line">	COMMAND $&#123;PROJECT_SOURCE_DIR&#125;/genversion.sh &gt; $&#123;PROJECT_BINARY_DIR&#125;/version.h</span><br><span class="line">)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">需要指明依赖上述的OUTPUT，否则不会执行 COMMAND 的</span></span><br><span class="line">add_executable(hello hello.c $&#123;CMAKE_CURRENT_BINARY_DIR&#125;/version.h)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装包生成"><a href="#安装包生成" class="headerlink" title="安装包生成"></a>安装包生成</h2><p>通过使用cpack生成安装包</p>
+<p>在CMakeLists.txt里面添加下面内容：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">build a CPack driven installer package</span></span><br><span class="line">include (InstallRequiredSystemLibraries)</span><br><span class="line">set (CPACK_RESOURCE_FILE_LICENSE  </span><br><span class="line">     &quot;$&#123;CMAKE_CURRENT_SOURCE_DIR&#125;/License.txt&quot;)</span><br><span class="line">set (CPACK_PACKAGE_VERSION_MAJOR &quot;$&#123;Tutorial_VERSION_MAJOR&#125;&quot;)</span><br><span class="line">set (CPACK_PACKAGE_VERSION_MINOR &quot;$&#123;Tutorial_VERSION_MINOR&#125;&quot;)</span><br><span class="line">include (CPack)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行过cmake后， 可以直接运行 make package &#x2F; package_source命令 生成压缩包。还有一个sh脚本用于执行安装。</p>
+<p>还学习了一些cmake的语法，创建库等操作。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>通过一溜子的操作，掌握了最基本的使用。后面在实际的应用中再找官方文档看看， 应该足够满足应用了。</p>
+<p>又get了一个新技能!</p>
+<p>官网： <a href="https://cmake.org/">https://cmake.org/</a></p>
+<p>示例代码： <a href="https://gitee.com/fishmwei/blog_code/tree/master/cmake_learn">https://gitee.com/fishmwei/blog_code/tree/master/cmake_learn</a></p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
