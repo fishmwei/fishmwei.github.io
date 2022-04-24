@@ -4997,4 +4997,34 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>周谈(19)-docker基础（一）</title>
+    <url>/2022/04/24/weekly-docker/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十九篇。</p>
+<p>最近有几次把虚拟机给搞死了，浪费了时间又重新安装了虚拟机。就是我在编译GmSSL这个库的时候，按默认的编译成动态库的话，他会替换系统自带的openssl.so，然后重启的时候，系统就嗝屁了。好像是找不到正确的版本依赖了。GmSSL内部自己依赖了一个openssl的版本，直接把系统的so替换了，应该是版本不兼容导致启动失败的。</p>
+<p>嗯，然后就想着搞个docker容器来作实验，花了点时间看了一下docker。</p>
+<h1 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h1><h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>docker和虚拟机都是虚拟化的产物。但是虚拟机本身自带了操作系统，操作系统会额外消耗资源。虚拟机完全虚拟化了一套虚拟的资源出来使用。而docker的容器更加轻量级，启动也更快。docker容器共用宿主机的操作系统，不需要额外的消耗。在同样的资源下，容器更加方便、轻量，能够运行更多的实例。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>docker是一个虚拟化的平台，通过docker可以管理镜像，然后通过镜像可以创建容器。镜像就相当于类模板，而容器就是模板的一个实例，基于同一个镜像可以创建多个容器。不同的容器有特定的ID后者名称来定位区分。当然，镜像也有镜像的ID和名称、标签来区分。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget -qO- https://get.docker.com/ | sh</span><br><span class="line">usermod -aG docker keep </span><br></pre></td></tr></table></figure>
+
+<p>直接运行就可以安装了。</p>
+<h2 id="pull镜像"><a href="#pull镜像" class="headerlink" title="pull镜像"></a>pull镜像</h2><p>安装之后，需要从仓库pull镜像，镜像由不同的组织上传，提供不同的应用。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:/etc/docker# docker pull ubuntu</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/ubuntu</span><br><span class="line">8527c5f86ecc: Pull complete</span><br><span class="line">Digest: sha256:2a7dffab37165e8b4f206f61cfd984f8bb279843b070217f6ad310c9c31c9c7c</span><br><span class="line">Status: Downloaded newer image for ubuntu:latest</span><br><span class="line">docker.io/library/ubuntu:latest</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker images</span><br><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED        SIZE</span><br><span class="line">ubuntu       latest    3f4714ee068a   28 hours ago   77.8MB</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="运行容器"><a href="#运行容器" class="headerlink" title="运行容器"></a>运行容器</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker container run -it ubuntu /bin/bash</span><br><span class="line">root@438ebf3447a6:/#</span><br><span class="line">root@438ebf3447a6:/#</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Ctrl + PQ 退出容器， 容器依旧在运行</span></span><br><span class="line"></span><br><span class="line">root@438ebf3447a6:/# root@keep-VirtualBox:/etc/docker#</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker ps</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS         PORTS     NAMES</span><br><span class="line">438ebf3447a6   ubuntu    &quot;/bin/bash&quot;   2 minutes ago   Up 2 minutes             naughty_thompson</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">连接回容器</span></span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker exec -it 438ebf3447a6 bash</span><br><span class="line">root@438ebf3447a6:/#</span><br><span class="line">root@438ebf3447a6:/#</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止容器</span></span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker stop naughty_thompson</span><br><span class="line"></span><br><span class="line">naughty_thompson</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker ps</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES</span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker ps -a   // -a 列出所有容器 包括停止的容器</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS                        PORTS     NAMES</span><br><span class="line">438ebf3447a6   ubuntu    &quot;/bin/bash&quot;   6 minutes ago   Exited (137) 17 seconds ago             naughty_thompson</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除容器</span></span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker rm naughty_thompson</span><br><span class="line">naughty_thompson</span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker ps -a</span><br><span class="line">CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES</span><br><span class="line">root@keep-VirtualBox:/etc/docker#</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">一直运行 退出自动重启</span></span><br><span class="line">root@keep-VirtualBox:/etc/docker# docker container run --name auto-restart -it --restart always ubuntu sleep 10</span><br></pre></td></tr></table></figure>
+
+<p>容器运行的基础操作就这些， 后面还有更高级的功能待学习。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
