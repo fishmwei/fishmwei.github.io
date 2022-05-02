@@ -27,10 +27,12 @@
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="最近在写代码的时候，因为是一个全新的工程，也没有引入什么日志库，直接就printf输出调试了。 这个总归是有一点儿不雅，然后想到之前用的sysrepo这个开源库，他提供的那个日志功能挺简单的，支持向终端错误stderr输出日志，也支持向syslog输出日志，而且使用起来也比较简单，想着借鉴着写一个。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.gitee.io/images/202205/clog_test.png">
 <meta property="article:published_time" content="2022-05-01T10:46:54.000Z">
-<meta property="article:modified_time" content="2022-05-02T05:20:51.857Z">
+<meta property="article:modified_time" content="2022-05-02T05:28:29.801Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.gitee.io/images/202205/clog_test.png">
 
 <link rel="canonical" href="https://fishmwei.gitee.io/2022/05/01/clog/">
 
@@ -254,12 +256,10 @@
 <p>所有代码都放到了个人的gitee仓库中了，有需要的看官可以参考使用一下，有想法的话也可以一起来完善。</p>
 <p>路径：<code>https://gitee.com/fishmwei/clog</code></p>
 <p>使用起来也很简单，只要初始化的时候设置一下日志的等级，后面就可以使用了。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;clog/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* turn logging on */</span></span><br><span class="line">    clog_log_stderr(CLOG_LL_WRN);</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLOG_SYSLOG</span></span><br><span class="line">    clog_log_syslog(<span class="string">&quot;test-log&quot;</span>, CLOG_LL_WRN);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    CLOG_LOG_WRN(<span class="string">&quot;This is a message\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;clog/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* turn logging on */</span></span><br><span class="line">    clog_log_stderr(CLOG_LL_DBG);</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLOG_SYSLOG</span></span><br><span class="line">    clog_log_syslog(<span class="string">&quot;test-log&quot;</span>, CLOG_LL_WRN);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    CLOG_LOG_WRN(<span class="string">&quot;This is warning message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_DBG(<span class="string">&quot;This is debug message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_INF(<span class="string">&quot;This is info message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_ERR(<span class="string">&quot;This is error message\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-
-
-
-
+<p>使用效果图</p>
+<p><img src="/images/202205/clog_test.png" alt="avatar"></p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
