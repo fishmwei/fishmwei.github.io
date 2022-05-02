@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fishmwei.gitee.io/images/202204/sign.jpg">
 <meta property="article:published_time" content="2022-04-30T05:49:53.000Z">
-<meta property="article:modified_time" content="2022-04-30T08:15:45.486Z">
+<meta property="article:modified_time" content="2022-04-30T08:30:50.789Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.gitee.io/images/202204/sign.jpg">
@@ -281,10 +281,10 @@
 <li>主体通过特殊程序创建公钥和私钥，然后保存好私钥，把公钥和其他信息发送给注册机构</li>
 <li>注册机构收到信息，生成证书签名请求</li>
 <li>注册机构验证材料、确定主体拥有对应的私钥</li>
-<li>完成上述步骤后，注册机构把所有资料上传给证书机构，证书结构对用户生成数字证书。可能是X.509标准格式的证书。发送证书给主体，并且保存证书记录</li>
+<li>完成上述步骤后，注册机构把所有资料上传给证书机构，证书机构对用户生成数字证书。可能是X.509标准格式的证书。发送证书给主体，并且保存证书记录</li>
 <li>主体获取证书</li>
 </ul>
-<p>怎么确认证书是可信任的呢， 那就是证书机构对这个证书使用私钥作了签名，使用者可以使用证书机构的公钥验证，确定这个证书是证书机构颁发的，并且里面的信息是可以信任的。这里又陷入了一个问题，怎么知道证书结构的公钥是可信任的呢。这里有个证书结构的层次，下级的公钥需要上一级的证书机构认证，直到最顶级的证书机构，最顶级的证书用的是一个自签名证书公布他的公钥，就是证书发布者和主体是一样的，默认最顶级的自签名证书是可以信任的。这样一级级认证，最后确认证书机构的公钥是可以信任的，用来验证他签发的证书也是可以信任的。</p>
+<p>怎么确认证书是可信任的呢， 那就是证书机构对这个证书使用私钥作了签名，使用者可以使用证书机构的公钥验证，确定这个证书是证书机构颁发的，并且里面的信息是可以信任的。这里又陷入了一个问题，怎么知道证书机构的公钥是可信任的呢。这里有个证书机构的层次，下级的公钥需要上一级的证书机构认证，直到最顶级的证书机构，最顶级的证书用的是一个自签名证书公布他的公钥，就是证书发布者和主体是一样的，默认最顶级的自签名证书是可以信任的。这样一级级认证，最后确认证书机构的公钥是可以信任的，用来验证他签发的证书也是可以信任的。</p>
 <p>对于不同PKI域的证书，顶级CA交叉认证。</p>
 <h2 id="证书的应用"><a href="#证书的应用" class="headerlink" title="证书的应用"></a>证书的应用</h2><p>之前做iOS APP开发的时候，如果要发布app还需要申请对应的证书。证书就是用来对app包进行加密， 然后苹果通过对app包校验，来保证安装的应用的确是你发布的，没有被篡改过。 同时，苹果还在中间添加了一些小伎俩， 通过证书里面的配置文件，控制不同类型证书的用途及适用的设备，从而通过此来收取开发者费用。比如，个人证书只能添加一台设备默认安装(不需要经过appstore下载)，企业证书却可以添加几百台默认安装。</p>
 <p>下面是苹果证书申请的流程：</p>
@@ -318,7 +318,10 @@
     <a href="/2022/04/24/weekly-docker/" rel="prev" title="周谈(19)-docker基础">
       <i class="fa fa-chevron-left"></i> 周谈(19)-docker基础
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/01/clog/" rel="next" title="撸了一个轻量级的C语言日志库">
+      撸了一个轻量级的C语言日志库 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -394,7 +397,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">129</span>
+          <span class="site-state-item-count">130</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
