@@ -5161,6 +5161,7 @@
 
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>今年新工作刚开始学习信息安全技术，一堆的术语算法，刚上来就整懵了我。每天花了一些时间，循序渐进地学习，慢慢的上道了，活到老学到老，不然要被淘汰掉了。一万小时定律不是吹的，功夫花在哪里，成就就在哪里。</p>
 <p>这个文章简要整理了一些openssl常用的基础命令，后面便于翻查。</p>
+<p>五一的时候新入手了一个27寸的dell显示屏，屏幕大看起来就是爽哈！工欲善其事必先利其器， done!</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -5169,6 +5170,53 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>安全</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(21)-浅谈RSA算法</title>
+    <url>/2022/05/16/weekly-rsa/</url>
+    <content><![CDATA[<h1 id="RSA算法概述"><a href="#RSA算法概述" class="headerlink" title="RSA算法概述"></a>RSA算法概述</h1><p>RSA算法是常用的非对称算法，应用广泛。比如常见的ssh连接，使用过gitlab的开发者都接触过，通过rsa算法可以生成一对证书，通过把公钥设置到gitlab上面，本地才可以通过ssh的方式下载代码。</p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ssh-keygen -t rsa -b 2048 -C &quot;auth@xxx.com&quot;</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/root/.ssh/id_rsa): /root/.ssh/id_rsa_auth</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /root/.ssh/id_rsa_auth</span><br><span class="line">Your public key has been saved in /root/.ssh/id_rsa_auth.pub</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:jSLQwYvLcHx+ya2VkeOVy+jbuFqj4CcIuRVwvBqkRtQ auth@xxx.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+---[RSA 2048]----+</span><br><span class="line">|.o...            |</span><br><span class="line">|.ooE..           |</span><br><span class="line">|++.o..   . .     |</span><br><span class="line">|+.*.o   +oo      |</span><br><span class="line">|.B =...+SB..     |</span><br><span class="line">|+ + ..+.* o      |</span><br><span class="line">| + ... +o        |</span><br><span class="line">|. ....oo.+       |</span><br><span class="line">|    .oo.+o.      |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ls -la ~/.ssh/</span><br><span class="line">总用量 48</span><br><span class="line">drwx------  2 root root 4096 5月  16 17:48 .</span><br><span class="line">drwx------ 18 root root 4096 5月  16 11:07 ..</span><br><span class="line">-rw-------  1 root root 1876 5月  16 17:48 id_rsa_auth</span><br><span class="line">-rw-r--r--  1 root root  394 5月  16 17:48 id_rsa_auth.pub</span><br><span class="line">-rw-r--r--  1 root root 1332 3月  25 15:01 known_hosts</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后把id_rsa_auth.pub的内容设置到gitlab就ok了。</p>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>RSA算法给予一个十分简单的数论事实：将两个大素数相乘十分容易，但是想要对其乘积进行因式分解却极其困难，因此可以将乘积公开作为加密秘钥。</p>
+<p>密钥生成过程： </p>
+<ul>
+<li>生成两个大的质数 p, q。 如：p&#x3D;7, q&#x3D;19</li>
+<li>得到n&#x3D;p<em>q, m &#x3D; (p-1)</em>(q-1)。如n&#x3D;133, m&#x3D;108</li>
+<li>选取e使得e和m互质。如e&#x3D;5</li>
+<li>生成d， 使得d*e mod m &#x3D; 1。如d&#x3D;65</li>
+<li>最后丢弃p,q,m。公钥就是e, n; 私钥就是d, n。 公钥(5, 133)， 私钥(65, 133)</li>
+</ul>
+<p>加密过程：</p>
+<p>输入明文x通过计算得到y</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">y = x^e mod n</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">x = 6, 则 y = 6^5 mod 133 = 62</span></span><br></pre></td></tr></table></figure>
+
+<p>解密过程：<br>输入密文通过计算得到x</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">x = y^d mod n</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">x = 62^65 mod 133 = 6</span></span><br></pre></td></tr></table></figure>
+
+<p>RSA算法非常可靠，密钥越长，它就越难破解。根据已经披露的文献，目前被破解的最长RSA密钥是768个二进制位。也就是说，长度超过768位的密钥，还无法破解（至少没人公开宣布）。因此可以认为，1024位的RSA密钥基本安全，2048位的密钥极其安全。</p>
+<p>RSA涉及到了一些数学的概念。 </p>
+<ul>
+<li>质数 一个大于1的自然数，除了1和它本身外，不能被其他自然数整除（除0以外）的数称之为质数（素数）；否则称为合数。</li>
+<li>互质 若N个整数的最大公因子是1，则称这N个整数互质。</li>
+<li>指数运算 指数运算又称乘方计算，计算结果称为幂。</li>
+<li>模运算 让m去被n整除，只取所得的余数作为结果，就叫做模运算。</li>
+</ul>
+<p>这些也就是RSA的基础。还有更深层次的欧拉定理就不讲了，感觉有些费脑了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前面使用ssh-keygen生成rsa的公钥密钥的时候，需要输入一个密码。其实这个密码本身跟RSA是没有关系的，只是为了密钥的安全，使用了对称算法对密钥进行了加密。只有知道这个密码的人才能使用这对密钥。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>安全</category>
       </categories>
   </entry>
 </search>

@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"fishmwei.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行make nginx。 以下是前段时间编译nginx遇到的一些问题：">
+  <meta name="description" content="RSA算法概述RSA算法是常用的非对称算法，应用广泛。比如常见的ssh连接，使用过gitlab的开发者都接触过，通过rsa算法可以生成一对证书，通过把公钥设置到gitlab上面，本地才可以通过ssh的方式下载代码。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="nginx交叉编译问题">
-<meta property="og:url" content="https://fishmwei.gitee.io/2021/07/24/nginx-compile/index.html">
+<meta property="og:title" content="周谈(21)-浅谈RSA算法">
+<meta property="og:url" content="https://fishmwei.gitee.io/2022/05/16/weekly-rsa/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行make nginx。 以下是前段时间编译nginx遇到的一些问题：">
+<meta property="og:description" content="RSA算法概述RSA算法是常用的非对称算法，应用广泛。比如常见的ssh连接，使用过gitlab的开发者都接触过，通过rsa算法可以生成一对证书，通过把公钥设置到gitlab上面，本地才可以通过ssh的方式下载代码。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-07-24T00:01:45.000Z">
-<meta property="article:modified_time" content="2022-03-31T00:55:30.625Z">
+<meta property="article:published_time" content="2022-05-16T12:43:51.000Z">
+<meta property="article:modified_time" content="2022-05-16T11:21:02.297Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://fishmwei.gitee.io/2021/07/24/nginx-compile/">
+<link rel="canonical" href="https://fishmwei.gitee.io/2022/05/16/weekly-rsa/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>nginx交叉编译问题 | IT攻城狮小明</title>
+  <title>周谈(21)-浅谈RSA算法 | IT攻城狮小明</title>
   
 
 
@@ -186,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2021/07/24/nginx-compile/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2022/05/16/weekly-rsa/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -199,7 +199,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          nginx交叉编译问题
+          周谈(21)-浅谈RSA算法
         </h1>
 
         <div class="post-meta">
@@ -209,7 +209,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-07-24 08:01:45" itemprop="dateCreated datePublished" datetime="2021-07-24T08:01:45+08:00">2021-07-24</time>
+              <time title="创建时间：2022-05-16 20:43:51" itemprop="dateCreated datePublished" datetime="2022-05-16T20:43:51+08:00">2022-05-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -218,6 +218,10 @@
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">安全</span></a>
                 </span>
             </span>
 
@@ -230,8 +234,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2021/07/24/nginx-compile/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2021/07/24/nginx-compile/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/05/16/weekly-rsa/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/05/16/weekly-rsa/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -246,29 +250,43 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行<code>make nginx</code>。</p>
-<p>以下是前段时间编译nginx遇到的一些问题：</p>
+        <h1 id="RSA算法概述"><a href="#RSA算法概述" class="headerlink" title="RSA算法概述"></a>RSA算法概述</h1><p>RSA算法是常用的非对称算法，应用广泛。比如常见的ssh连接，使用过gitlab的开发者都接触过，通过rsa算法可以生成一对证书，通过把公钥设置到gitlab上面，本地才可以通过ssh的方式下载代码。</p>
 <span id="more"></span>
 
-<h2 id="1-checking-for-C-compiler-…-found-but-is-not-workong"><a href="#1-checking-for-C-compiler-…-found-but-is-not-workong" class="headerlink" title="1. checking for C compiler … found but is not workong"></a>1. checking for C compiler … found but is not workong</h2><p>这个主要是测试C编译器的， 在编译机器上肯定不能执行。 我们修改一下<code>auto/cc/name</code>下的配置，设置ngx_feature_run&#x3D;no。</p>
-<h2 id="2-can-not-detect-int-size"><a href="#2-can-not-detect-int-size" class="headerlink" title="2. can not detect int size"></a>2. can not detect int size</h2><p>原因跟1一样， 直接修改<code>auto/types/sizeof</code> 设置ngx_size&#x3D;4</p>
-<h2 id="3-checking-for-PCRE-library-…-not-found"><a href="#3-checking-for-PCRE-library-…-not-found" class="headerlink" title="3. checking for PCRE library … not found"></a>3. checking for PCRE library … not found</h2><p>依赖PCRE， 需要首先编译PCRE， 在make menuconfig 选择pcre。 如果没有，需要拷贝pcre相关的脚本 进行编译。</p>
-<h2 id="4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><a href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt" class="headerlink" title="4. the HTTP XSLT module requires the libxml2&#x2F;libxslt"></a>4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</h2><p>同理，需要编译libxslt</p>
-<h2 id="5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><a href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org" class="headerlink" title="5. Could not find libxml2 anywhere, check ftp://xmlsoft.org/"></a>5. Could not find libxml2 anywhere, check <a href="ftp://xmlsoft.org/">ftp://xmlsoft.org/</a></h2><p>这个是由于我执行了make clean, host下依赖包都卸载了， 需要重新编译libxml2</p>
-<h2 id="6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory"><a href="#6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory" class="headerlink" title="6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory"></a>6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</h2><p>需要编译gd</p>
-<h2 id="7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><a href="#7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory" class="headerlink" title="7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory"></a>7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</h2><p>需要编译geoip</p>
-<h2 id="8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’"><a href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’" class="headerlink" title="8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’"></a>8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</h2><p>在添加头文件的目录时， 在目录前面添加${STAGING_DIR}</p>
-<h2 id="9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><a href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined" class="headerlink" title="9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !"></a>9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</h2><p>需要编译libatomic_ops。  修改<code>auto/lib/conf</code>  run&#x3D;no</p>
-<h2 id="10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’"><a href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’" class="headerlink" title="10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?"></a>10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</h2><p>出错的原因仍然是因为交叉编译程序无法本地运行，手动在<code>auto/linux</code>下增加</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if [$ngx_found = no]; then</span><br><span class="line">  cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H</span><br><span class="line">#ifndef $ngx_feature_name</span><br><span class="line">#define $ngx_feature_name 132</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">END</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>具体的值可以看一下errno.h的宏</p>
-<h2 id="11-undefined-reference-to-gdImageCreateFromJpegPtr"><a href="#11-undefined-reference-to-gdImageCreateFromJpegPtr" class="headerlink" title="11. undefined reference to gdImageCreateFromJpegPtr"></a>11. undefined reference to <code>gdImageCreateFromJpegPtr</code></h2><p>gd版本升级  2.2.5 –&gt; 2.3.0</p>
-<h2 id="12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><a href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory" class="headerlink" title="12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package/nginx/nginx.logrotate: No such file or directory"></a>12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat <code>package/nginx/nginx.logrotate</code>: No such file or directory</h2><p>这个是目录错误了， 修改ngxin.mk。 相关<code>package/xxx</code>修改为<code>$(BR2_EXTERNAL_PATH)/package/xxx</code></p>
-<p>OK, 差不多就是这些问题， 然后就编译出了nginx包了。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ssh-keygen -t rsa -b 2048 -C &quot;auth@xxx.com&quot;</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/root/.ssh/id_rsa): /root/.ssh/id_rsa_auth</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /root/.ssh/id_rsa_auth</span><br><span class="line">Your public key has been saved in /root/.ssh/id_rsa_auth.pub</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:jSLQwYvLcHx+ya2VkeOVy+jbuFqj4CcIuRVwvBqkRtQ auth@xxx.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+---[RSA 2048]----+</span><br><span class="line">|.o...            |</span><br><span class="line">|.ooE..           |</span><br><span class="line">|++.o..   . .     |</span><br><span class="line">|+.*.o   +oo      |</span><br><span class="line">|.B =...+SB..     |</span><br><span class="line">|+ + ..+.* o      |</span><br><span class="line">| + ... +o        |</span><br><span class="line">|. ....oo.+       |</span><br><span class="line">|    .oo.+o.      |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ls -la ~/.ssh/</span><br><span class="line">总用量 48</span><br><span class="line">drwx------  2 root root 4096 5月  16 17:48 .</span><br><span class="line">drwx------ 18 root root 4096 5月  16 11:07 ..</span><br><span class="line">-rw-------  1 root root 1876 5月  16 17:48 id_rsa_auth</span><br><span class="line">-rw-r--r--  1 root root  394 5月  16 17:48 id_rsa_auth.pub</span><br><span class="line">-rw-r--r--  1 root root 1332 3月  25 15:01 known_hosts</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<p>然后把id_rsa_auth.pub的内容设置到gitlab就ok了。</p>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>RSA算法给予一个十分简单的数论事实：将两个大素数相乘十分容易，但是想要对其乘积进行因式分解却极其困难，因此可以将乘积公开作为加密秘钥。</p>
+<p>密钥生成过程： </p>
+<ul>
+<li>生成两个大的质数 p, q。 如：p&#x3D;7, q&#x3D;19</li>
+<li>得到n&#x3D;p<em>q, m &#x3D; (p-1)</em>(q-1)。如n&#x3D;133, m&#x3D;108</li>
+<li>选取e使得e和m互质。如e&#x3D;5</li>
+<li>生成d， 使得d*e mod m &#x3D; 1。如d&#x3D;65</li>
+<li>最后丢弃p,q,m。公钥就是e, n; 私钥就是d, n。 公钥(5, 133)， 私钥(65, 133)</li>
+</ul>
+<p>加密过程：</p>
+<p>输入明文x通过计算得到y</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y = x^e mod n</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">x = 6, 则 y = 6^5 mod 133 = 62</span></span><br></pre></td></tr></table></figure>
+
+<p>解密过程：<br>输入密文通过计算得到x</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = y^d mod n</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">x = 62^65 mod 133 = 6</span></span><br></pre></td></tr></table></figure>
+
+<p>RSA算法非常可靠，密钥越长，它就越难破解。根据已经披露的文献，目前被破解的最长RSA密钥是768个二进制位。也就是说，长度超过768位的密钥，还无法破解（至少没人公开宣布）。因此可以认为，1024位的RSA密钥基本安全，2048位的密钥极其安全。</p>
+<p>RSA涉及到了一些数学的概念。 </p>
+<ul>
+<li>质数 一个大于1的自然数，除了1和它本身外，不能被其他自然数整除（除0以外）的数称之为质数（素数）；否则称为合数。</li>
+<li>互质 若N个整数的最大公因子是1，则称这N个整数互质。</li>
+<li>指数运算 指数运算又称乘方计算，计算结果称为幂。</li>
+<li>模运算 让m去被n整除，只取所得的余数作为结果，就叫做模运算。</li>
+</ul>
+<p>这些也就是RSA的基础。还有更深层次的欧拉定理就不讲了，感觉有些费脑了。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>前面使用ssh-keygen生成rsa的公钥密钥的时候，需要输入一个密码。其实这个密码本身跟RSA是没有关系的，只是为了密钥的安全，使用了对称算法对密钥进行了加密。只有知道这个密码的人才能使用这对密钥。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
 
     </div>
 
@@ -284,13 +302,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/07/17/systemd/" rel="prev" title="谈谈Linux的systemd服务管理">
-      <i class="fa fa-chevron-left"></i> 谈谈Linux的systemd服务管理
+    <a href="/2022/05/03/openssl/" rel="prev" title="openssl基础命令的使用">
+      <i class="fa fa-chevron-left"></i> openssl基础命令的使用
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/08/28/dbus/" rel="next" title="浅谈dbus">
-      浅谈dbus <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -350,7 +365,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-checking-for-C-compiler-%E2%80%A6-found-but-is-not-workong"><span class="nav-number">1.</span> <span class="nav-text">1. checking for C compiler … found but is not workong</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-can-not-detect-int-size"><span class="nav-number">2.</span> <span class="nav-text">2. can not detect int size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-checking-for-PCRE-library-%E2%80%A6-not-found"><span class="nav-number">3.</span> <span class="nav-text">3. checking for PCRE library … not found</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><span class="nav-number">4.</span> <span class="nav-text">4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><span class="nav-number">5.</span> <span class="nav-text">5. Could not find libxml2 anywhere, check ftp:&#x2F;&#x2F;xmlsoft.org&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-checking-for-GD-library-%E2%80%A6objs-x2F-autotest-c-4-10-fatal-error-gd-h%EF%BC%9A-No-such-file-or-directory"><span class="nav-number">6.</span> <span class="nav-text">6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-checking-for-GeoIP-library-%E2%80%A6objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><span class="nav-number">7.</span> <span class="nav-text">7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-%E2%80%98-I%E2%80%99-%E2%80%98-x2F-usr-x2F-include-x2F-libxml2%E2%80%99"><span class="nav-number">8.</span> <span class="nav-text">8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><span class="nav-number">9.</span> <span class="nav-text">9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-%E2%80%98NGX-SYS-NERR%E2%80%99-undeclared-first-use-in-this-function-did-you-mean-%E2%80%98NGX-LOG-ERR%E2%80%99"><span class="nav-number">10.</span> <span class="nav-text">10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-undefined-reference-to-gdImageCreateFromJpegPtr"><span class="nav-number">11.</span> <span class="nav-text">11. undefined reference to gdImageCreateFromJpegPtr</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><span class="nav-number">12.</span> <span class="nav-text">12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package&#x2F;nginx&#x2F;nginx.logrotate: No such file or directory</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">RSA算法概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">1.2.</span> <span class="nav-text">其他</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
