@@ -28,7 +28,7 @@
 <meta property="og:description" content="RSA算法概述RSA算法是常用的非对称算法，应用广泛。比如常见的ssh连接，使用过gitlab的开发者都接触过，通过rsa算法可以生成一对证书，通过把公钥设置到gitlab上面，本地才可以通过ssh的方式下载代码。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-05-16T12:43:51.000Z">
-<meta property="article:modified_time" content="2022-05-16T11:21:02.297Z">
+<meta property="article:modified_time" content="2022-05-16T11:26:25.051Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 
@@ -256,7 +256,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ssh-keygen -t rsa -b 2048 -C &quot;auth@xxx.com&quot;</span><br><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/root/.ssh/id_rsa): /root/.ssh/id_rsa_auth</span><br><span class="line">Enter passphrase (empty for no passphrase):</span><br><span class="line">Enter same passphrase again:</span><br><span class="line">Your identification has been saved in /root/.ssh/id_rsa_auth</span><br><span class="line">Your public key has been saved in /root/.ssh/id_rsa_auth.pub</span><br><span class="line">The key fingerprint is:</span><br><span class="line">SHA256:jSLQwYvLcHx+ya2VkeOVy+jbuFqj4CcIuRVwvBqkRtQ auth@xxx.com</span><br><span class="line">The key&#x27;s randomart image is:</span><br><span class="line">+---[RSA 2048]----+</span><br><span class="line">|.o...            |</span><br><span class="line">|.ooE..           |</span><br><span class="line">|++.o..   . .     |</span><br><span class="line">|+.*.o   +oo      |</span><br><span class="line">|.B =...+SB..     |</span><br><span class="line">|+ + ..+.* o      |</span><br><span class="line">| + ... +o        |</span><br><span class="line">|. ....oo.+       |</span><br><span class="line">|    .oo.+o.      |</span><br><span class="line">+----[SHA256]-----+</span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# ls -la ~/.ssh/</span><br><span class="line">总用量 48</span><br><span class="line">drwx------  2 root root 4096 5月  16 17:48 .</span><br><span class="line">drwx------ 18 root root 4096 5月  16 11:07 ..</span><br><span class="line">-rw-------  1 root root 1876 5月  16 17:48 id_rsa_auth</span><br><span class="line">-rw-r--r--  1 root root  394 5月  16 17:48 id_rsa_auth.pub</span><br><span class="line">-rw-r--r--  1 root root 1332 3月  25 15:01 known_hosts</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>然后把id_rsa_auth.pub的内容设置到gitlab就ok了。</p>
-<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>RSA算法给予一个十分简单的数论事实：将两个大素数相乘十分容易，但是想要对其乘积进行因式分解却极其困难，因此可以将乘积公开作为加密秘钥。</p>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>RSA算法基于一个十分简单的数论事实：将两个大素数相乘十分容易，但是想要对其乘积进行因式分解却极其困难，因此可以将乘积公开作为加密秘钥。</p>
 <p>密钥生成过程： </p>
 <ul>
 <li>生成两个大的质数 p, q。 如：p&#x3D;7, q&#x3D;19</li>
@@ -305,7 +305,10 @@
     <a href="/2022/05/03/openssl/" rel="prev" title="openssl基础命令的使用">
       <i class="fa fa-chevron-left"></i> openssl基础命令的使用
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/21/weekly-openssl-speed/" rel="next" title="周谈(22)-openssl speed性能测试详解">
+      周谈(22)-openssl speed性能测试详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -381,7 +384,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-count">133</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
