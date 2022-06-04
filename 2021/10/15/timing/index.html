@@ -17,24 +17,24 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"fishmwei.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="前言几个月前了吧，团队有人测试了一下通过netconf给list类型的节点添加2w条表项，发现随着表项数目的增加，后面创建新表项的时间几乎呈一个线性的增长。到最后，每增加一个配置，大概就要耗时8s左右的时间，很显然，这是一个比较严重的性能问题。另外，即使你修改其他模块的配置，这个耗时也要6s左右的时间。就是如果一个模块的配置量很大，还会影响到其他模块的处理，这个就更严重了。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="性能优化-sysrepo笔记(6)">
-<meta property="og:url" content="https://fishmwei.gitee.io/2021/10/15/timing/index.html">
+<meta property="og:url" content="https://fishmwei.github.io/2021/10/15/timing/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="前言几个月前了吧，团队有人测试了一下通过netconf给list类型的节点添加2w条表项，发现随着表项数目的增加，后面创建新表项的时间几乎呈一个线性的增长。到最后，每增加一个配置，大概就要耗时8s左右的时间，很显然，这是一个比较严重的性能问题。另外，即使你修改其他模块的配置，这个耗时也要6s左右的时间。就是如果一个模块的配置量很大，还会影响到其他模块的处理，这个就更严重了。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fishmwei.gitee.io/images/202110/sysrepo_split.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202110/sysrepo_split.jpeg">
 <meta property="article:published_time" content="2021-10-14T23:52:47.000Z">
 <meta property="article:modified_time" content="2022-03-31T00:55:30.628Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://fishmwei.gitee.io/images/202110/sysrepo_split.jpeg">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202110/sysrepo_split.jpeg">
 
-<link rel="canonical" href="https://fishmwei.gitee.io/2021/10/15/timing/">
+<link rel="canonical" href="https://fishmwei.github.io/2021/10/15/timing/">
 
 
 <script id="page-configurations">
@@ -188,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2021/10/15/timing/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2021/10/15/timing/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">

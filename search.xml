@@ -719,7 +719,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
@@ -2871,7 +2871,7 @@
   <entry>
     <title>博客迁移</title>
     <url>/2021/02/28/notice/</url>
-    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.gitee.io/">码云</a>上去。</p>
+    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.github.io/">码云</a>上去。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4192,7 +4192,7 @@
 
 <p>这是第四篇, 下面看问题。</p>
 <h1 id="系统时间更改导致的问题"><a href="#系统时间更改导致的问题" class="headerlink" title="系统时间更改导致的问题"></a>系统时间更改导致的问题</h1><p>修改系统时间是一个不是常用的功能，但是又是很必须的。看起来很简单的系统时间的修改，也出了好几个问题。</p>
-<h2 id="rpc超时"><a href="#rpc超时" class="headerlink" title="rpc超时"></a>rpc超时</h2><p>修改系统时间，本身使用的是一个rpc调用，rpc使用超时机制的，就是在指定时间内如果执行函数没有返回，那么rpc就认为超时失败了。这个问题在前面的文章中讲过，具体可以看这篇文章 <a href="https://fishmwei.gitee.io/2021/10/23/timeout/">超时实现-sysrepo笔记(8)
+<h2 id="rpc超时"><a href="#rpc超时" class="headerlink" title="rpc超时"></a>rpc超时</h2><p>修改系统时间，本身使用的是一个rpc调用，rpc使用超时机制的，就是在指定时间内如果执行函数没有返回，那么rpc就认为超时失败了。这个问题在前面的文章中讲过，具体可以看这篇文章 <a href="https://fishmwei.github.io/2021/10/23/timeout/">超时实现-sysrepo笔记(8)
 </a></p>
 <h2 id="dhcp接口ip失效"><a href="#dhcp接口ip失效" class="headerlink" title="dhcp接口ip失效"></a>dhcp接口ip失效</h2><p>同样的，接口配置了dhcp方式获取地址，由于修改了系统时间为未来的时间，导致dhcp的租期过期，接口自动释放了ip地址。相当于就是没有地址了。这样子，网络就不通的。网络不通算是一个挺大的问题吧，在web上面修改个时间，然后网络就断开了，无法连接了。</p>
 <p>这个问题修改也简单，在修改ip的时候，还得触发dhcp续租。</p>
@@ -4874,7 +4874,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
@@ -4903,7 +4903,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -4941,7 +4941,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
@@ -4990,7 +4990,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -5029,7 +5029,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -5085,7 +5085,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -5111,7 +5111,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
@@ -5165,7 +5165,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -5211,7 +5211,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
       <categories>
@@ -5258,7 +5258,7 @@
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>
@@ -5291,14 +5291,14 @@
 <p>代码已经上传到gitee中，感兴趣可以去看看，欢迎交流，提提意见。</p>
 <p><code>https://gitee.com/fishmwei/ccmd</code></p>
 <p>在源码中带有一个example， 运行效果如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/ccmd/example/build# ./ccmd_test --help</span><br><span class="line">Usage</span><br><span class="line"> ./ccmd_test [options] ...</span><br><span class="line">Options:</span><br><span class="line"> --help: prints this help</span><br><span class="line"> --name: specify student name</span><br><span class="line"> --address: specify student home address</span><br><span class="line"> --age: specify student age</span><br><span class="line"> --fresh: is fresh graduate</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/ccmd/example/build# ./ccmd_test --name xiaoming --address Fuzhou,Fujian --age 18 --fresh</span><br><span class="line">get student info:</span><br><span class="line"> name   : xiaoming</span><br><span class="line"> address: Fuzhou,Fujian</span><br><span class="line"> age    : 18</span><br><span class="line"> fresh  : true</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/ccmd/example/build# ./ccmd_test --help</span><br><span class="line">Usage</span><br><span class="line"> ./ccmd_test [options] ...</span><br><span class="line">Options:</span><br><span class="line"> --help: prints this help</span><br><span class="line"> --name: specify student name</span><br><span class="line"> --address: specify student home address</span><br><span class="line"> --age: specify student age</span><br><span class="line"> --fresh: is fresh graduate</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/ccmd/example/build# ./ccmd_test --name xiaoming --address Fuzhou,Fujian --age 18 --fresh</span><br><span class="line">get student info:</span><br><span class="line"> name   : xiaoming</span><br><span class="line"> address: Fuzhou,Fujian</span><br><span class="line"> age    : 18</span><br><span class="line"> fresh  : true</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>端午节废了一天，今天赶紧振作起来，搞点事情。</p>
 <p>这段时间，工作上也算是有点儿忙吧，家里也出了些烦心事，又落下了一周文章。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.gitee.io/">https://fishmwei.gitee.io/</a></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
 <p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
 <hr>
 ]]></content>

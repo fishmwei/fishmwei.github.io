@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"fishmwei.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。 本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage&#x2F;RCTImageCache.m中_decodedImageCache的使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS知识点(1) - NSCache">
-<meta property="og:url" content="https://fishmwei.gitee.io/2019/06/19/NSCache-iOS/index.html">
+<meta property="og:url" content="https://fishmwei.github.io/2019/06/19/NSCache-iOS/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。 本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage&#x2F;RCTImageCache.m中_decodedImageCache的使用。">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="React-Native">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://fishmwei.gitee.io/2019/06/19/NSCache-iOS/">
+<link rel="canonical" href="https://fishmwei.github.io/2019/06/19/NSCache-iOS/">
 
 
 <script id="page-configurations">
@@ -188,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fishmwei.gitee.io/2019/06/19/NSCache-iOS/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2019/06/19/NSCache-iOS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
