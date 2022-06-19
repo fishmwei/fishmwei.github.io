@@ -4794,6 +4794,7 @@
       <categories>
         <category>技术</category>
         <category>Linux</category>
+        <category>内核</category>
       </categories>
   </entry>
   <entry>
@@ -5339,6 +5340,7 @@
 <p>好了，又Get 一个新知识。 </p>
 <p>参考链接： <a href="https://oxnz.github.io/2016/10/13/linux-aio">https://oxnz.github.io/2016/10/13/linux-aio</a></p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>前段时间写的一个测试框架代码初版基本完成了，这两周一直在写文档， 不断的修改演化，画那个架构图画的有点儿晕了。正常的话，下周也要转正了吧，还得写个ppt，写文档真的也是一个能力啊，好好加油!</p>
+<p>晚上回来出去跑了个步，然后再回来洗个澡。就把手机丢一边，专心搞了这篇文章，时间贼快啊， 23：30了，晚安!</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -5348,6 +5350,73 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>linux</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(25)-初识驱动开发</title>
+    <url>/2022/06/19/driver/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>工作需要，开始接触驱动开发了。</p>
+<p>驱动作为硬件和软件的中间层，驱动就是驱使硬件设备行动的简述。驱动与底层的硬件打交道，根据硬件的工作方式，读写寄存器，完成设备的控制。驱动向上提供统一的API，使得软件可以使用通用的接口，通过不同的驱动来控制不同的设备。</p>
+<span id="more"></span>
+
+<h1 id="驱动"><a href="#驱动" class="headerlink" title="驱动"></a>驱动</h1><p>驱动根据是否有操作系统，分为无操作系统的驱动和有操作系统的驱动。在无操作系统的情况下，驱动的接口由驱动工程师自定义，暴露自定义的接口。在有操作系统的情况下，驱动的结构由操作系统定义，驱动工程师需要根据架构设计驱动，把驱动整合到操作系统的内核中。</p>
+<p>操作系统为一类设备定义一套接口，相同类别的设备使用相同的方式编写驱动。可以看出，在有操作系统的情况下，驱动编写比较复杂，需要符合操作系统的架构。但是，通过操作系统的控制，我们可以享受到操作系统提供的一系列功能支持，比如多任务多并发、内存管理机制。而且，在操作系统的控制下，上层应用可以更方便的控制设备。</p>
+<h2 id="驱动分类"><a href="#驱动分类" class="headerlink" title="驱动分类"></a>驱动分类</h2><p>根据设备类型分为字符设备、块设备和网络设备。</p>
+<ul>
+<li>字符设备：指那些必须以串行顺序依次进行访问的设备，如触摸屏、磁带驱动器、鼠标等</li>
+<li>块设备： 备可以按任意顺序进行访问，以块为单位进行操作，如硬盘、eMMC 等</li>
+<li>网络设备： 面向数据包的接收和发送而设计，它并不倾向于对应于文件系统的节点。</li>
+</ul>
+<p>网络设备是基于套接字API控制，字符设备和块设备基于文件系统来控制。</p>
+<p><img src="/images/202206/driver01.png" alt="avatar"></p>
+<h2 id="驱动开发"><a href="#驱动开发" class="headerlink" title="驱动开发"></a>驱动开发</h2><p>一般情况下，在Linux系统下，驱动作为内核的子模块，可以静态编译到内核中，也可以动态加载&#x2F;卸载。具体实现时，只需要在Makefile定义目标文件时区分一下就可以了。</p>
+<ul>
+<li>obj-y 表示对应的文件要编译链接到内核中。</li>
+<li>obj-m 表示文件要作为模块编译。</li>
+<li>obj-n 表示目标文件不会被编译。</li>
+</ul>
+<p>通过内核编译的配置，会生成不同的makefile，然后编译的时候会根据上述规则进行编译。</p>
+<p>除了具有 obj- 形式的目标以外，还有 lib-y library 库、hostprogs-y 主机程序等目标，但是这两类基本都应用在特定的目录和场合下。</p>
+<p>模块编译采用模块名加 -y 或 -objs 后缀的形式来定义模块的组成文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># Makef ile for the linux ext2-f ilesystem routines.</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash">obj-$(CONF iG_EXT2_FS) += ext2.o</span></span><br><span class="line">ext2-y := balloc.o dir.o f ile.o fsync.o ialloc.o inode.o \</span><br><span class="line"> ioctl.o namei.o super.o symlink.o</span><br><span class="line"><span class="meta prompt_">ext2-$</span><span class="language-bash">(CONF iG_EXT2_FS_XATTR) += xattr.o xattr_user.o xattr_trusted.o</span></span><br><span class="line"><span class="meta prompt_">ext2-$</span><span class="language-bash">(CONF iG_EXT2_FS_POSIX_ACL) += acl.o</span></span><br><span class="line"><span class="meta prompt_">ext2-$</span><span class="language-bash">(CONF iG_EXT2_FS_SECURITY) += xattr_security.o</span></span><br><span class="line"><span class="meta prompt_">ext2-$</span><span class="language-bash">(CONF iG_EXT2_FS_XIP) += xip.o</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>模块的名字为 ext2，由 balloc.o、dir.o、file.o 等多个目标文件最终链接生成 ext2.o 直至<br>ext2.ko 文件，并且是否包括 xattr.o、acl.o 等则取决于内核配置文件的配置情况，例如，如果<br>CONFIG_ EXT2_FS_POSIX_ACL 被选择，则编译 acl.c 得到 acl.o 并最终链接进 ext2。</p>
+<h2 id="内核模块"><a href="#内核模块" class="headerlink" title="内核模块"></a>内核模块</h2><p>模块本身不会被编译进内核，可以控制内核的大小。模块一旦被加载，它就和其他部分是一样的。下面是一个最简单的模块编码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// hello.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/moduleparam.h&gt;</span></span></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line"><span class="type">static</span> <span class="type">char</span> *who= <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> times = <span class="number">1</span>;</span><br><span class="line">module_param(times,<span class="type">int</span>,S_IRUSR);</span><br><span class="line">module_param(who,charp,<span class="number">0644</span>);</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">hello_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;times;i++)</span><br><span class="line">    printk(KERN_ALERT <span class="string">&quot;(%d) hello, %s!\n&quot;</span>,i,who);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">hello_api</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;Call, %s from module hello!\n&quot;</span>,__func__);</span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL_GPL(hello_api);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">hello_exit</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    printk(KERN_ALERT<span class="string">&quot;Goodbye, %s!\n&quot;</span>,who);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br><span class="line"></span><br><span class="line">MODULE_DESCRIPTION(<span class="string">&quot;Module named hello.&quot;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Makefile</span></span><br><span class="line">KERN_DIR=/lib/modules/$(shell uname -r)/build</span><br><span class="line"></span><br><span class="line">EXTRA_CFLAGS=</span><br><span class="line">all:</span><br><span class="line">        make -C $(KERN_DIR) M=`pwd` modules</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">        make -C $(KERN_DIR) M=`pwd` modules clean</span><br><span class="line">        rm -rf modules.order</span><br><span class="line"></span><br><span class="line">obj-m    += hello.o</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>内核模块包括几个部分：</p>
+<ul>
+<li>加载函数， 使用insmod或者modprobe命令时，会执行加载函数，完成模块的初始化</li>
+<li>卸载函数，使用rmmod命令时，会执行卸载函数，完成模块的卸载工作</li>
+<li>模块许可证， 定义模块的许可证权限， 基本上使用GPL许可与</li>
+<li>模块参数， 可以通过模块参数控制模块内部的全局变量的值， 可选</li>
+<li>模块导出符号，导出的符号可以被其他模块使用，可选， 可以在&#x2F;proc&#x2F;kallsyms文件里看到符号</li>
+<li>模块作者等信息</li>
+</ul>
+<p>这是一个最简单的模块，两个文件放到同一个目录下，然后make就可以生成目标文件hello.ko。<br>内核模块的安装卸载命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">lsmode # 查看内核模块信息</span><br><span class="line">insmod hello.ko # 加载hello模块</span><br><span class="line">rmmod hello # 删除hello模块</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看导出的符号</span></span><br><span class="line">root@keep-VirtualBox:/home/keep/code/code/test/616# cat /proc/kallsyms | grep hello_api</span><br><span class="line">ffffffffc0549010 r __kstrtab_hello_api  [hello]</span><br><span class="line">ffffffffc054901a r __kstrtabns_hello_api        [hello]</span><br><span class="line">ffffffffc0549000 r __ksymtab_hello_api  [hello]</span><br><span class="line">ffffffffc054801d t hello_api    [hello]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>printk输出的信息，可以使用dmesg命令查看。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[17139.388328] (0) hello, world!</span><br><span class="line">[17261.008559] Goodbye, world!</span><br><span class="line">[17265.353372] (0) hello, world!</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>开始学习驱动开发了，其实没什么困难的，驱动发展到现在，和其他所有领域一样，都有了一套完整的体系。剩下的就是花时间去学习了。</p>
+<p>本周五的时候，小组开了一个会议，主要就是对我之前开发的一个程序进行设计评审吧，也算是一个找茬的会议。做软件的都是这样，当你完成一个功能之后，然后再给客户看的时候，他们就会产生各种新的想法。即使前面已经再三确认了需求，但是在功能完成之后，他们肯定会提出新的要求，甚至否认之前已经达成的共识。这个跟项目管理的关系是比较大的，任务没有跟踪，需求没有文档化。到最后，领导说什么就是什么了，呵呵。</p>
+<p>软件开发就是一个不断迭代的过程，需求不断的变化，功能也需要不断地完善。这个都是无可厚非的。</p>
+<p>但是，在这个小组内，就有一个比较奇怪的现象。就是希望一切都能够一步到位，在软件设计的阶段就希望把很多东西做的完美。希望一切都可以抽象化， 过程通用化，统一化。比较难接收的就是要求一次实现之后不能改动了。在这个方面，一时之间还是有点儿难以适应，不敢苟同。在过往做过的这么多项目中，项目都是迭代演进的，需求也是按紧急程度分批实现的。罗马不是一天就建成的。软件开发，也是尽量往简单, 易扩展性来开发，毕竟软件开发不是一锤子买卖，是需要长久发展演化，不断进行完善的。老是抱着古老的瀑布开发模式来管理项目，的确是有点儿不与时俱进的,关键也没按瀑布模式产生任务文档啊。</p>
+<p>既来之，则安之，适应之，改变之。</p>
+<p>加油！</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>Linux</category>
       </categories>
   </entry>
 </search>
