@@ -5395,7 +5395,7 @@
 <li>模块作者等信息</li>
 </ul>
 <p>这是一个最简单的模块，两个文件放到同一个目录下，然后make就可以生成目标文件hello.ko。<br>内核模块的安装卸载命令如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">lsmode # 查看内核模块信息</span><br><span class="line">insmod hello.ko # 加载hello模块</span><br><span class="line">rmmod hello # 删除hello模块</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看导出的符号</span></span><br><span class="line">root@keep-VirtualBox:/home/keep/code/code/test/616# cat /proc/kallsyms | grep hello_api</span><br><span class="line">ffffffffc0549010 r __kstrtab_hello_api  [hello]</span><br><span class="line">ffffffffc054901a r __kstrtabns_hello_api        [hello]</span><br><span class="line">ffffffffc0549000 r __ksymtab_hello_api  [hello]</span><br><span class="line">ffffffffc054801d t hello_api    [hello]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">lsmod # 查看内核模块信息</span><br><span class="line">insmod hello.ko # 加载hello模块</span><br><span class="line">rmmod hello # 删除hello模块</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看导出的符号</span></span><br><span class="line">root@keep-VirtualBox:/home/keep/code/code/test/616# cat /proc/kallsyms | grep hello_api</span><br><span class="line">ffffffffc0549010 r __kstrtab_hello_api  [hello]</span><br><span class="line">ffffffffc054901a r __kstrtabns_hello_api        [hello]</span><br><span class="line">ffffffffc0549000 r __ksymtab_hello_api  [hello]</span><br><span class="line">ffffffffc054801d t hello_api    [hello]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>printk输出的信息，可以使用dmesg命令查看。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[17139.388328] (0) hello, world!</span><br><span class="line">[17261.008559] Goodbye, world!</span><br><span class="line">[17265.353372] (0) hello, world!</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -5407,6 +5407,61 @@
 <p>但是，在这个小组内，就有一个比较奇怪的现象。就是希望一切都能够一步到位，在软件设计的阶段就希望把很多东西做的完美。希望一切都可以抽象化， 过程通用化，统一化。比较难接收的就是要求一次实现之后不能改动了。在这个方面，一时之间还是有点儿难以适应，不敢苟同。在过往做过的这么多项目中，项目都是迭代演进的，需求也是按紧急程度分批实现的。罗马不是一天就建成的。软件开发，也是尽量往简单, 易扩展性来开发，毕竟软件开发不是一锤子买卖，是需要长久发展演化，不断进行完善的。老是抱着古老的瀑布开发模式来管理项目，的确是有点儿不与时俱进的,关键也没按瀑布模式产生任务文档啊。</p>
 <p>既来之，则安之，适应之，改变之。</p>
 <p>加油！</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>Linux</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(26)-Linux文件系统与驱动</title>
+    <url>/2022/06/23/linux-fs/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
+<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
+<span id="more"></span>
+
+<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
+<ul>
+<li>bin 存放基本命令程序</li>
+<li>sbin 存放系统命令的程序</li>
+<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
+<li>etc 配置文件目录</li>
+<li>lib 库文件的存放目录</li>
+<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
+<li>opt 可选软件安装目录</li>
+<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
+<li>tmp 临时文件目录</li>
+<li>usr 用户存放程序的目录</li>
+<li>var 经常变动的文件放在这里 比如log文件</li>
+<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
+</ul>
+<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
+<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
+<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
+<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
+<p><img src="/images/202206/devfs.png" alt="avatar"></p>
+<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
+<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
+<p><img src="/images/202206/addcd.png" alt="avatar"></p>
+<p> 效果如下：</p>
+<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
+<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>udev有对应的工具监控netlink。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
+<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
