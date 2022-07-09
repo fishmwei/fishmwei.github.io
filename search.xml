@@ -5518,7 +5518,7 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(28)-内核调用crypto算法方法</title>
+    <title>周谈(28)-内核调用crypto算法代码解析</title>
     <url>/2022/07/09/linux-kernel-crypto/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上周讲了使用tcrypt对内核加密框架linux kernel crypto中算法的测试。今天具体看一下几个示例。</p>
 <p>算法类型分为4种： hash、对称、非对称、随机数。</p>
