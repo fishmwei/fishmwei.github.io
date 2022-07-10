@@ -5589,7 +5589,7 @@
 <p><code>http://c.gb688.cn/bzgk/gb/showGb?type=online&amp;hcno=C6D60AE0A7578E970EF2280ABD49F4F0</code></p>
 <p>这个部分描述了完整性算法的输入与输出。</p>
 <p><img src="/images/202207/zuc_dgst.png" alt="avatar"></p>
-<p>跟保密性算法相同，吃醋是向量IV也由具体的参数计算出来。</p>
+<p>跟保密性算法相同，初始向量IV也由具体的参数计算出来。</p>
 <p><img src="/images/202207/zuc_eia_iv.png" alt="avatar"></p>
 <p>在计算的过程中，由于密钥流都是按照字来输出的，所以除了最后一片数据外,每次处理的数据的长度最好都是4字节的整数倍。</p>
 <h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>根据算法的描述文档，结合GMSSL的软算法的实现，可以比较容易的实现算法流程。</p>
