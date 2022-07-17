@@ -5607,4 +5607,46 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>周谈(29)-snow3g流密码算法</title>
+    <url>/2022/07/17/snow3g/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面讲过<code>ZUC</code>算法是3GPP LTE 第三套加密标准核心算法，而<code>Snow 3G</code>则是第二套加密标准核心算法，<code>ZUC</code>和<code>Snow 3G</code>算法的英文描述可以在这个网站上找到:</p>
+<p><code>https://www.gsma.com/security/security-algorithms/</code></p>
+<p><img src="/images/202207/3gpp_security.png" alt="avatar"></p>
+<span id="more"></span>
+
+<p>实现完<code>ZUC</code>的驱动后，这周实现了一下<code>Snow 3G</code>的驱动，顺带学习了一下这个算法。</p>
+<h1 id="Snow-3G"><a href="#Snow-3G" class="headerlink" title="Snow 3G"></a>Snow 3G</h1><p><code>Snow 3G</code>也包含了完整性算法<code>UEA2</code>和保密性算法<code>UIA2</code>两个部分，同时也依赖一个算法描述如何生成密钥流。</p>
+<h2 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/snow3gspec.pdf</code></p>
+<p>根据输入的密钥和IV初始化，而后根据输入的数据长度产生密钥流。</p>
+<p><img src="/images/202207/snow3g_spec.png" alt="avatar"></p>
+<p>在文档后面还有对应的C语言实现程序，当然只是一个基础的实现，如果要应用到实际的产品中还需要重构一下。</p>
+<h2 id="保密性算法"><a href="#保密性算法" class="headerlink" title="保密性算法"></a>保密性算法</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/uea2uia2d1v21.pdf</code></p>
+<p><img src="/images/202207/uea2.png" alt="avatar"></p>
+<p><code>UEA2</code>是一种流加密算法，按位进行加解密。从上图中可以看到对应的输入参数和输出结果。这些参数首先会根据固定的算法产生IV数据，然后按照算法描述产生密钥流，最终跟要加密或者解密的数据进行运算得到最终的结果。</p>
+<p><img src="/images/202207/uea2b.png" alt="avatar"></p>
+<p>同样的，在文档的后面有对应的C语言实现程序。</p>
+<h2 id="完整性算法"><a href="#完整性算法" class="headerlink" title="完整性算法"></a>完整性算法</h2><p>文档链接跟保密性算法是同一个文档。</p>
+<p><img src="/images/202207/uia2.png" alt="avatar"></p>
+<p>具体的计算过程可以参考文档。在文档的后面也有对应的C语言实现程序。</p>
+<p>不过完整性算法的C语言代码，最后计算MAC是有错误的，需要修改一下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*原始代码 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"> <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++)</span><br><span class="line">    MAC_I[i] = (mac32 &gt;&gt; (<span class="number">8</span>*(<span class="number">3</span>-i))) &amp; <span class="number">0xff</span>; <span class="comment">/* mac32是一个没有定义的变量 */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> MAC_I; </span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改代码 */</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++) &#123;</span><br><span class="line">    MAC_I[i] = ((EVAL &gt;&gt; (<span class="number">56</span> - (i * <span class="number">8</span>))) ^ ((z[<span class="number">4</span>]) &gt;&gt; (<span class="number">24</span> - (i * <span class="number">8</span>)))) &amp; <span class="number">0xff</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">return</span> MAC_I;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我也是参考了一个go语言的<code>snow3g</code>的实现，然后是验证通过了的。</p>
+<p><code>https://github.com/frankurcrazy/snow3g/blob/master/uia2/uia2.go</code></p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这个<code>3gpp</code>的英文文档内容还是比较齐全的，而且还自带了算法的实现代码。同样的，<code>ZUC</code>对应的<code>EEA3</code>和<code>EIA3</code>算法也有代码。不过，经过验证，我发现了一个问题，那就是<code>ZUC</code>的样例数据是按照大端字节序测试的，在小端主机上面，需要先把原始的数据转换一下字节序，才能得到正确的结果。而那个<code>snow 3g</code>的测试数据本身就认为你是小端的，在小端主机上面不需要转换字节序，计算出的结果就跟他的示例数据是一致的。如果有人研究的话，注意一下这点区别。</p>
+<p>多学点知识还是有好处的，这边有个工作中的小插曲。</p>
+<p>就是工作上需要在新的机型上验证一个功能，但是验证平台资源比较紧俏，运行速度又慢，而且很多人排着队等着去使用。那没有办法了，你只能在现有的机器资源上面先把代码编译测试了，然后再弄到新的机型上面去验证。也就是先本地验证了把基本的流程走通了，再换环境验证一下。不同的环境就有个系统版本不一致的问题，主要就是那个glibc的库不一样，系统内核版本不一样，那么就需要用到docker这个东西了。需要在本地搭建一个跟新机型上面环境一致的镜像系统，在这个镜像里面编译好了，再把生成的二进制拷贝到新机型上面验证。今年不是刚好看了一些docker的基础使用吗，然后自然就很快的用上了，节省了许多时间。</p>
+<p>多学点东西是不错的，有博客记录一下更不错了，到用的时候可以来查一查，事半功倍。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
