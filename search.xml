@@ -5649,4 +5649,62 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>ecc曲线原理</title>
+    <url>/2022/07/24/ecc/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这周完成了流密码算法的驱动开发及调试。毕竟对驱动的一些机制了解的还不够深，还是花了许多时间才调试完成，加了三天的班。中间遇到了一个dma内存映射的问题，由于映射时参数错误导致数据一直没有更新。前面写驱动代码的时候，也只是参照着其它算法的代码写的，那个算法的代码比较久了，没有及时地更新，导致又走了些同样弯路。总之，还是自己对驱动相关的知识没有掌握导致的。</p>
+<span id="more"></span>
+
+<p>周五的时候就开始研究ECC曲线算法了，前面计划这周完成流密码算法的调试和ECC曲线编码的。计划赶不上变化，时间变得有些匆忙了。由于也是第一次接触这个ECC曲线算法，周五的时候花了一天的时间学习了一下。</p>
+<h1 id="ECC曲线"><a href="#ECC曲线" class="headerlink" title="ECC曲线"></a>ECC曲线</h1><p>ECC算是非对称密码算法，提供签名验签的功能(ECDSA)，另外就是用于派生密钥(ECDH)。跟RSA的功能是相同的，不过效率会更高一些，安全性更好。</p>
+<p>公钥密码学，是基于数学原理的，好比RSA获得两个大素数可以容易计算其乘积，但是通过乘积却很难因式分解到两个大素数。ECC曲线也是类似，给定固定参数的ECC曲线上， 然后给点一个点和常数k， 可以得到进行k次点乘后的点，但是通过两个点很难推出那个常量。</p>
+<p>RSA的私钥和公钥都可以用来加密，不过ECC去不能这样，ECC的私钥是一个长度固定的数k，公钥是一对数(一个点的坐标Gx, Gy)。</p>
+<p>ECC的标准有中国的国密SM2， 还有SECG组织的secp256k1, secp256r1。256表示私钥的长度，sec就是组织简称， p是素数prime的意思，k是一组曲线的名称(Koblitz提出的)，r就是随机数了。其中，secp256k1现在用于区块链，是区块链行业的标准了。安卓系统使用secp256r1.</p>
+<p>ECC曲线满足下面这个方程式：</p>
+<p><img src="/images/202207/ecc_expr.png" alt="ecc_expr"></p>
+<p>至于ECC曲线长什么样，可以通过一个网站<code>https://www.geogebra.org/calculator</code>输入方程式得到曲线的形状。</p>
+<p><img src="/images/202207/ecc_draw.png" alt="ecc_draw"></p>
+<h2 id="数学概念"><a href="#数学概念" class="headerlink" title="数学概念"></a>数学概念</h2><p>ECC设计到一些数学概念，只有了解了这些概念，后面才能更容易理解ECC是个什么玩意，为啥能够用来加解密。</p>
+<p>取模，就是简单的算术模。主要用于把无穷的数，限定到一个有限的数域里面，这是个多对一的关系。</p>
+<h3 id="群"><a href="#群" class="headerlink" title="群"></a>群</h3><p>如果存在这么个元素的集合G，针对这个集合内部任意两个元素，定义了一个操作o，如果下列性质得到满足，那么G就叫作一个群，记为（G，o）。</p>
+<p>A.1 满足封闭性——对于任意两个G里面的元素a和b做操作aob，得到的结果也属于G。<br>A.2 满足结合律——对于G中的任意元素a、b和c，都有（aob)oc&#x3D;ao(boc）成立。<br>A.3 唯一中性元——G中存在唯一个元素I，对于G中任意元素a，都有aoI&#x3D;Ioa&#x3D;a成立。<br>A.4 存在逆元——对于G中任意元素a，G中都能找到另一个唯一元素 [公式] ，使得 [公式] 。成立，那么 [公式] 就是a的逆元。<br>A.5 如果满足交换律——对于任意两个G里面的元素a和b，aob&#x3D;boa，那么这个群是交换群（也称为阿贝尔群）。<br>A.6 如果一个群中的元素是有限的，称这个群是一个有限群；否则称这个群是一个无限群。有限群中元素的个数称为群的阶(Group order)，通常记为n。这里n一定是个素数。<br>A.7 对于n阶有限群有两个特别重要的特性：<br>A.7.1 对于这个群的任意一个元素a做n次操作，我们必然能够得到中性元。即 [公式] 。此处特别定义 [公式]。这里的“指数n”的意义是”对n个相同元素连续做操作o”–而并非是a的n次方！例如，如果n&#x3D;3，意思是aoaoa &#x3D; I；<br>A.7.2 如果存在一个特定的元素g，对这个特定元素进行1~n-1次操作，我们将可以得到这个群G里面所有其它的元素，那么这个特定的元素g叫做这个群的生成元。此时这个群是个循环群。</p>
+<h3 id="整数环"><a href="#整数环" class="headerlink" title="整数环"></a>整数环</h3><p>整数环是定义这么个集合Zp&#x3D; {1,2,3, p-1} 包括p个整数，在这个集合里面满足如下条件：</p>
+<p>B.1 定义操作+，使得任意两个元素 a+b &#x3D; c (mod p), c 仍然在集合Zp当中。<br>B.2 定义操作x，使得任意两个元素 axb &#x3D; d (mod p), d 仍然在集合Zp当中；<br>B.3 特别地，如果p是个素数，那么，Zp内部所有元素均与p互质</p>
+<h3 id="域"><a href="#域" class="headerlink" title="域"></a>域</h3><p>其实是一个算数加法群和一个算数乘法群的“杂交”，它是这么个元素的集合F：</p>
+<p>C.1 F中所有的元素形成一个加法群，这里的加法确实是算数加法 +；该加法群的中性元是自然数0–换句话说，0必然在F当中；<br>C.2 F如果把0剔除的话，剩余的元素形成一个乘法群，这里的乘法确实是算数乘法 *；该乘法群的中性元是自然数1–换句话说，1必然在F当中；<br>C.3 集合内满足分配率，即使用上述加法和乘法操作针对集合内任意元素做如下计算都成立：a x( b+c) &#x3D; axb + axc</p>
+<p>概念这个东西有点儿绕，而且特征有点儿多，稍微看看了解一下。</p>
+<h2 id="曲线参数"><a href="#曲线参数" class="headerlink" title="曲线参数"></a>曲线参数</h2><p>先看一个secp256k1的参数</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">secp256k1 parameters</span></span><br><span class="line">a  = 0</span><br><span class="line">b  = 7</span><br><span class="line">n  = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</span><br><span class="line"></span><br><span class="line">Gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798</span><br><span class="line">Gy = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8</span><br><span class="line">p  = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">Quick verify <span class="keyword">if</span>(Gx, Gy) is on secp256k1 curve:</span></span><br><span class="line">Gy**2 % p == (Gx**3 + Gx*a + b) % p</span><br></pre></td></tr></table></figure>
+
+<p>a, b就是方程里的常数，可以唯一确定一条曲线。n表示点的阶，也可以理解为点的个数吧。Gx, Gy分别为一个点的坐标，这个点称为基点。secp256k1的参数（a, b, n)包含有n个点。基点(Gx, Gy)是一个生成元，就是对其作任意的加操作结果都是I(无穷点、中性元点)。</p>
+<p>P是一个大素数。</p>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>ECC曲线算法的操作有点加和点乘。点乘等于多个点加操作，可以类比算术的加和乘。这里的点加操作是这样的，两个点确定一条直线，然后找到这条直线和曲线的交点R，再得到这个点对于X轴对称的点R’。</p>
+<p><img src="/images/202207/getR.png" alt="getR"></p>
+<p>下面是点加的python代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">Point_Add_General</span> (self, P: ECP, Q: ECP):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;calculate R = P + Q, for whatever P and Q (acceptable for P==Q) &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> Q.is_Unit_Point():</span><br><span class="line">            <span class="keyword">return</span> P</span><br><span class="line">        <span class="keyword">if</span> P.is_Unit_Point():</span><br><span class="line">            <span class="keyword">return</span> Q</span><br><span class="line">        <span class="keyword">if</span> Q.is_reverse(P, self.p_):</span><br><span class="line">            <span class="keyword">return</span> Unit</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> P == Q:</span><br><span class="line">        <span class="comment"># slope m for Dbl</span></span><br><span class="line">            m = ( <span class="number">3</span> * P.x_**<span class="number">2</span>  ) % self.p_</span><br><span class="line">            m = ( m + self.a_  ) % self.p_</span><br><span class="line">            div = modular_inverse(<span class="number">2</span>*P.y_, self.p_)</span><br><span class="line">            m = m*div % self.p_</span><br><span class="line"></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            m = ( P.y_ - Q.y_  ) % self.p_</span><br><span class="line">            </span><br><span class="line">            t2 = (P.x_ - Q.x_) % self.p_</span><br><span class="line">            <span class="keyword">if</span> t2 &lt; <span class="number">0</span>:</span><br><span class="line">                div = modular_inverse(t2+self.p_, self.p_)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                div = modular_inverse(t2, self.p_)</span><br><span class="line">            m = m*div % self.p_</span><br><span class="line"></span><br><span class="line">        <span class="comment"># common for Output point:</span></span><br><span class="line">        xo = ( m**<span class="number">2</span> - P.x_ - Q.x_  ) % self.p_</span><br><span class="line">        <span class="keyword">if</span> xo &lt; <span class="number">0</span>:</span><br><span class="line">            xo += self.p_</span><br><span class="line">        yo = (P.y_ + m*(xo - P.x_) ) % self.p_</span><br><span class="line">        <span class="keyword">if</span> yo &lt; <span class="number">0</span>:</span><br><span class="line">            yo += self.p_</span><br><span class="line"></span><br><span class="line">        Point_Out = (xo, yo)</span><br><span class="line">        T = ECP( Point_Out )</span><br><span class="line">        R = T.neg_point(self.p_)</span><br><span class="line">        <span class="keyword">return</span> R</span><br></pre></td></tr></table></figure>
+
+<p>点乘就是进行k次点加,：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Point_Mult</span>(<span class="params">self, k, Pin: ECP</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27; Point multiply by scalar k&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="keyword">not</span> k &lt; <span class="number">0</span> , <span class="string">&quot;Provided k &lt; 0 !&quot;</span></span><br><span class="line">        <span class="keyword">assert</span> self.ECP_on_curve(Pin) , <span class="string">&quot;Provided Pin is not on curve!&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (k % self.n_) == <span class="number">0</span> <span class="keyword">or</span> Pin.is_Unit_Point():</span><br><span class="line">            <span class="keyword">return</span> Unit</span><br><span class="line"></span><br><span class="line">        i = k</span><br><span class="line">        R = Unit</span><br><span class="line">        P = Pin</span><br><span class="line">        <span class="keyword">while</span> i:</span><br><span class="line">            <span class="keyword">if</span> i &amp; <span class="number">0x1</span>: <span class="comment"># when i[bit0] == 1</span></span><br><span class="line">                R = self.Point_Add_General(P, R)</span><br><span class="line"></span><br><span class="line">            P = self.Point_Add_General(P, P)</span><br><span class="line">            i &gt;&gt;= <span class="number">1</span>       </span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> R</span><br></pre></td></tr></table></figure>
+
+<p>k是一个长度固定的数，比如对应的secp256k1曲线对应256bit长度的k。这里k可以当做是私钥， 而求得的点R就是公钥。</p>
+<p>从上面可以理出，ECC的参数包含： a, b, p, n， G点坐标。椭圆曲线求值 R&#x3D;kG， 已知k， G很容易求得R，但是，已知R，G却不容易求得k，椭圆曲线的原理就是基于此。 k是密钥， R就是公钥。</p>
+<h2 id="加解密步骤"><a href="#加解密步骤" class="headerlink" title="加解密步骤"></a>加解密步骤</h2><p>椭圆曲线进行加密通信的过程：</p>
+<p>1、用户A选定一条椭圆曲线Ep(a,b)，并取椭圆曲线上一点，作为基点G。<br>2、用户A选择一个私有密钥k，并生成公开密钥K&#x3D;kG。<br>3、用户A将Ep(a,b)和点K，G传给用户B。<br>4、用户B接到信息后 ，将待传输的明文编码到Ep(a,b)上一点M（编码方法很多，这里不作讨论），并产生一个随机整数r（r<br>5、用户B计算点C 1&#x3D;M+rK；C 2&#x3D;rG。<br>6、用户B将C 1、C 2传给用户A。<br>7、用户A接到信息后，计算C 1-kC 2，结果就是点M。因为<br>C 1-kC 2&#x3D;M+rK-k(rG)&#x3D;M+rK-r(kG)&#x3D;M<br>再对点M进行解码就可以得到明文， 这里k是私钥只有用户A知道。</p>
+<p>密码学中，描述一条Fp上的椭圆曲线，常用到六个参量：<br>T&#x3D;(p,a,b,G,n,h)。<br>（p 、a 、b 用来确定一条椭圆曲线，G为基点，n为点G的阶，h 是椭圆曲线上所有点的个数m与n相除的整数部分）,这几个参量满足如下要求：</p>
+<p>1、p 当然越大越安全，但越大，计算速度会变慢，200位左右可以满足一般安全要求；<br>2、p≠n×h；<br>3、pt≠1 (mod n)，1≤t&lt;20；<br>4、4a3+27b2≠0 (mod p)；<br>5、n 为素数；<br>6、h≤4。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>椭圆曲线又是一种数学的应用，看了许多篇文章，有了初步的理解。 下面是我看到的总结的比较好的文章链接：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/453717195">https://zhuanlan.zhihu.com/p/453717195</a></p>
+<p><a href="https://blog.csdn.net/sahusoft/article/details/6868016">https://blog.csdn.net/sahusoft/article/details/6868016</a></p>
+<p>后面再看一看椭圆曲线在内核中的应用。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
