@@ -5707,4 +5707,50 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>周谈(31)-ECC曲线的应用</title>
+    <url>/2022/07/24/ecdh/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>ECC椭圆曲线的应用有两种： </p>
+<ul>
+<li>ECDSA 数字签名验签， 主要是使用私钥对信息的摘要加密，然后发送刚给对端，对端使用发送方的公钥解密得到摘要信息，再计算一下信息的摘要，对比一下确认摘要是否一致。主要用于确认这个信息是发送方发送的，没有被篡改过。</li>
+<li>ECDH 密钥交换，主要用于协商通信双方使用的对称密钥。</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="ECDH"><a href="#ECDH" class="headerlink" title="ECDH"></a>ECDH</h2><p>DH密钥协商具体的流程下面如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">A: g,p 协商生成公开的整数g,大素数p。明文形式发给B</span><br><span class="line">B: B获取到g,p</span><br><span class="line">A: 生成隐私数据: a (a&lt;p),计算得出 g^a%p,发送给B</span><br><span class="line">B: 生成隐私数据: b (b&lt;p),计算得出 g^b%p,发送给A</span><br><span class="line">A: 计算得出 [(g^ b%p)^a]%p = g ^ab%p,生成秘钥</span><br><span class="line">B:计算得出 [(g^ a%p)^b]%p = g ^ab%p,生成秘钥</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>通信双方根据公开的g, p和各自私有的数各计算出一个值，然后发送给对端。再根据这个值和对端的数据，生成相同的数作为后续通信的共同的密钥。</p>
+<p>ECDH密钥协商算法是ECC算法和DH密钥交换原理结合使用，用于密钥磋商。</p>
+<p>ECC是建立在基于椭圆曲线的离散对数问题上的密码体制，给定椭圆曲线上的一个点P，一个整数k，求解Q&#x3D;kP很容易；给定一个点P、Q，知道Q&#x3D;kP，求整数k则是一个难题。</p>
+<p>在密钥协商的阶段，通信时分别使用对端的公钥加密信息，然后双方都对接收到的信息使用自己的私钥解密，从而保证通信的安全。</p>
+<h2 id="ECDSA"><a href="#ECDSA" class="headerlink" title="ECDSA"></a>ECDSA</h2><p>签名就比较简单了，就是发送方使用自身的私钥签名，接收方使用发送方的公钥解密摘要，对比签名。</p>
+<p>ECC签名生成算法的输入输出如下：</p>
+<p><img src="/images/202207/ecc_sign.png" alt="ecc_sign"></p>
+<p>最后输出是一对整数(R, S)。</p>
+<p>验签的话，输入输出是消息，还有签名(R, S)和公钥。</p>
+<p><img src="/images/202207/ecc_ver.png" alt="ecc_ver"></p>
+<p>也是算出摘要，然后结合S计算出参数、导入参数的G点和公钥，计算出一个新的点，最终对比点的X坐标是否等于R来决定验签是否通过。</p>
+<p>具体的计算过程可以看NIST.FIPS.186-5-draft.pdf的第6章。</p>
+<h2 id="内核中的应用"><a href="#内核中的应用" class="headerlink" title="内核中的应用"></a>内核中的应用</h2><p>EDCH在内核中用的是crypto_kpp这种算法，比如secp192r1曲线的实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// crypto/ecdh.c中  linux 5.17版本</span></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">kpp_alg</span> <span class="title">ecdh_nist_p192</span> =</span> &#123;</span><br><span class="line">	.set_secret = ecdh_set_secret,</span><br><span class="line">	.generate_public_key = ecdh_compute_value,</span><br><span class="line">	.compute_shared_secret = ecdh_compute_value,</span><br><span class="line">	.max_size = ecdh_max_size,</span><br><span class="line">	.init = ecdh_nist_p192_init_tfm,</span><br><span class="line">	.base = &#123;</span><br><span class="line">		.cra_name = <span class="string">&quot;ecdh-nist-p192&quot;</span>,</span><br><span class="line">		.cra_driver_name = <span class="string">&quot;ecdh-nist-p192-generic&quot;</span>,</span><br><span class="line">		.cra_priority = <span class="number">100</span>,</span><br><span class="line">		.cra_module = THIS_MODULE,</span><br><span class="line">		.cra_ctxsize = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> ecdh_ctx),</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到内核中实现的ecdh的设置私钥、导出公钥、密钥交换的接口。</p>
+<p>ECDSA在内核中用的是akcipher_alg算法，比如secp384r1曲线对应的实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">akcipher_alg</span> <span class="title">ecdsa_nist_p384</span> =</span> &#123;</span><br><span class="line">	.verify = ecdsa_verify,</span><br><span class="line">	.set_pub_key = ecdsa_set_pub_key,</span><br><span class="line">	.max_size = ecdsa_max_size,</span><br><span class="line">	.init = ecdsa_nist_p384_init_tfm,</span><br><span class="line">	.<span class="built_in">exit</span> = ecdsa_exit_tfm,</span><br><span class="line">	.base = &#123;</span><br><span class="line">		.cra_name = <span class="string">&quot;ecdsa-nist-p384&quot;</span>,</span><br><span class="line">		.cra_driver_name = <span class="string">&quot;ecdsa-nist-p384-generic&quot;</span>,</span><br><span class="line">		.cra_priority = <span class="number">100</span>,</span><br><span class="line">		.cra_module = THIS_MODULE,</span><br><span class="line">		.cra_ctxsize = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> ecc_ctx),</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>ECDSA实现了公钥设置和验签的接口。其实，akcipher_alg接口中也有签名、加解密，不过在内核中没有实现这些接口。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这周写完了ECC曲线的代码，调试过程中还存在一些问题，下周重点就是解决这些个问题。<br>限制于硬件资源，工作进展还是很慢的，一个是多人共用资源，另外一个是环境时钟频率很低，运行缓慢。第三个就是底层支持不给力，硬件手册很多注意点没有提及，协调比较困难。第四就是驱动这玩意我也是刚开始玩，入门而已，缺乏深入。</p>
+<p>本来打算周末的时候要呆在家中鲁一把代码的，被家里一些事情耽搁了，这两天做了专职的司机，开车开得手臂都感觉有点儿酸了。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
