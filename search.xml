@@ -4310,7 +4310,7 @@
 <p>在2021年里，我买了车子，换了工作，换了城市，迁了户口，卖了房子。可以说，对人生有了自己的新的看法，对之后的职业生涯也有了更确定的目标。</p>
 <p>2021年于我而言，也是一个充满挑战的一年。</p>
 <h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><p>工作上，换了两公司。</p>
-<p>年初到一家电池检测的传统企业作软件开发，接触了新的行业，也做了更为底层的工作。在不到三个月的时间里面，完成了modbus，canopen协议的学习及协议框架的搭建，在离开的时候受到那位总监不错的评价。过了忙碌的三个月吧，在那边感觉项目管理还是比较混乱的，996的工作节奏，鼓励加班，明说了加薪和晋升与加班挂钩；也做了很多无用功，领导挺喜欢开会的，对细节掌控的太到位了，个人没有发挥的余地。领导是做硬件出生的，对软件管的也很细节，很多不合理的实现，搞得我也无力反驳，太多的扯皮，太多的反软件设计。在那边感觉就是个工具人吧，即使给的工资高一些，行业前景也还不错，但我也觉得是个不合适的工作。工作嘛，就是要找到那种合适的工作，不然就是糟践了自我，对不起自己。工作个几年也不会有什么发展的。及时悬崖勒马，离职了。</p>
+<p>年初到一家电池检测的传统企业作软件开发，接触了新的行业，也做了更为底层的工作。在不到三个月的时间里面，完成了modbus，CABopen协议的学习及协议框架的搭建，在离开的时候受到那位总监不错的评价。过了忙碌的三个月吧，在那边感觉项目管理还是比较混乱的，996的工作节奏，鼓励加班，明说了加薪和晋升与加班挂钩；也做了很多无用功，领导挺喜欢开会的，对细节掌控的太到位了，个人没有发挥的余地。领导是做硬件出生的，对软件管的也很细节，很多不合理的实现，搞得我也无力反驳，太多的扯皮，太多的反软件设计。在那边感觉就是个工具人吧，即使给的工资高一些，行业前景也还不错，但我也觉得是个不合适的工作。工作嘛，就是要找到那种合适的工作，不然就是糟践了自我，对不起自己。工作个几年也不会有什么发展的。及时悬崖勒马，离职了。</p>
 <p>第二份工作是之前的老东家了，以前的同事内推，到一个新的部门。2020年的时候也有面试过的，后面因为行业前景、个人发展以及薪资的考量，我选择了前面那家公司。在这家公司，参与了一个新项目的研发，最大的挑战就是这个新字吧，新的语言-python，新的架构平台， 新的领域，新的项目组。跟以往的工作不同的是，缺少了领路人，虽说是用了国外厂商的架构，但是资料也是太少了，况且我去的时候项目已经开始大半年了吧，前期的那些新平台培训通通落下了。这个项目在我的视角里就是很多是空白，需要在工作中学习，边学边用。困难就是项目代码量巨大，开源库多，需要更多的精力学习，扛住更大的工作压力。收获就是学到了挺多之前未涉及，或者没有深入的技能，锻炼了自我学习，应对困难的能力。第一个版本即将结束，也算是熬过来了吧。最近沟通年终绩效，给我打了个B+(部门前百分之三十吧)，感谢领导对我能力的认可。奈何个人生活的原因，明年的时候工作估计又要变动了，感觉挺可惜和遗憾的。</p>
 <p>后面在工作上还是期望跟通信、跟协议相关的。编程语言于我而言已经没有那么执着了。然后就是好好的深入一个专业领域，成为该领域的专家。希望能够长久的好好的工作到退休。头衔什么的不是那么重要，工作了十几年，发现自己还是很喜欢编程这个行业的，工作中不断的面对挑战，不断的寻找最优解，头脑一直都在做功的同时，为公司解决问题，实现商业价值，还可以养家糊口。一切都是这么简单直接。没有太多的勾心斗角。</p>
 <h2 id="生活"><a href="#生活" class="headerlink" title="生活"></a>生活</h2><p>一切工作都是为了更好的生活。生活的重心是家庭，家庭的重心就是孩子。孩子算是一个大难题，家里没人带小孩，我妈身体不好，丈母娘有孙子要带，只能牺牲老婆在家带娃。相对的经济压力就比较大一些，后面孩子的教育是比较重要的。最后还是决定卖房续力，然后就是找个教育好点的地方，生活成本又可以承受，又可以找到合适的工作的城市。</p>
@@ -5742,6 +5742,48 @@
 <p>ECDSA实现了公钥设置和验签的接口。其实，akcipher_alg接口中也有签名、加解密，不过在内核中没有实现这些接口。</p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这周写完了ECC曲线的代码，调试过程中还存在一些问题，下周重点就是解决这些个问题。<br>限制于硬件资源，工作进展还是很慢的，一个是多人共用资源，另外一个是环境时钟频率很低，运行缓慢。第三个就是底层支持不给力，硬件手册很多注意点没有提及，协调比较困难。第四就是驱动这玩意我也是刚开始玩，入门而已，缺乏深入。</p>
 <p>本来打算周末的时候要呆在家中鲁一把代码的，被家里一些事情耽搁了，这两天做了专职的司机，开车开得手臂都感觉有点儿酸了。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(32)- 近期遇到的那些事儿</title>
+    <url>/2022/08/05/weekly-lately/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。</p>
+<span id="more"></span>
+
+<h1 id="知识盲区"><a href="#知识盲区" class="headerlink" title="知识盲区"></a>知识盲区</h1><h2 id="ECC曲线算法"><a href="#ECC曲线算法" class="headerlink" title="ECC曲线算法"></a>ECC曲线算法</h2><p>ECC曲线算法是数学知识的一个实际应用，在前面有出了两篇文章讲了一下大体的原理，更详细的需要看一下标准文档和网络上大神的详细的总结。在编码的过程中，同时也简单地了解了一下ASN1的编码格式。ECC曲线的应用主要是密钥导出、密钥交换、签名和验签。</p>
+<h2 id="流密码算法"><a href="#流密码算法" class="headerlink" title="流密码算法"></a>流密码算法</h2><p>了解了祖冲之算法和snow3G算法的大概实现流程，在前面也分别有文章简单地聊了一下这两种算法。</p>
+<p>在实现算法的过程中，又涉及到一个端序的概念。就是大小端数据的组织。在以往的工作中，默认网络包的格式是大端的，正常主机是小端的。然后，过去在开发的过程中，对于字节流而言，是不区分什么大小端的，大小端都是针对那些整型字段而言的，转换端序的时候也只是对那些整形字段作转换。开发驱动却不是这样的，它这个端序是针对所有数据的， 也就是大端顺序是0 - N, 转为小端顺序就是 N - 0， 这样子。</p>
+<h2 id="内核模块代码添加宏"><a href="#内核模块代码添加宏" class="headerlink" title="内核模块代码添加宏"></a>内核模块代码添加宏</h2><p>看到同事写的代码里面，需要主动通过添加 #define AAAA， 上网查了一下， 只需要在Makefile里面添加选项就可以了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">EXTRA_CFLAG += -DAAAA</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="dma映射方向搞错，获取不到数据"><a href="#dma映射方向搞错，获取不到数据" class="headerlink" title="dma映射方向搞错，获取不到数据"></a>dma映射方向搞错，获取不到数据</h2><p>刚开始驱动调试的时候，不了解dma的接口，然后死活获取不到硬件给的数据，原来是在映射的时候，方向没有设置成双向的。</p>
+<h2 id="无符号差值保存到有符号变量中，实际还是一个无符号的数"><a href="#无符号差值保存到有符号变量中，实际还是一个无符号的数" class="headerlink" title="无符号差值保存到有符号变量中，实际还是一个无符号的数"></a>无符号差值保存到有符号变量中，实际还是一个无符号的数</h2><p>这是昨天调试的时候发现的一个问题:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">u32 a = <span class="number">47</span>;</span><br><span class="line">u32 b = <span class="number">48</span>;</span><br><span class="line"><span class="type">ssize_t</span> diff = a - b; <span class="comment">// diff = -1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//... </span></span><br><span class="line"><span class="keyword">if</span> (diff &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do sth.</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// do other sth.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果走了do sth.分支。。。</span></span><br><span class="line"><span class="comment">// 最后只能改成这样   ssize_t diff = (int)a - (int)b;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="虚拟机升级了内核版本后，共享文件夹不可用了"><a href="#虚拟机升级了内核版本后，共享文件夹不可用了" class="headerlink" title="虚拟机升级了内核版本后，共享文件夹不可用了"></a>虚拟机升级了内核版本后，共享文件夹不可用了</h2><p>最近升级了一下虚拟机的内核版本，添加了对tcrypt和一些算法的支持。但是，重启之后，发现原来设置的共享文件夹不能用了，进入目录后一片空白。</p>
+<p>上网查了一下，重新设置一下共享文件夹。再次进入系统后，执行如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">cd /mnt</span><br><span class="line">mkdir SF_SHARE</span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">报错</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/sbin/mount.vboxsf: mounting failed with the error: No such device</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这是由于增强工具没有安装， 继续下面的命令：</span></span><br><span class="line"></span><br><span class="line">cd /opt/VBoxGuestAdditions-*/init  </span><br><span class="line">./vboxadd setup</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装好之后， 继续执行， 就可以了。</span></span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE   # VM_SHARE是设置的共享文件夹名称</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="作dma映射后，程序卡死"><a href="#作dma映射后，程序卡死" class="headerlink" title="作dma映射后，程序卡死"></a>作dma映射后，程序卡死</h2><p>这个是由于作dma映射的空间不是cache对齐的， 导致cache刷新不同步，内容改变导致非法，再去访问就出问题了。所以说，后面要做dma映射的空间，要确保它的其实地址是cacheline对齐的，这样刷新的时候都是同步刷新的，不会跟其他数据混在一起。</p>
+<h2 id="使用局部变量作dma映射，程序卡死"><a href="#使用局部变量作dma映射，程序卡死" class="headerlink" title="使用局部变量作dma映射，程序卡死"></a>使用局部变量作dma映射，程序卡死</h2><p>执行dma映射的空间不能是全局变量和局部变量。</p>
+<h2 id="多个内核版本，修改默认启动版本"><a href="#多个内核版本，修改默认启动版本" class="headerlink" title="多个内核版本，修改默认启动版本"></a>多个内核版本，修改默认启动版本</h2><p>由于历史问题，在一台机器上更新了内核版本之后，默认启动的内核还是旧的版本，导致每次需要启动时，选择启动内核版本，有点麻烦。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改</span> </span><br><span class="line">vi /etc/default/grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置， 如果设置有问题 注意看后面update-grub的命令提示</span></span><br><span class="line">GRUB_DEFAULT=&quot;Advanced options for Ubuntu&gt;Ubuntu, with Linux 4.15.0&quot;</span><br><span class="line"></span><br><span class="line">update-grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启后就更新了</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>编写内核经常导致那个系统挂掉，原来可以在系统主板上也有串口的，可以插个串口线看那个堆栈的，请原谅我现在才知道，哈哈。</p>
+<p>生活可以忙忙碌碌随大流，思想必须偷偷摸摸求上进。</p>
+<p>最近吃了湾湾的那个瓜， 祖国加油！</p>
+<p>周末要去接娃来了，神兽又要来捣蛋了，^_^!</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
