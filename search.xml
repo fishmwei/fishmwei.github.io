@@ -5882,4 +5882,77 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>周谈(34)-DMA地址映射api使用</title>
+    <url>/2022/08/27/dma-weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>做驱动开发免不了要用到DMA技术， 这是一种高速的数据传输操作，允许外设直接读写存储器，不需要CPU的介入。这样CPU就可以继续做其它的事情了。控制这个操作的是DMA控制器。</p>
+<h2 id="CPU地址和DMA地址"><a href="#CPU地址和DMA地址" class="headerlink" title="CPU地址和DMA地址"></a>CPU地址和DMA地址</h2><p>系统内核使用的是虚拟地址，任何从kmalloc, valloc返回的地址都是虚拟地址，可以使用void *变量存储。虚拟地址可以通过内存管理系统(MMU)转换为CPU的物理地址。内核管理的设备资源一般都是物理地址，比如设备的寄存器地址之类的，这些地址的范围都存在于<code>/proc/iomem</code>文件中。物理地址是不能直接使用的，需要通过ioremap映射得到一个虚拟地址,然后代码才可以访问。</p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:~# cat /proc/iomem</span><br><span class="line">00000000-00000fff : Reserved</span><br><span class="line">00001000-0009fbff : System RAM</span><br><span class="line">0009fc00-0009ffff : Reserved</span><br><span class="line">000a0000-000bffff : PCI Bus 0000:00</span><br><span class="line">000c0000-000c7fff : Video ROM</span><br><span class="line">000e2000-000e2fff : Adapter ROM</span><br><span class="line">000f0000-000fffff : Reserved</span><br><span class="line">  000f0000-000fffff : System ROM</span><br><span class="line">00100000-dffeffff : System RAM</span><br><span class="line">  a7000000-a80020df : Kernel code</span><br><span class="line">  a8200000-a8ca6fff : Kernel rodata</span><br><span class="line">  a8e00000-a918af7f : Kernel data</span><br><span class="line">  a945e000-a99fffff : Kernel bss</span><br><span class="line">dfff0000-dfffffff : ACPI Tables</span><br><span class="line">e0000000-fdffffff : PCI Bus 0000:00</span><br><span class="line">  e0000000-e0ffffff : 0000:00:02.0</span><br><span class="line">    e0000000-e0ffffff : vmwgfx probe</span><br><span class="line">  f0000000-f01fffff : 0000:00:02.0</span><br><span class="line">    f0000000-f01fffff : vmwgfx probe</span><br><span class="line">  f0200000-f021ffff : 0000:00:03.0</span><br><span class="line">    f0200000-f021ffff : e1000</span><br><span class="line">  f0400000-f07fffff : 0000:00:04.0</span><br><span class="line">    f0400000-f07fffff : vboxguest</span><br><span class="line">  f0800000-f0803fff : 0000:00:04.0</span><br><span class="line">  f0804000-f0804fff : 0000:00:06.0</span><br><span class="line">    f0804000-f0804fff : ohci_hcd</span><br><span class="line">  f0806000-f0807fff : 0000:00:0d.0</span><br><span class="line">    f0806000-f0807fff : ahci</span><br><span class="line">fec00000-fec00fff : Reserved</span><br><span class="line">  fec00000-fec003ff : IOAPIC 0</span><br><span class="line">fee00000-fee00fff : Local APIC</span><br><span class="line">  fee00000-fee00fff : Reserved</span><br><span class="line">fffc0000-ffffffff : Reserved</span><br><span class="line">100000000-21fffffff : System RAM</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>IO设备还会用到一个概念：总线地址。设备使用总线地址读写系统的内存。有些系统总线地址等同于物理地址，但是大部分系统并不是这样的，是两套不同的地址描述。IOMMU可以管理物理地址和总线地址的映射关系。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">             CPU                  CPU                  Bus</span><br><span class="line">           Virtual              Physical             Address</span><br><span class="line">           Address              Address               Space</span><br><span class="line">            Space                Space</span><br><span class="line"></span><br><span class="line">          +-------+             +------+             +------+</span><br><span class="line">          |       |             |MMIO  |   Offset    |      |</span><br><span class="line">          |       |  Virtual    |Space |   applied   |      |</span><br><span class="line">        C +-------+ --------&gt; B +------+ ----------&gt; +------+ A</span><br><span class="line">          |       |  mapping    |      |   by host   |      |</span><br><span class="line">+-----+   |       |             |      |   bridge    |      |   +--------+</span><br><span class="line">|     |   |       |             +------+             |      |   |        |</span><br><span class="line">| CPU |   |       |             | RAM  |             |      |   | Device |</span><br><span class="line">|     |   |       |             |      |             |      |   |        |</span><br><span class="line">+-----+   +-------+             +------+             +------+   +--------+</span><br><span class="line">          |       |  Virtual    |Buffer|   Mapping   |      |</span><br><span class="line">        X +-------+ --------&gt; Y +------+ &lt;---------- +------+ Z</span><br><span class="line">          |       |  mapping    | RAM  |   by IOMMU</span><br><span class="line">          |       |             |      |</span><br><span class="line">          |       |             |      |</span><br><span class="line">          +-------+             +------+</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>内核读取设备的总线地址，转换为CPU物理地址，存储在struct resource结构中，可以在<code>/proc/iomem</code>中看到。然后驱动通过<code>ioremap</code>把物理地址映射到虚拟地址，并通过专门的接口读写寄存器，如：ioread32(C)，访问设备对应的总线地址。这个有点儿绕，驱动访问虚拟地址，最终落到设备的总线地址上面。</p>
+<p>使用DMA操作时，驱动通过kmalloc申请一片空间A，A对应到物理地址B上去。设备要访问物理地址B的话，需要有个IOMMU通过A转换得到一个DMA地址C对应到B上去。驱动告诉设备DMA操作的目的地址是C，IOMMU会把C映射到物理地址B上面去，最后操作的是物理地址B。驱动通过dma_map_single接口，获取到虚拟地址A对应的DMA地址C。</p>
+<p>虚拟地址A， DMA地址C，对应的物理地址都是B。</p>
+<h2 id="DMA限制"><a href="#DMA限制" class="headerlink" title="DMA限制"></a>DMA限制</h2><p>不是所有的内核内存地址都可以使用DMA技术的。使用__get_free_page或者kmalloc、kmem_cache_alloc返回的地址可以使用DMA，而使用vmalloc返回的地址不能使用DMA。还需要保证地址是cacheline对齐的，否则会出现一致性的问题，如果不是cacheline对齐的，CPU和DMA会打架的，CPU和DMA同时操作一片cache，会导致内容相互覆盖。</p>
+<h2 id="DMA寻址能力"><a href="#DMA寻址能力" class="headerlink" title="DMA寻址能力"></a>DMA寻址能力</h2><p>内核默认支持32bit的DMA地址空间，支持64bit的设备相应的可以支持64bit，设备有限制的话也可以相应的减少位数。正确的操作是调用接口dma_set_mask_and_coherent设置DMA地址空间寻址位数。接口如果返回非0的话，则表示设备不支持设置的dma空间大小，那么后续就不要通过DMA方式操作，否则会出现不可预料的问题的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">if</span> (dma_set_mask_and_coherent(dev, DMA_BIT_MASK(<span class="number">64</span>))) &#123;</span><br><span class="line">	dev_warn(dev, <span class="string">&quot;mydev: No suitable DMA available\n&quot;</span>);</span><br><span class="line">	<span class="keyword">goto</span> ignore_this_device;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="DMA映射方式"><a href="#DMA映射方式" class="headerlink" title="DMA映射方式"></a>DMA映射方式</h2><p>DMA有两种类型的映射： 一致性DMA和流式DMA。</p>
+<p>一致性DMA在驱动注册的时候就映射了，最后才解除映射。硬件会自己保证设备和CPU可以并行的访问数据，并且数据都是实时更新的，不需要开发者做额外的工作。默认一致性DMA支持的空间为32位寻址空间。如果需要，可以自行设置DMA掩码位。有一点需要注意的是，一致性DMA并不是完全按序写入数据的，如果不同地址间数据写入存在互相依赖，需要使用wmb做同步。</p>
+<p>使用一致性DMA的场景有：</p>
+<ul>
+<li>网卡的ring描述符</li>
+<li>SCSI适配的mailbox命令数据</li>
+<li>设备固件的微码内存</li>
+</ul>
+<p>流式DMA一般在需要做DMA转换的时候才做映射，而后动态的解除映射。使用流式DMA需要明确调用接口设置想要的操作。<br>使用流式DMA的场景有：</p>
+<ul>
+<li>网络包buffers的接收发送</li>
+<li>文件系统的读写buffers</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="type">dma_addr_t</span> dma_handle;</span><br><span class="line"></span><br><span class="line">cpu_addr = dma_alloc_coherent(dev, size, &amp;dma_handle, gfp);</span><br><span class="line"></span><br><span class="line">   dma_free_coherent(dev, size, cpu_addr, dma_handle);</span><br></pre></td></tr></table></figure>
+
+<p>一致性DMA的使用代码如上，接口返回CPU可以访问的虚拟地址以及dma_handle地址(传给设备的地址)。返回的地址都是PAGE_SIZE对齐的大小的，即使你传入的size小于PAGE_SIZE也是一样的。</p>
+<p>如果需要大量的小size的内存，可以自行管理使用dma_alloc_coherent分配的空间， 也可以使用dma_pool的接口来实现， dma_pool底层实际也是管理的dma_alloc_coherent分配的空间。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="class"><span class="keyword">struct</span> <span class="title">dma_pool</span> *<span class="title">pool</span>;</span></span><br><span class="line"></span><br><span class="line">pool = dma_pool_create(name, dev, size, align, boundary); <span class="comment">// align必须是2的次方， boundary表示内存的边界，不允许一次性从pool申请超过多少大小的内存。</span></span><br><span class="line"></span><br><span class="line">   cpu_addr = dma_pool_alloc(pool, flags, &amp;dma_handle);</span><br><span class="line"></span><br><span class="line">   dma_pool_free(pool, cpu_addr, dma_handle);</span><br><span class="line"></span><br><span class="line">   dma_pool_destroy(pool); <span class="comment">// free pool之前要保证所有从pool申请的内存都free了</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="DMA方向"><a href="#DMA方向" class="headerlink" title="DMA方向"></a>DMA方向</h2><p>DMA相关接口需要填写DMA方向，表示DMA操作时的方向，目前有如下的值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DMA_BIDIRECTIONAL</span><br><span class="line">DMA_TO_DEVICE</span><br><span class="line">DMA_FROM_DEVICE</span><br><span class="line">DMA_NONE</span><br></pre></td></tr></table></figure>
+
+<p>一般只有流式DMA需要设置方向，一致性DMA默认是双向的DMA_BIDIRECTIONAL。</p>
+<h2 id="流式DMA映射"><a href="#流式DMA映射" class="headerlink" title="流式DMA映射"></a>流式DMA映射</h2><p>流式DMA映射可以在中断上下文中调用，可以映射一个独立的内存区域，也可以映射一个scatterlist表示的多个内存区域。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">dev</span> =</span> &amp;my_dev-&gt;dev;</span><br><span class="line"><span class="type">dma_addr_t</span> dma_handle;</span><br><span class="line"><span class="type">void</span> *addr = buffer-&gt;ptr;</span><br><span class="line"><span class="type">size_t</span> size = buffer-&gt;len;</span><br><span class="line"></span><br><span class="line">dma_handle = dma_map_single(dev, addr, size, direction);</span><br><span class="line"><span class="keyword">if</span> (dma_mapping_error(dev, dma_handle)) &#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * reduce current DMA mapping usage,</span></span><br><span class="line"><span class="comment">	 * delay and try again later or</span></span><br><span class="line"><span class="comment">	 * reset driver.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">goto</span> map_error_handling;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dma_unmap_single(dev, dma_handle, size, direction);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// scatterlist形式</span></span><br><span class="line">   <span class="type">int</span> i, count = dma_map_sg(dev, sglist, nents, direction);</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">scatterlist</span> *<span class="title">sg</span>;</span></span><br><span class="line"></span><br><span class="line">for_each_sg(sglist, sg, count, i) &#123;</span><br><span class="line">	hw_address[i] = sg_dma_address(sg);</span><br><span class="line">	hw_len[i] = sg_dma_len(sg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">   dma_unmap_sg(dev, sglist, nents, direction);</span><br></pre></td></tr></table></figure>
+
+<p>dma_map_single就是不能映射high memory， 可以使用dma_map_page接口替代。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">dev</span> =</span> &amp;my_dev-&gt;dev;</span><br><span class="line">	<span class="type">dma_addr_t</span> dma_handle;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">page</span> *<span class="title">page</span> =</span> buffer-&gt;page;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> offset = buffer-&gt;offset;</span><br><span class="line">	<span class="type">size_t</span> size = buffer-&gt;len;</span><br><span class="line"></span><br><span class="line">	dma_handle = dma_map_page(dev, page, offset, size, direction);</span><br><span class="line">	<span class="keyword">if</span> (dma_mapping_error(dev, dma_handle)) &#123;</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * reduce current DMA mapping usage,</span></span><br><span class="line"><span class="comment">		 * delay and try again later or</span></span><br><span class="line"><span class="comment">		 * reset driver.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		<span class="keyword">goto</span> map_error_handling;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	dma_unmap_page(dev, dma_handle, size, direction);</span><br></pre></td></tr></table></figure>
+
+<p>在流式DMA映射取消映射之前，CPU不应该访问DMA buffer，如果需要访问，则必须在DMA传输后相应地调用如下函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">dma_sync_single_for_cpu(dev, dma_handle, size, direction);</span><br><span class="line">dma_sync_sg_for_cpu(dev, sglist, nents, direction);</span><br></pre></td></tr></table></figure>
+<p>CPU访问结束后，将buffer还给设备DMA使用时，需要相应调用如下函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">dma_sync_single_for_device(dev, dma_handle, size, direction);</span><br><span class="line">dma_sync_sg_for_device(dev, sglist, nents, direction);</span><br></pre></td></tr></table></figure>
+
+<p>for_cpu 和 for_device的区别在于控制权是属于cpu还是device。</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><ul>
+<li>调用dma_alloc_coherent后判断返回值是否为NULL， 调用dma_map_sg判断返回值是否为0</li>
+<li>dma_map_single和dma_map_page调用后，使用dma_mapping_error判断是否失败</li>
+</ul>
+<p>在映射失败后，记得释放已经成功的地址区域。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>写驱动的时候遇到过DMA的问题，然后这周外部也反馈了一个问题跟DMA相关，虽然之前看了许多DMA相关的内容，但是没有总结过总觉得掌握的不够透。周末抽空看看内核中的文档关于DMA接口使用的描述(Documentation&#x2F;core-api&#x2F;dma-api-howto.rst)，边看边整理，好好系统学习一下。刚写完这个文章去看了一下前段日子写的驱动代码，发现还是有些需要改一下。温故而知新，的确如此，当然关键是花了这个时间，真真切切地学进去了，才有收获。</p>
+<p>周末这两天的事情主要就是小孩上学注册，昨天搬家，今天注册。上学的地方离得比较远，只好让家里领导去学校附近租个房先陪读一年，暂时过渡一下。等明年有资格买房了先买个二手房,再转学过来。这几年也辛苦娃跟着到处奔波了，余生好好工作，好好培养爱护他们。</p>
+<p>上周又落下了一期文章，坚持不易啊。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>

@@ -183,6 +183,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/08/27/dma-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/27/dma-weekly/" class="post-title-link" itemprop="url">周谈(34)-DMA地址映射api使用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-27 08:04:38" itemprop="dateCreated datePublished" datetime="2022-08-27T08:04:38+08:00">2022-08-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/08/27/dma-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/27/dma-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>做驱动开发免不了要用到DMA技术， 这是一种高速的数据传输操作，允许外设直接读写存储器，不需要CPU的介入。这样CPU就可以继续做其它的事情了。控制这个操作的是DMA控制器。</p>
+<h2 id="CPU地址和DMA地址"><a href="#CPU地址和DMA地址" class="headerlink" title="CPU地址和DMA地址"></a>CPU地址和DMA地址</h2><p>系统内核使用的是虚拟地址，任何从kmalloc, valloc返回的地址都是虚拟地址，可以使用void *变量存储。虚拟地址可以通过内存管理系统(MMU)转换为CPU的物理地址。内核管理的设备资源一般都是物理地址，比如设备的寄存器地址之类的，这些地址的范围都存在于<code>/proc/iomem</code>文件中。物理地址是不能直接使用的，需要通过ioremap映射得到一个虚拟地址,然后代码才可以访问。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/08/27/dma-weekly/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/08/14/driver-io/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -13117,7 +13206,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">146</span>
+          <span class="site-state-item-count">147</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
