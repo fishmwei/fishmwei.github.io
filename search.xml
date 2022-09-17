@@ -4996,6 +4996,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -5035,6 +5036,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -5171,7 +5173,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
-        <category>安全</category>
+        <category>openssl</category>
       </categories>
   </entry>
   <entry>
@@ -5217,7 +5219,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
-        <category>安全</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5265,6 +5267,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>openssl</category>
       </categories>
   </entry>
   <entry>
@@ -5417,6 +5420,7 @@
       <categories>
         <category>技术</category>
         <category>Linux</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5605,6 +5609,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5647,6 +5652,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5705,6 +5711,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5751,6 +5758,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>算法</category>
       </categories>
   </entry>
   <entry>
@@ -5848,6 +5856,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>驱动</category>
       </categories>
   </entry>
   <entry>
@@ -5880,6 +5889,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>驱动</category>
       </categories>
   </entry>
   <entry>
@@ -5953,6 +5963,7 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>驱动</category>
       </categories>
   </entry>
   <entry>
@@ -6006,6 +6017,46 @@
 ]]></content>
       <categories>
         <category>技术</category>
+        <category>工具</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(36)-samba配置</title>
+    <url>/2022/09/13/samba/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信大家大部分情况都是使用linux服务器写代码编译代码，看代码又是在Windows系统下。那么就需要有种方法，让我们可以在windows下面直接看linux服务器上面的代码，也就是可以共享linux服务器上面的文件到windows系统中。samba就是满足这种需求的软件。这个算是程序员工作中比较基础的脚手架了。</p>
+<span id="more"></span>
+
+<p>很多人可能会说，直接ssh连上服务器，然后使用vim编辑器不就可以了。是的，这是一种不错的方法，但是学习那个vim也是一个过程，况且大家都比较习惯使用windows看代码，不容易改变。最主要的是，对于C程序员而言，windows下有强大的source insight编辑器的存在，这个是vim目前无法替代的，看大型代码还是用si方便，vim只适合在熟悉代码的情况下，进行简单的编辑。</p>
+<h2 id="samba配置"><a href="#samba配置" class="headerlink" title="samba配置"></a>samba配置</h2><p>samba配置简单的分几个步骤： 安装、配置、使用。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>我讲的是在Ubuntu下安装samba，使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt install samba</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置主要就是配置我们要分享哪个目录，配置对外分享名称，用户的权限设置等。</p>
+<p>打开 &#x2F;etc&#x2F;samba&#x2F;smb.conf 文件， 在末尾添加以下内容</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[shared]			  //windows中看到的共享目录的名称</span><br><span class="line">path = /path/to/shared/directory  //linux中共享的目录的路径</span><br><span class="line">available = <span class="built_in">yes</span>		 //后面这些全是访问权限</span><br><span class="line">browseable = <span class="built_in">yes</span></span><br><span class="line">public = <span class="built_in">yes</span>		</span><br><span class="line">writeable = <span class="built_in">yes</span>		//me是自己的用户名，记得修改为自己的用户名</span><br><span class="line">valid <span class="built_in">users</span> = keep	//给samba服务设置账户</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>还需要给用户设置密码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">smbpasswd -a keep</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置完成后，重启smbd服务</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">systemctl restart  smbd.service</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>在windows中，访问对应的linux服务器的ip，就可以看到shared目录， 点击目录，输入账户密码就可以访问了。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>工作中利用好工具，可以事半功倍的。当然，很多时候习惯也不容易改变，主要看需求的紧迫程度了。</p>
+<p>我们组内就有个同事，由于他的linux系统跟他的笔记本网络不通，刚开始拿着U盘拷贝代码。后面在办公网搞了个wifi，他就从笔记本的linux虚拟机scp代码到linux系统。每次最新的代码在他本机修改之后，再拷贝到linux上面编译(为什么不在虚拟机编译呢，因为linux系统是arm平台的，虚拟机是x86，部分代码是编译不了的不能测试运行的)。在我看来是有点儿低效率了。直接用samba不是更好。</p>
+<p>代码都是git管理的，再不济也可以把代码先push到个人分支，到linux下pull下来更快。可以方便的保证两端代码的一致性。</p>
+<p>当然，最终他也用上了samba，让自己的笔记本跟linux机器共享文档了。</p>
+<p>另外推荐个学习git的工具网站，图形界面，步步为营，简单易懂。对于刚入门的程序员，好好学习git是很有裨益的。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>工具</category>
       </categories>
   </entry>
 </search>
