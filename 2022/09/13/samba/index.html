@@ -28,7 +28,7 @@
 <meta property="og:description" content="前言相信大家大部分情况都是使用linux服务器写代码编译代码，看代码又是在Windows系统下。那么就需要有种方法，让我们可以在windows下面直接看linux服务器上面的代码，也就是可以共享linux服务器上面的文件到windows系统中。samba就是满足这种需求的软件。这个算是程序员工作中比较基础的脚手架了。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-09-13T14:13:19.000Z">
-<meta property="article:modified_time" content="2022-09-17T01:01:24.685Z">
+<meta property="article:modified_time" content="2022-09-18T01:57:01.938Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 
@@ -268,12 +268,13 @@
 <p>配置完成后，重启smbd服务</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">systemctl restart  smbd.service</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>在windows中，访问对应的linux服务器的ip，就可以看到shared目录， 点击目录，输入账户密码就可以访问了。</p>
+<h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>在windows中，访问对应的linux服务器的ip, <code>\\ip</code>就可以看到shared目录， 点击目录，输入账户密码就可以访问了。</p>
 <h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>工作中利用好工具，可以事半功倍的。当然，很多时候习惯也不容易改变，主要看需求的紧迫程度了。</p>
-<p>我们组内就有个同事，由于他的linux系统跟他的笔记本网络不通，刚开始拿着U盘拷贝代码。后面在办公网搞了个wifi，他就从笔记本的linux虚拟机scp代码到linux系统。每次最新的代码在他本机修改之后，再拷贝到linux上面编译(为什么不在虚拟机编译呢，因为linux系统是arm平台的，虚拟机是x86，部分代码是编译不了的不能测试运行的)。在我看来是有点儿低效率了。直接用samba不是更好。</p>
+<p>我们组内就有个同事，由于他的linux系统跟他的笔记本网络不通，刚开始拿着U盘拷贝代码。后面在办公网搞了个wifi，他就从笔记本的linux虚拟机scp代码到linux系统。每次最新的代码在他本机修改之后，再拷贝到linux上面编译(为什么不在虚拟机编译呢，因为linux系统是arm平台的，虚拟机是x86，部分代码是编译不了的)。在我看来是有点儿低效率了。直接用samba不是更好。</p>
 <p>代码都是git管理的，再不济也可以把代码先push到个人分支，到linux下pull下来更快。可以方便的保证两端代码的一致性。</p>
 <p>当然，最终他也用上了samba，让自己的笔记本跟linux机器共享文档了。</p>
 <p>另外推荐个学习git的工具网站，图形界面，步步为营，简单易懂。对于刚入门的程序员，好好学习git是很有裨益的。</p>
+<p><code>https://learngitbranching.js.org/?locale=zh_CN</code></p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
