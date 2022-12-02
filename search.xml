@@ -565,6 +565,21 @@
       </tags>
   </entry>
   <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>todo</title>
     <url>/2020/02/13/todo/</url>
     <content><![CDATA[<h1 id="2021-TODO列表"><a href="#2021-TODO列表" class="headerlink" title="2021 TODO列表"></a>2021 TODO列表</h1><span id="more"></span>
@@ -616,21 +631,6 @@
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
 <li><input disabled="" type="checkbox"> 正则表达式</li>
 </ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -916,36 +916,6 @@
       </categories>
   </entry>
   <entry>
-    <title>gdbserver</title>
-    <url>/2020/07/16/gdbserver/</url>
-    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
-<span id="more"></span>
-
-<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
-<p>报错的是一个全局变量的赋值</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
-
-<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
-
-<p>调试系统</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure>
-
-<p>好了， 后面就是gdb调试了</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感(3)-静态链接</title>
     <url>/2020/07/14/reflection4self-3-md/</url>
     <content><![CDATA[<h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
@@ -991,6 +961,36 @@
 ]]></content>
       <categories>
         <category>读后感</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>gdbserver</title>
+    <url>/2020/07/16/gdbserver/</url>
+    <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
+<span id="more"></span>
+
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>gdbserver是要在目标嵌入式系统运行的程序， 需要使用交叉工具链进行编译</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd gdb/gdbserver</span><br><span class="line">export CC=arm-linux-gcc CXX=arm-linux-gcc</span><br><span class="line">./configure  --host=arm-linux --target=arm-linux --prefix=path/to/output</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我在编译linux-arc-low.c的时候出现一个问题，提示 <code>initializer element is not constant</code></p>
+<p>报错的是一个全局变量的赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static const uint16_t arc_breakpoint = ntohs(0x3e78);</span><br></pre></td></tr></table></figure>
+
+<p>我把 ntohs删掉了， 目标机器本来就是大端字节序，没必要转换。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>拷贝可执行文件和gdbserver到嵌入式系统， 可执行文件需要添加-g选项编译。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gdbserver :1234 ./exec_file</span><br></pre></td></tr></table></figure>
+
+<p>调试系统</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure>
+
+<p>好了， 后面就是gdb调试了</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -1058,36 +1058,6 @@
       </categories>
   </entry>
   <entry>
-    <title>程序员自我修养读后感(7)-程序的内存布局</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
-<span id="more"></span>
-
-<ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
-</ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
- <img src="/images/202007/memstruct.jpeg" width = "300" height = "600" alt="图片名称" align=center />
-
-
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>程序员自我修养读后感(6)-共享库的组织</title>
     <url>/2020/07/24/reflection4self-6/</url>
     <content><![CDATA[<h1 id="共享库的组织"><a href="#共享库的组织" class="headerlink" title="共享库的组织"></a>共享库的组织</h1><h2 id="共享库的兼容"><a href="#共享库的兼容" class="headerlink" title="共享库的兼容"></a>共享库的兼容</h2><p>由于共享库的优点，许多程序都采用了共享库作为通用的库，而减少了静态库的使用。系统中，就会存在许多的共享库， 各个版本不一。在编译的时候，会在可执行文件的.dynamic段中写入程序依赖的动态库的SO_NAME。SO_NAME是一个类似libname.so.3的字符串，表示依赖名称为name的动态库， 动态库的版本为3.x.x。对于linux，动态库有其命名的规则，为libname.so.3.1.2。版本号的定义遵循<a href="https://semver.org/">semver</a>格式。在linux中，还会存在一个libname.so.3的软链接，指向name对应的主版本为3的最新的版本文件，这样就解决了版本的兼容问题。</p>
@@ -1137,6 +1107,36 @@
 <h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
 <p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
 <p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>程序员自我修养读后感(7)-程序的内存布局</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+<span id="more"></span>
+
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+ <img src="/images/202007/memstruct.jpeg" width = "300" height = "600" alt="图片名称" align=center />
+
+
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1923,43 +1923,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
-    <url>/2020/12/28/linux14-thread/</url>
-    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
-<span id="more"></span>
-
-<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="type">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="type">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="type">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="type">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="type">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="type">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="type">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="type">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="type">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
-
-<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
-<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
-<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
-<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
-<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
-<h3 id="资源赋值-x2F-设置"><a href="#资源赋值-x2F-设置" class="headerlink" title="资源赋值&#x2F;设置"></a>资源赋值&#x2F;设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数&#x2F;引用加一，内存指向原本的内存。</p>
-<ul>
-<li>files_struct 引用计数加一</li>
-<li>fs_struct 的用户数加一</li>
-<li>sighand_struct 引用计数加一</li>
-<li>mm直接指向了原来的 mm_struct</li>
-</ul>
-<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
-<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
-<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
-<img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom" />
-
-
-<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十三) - fork进程创建</title>
     <url>/2020/12/28/linux13-processnew/</url>
     <content><![CDATA[<h1 id="fork进程创建"><a href="#fork进程创建" class="headerlink" title="fork进程创建"></a>fork进程创建</h1><p>第一步就是复制task_struct, 调用copy_process。</p>
@@ -1988,6 +1951,43 @@
 
 
 
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十四) - thread_create线程创建</title>
+    <url>/2020/12/28/linux14-thread/</url>
+    <content><![CDATA[<h1 id="thread-create线程创建"><a href="#thread-create线程创建" class="headerlink" title="thread_create线程创建"></a>thread_create线程创建</h1><p>线程不是一个完全由内核实现的机制，它是由内核态和用户态合作完成的。pthread_create 不是一个系统调用，是 Glibc 库的一个函数。</p>
+<span id="more"></span>
+
+<h2 id="用户态创建线程"><a href="#用户态创建线程" class="headerlink" title="用户态创建线程"></a>用户态创建线程</h2><p>创建线程首先就是要设置线程的参数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">        <span class="type">int</span>                       detachstate;     线程的分离状态</span><br><span class="line">        <span class="type">int</span>                       schedpolicy;     线程调度策略</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">sched_param</span>        <span class="title">schedparam</span>;</span>      线程的调度参数</span><br><span class="line">        <span class="type">int</span>                       inheritsched;    线程的继承性</span><br><span class="line">        <span class="type">int</span>                       scope;           线程的作用域</span><br><span class="line">        <span class="type">size_t</span>                    guardsize;       线程栈末尾的警戒缓冲区大小</span><br><span class="line">        <span class="type">int</span>                       stackaddr_set;</span><br><span class="line">        <span class="type">void</span> *                    stackaddr;       线程栈的位置</span><br><span class="line">        <span class="type">size_t</span>                    stacksize;       线程栈的大小</span><br><span class="line">&#125;<span class="type">pthread_attr_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>就像在内核里一样，每一个进程或者线程都有一个 task_struct 结构，在用户态也有一个用于维护线程的结构，就是这个 pthread 结构。</p>
+<p>然后就是创建一个线程栈。获取设置的栈大小，申请一段后面添加guard_size大小的空间，作为栈空间，当访问到后面guard_size的空间时报错。栈空间在线程退出后加入到缓存中get_cached_stack，新建线程首先会从缓存中获取适合的空间，否则新建。保存线程的pthread结构到栈空间里面，并且获取guard空间的大小，setup_stack_prot设置其为受保护的。然后就是初始化pthread内对应的值。最后将线程栈添加到stack_used 链表。也就是这个栈正被使用；另一个是 stack_cache，就是上面说的，一旦线程结束，先缓存起来，不释放，等有其他的线程创建的时候，给其他的线程用。线程栈的管理就是这2个链表来管理的。这个就是用户态栈的创建与管理。</p>
+<h2 id="内核态创建任务"><a href="#内核态创建任务" class="headerlink" title="内核态创建任务"></a>内核态创建任务</h2><p>继续上面的逻辑，然后是调用clone系统调用。</p>
+<p>如果在进程的主线程里面调用其他系统调用，当前用户态的栈是指向整个进程的栈，栈顶指针也是指向进程的栈，指令指针也是指向进程的主线程的代码。此时此刻执行到这里，调用 clone 的时候，用户态的栈、栈顶指针、指令指针和其他系统调用一样，都是指向主线程的。</p>
+<p>但是对于线程来说，这些都要变。因为我们希望当 clone 这个系统调用成功的时候，除了内核里面有这个线程对应的 task_struct，当系统调用返回到用户态的时候，用户态的栈应该是线程的栈，栈顶指针应该指向线程的栈，指令指针应该指向线程将要执行的那个函数。所以这些都需要我们自己做，将线程要执行的函数的参数和指令的位置都压到栈里面，当从内核返回，从栈里弹出来的时候，就从这个函数开始，带着这些参数执行下去。</p>
+<h3 id="资源赋值-x2F-设置"><a href="#资源赋值-x2F-设置" class="headerlink" title="资源赋值&#x2F;设置"></a>资源赋值&#x2F;设置</h3><p>clone最终是调用到了do_fork函数。由于创建线程时，设置了clone_flags。所以在具体的流程中，资源不再是创建拷贝一份数据，而是对应的用户数&#x2F;引用加一，内存指向原本的内存。</p>
+<ul>
+<li>files_struct 引用计数加一</li>
+<li>fs_struct 的用户数加一</li>
+<li>sighand_struct 引用计数加一</li>
+<li>mm直接指向了原来的 mm_struct</li>
+</ul>
+<h3 id="亲缘关系设置"><a href="#亲缘关系设置" class="headerlink" title="亲缘关系设置"></a>亲缘关系设置</h3><p>使用了 CLONE_THREAD 标识位之后，使得亲缘关系有了一定的变化。如果是新进程，那这个进程的 group_leader 就是它自己，tgid 是它自己的 pid，这就完全重打锣鼓另开张了，自己是线程组的头。如果是新线程，group_leader 是当前进程的，group_leader，tgid 是当前进程的 tgid，也就是当前进程的 pid，这个时候还是拜原来进程为老大。如果是新进程，新进程的 real_parent 是当前的进程，在进程树里面又见一辈人；如果是新线程，线程的 real_parent 是当前的进程的 real_parent，其实是平辈的。</p>
+<h3 id="信号的处理"><a href="#信号的处理" class="headerlink" title="信号的处理"></a>信号的处理</h3><p>每个 task_struct，都会有这样一个成员变量，struct sigpending pending。这就是一个信号列表。如果这个 task_struct 是一个线程，这里面的信号就是发给这个线程的；如果这个 task_struct 是一个进程，这里面的信号是发给主线程的。整个进程里的所有线程共享一个 shared_pending，这也是一个信号列表，是发给整个进程的，哪个线程处理都一样。 子线程自己是没有独立的信号处理的？</p>
+<h2 id="用户态执行线程"><a href="#用户态执行线程" class="headerlink" title="用户态执行线程"></a>用户态执行线程</h2><p>clone系统调用返回后，会调用start_thread函数，里面调用传入的线程函数。在用户的函数执行完毕之后，会释放这个线程相关的数据。例如，线程本地数据 thread_local variables，线程数目也减一。如果这是最后一个线程了，就直接退出进程，另外 __free_tcb 用于释放 pthread。</p>
+<img src="/images/202012/linux14_thread.jpeg" alt="图片替换文本" width="600" height="813" align="bottom" />
+
+
+<p>fork和clone的区别， fork对资源的复制是深拷贝， 全部重新申请一份新的， 拷贝内容。 clone呢，只是增加引用计数，浅拷贝，共享已有的资源， 线程共享进程的数据结构。五大结构：files_struct、fs_struct、sighand_struct、signal_struct、mm_struct。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -2048,6 +2048,46 @@
  
 <p>内核空间和用户空间构造也差不多。一般用不到，暂时不深究了。以后深入研究的时候再抽空了解一下。</p>
 <p><code> cat proc/$PID/maps</code> 可以查看各个地址上是哪些东西。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十六) - 内存映射</title>
+    <url>/2021/01/12/linux16-mm/</url>
+    <content><![CDATA[<h1 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h1><h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><p>在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。</p>
+<span id="more"></span>
+
+<p>分段就是通过段选择子+段内偏移量来定位物理地址，通过段选择子获取段描述符，段描述符存在GDT 全局描述符表中，包含了段的起始地址、大小、权限标志等。</p>
+<img src="/images/202101/mm_seg.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+<h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>对于物理内存，操作系统把它分成一块一块大小相同的页，这样更方便管理，例如有的内存页面长时间不用了，可以暂时写到硬盘上，称为换出。一旦需要的时候，再加载进来，叫做换入。这样可以扩大可用物理内存的大小，提高物理内存的利用率。</p>
+<p>这个换入和换出都是以页为单位的。页面的大小一般为 4KB。为了能够定位和访问每个页，需要有个页表，保存每个页的起始地址，再加上在页内的偏移量，组成线性地址，就能对于内存中的每个位置进行访问了。</p>
+<img src="/images/202101/mm_page.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+<p>虚拟地址分为两部分，页号和页内偏移。页号作为页表的索引，页表包含物理页每页所在物理内存的基地址。这个基地址与页内偏移的组合就形成了物理内存地址。原理和分段的类似， 之前是段表，这里是页表。</p>
+<p>但是，每个页的大小为4K，对于32位系统，支持4GB的寻址空间，那么就有1MB个页，每个页对于一个页表项(每项4字节)，需要4MB的内存存储这个映射。显然空间浪费太大，而且并不是每个页表都会被程序使用到。那么就有了页表分级。</p>
+<p>把这 4M 分成 1K（1024）个 4K，每个 4K 又能放在一页里面，这样 1K 个 4K 就是 1K 个页，这 1K 个页也需要一个表进行管理，我们称为页目录表，这个页目录表里面有 1K 项，每项 4 个字节，页目录表大小也是 4K。页目录有 1K 项，用 10 位就可以表示访问页目录的哪一项。这一项其实对应的是一整页的页表项，也即 4K 的页表项。每个页表项也是 4 个字节，因而一整页的页表项是 1K 个。再用 10 位就可以表示访问页表项的哪一项，页表项中的一项对应的就是一个页，是存放数据的页，这个页的大小是 4K，用 12 位可以定位这个页内的任何一个位置。</p>
+<img src="/images/202101/mm_page_sec.jpg" alt="图片替换文本" width="400" height="513" align="bottom" />
+
+<p>尽管看起来表示全部页表的项更多了，占用的空间会更大。但是，进程如果没有用到所有的地址，很多页表是不需要创建的。如果只使用页表，也需要完整的 1M 个页表项共 4M 的内存，但是如果使用了页目录，页目录需要 1K 个全部分配，占用内存 4K，但是里面只有一项使用了。到了页表项，只需要分配能够管理那个数据页的页表项页就可以了，也就是说，最多 4K，这样内存就节省多了。</p>
+<p>64位系统表示的范围更大，就多分几级的页表。具体的是4级目录。通过分级目录节约了内存。分别是全局页目录项 PGD（Page Global Directory）、上层页目录项 PUD（Page Upper Directory）、中间页目录项 PMD（Page Middle Directory）和页表项 PTE（Page Table Entry）。</p>
+<img src="/images/202101/mm_page_64.jpg" alt="图片替换文本" width="400" height="513" align="bottom" />
+
+<p>内存分页管理的内容：</p>
+<ul>
+<li><p>第一，虚拟内存空间的管理，将虚拟内存分成大小相等的页；</p>
+</li>
+<li><p>第二，物理内存的管理，将物理内存分成大小相等的页；</p>
+</li>
+<li><p>第三，内存映射，将虚拟内存页和物理内存页映射起来，并且在内存紧张的时候可以换出到硬盘中。</p>
+</li>
+</ul>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -2188,46 +2228,6 @@
 <p>存储每个区域不同指数级空闲的内存。</p>
 <p>当向内核请求分配 (2^(i-1)，2^i]数目的页块时，按照 2^i 页块请求处理。如果对应的页块链表中没有空闲页块，那我们就在更大的页块链表中去找。当分配的页块中有多余的页时，伙伴系统会根据多余的页块大小插入到对应的空闲页块链表中。</p>
 <p>具体的分配算法可以看alloc_pages_current(mm&#x2F;mempolicy.c)函数， 其实没有什么高深的， 如我此等常人页看得明白。复杂的东西都是由简单的器件组合而成的。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(十六) - 内存映射</title>
-    <url>/2021/01/12/linux16-mm/</url>
-    <content><![CDATA[<h1 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h1><h2 id="分段机制"><a href="#分段机制" class="headerlink" title="分段机制"></a>分段机制</h2><p>在linux上分段机制的使用主要用于权限的判断，具体内存的访问采用的是分页机制。</p>
-<span id="more"></span>
-
-<p>分段就是通过段选择子+段内偏移量来定位物理地址，通过段选择子获取段描述符，段描述符存在GDT 全局描述符表中，包含了段的起始地址、大小、权限标志等。</p>
-<img src="/images/202101/mm_seg.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
-
-<h2 id="分页机制"><a href="#分页机制" class="headerlink" title="分页机制"></a>分页机制</h2><p>对于物理内存，操作系统把它分成一块一块大小相同的页，这样更方便管理，例如有的内存页面长时间不用了，可以暂时写到硬盘上，称为换出。一旦需要的时候，再加载进来，叫做换入。这样可以扩大可用物理内存的大小，提高物理内存的利用率。</p>
-<p>这个换入和换出都是以页为单位的。页面的大小一般为 4KB。为了能够定位和访问每个页，需要有个页表，保存每个页的起始地址，再加上在页内的偏移量，组成线性地址，就能对于内存中的每个位置进行访问了。</p>
-<img src="/images/202101/mm_page.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
-
-<p>虚拟地址分为两部分，页号和页内偏移。页号作为页表的索引，页表包含物理页每页所在物理内存的基地址。这个基地址与页内偏移的组合就形成了物理内存地址。原理和分段的类似， 之前是段表，这里是页表。</p>
-<p>但是，每个页的大小为4K，对于32位系统，支持4GB的寻址空间，那么就有1MB个页，每个页对于一个页表项(每项4字节)，需要4MB的内存存储这个映射。显然空间浪费太大，而且并不是每个页表都会被程序使用到。那么就有了页表分级。</p>
-<p>把这 4M 分成 1K（1024）个 4K，每个 4K 又能放在一页里面，这样 1K 个 4K 就是 1K 个页，这 1K 个页也需要一个表进行管理，我们称为页目录表，这个页目录表里面有 1K 项，每项 4 个字节，页目录表大小也是 4K。页目录有 1K 项，用 10 位就可以表示访问页目录的哪一项。这一项其实对应的是一整页的页表项，也即 4K 的页表项。每个页表项也是 4 个字节，因而一整页的页表项是 1K 个。再用 10 位就可以表示访问页表项的哪一项，页表项中的一项对应的就是一个页，是存放数据的页，这个页的大小是 4K，用 12 位可以定位这个页内的任何一个位置。</p>
-<img src="/images/202101/mm_page_sec.jpg" alt="图片替换文本" width="400" height="513" align="bottom" />
-
-<p>尽管看起来表示全部页表的项更多了，占用的空间会更大。但是，进程如果没有用到所有的地址，很多页表是不需要创建的。如果只使用页表，也需要完整的 1M 个页表项共 4M 的内存，但是如果使用了页目录，页目录需要 1K 个全部分配，占用内存 4K，但是里面只有一项使用了。到了页表项，只需要分配能够管理那个数据页的页表项页就可以了，也就是说，最多 4K，这样内存就节省多了。</p>
-<p>64位系统表示的范围更大，就多分几级的页表。具体的是4级目录。通过分级目录节约了内存。分别是全局页目录项 PGD（Page Global Directory）、上层页目录项 PUD（Page Upper Directory）、中间页目录项 PMD（Page Middle Directory）和页表项 PTE（Page Table Entry）。</p>
-<img src="/images/202101/mm_page_64.jpg" alt="图片替换文本" width="400" height="513" align="bottom" />
-
-<p>内存分页管理的内容：</p>
-<ul>
-<li><p>第一，虚拟内存空间的管理，将虚拟内存分成大小相等的页；</p>
-</li>
-<li><p>第二，物理内存的管理，将物理内存分成大小相等的页；</p>
-</li>
-<li><p>第三，内存映射，将虚拟内存页和物理内存页映射起来，并且在内存紧张的时候可以换出到硬盘中。</p>
-</li>
-</ul>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -2588,68 +2588,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(二十六) - 输入输出系统</title>
-    <url>/2021/02/07/linux26-inout/</url>
-    <content><![CDATA[<h1 id="输入输出系统"><a href="#输入输出系统" class="headerlink" title="输入输出系统"></a>输入输出系统</h1><p>我们知道计算机由CPU、主板、硬盘、内存、鼠标、键盘、显示器、网卡等部件组成。 这里鼠标、键盘等是输入设备， 硬盘、显示器等是输出设备。网卡既是输入设备也算输出设备。这么多不同的设备，统一由输入输出系统来管理。</p>
-<span id="more"></span>
-
-<h2 id="用设备控制器屏蔽设备差异"><a href="#用设备控制器屏蔽设备差异" class="headerlink" title="用设备控制器屏蔽设备差异"></a>用设备控制器屏蔽设备差异</h2><p>计算机的是操作系统， 操作系统的核心是内核。进程管理、内存管理、文件系统管理、输入输出系统的管理都是内核的功能。输入输出管理，需要跟不同的设备打交道，但是设备多种多样，内核只能提供一个统一的抽象接口来管理设备，CPU 并不直接和设备打交道，它们中间有一个叫作设备控制器（Device Control Unit）的组件，例如硬盘有磁盘控制器、USB 有 USB 控制器、显示器有视频控制器等。</p>
-<p>控制器其实有点儿像一台小电脑。它有它的芯片，类似小 CPU，执行自己的逻辑。它也有它的寄存器。这样 CPU 就可以通过写这些寄存器，对控制器下发指令，通过读这些寄存器，查看控制器对于设备的操作状态。CPU 对于寄存器的读写，可比直接控制硬件，要标准和轻松很多。</p>
-<p>输入输出设备我们大致可以分为两类：块设备（Block Device）和字符设备（Character Device）</p>
-<ul>
-<li>块设备将信息存储在固定大小的块中，每个块都有自己的地址。硬盘就是常见的块设备。    </li>
-<li>字符设备发送或接收的是字节流。而不用考虑任何块结构，没有办法寻址。鼠标就是常见的字符设备。</li>
-</ul>
-<p>由于块设备传输的数据量比较大，控制器里往往会有缓冲区。CPU 写入缓冲区的数据攒够一部分，才会发给设备。CPU 读取的数据，也需要在缓冲区攒够一部分，才拷贝到内存。</p>
-<p>每个控制寄存器被分配一个 I&#x2F;O 端口，我们可以通过特殊的汇编指令（例如 in&#x2F;out 类似的指令）操作这些寄存器。数据缓冲区，可内存映射 I&#x2F;O，可以分配一段内存空间给它，就像读写内存一样读写数据缓冲区。</p>
-<p>设备完成操作后，CPU有两种方式可以获取通知。 第一种， 就是轮询寄存器的状态位。 第二种，设备通过中断通知CPU处理。</p>
-<p>为了响应中断，我们一般会有一个硬件的中断控制器，当设备完成任务后触发中断到中断控制器，中断控制器就通知 CPU，一个中断产生了，CPU 需要停下当前手里的事情来处理中断。</p>
-<p>中断有两种，一种软中断，例如代码调用 INT 指令触发，一种是硬件中断，就是硬件通过中断控制器触发的。</p>
-<img src="/images/202102/io_int.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
-
-<p>有的设备需要读取或者写入大量数据。这种类型的设备需要支持 DMA 功能，也就是说，允许设备在 CPU 不参与的情况下，能够自行完成对内存的读写。</p>
-<p>CPU 只需要对 DMA 控制器下指令，说它想读取多少数据，放在内存的某个地方就可以了，接下来 DMA 控制器会发指令给磁盘控制器，读取磁盘上的数据到指定的内存位置，传输完毕之后，DMA 控制器发中断通知 CPU 指令完成，CPU 就可以直接用内存里面现成的数据了。</p>
-<img src="/images/202102/io_dma.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
-
-<h2 id="用驱动程序屏蔽设备控制器差异"><a href="#用驱动程序屏蔽设备控制器差异" class="headerlink" title="用驱动程序屏蔽设备控制器差异"></a>用驱动程序屏蔽设备控制器差异</h2><p>每种设备的控制器的寄存器、缓冲区等使用模式，指令都不同，操作系统需要通过驱动程序对接不同的设备控制器。设备驱动程序中是一些面向特殊设备控制器的代码。不同的设备不同。但是对于操作系统其它部分的代码而言，设备驱动程序应该有统一的接口。就像下面图中的一样，不同的设备驱动程序，可以以同样的方式接入操作系统，而操作系统的其它部分的代码，也可以无视不同设备的区别，以同样的接口调用设备驱动程序。</p>
-<p>驱动程序就像一个适配层， 向上对操作系统提供统一的接口，向下对接具体的设备控制器。所有设备驱动程序都要，按照同样的规则，实现同样的方法。</p>
-<p>设备驱动程序是用来对接设备控制器的，中断处理也在设备驱动里面完成。</p>
-<p>中断的触发最终会到达 CPU，会中断操作系统当前运行的程序，所以操作系统也要有一个统一的流程来处理中断，使得不同设备的中断使用统一的流程。</p>
-<p>一个设备驱动程序初始化的时候，要先注册一个该设备的中断处理函数。中断的时候，触发的函数是 do_IRQ。这个函数是中断处理的统一入口。在这个函数里面，我们可以找到设备驱动程序注册的中断处理函数 Handler，然后执行它进行中断处理。</p>
-<img src="/images/202102/do_irq.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
-
-<p>对于块设备来讲，在驱动程序之上，文件系统之下，还需要一层通用设备层。这一层通用块层，将与块设备相关的通用逻辑放在这一层，维护与设备无关的块的大小，然后通用块层下面对接各种各样的驱动程序。</p>
-<h2 id="用文件系统接口屏蔽驱动程序的差异"><a href="#用文件系统接口屏蔽驱动程序的差异" class="headerlink" title="用文件系统接口屏蔽驱动程序的差异"></a>用文件系统接口屏蔽驱动程序的差异</h2><p>从硬件设备到设备控制器，到驱动程序，到通用块层，到文件系统，层层屏蔽不同的设备的差别，最终到这里涉及对用户使用接口，也要统一。操作设备，都是基于文件系统的接口，也要有一个统一的标准。</p>
-<p>首先要统一的是设备名称。所有设备都在 &#x2F;dev&#x2F; 文件夹下面创建一个特殊的设备文件。这个设备特殊文件也有 inode，但是它不关联到硬盘或任何其他存储介质上的数据，而是建立了与某个设备驱动程序的连接。对于设备文件，ls 出来的内容和我们原来讲过的稍有不同。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cd</span> /dev</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">ls</span> -l</span></span><br><span class="line">crw------- 1 root root      5,   1 Dec 14 19:53 console</span><br><span class="line">crw-r----- 1 root kmem      1,   1 Dec 14 19:53 mem</span><br><span class="line">crw-rw-rw- 1 root root      1,   3 Dec 14 19:53 null</span><br><span class="line">crw-r----- 1 root kmem      1,   4 Dec 14 19:53 port</span><br><span class="line">crw-rw-rw- 1 root root      1,   8 Dec 14 19:53 random</span><br><span class="line">crw--w---- 1 root tty       4,   0 Dec 14 19:53 tty0</span><br><span class="line">crw--w---- 1 root tty       4,   1 Dec 14 19:53 tty1</span><br><span class="line">crw-rw-rw- 1 root root      1,   9 Dec 14 19:53 urandom</span><br><span class="line">brw-rw---- 1 root disk    253,   0 Dec 31 19:18 vda</span><br><span class="line">brw-rw---- 1 root disk    253,   1 Dec 31 19:19 vda1</span><br><span class="line">brw-rw---- 1 root disk    253,  16 Dec 14 19:53 vdb</span><br><span class="line">brw-rw---- 1 root disk    253,  32 Jan  2 11:24 vdc</span><br><span class="line">crw-rw-rw- 1 root root      1,   5 Dec 14 19:53 zero</span><br></pre></td></tr></table></figure>
-
-<p>主设备号相同，表示它们使用同样的字符设备驱动。</p>
-<p>Linux 的驱动程序已经被写成和操作系统有标准接口的代码，可以看成一个标准的内核模块。在 Linux 里面，安装驱动程序，其实就是加载一个内核模块。可以通过lsmod查看。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">lsmod</span></span><br><span class="line">Module                  Size  Used by</span><br><span class="line">iptable_filter         12810  1</span><br><span class="line">bridge                146976  1 br_netfilter</span><br><span class="line">vfat                   17461  0</span><br><span class="line">fat                    65950  1 vfat</span><br><span class="line">ext4                  571716  1</span><br><span class="line">cirrus                 24383  1</span><br><span class="line">crct10dif_pclmul       14307  0</span><br><span class="line">crct10dif_common       12595  1 crct10dif_pclmul</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>如果没有安装过相应的驱动，可以通过 insmod 安装内核模块。内核模块的后缀一般是 ko。</p>
-<p>linux使用sysfs文件系统管理设备，在&#x2F;sys目录下面，可以查找到设备的信息。</p>
-<p>在 &#x2F;sys 路径下有下列的文件夹：</p>
-<ul>
-<li>&#x2F;sys&#x2F;devices 是内核对系统中所有设备的分层次的表示；</li>
-<li>&#x2F;sys&#x2F;dev 目录下一个 char 文件夹，一个 block 文件夹，分别维护一个按字符设备和块设备的主次号码 (major:minor) 链接到真实的设备 (&#x2F;sys&#x2F;devices 下) 的符号链接文件；</li>
-<li>&#x2F;sys&#x2F;block 是系统中当前所有的块设备；</li>
-<li>&#x2F;sys&#x2F;module 有系统中所有模块的信息。</li>
-</ul>
-<p>有了 sysfs 以后，我们还需要一个守护进程 udev。当一个设备新插入系统的时候，内核会检测到这个设备，并会创建一个内核对象 kobject 。 这个对象通过 sysfs 文件系统展现到用户层，同时内核还向用户空间发送一个热插拔消息。udevd 会监听这些消息，在 &#x2F;dev 中创建对应的文件。</p>
-<img src="/images/202102/newdevice.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
-
-<p>有些任务只使用读写很难完成，例如检查特定于设备的功能和属性，超出了通用文件系统的限制。所以，对于设备来讲，还有一种接口称为 ioctl，表示输入输出控制接口，是用于配置和修改特定设备属性的通用接口。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(二十五) - 文件读写</title>
     <url>/2021/02/06/linux25-fileoperation/</url>
     <content><![CDATA[<h1 id="文件读写"><a href="#文件读写" class="headerlink" title="文件读写"></a>文件读写</h1><p>文件创建、打开之后， 就是对其进行读写操作了。</p>
@@ -2702,6 +2640,68 @@
 <img src="/images/202102/read_write.png" alt="图片替换文本" width="600" height="513" align="bottom" />
 
 <h2 id="基数树"><a href="#基数树" class="headerlink" title="基数树"></a>基数树</h2><p>这边，struct address_space缓存页管理使用了基数树这种数据结构，radix树是一种针对稀疏的长整型数据查找，可以快速节省空间的完成映射。可以基于长整型快速路由到叶子节点，叶子节点保存具体的数据。具体实现见radix-tree.c文件。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(二十六) - 输入输出系统</title>
+    <url>/2021/02/07/linux26-inout/</url>
+    <content><![CDATA[<h1 id="输入输出系统"><a href="#输入输出系统" class="headerlink" title="输入输出系统"></a>输入输出系统</h1><p>我们知道计算机由CPU、主板、硬盘、内存、鼠标、键盘、显示器、网卡等部件组成。 这里鼠标、键盘等是输入设备， 硬盘、显示器等是输出设备。网卡既是输入设备也算输出设备。这么多不同的设备，统一由输入输出系统来管理。</p>
+<span id="more"></span>
+
+<h2 id="用设备控制器屏蔽设备差异"><a href="#用设备控制器屏蔽设备差异" class="headerlink" title="用设备控制器屏蔽设备差异"></a>用设备控制器屏蔽设备差异</h2><p>计算机的是操作系统， 操作系统的核心是内核。进程管理、内存管理、文件系统管理、输入输出系统的管理都是内核的功能。输入输出管理，需要跟不同的设备打交道，但是设备多种多样，内核只能提供一个统一的抽象接口来管理设备，CPU 并不直接和设备打交道，它们中间有一个叫作设备控制器（Device Control Unit）的组件，例如硬盘有磁盘控制器、USB 有 USB 控制器、显示器有视频控制器等。</p>
+<p>控制器其实有点儿像一台小电脑。它有它的芯片，类似小 CPU，执行自己的逻辑。它也有它的寄存器。这样 CPU 就可以通过写这些寄存器，对控制器下发指令，通过读这些寄存器，查看控制器对于设备的操作状态。CPU 对于寄存器的读写，可比直接控制硬件，要标准和轻松很多。</p>
+<p>输入输出设备我们大致可以分为两类：块设备（Block Device）和字符设备（Character Device）</p>
+<ul>
+<li>块设备将信息存储在固定大小的块中，每个块都有自己的地址。硬盘就是常见的块设备。    </li>
+<li>字符设备发送或接收的是字节流。而不用考虑任何块结构，没有办法寻址。鼠标就是常见的字符设备。</li>
+</ul>
+<p>由于块设备传输的数据量比较大，控制器里往往会有缓冲区。CPU 写入缓冲区的数据攒够一部分，才会发给设备。CPU 读取的数据，也需要在缓冲区攒够一部分，才拷贝到内存。</p>
+<p>每个控制寄存器被分配一个 I&#x2F;O 端口，我们可以通过特殊的汇编指令（例如 in&#x2F;out 类似的指令）操作这些寄存器。数据缓冲区，可内存映射 I&#x2F;O，可以分配一段内存空间给它，就像读写内存一样读写数据缓冲区。</p>
+<p>设备完成操作后，CPU有两种方式可以获取通知。 第一种， 就是轮询寄存器的状态位。 第二种，设备通过中断通知CPU处理。</p>
+<p>为了响应中断，我们一般会有一个硬件的中断控制器，当设备完成任务后触发中断到中断控制器，中断控制器就通知 CPU，一个中断产生了，CPU 需要停下当前手里的事情来处理中断。</p>
+<p>中断有两种，一种软中断，例如代码调用 INT 指令触发，一种是硬件中断，就是硬件通过中断控制器触发的。</p>
+<img src="/images/202102/io_int.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<p>有的设备需要读取或者写入大量数据。这种类型的设备需要支持 DMA 功能，也就是说，允许设备在 CPU 不参与的情况下，能够自行完成对内存的读写。</p>
+<p>CPU 只需要对 DMA 控制器下指令，说它想读取多少数据，放在内存的某个地方就可以了，接下来 DMA 控制器会发指令给磁盘控制器，读取磁盘上的数据到指定的内存位置，传输完毕之后，DMA 控制器发中断通知 CPU 指令完成，CPU 就可以直接用内存里面现成的数据了。</p>
+<img src="/images/202102/io_dma.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<h2 id="用驱动程序屏蔽设备控制器差异"><a href="#用驱动程序屏蔽设备控制器差异" class="headerlink" title="用驱动程序屏蔽设备控制器差异"></a>用驱动程序屏蔽设备控制器差异</h2><p>每种设备的控制器的寄存器、缓冲区等使用模式，指令都不同，操作系统需要通过驱动程序对接不同的设备控制器。设备驱动程序中是一些面向特殊设备控制器的代码。不同的设备不同。但是对于操作系统其它部分的代码而言，设备驱动程序应该有统一的接口。就像下面图中的一样，不同的设备驱动程序，可以以同样的方式接入操作系统，而操作系统的其它部分的代码，也可以无视不同设备的区别，以同样的接口调用设备驱动程序。</p>
+<p>驱动程序就像一个适配层， 向上对操作系统提供统一的接口，向下对接具体的设备控制器。所有设备驱动程序都要，按照同样的规则，实现同样的方法。</p>
+<p>设备驱动程序是用来对接设备控制器的，中断处理也在设备驱动里面完成。</p>
+<p>中断的触发最终会到达 CPU，会中断操作系统当前运行的程序，所以操作系统也要有一个统一的流程来处理中断，使得不同设备的中断使用统一的流程。</p>
+<p>一个设备驱动程序初始化的时候，要先注册一个该设备的中断处理函数。中断的时候，触发的函数是 do_IRQ。这个函数是中断处理的统一入口。在这个函数里面，我们可以找到设备驱动程序注册的中断处理函数 Handler，然后执行它进行中断处理。</p>
+<img src="/images/202102/do_irq.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<p>对于块设备来讲，在驱动程序之上，文件系统之下，还需要一层通用设备层。这一层通用块层，将与块设备相关的通用逻辑放在这一层，维护与设备无关的块的大小，然后通用块层下面对接各种各样的驱动程序。</p>
+<h2 id="用文件系统接口屏蔽驱动程序的差异"><a href="#用文件系统接口屏蔽驱动程序的差异" class="headerlink" title="用文件系统接口屏蔽驱动程序的差异"></a>用文件系统接口屏蔽驱动程序的差异</h2><p>从硬件设备到设备控制器，到驱动程序，到通用块层，到文件系统，层层屏蔽不同的设备的差别，最终到这里涉及对用户使用接口，也要统一。操作设备，都是基于文件系统的接口，也要有一个统一的标准。</p>
+<p>首先要统一的是设备名称。所有设备都在 &#x2F;dev&#x2F; 文件夹下面创建一个特殊的设备文件。这个设备特殊文件也有 inode，但是它不关联到硬盘或任何其他存储介质上的数据，而是建立了与某个设备驱动程序的连接。对于设备文件，ls 出来的内容和我们原来讲过的稍有不同。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cd</span> /dev</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">ls</span> -l</span></span><br><span class="line">crw------- 1 root root      5,   1 Dec 14 19:53 console</span><br><span class="line">crw-r----- 1 root kmem      1,   1 Dec 14 19:53 mem</span><br><span class="line">crw-rw-rw- 1 root root      1,   3 Dec 14 19:53 null</span><br><span class="line">crw-r----- 1 root kmem      1,   4 Dec 14 19:53 port</span><br><span class="line">crw-rw-rw- 1 root root      1,   8 Dec 14 19:53 random</span><br><span class="line">crw--w---- 1 root tty       4,   0 Dec 14 19:53 tty0</span><br><span class="line">crw--w---- 1 root tty       4,   1 Dec 14 19:53 tty1</span><br><span class="line">crw-rw-rw- 1 root root      1,   9 Dec 14 19:53 urandom</span><br><span class="line">brw-rw---- 1 root disk    253,   0 Dec 31 19:18 vda</span><br><span class="line">brw-rw---- 1 root disk    253,   1 Dec 31 19:19 vda1</span><br><span class="line">brw-rw---- 1 root disk    253,  16 Dec 14 19:53 vdb</span><br><span class="line">brw-rw---- 1 root disk    253,  32 Jan  2 11:24 vdc</span><br><span class="line">crw-rw-rw- 1 root root      1,   5 Dec 14 19:53 zero</span><br></pre></td></tr></table></figure>
+
+<p>主设备号相同，表示它们使用同样的字符设备驱动。</p>
+<p>Linux 的驱动程序已经被写成和操作系统有标准接口的代码，可以看成一个标准的内核模块。在 Linux 里面，安装驱动程序，其实就是加载一个内核模块。可以通过lsmod查看。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">lsmod</span></span><br><span class="line">Module                  Size  Used by</span><br><span class="line">iptable_filter         12810  1</span><br><span class="line">bridge                146976  1 br_netfilter</span><br><span class="line">vfat                   17461  0</span><br><span class="line">fat                    65950  1 vfat</span><br><span class="line">ext4                  571716  1</span><br><span class="line">cirrus                 24383  1</span><br><span class="line">crct10dif_pclmul       14307  0</span><br><span class="line">crct10dif_common       12595  1 crct10dif_pclmul</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果没有安装过相应的驱动，可以通过 insmod 安装内核模块。内核模块的后缀一般是 ko。</p>
+<p>linux使用sysfs文件系统管理设备，在&#x2F;sys目录下面，可以查找到设备的信息。</p>
+<p>在 &#x2F;sys 路径下有下列的文件夹：</p>
+<ul>
+<li>&#x2F;sys&#x2F;devices 是内核对系统中所有设备的分层次的表示；</li>
+<li>&#x2F;sys&#x2F;dev 目录下一个 char 文件夹，一个 block 文件夹，分别维护一个按字符设备和块设备的主次号码 (major:minor) 链接到真实的设备 (&#x2F;sys&#x2F;devices 下) 的符号链接文件；</li>
+<li>&#x2F;sys&#x2F;block 是系统中当前所有的块设备；</li>
+<li>&#x2F;sys&#x2F;module 有系统中所有模块的信息。</li>
+</ul>
+<p>有了 sysfs 以后，我们还需要一个守护进程 udev。当一个设备新插入系统的时候，内核会检测到这个设备，并会创建一个内核对象 kobject 。 这个对象通过 sysfs 文件系统展现到用户层，同时内核还向用户空间发送一个热插拔消息。udevd 会监听这些消息，在 &#x2F;dev 中创建对应的文件。</p>
+<img src="/images/202102/newdevice.jpg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<p>有些任务只使用读写很难完成，例如检查特定于设备的功能和属性，超出了通用文件系统的限制。所以，对于设备来讲，还有一种接口称为 ioctl，表示输入输出控制接口，是用于配置和修改特定设备属性的通用接口。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -2894,6 +2894,19 @@
       </categories>
   </entry>
   <entry>
+    <title>博客迁移</title>
+    <url>/2021/02/28/notice/</url>
+    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.github.io/">码云</a>上去。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(三十一) - 信号</title>
     <url>/2021/03/21/linux31-signal/</url>
     <content><![CDATA[<h1 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h1><p>信号其实是一个很像中断的机制，事先注册号信号的处理函数，或者使用默认的处理函数， 当接收到奥信号的时候，调用对应的处理函数进行处理。中断呢，系统默认有一个中断向量表，存储中断处理程序，当接收到中断的时候，从中断向量表中获取中断处理程序进行处理。只是中断是在内核态处理，信号是在用户态处理。</p>
@@ -2929,19 +2942,6 @@
 
 <p>如果检查有信号标志_TIF_SIGPENDING， 就调用do_signal函数进行信号处理。 这个时候，我们要看，是否从系统调用中返回。如果是从系统调用返回的话，还要区分我们是从系统调用中正常返回，还是在一个非运行状态的系统调用中，因为会被信号中断而返回。如果是因为信号中断而返回的话， 会在栈桢里面添加中断信号相关的上下文，然后出栈直接调到信号处理函数，而不会调用系统调用前的代码行。</p>
 <p>万变不离其宗，其实如果有一些基础的系统知识，不如这里知道栈的用处，那么读代码的时候就比较容易理解了。 </p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>博客迁移</title>
-    <url>/2021/02/28/notice/</url>
-    <content><![CDATA[<p>github不稳定，近期老是被墙，换到<a href="https://fishmwei.github.io/">码云</a>上去。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -3670,33 +3670,6 @@
       </categories>
   </entry>
   <entry>
-    <title>近期使用的skills</title>
-    <url>/2021/09/23/skills/</url>
-    <content><![CDATA[<p>最近编码get或者温故了一些skill，小结记录一下。</p>
-<h1 id="core-dump"><a href="#core-dump" class="headerlink" title="core dump"></a>core dump</h1><p>Ubuntu系统产生core文件方法<br>ulimit -c unlimited<br>sysctl -w kernel.core_pattern&#x3D;&#x2F;tmp&#x2F;core-%e.%p</p>
-<span id="more"></span>
-
-<p>生成的core文件在&#x2F;tmp目录下，格式为core-程序名称.进程pid</p>
-<p>ulimit设置后，仅对当前终端会话有效。</p>
-<h1 id="gdb字符串打印不全"><a href="#gdb字符串打印不全" class="headerlink" title="gdb字符串打印不全"></a>gdb字符串打印不全</h1><p>有时候一个字符串比较长，调试时使用<code>p str_val</code>，仅展示一部分， 后面的会以省略号代替， 可以在gdb里面敲命令<br><code>set print element 0</code>， 然后再<code>p str_val</code>则可以显示完整的字符串。</p>
-<h1 id="chroot以其他账户执行命令"><a href="#chroot以其他账户执行命令" class="headerlink" title="chroot以其他账户执行命令"></a>chroot以其他账户执行命令</h1><p>最近测试提了一个问题，程序在使用其他账户执行的时候会崩溃， 通过<code>chroot</code>命令可以用其他账户的权限执行命令。</p>
-<p><code>chroot --userspec=other_username &quot;/&quot; sh -c &quot;my-program&quot;</code>, 可以快速重现问题， 不需要切换用户。</p>
-<h1 id="shell如何延迟reboot"><a href="#shell如何延迟reboot" class="headerlink" title="shell如何延迟reboot"></a>shell如何延迟reboot</h1><p>在实现项目功能的时候， 需要在处理完后预留一段时间在重启设备。linux默认提供的reboot或者shutdown命令不支持延迟功能。 之前学习了dbus， 刚好项目python代码中有相关的命令实现。 OK， 那么我们就可以使用dbus-send命令，模拟python的dbus调用，实现延迟重启设备的功能。 具体的命令如下：</p>
-<p><code>dbus-send --system  --type=method_call  --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.ScheduleShutdown string:&quot;reboot&quot; uint64:1632282493000000</code></p>
-<p>uint64后面接的是执行命令的时间轴，单位为微妙，可以通过<code>date +%s</code>获取到当前的时间轴， 再加上延迟的秒数，然后乘以 1000*1000。</p>
-<h1 id="buildroot编译debug程序"><a href="#buildroot编译debug程序" class="headerlink" title="buildroot编译debug程序"></a>buildroot编译debug程序</h1><p>一般c语言的库现在多使用cmake了， 可以添加一个选项 -DCMAKE_BUILD_TYP&#x3D;Debug，然后<code>make pkg-dirclean &amp;&amp; make pkg-rebuild</code>重新编译出来的程序就是带有符号的debug版本程序了， 可以方便地进行gdb调试。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>最近是比较忙的， 一边在学习sysrepo这个开源库，考虑如何解决这个库的性能问题。 另一边还要支撑处理项目的其他问题，还要一些的设计文档编写。之前的学习都暂时中断了， 工作优先。</p>
-<p>今天公司领导发了一个后期知识分享的规划， 后期要引入极客时间专栏的学习分享，嗯， 当然学习了需要在部门内做分享。这样学习就变成了任务，习惯自学的我，总感觉怪怪的。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>动态库实现插件-sysrepo笔记(4)</title>
     <url>/2021/09/21/plugin/</url>
     <content><![CDATA[<p>插件顾名思义就是通过宿主程序提供的机制，影响宿主程序而实现特定功能的一种程序。</p>
@@ -3716,6 +3689,33 @@
 </ul>
 <p>在<code>sysrepo</code>的官方文档里面也有一个插件的示例，感兴趣可以去看看。 </p>
 <p><a href="https://netopeer.liberouter.org/doc/sysrepo/master/html/example.html#oven_plugin">https://netopeer.liberouter.org/doc/sysrepo/master/html/example.html#oven_plugin</a></p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>近期使用的skills</title>
+    <url>/2021/09/23/skills/</url>
+    <content><![CDATA[<p>最近编码get或者温故了一些skill，小结记录一下。</p>
+<h1 id="core-dump"><a href="#core-dump" class="headerlink" title="core dump"></a>core dump</h1><p>Ubuntu系统产生core文件方法<br>ulimit -c unlimited<br>sysctl -w kernel.core_pattern&#x3D;&#x2F;tmp&#x2F;core-%e.%p</p>
+<span id="more"></span>
+
+<p>生成的core文件在&#x2F;tmp目录下，格式为core-程序名称.进程pid</p>
+<p>ulimit设置后，仅对当前终端会话有效。</p>
+<h1 id="gdb字符串打印不全"><a href="#gdb字符串打印不全" class="headerlink" title="gdb字符串打印不全"></a>gdb字符串打印不全</h1><p>有时候一个字符串比较长，调试时使用<code>p str_val</code>，仅展示一部分， 后面的会以省略号代替， 可以在gdb里面敲命令<br><code>set print element 0</code>， 然后再<code>p str_val</code>则可以显示完整的字符串。</p>
+<h1 id="chroot以其他账户执行命令"><a href="#chroot以其他账户执行命令" class="headerlink" title="chroot以其他账户执行命令"></a>chroot以其他账户执行命令</h1><p>最近测试提了一个问题，程序在使用其他账户执行的时候会崩溃， 通过<code>chroot</code>命令可以用其他账户的权限执行命令。</p>
+<p><code>chroot --userspec=other_username &quot;/&quot; sh -c &quot;my-program&quot;</code>, 可以快速重现问题， 不需要切换用户。</p>
+<h1 id="shell如何延迟reboot"><a href="#shell如何延迟reboot" class="headerlink" title="shell如何延迟reboot"></a>shell如何延迟reboot</h1><p>在实现项目功能的时候， 需要在处理完后预留一段时间在重启设备。linux默认提供的reboot或者shutdown命令不支持延迟功能。 之前学习了dbus， 刚好项目python代码中有相关的命令实现。 OK， 那么我们就可以使用dbus-send命令，模拟python的dbus调用，实现延迟重启设备的功能。 具体的命令如下：</p>
+<p><code>dbus-send --system  --type=method_call  --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.ScheduleShutdown string:&quot;reboot&quot; uint64:1632282493000000</code></p>
+<p>uint64后面接的是执行命令的时间轴，单位为微妙，可以通过<code>date +%s</code>获取到当前的时间轴， 再加上延迟的秒数，然后乘以 1000*1000。</p>
+<h1 id="buildroot编译debug程序"><a href="#buildroot编译debug程序" class="headerlink" title="buildroot编译debug程序"></a>buildroot编译debug程序</h1><p>一般c语言的库现在多使用cmake了， 可以添加一个选项 -DCMAKE_BUILD_TYP&#x3D;Debug，然后<code>make pkg-dirclean &amp;&amp; make pkg-rebuild</code>重新编译出来的程序就是带有符号的debug版本程序了， 可以方便地进行gdb调试。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>最近是比较忙的， 一边在学习sysrepo这个开源库，考虑如何解决这个库的性能问题。 另一边还要支撑处理项目的其他问题，还要一些的设计文档编写。之前的学习都暂时中断了， 工作优先。</p>
+<p>今天公司领导发了一个后期知识分享的规划， 后期要引入极客时间专栏的学习分享，嗯， 当然学习了需要在部门内做分享。这样学习就变成了任务，习惯自学的我，总感觉怪怪的。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -3935,51 +3935,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(三十三) - 信号量</title>
-    <url>/2021/10/31/linux33-sem/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>进程间通过共享内存实现进程间通信，但是临界资源需要保护，可以使用信号量进行控制。信号量在这里就起到了锁的作用， 对临界资源进行协调。</p>
-<span id="more"></span>
-
-<p>信号量也是System V体系的一部分， 跟共享内存、消息队列类似。</p>
-<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>之前讲sysrepo是一个基于共享内存的数据库，sysrepo主要还是通过文件映射的方式实现共享内存的，属于高一个层级的使用。这里讲一下，共享内存的底层接口使用。</p>
-<h3 id="创建共享内存"><a href="#创建共享内存" class="headerlink" title="创建共享内存"></a>创建共享内存</h3><p>首先，创建之前，我们要有一个 key 来唯一标识这个共享内存。这个 key 可以根据文件系统上的一个文件的 inode 随机生成。</p>
-<p>创建一个共享内存，都是使用 xxxget 来创建。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">size_t</span> size, <span class="type">int</span> shmflag)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>key 就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。这里返回一个共享内存的id。</p>
-<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>生成了共享内存以后，接下来就是将这个共享内存映射到进程的虚拟地址空间中。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">shmat</span><span class="params">(<span class="type">int</span>  shm_id, <span class="type">const</span>  <span class="type">void</span> *addr, <span class="type">int</span> shmflg)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这里面的 shm_id，就是上面创建的共享内存的 id，addr 就是指定映射在某个地方。如果不指定，则内核会自动选择一个地址，作为返回值返回。</p>
-<p>然后，我们通过强制类型转换，对该内存进行数据写入。</p>
-<p>当共享内存使用完毕，我们可以通过 shmdt 解除它到虚拟内存的映射。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmdt</span><span class="params">(<span class="type">const</span>  <span class="type">void</span> *shmaddr)</span>；</span><br></pre></td></tr></table></figure>
-
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量，也是类似的。</p>
-<p>首先，创建之前，我们同样需要有一个 key，来唯一标识这个信号量集合。这个 key 同样可以根据文件系统上的一个文件的 inode 随机生成。</p>
-<p>然后，我们需要创建一个信号量集合，同样也是使用 xxxget 来创建，其中创建信号量集合使用的是下面这个函数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">semget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> nsems, <span class="type">int</span> semflg)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这里面的 key，就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。</p>
-<p>信号量是以集合的形式存在，一次可以申请nsems个信号量，一般我们申请一个就可以了。</p>
-<p>信号量对应的有P、V的操作，分别用于获取信号量和释放信号量。信号量可以设置同时并发的个数，每一个P操作就是对信号量的值减一，每一个V操作就是对信号量的值加一。当信号量的值为0的时候，P操作就会挂住，等待信号量的值大于0之后才继续执行。</p>
-<p>我们设置信号量的初值为1，那么就可以实现同时仅能有一个访问者对资源操作的功能，就是锁的功能了。</p>
-<h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>源码：</p>
-<p><a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem">https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem</a></p>
-<p>运行效果</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:sem keep$ ./p</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">how many integers to caculate : 2</span><br><span class="line">Input the 0 integer : 1</span><br><span class="line">Input the 1 integer : 2</span><br><span class="line">how many integers to caculate : </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:sem keep$ ./c</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">1+2=3</span><br><span class="line">no tasks, waiting.</span><br><span class="line">no tasks, waiting.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>前几天到公司的时间早了一点，下车前突然想到很久没有在极客时间上面学习了，打开趣谈linux操作系统，开始学了大概半小时，感觉效果挺不错，四周挺安静的。嗯，每天挤出来半个小时，学习一下，积少成多，加油。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(三十四) - 网络通信</title>
     <url>/2021/11/06/linux34-net/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面学习的进程间的通信主要适用于同一台机器的两个进程间的通信，不同机器间的进程间通信就由网络通信来实现。通过定义好的网络协议，不同机器的进程传递交互的内容。当然，网络通信也可以适用于同一台机器的进程间通信，效率比其他方式差一些。进程间通信最快的属于共享内存。</p>
@@ -4034,6 +3989,51 @@
 <p><img src="/images/202111/output_TCP.jpg" alt="avatar"></p>
 <h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>之前对sysrepo的优化彻底结束了，解决了不相关模块的性能影响的问题，验证充分后上线测试了，转测试一周了暂时没有反馈相关的问题。</p>
 <p>前面还有一个超时问题的解决，后面发现系统时间不是可以任意设置的，比如设置3000年的时间就不能设置成功，最后限定了可设置的时间范围 ‘1970-01-01 23:59:59’到’2200-01-01 00:00:00’，正常我们的设备可以用到那个时间就很不错了，哈哈，到时候的系统应该可以设置的时间应该更往后了，后继者再来修改吧。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(三十三) - 信号量</title>
+    <url>/2021/10/31/linux33-sem/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>进程间通过共享内存实现进程间通信，但是临界资源需要保护，可以使用信号量进行控制。信号量在这里就起到了锁的作用， 对临界资源进行协调。</p>
+<span id="more"></span>
+
+<p>信号量也是System V体系的一部分， 跟共享内存、消息队列类似。</p>
+<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>之前讲sysrepo是一个基于共享内存的数据库，sysrepo主要还是通过文件映射的方式实现共享内存的，属于高一个层级的使用。这里讲一下，共享内存的底层接口使用。</p>
+<h3 id="创建共享内存"><a href="#创建共享内存" class="headerlink" title="创建共享内存"></a>创建共享内存</h3><p>首先，创建之前，我们要有一个 key 来唯一标识这个共享内存。这个 key 可以根据文件系统上的一个文件的 inode 随机生成。</p>
+<p>创建一个共享内存，都是使用 xxxget 来创建。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">size_t</span> size, <span class="type">int</span> shmflag)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>key 就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。这里返回一个共享内存的id。</p>
+<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>生成了共享内存以后，接下来就是将这个共享内存映射到进程的虚拟地址空间中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">shmat</span><span class="params">(<span class="type">int</span>  shm_id, <span class="type">const</span>  <span class="type">void</span> *addr, <span class="type">int</span> shmflg)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里面的 shm_id，就是上面创建的共享内存的 id，addr 就是指定映射在某个地方。如果不指定，则内核会自动选择一个地址，作为返回值返回。</p>
+<p>然后，我们通过强制类型转换，对该内存进行数据写入。</p>
+<p>当共享内存使用完毕，我们可以通过 shmdt 解除它到虚拟内存的映射。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmdt</span><span class="params">(<span class="type">const</span>  <span class="type">void</span> *shmaddr)</span>；</span><br></pre></td></tr></table></figure>
+
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量，也是类似的。</p>
+<p>首先，创建之前，我们同样需要有一个 key，来唯一标识这个信号量集合。这个 key 同样可以根据文件系统上的一个文件的 inode 随机生成。</p>
+<p>然后，我们需要创建一个信号量集合，同样也是使用 xxxget 来创建，其中创建信号量集合使用的是下面这个函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">semget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> nsems, <span class="type">int</span> semflg)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里面的 key，就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。</p>
+<p>信号量是以集合的形式存在，一次可以申请nsems个信号量，一般我们申请一个就可以了。</p>
+<p>信号量对应的有P、V的操作，分别用于获取信号量和释放信号量。信号量可以设置同时并发的个数，每一个P操作就是对信号量的值减一，每一个V操作就是对信号量的值加一。当信号量的值为0的时候，P操作就会挂住，等待信号量的值大于0之后才继续执行。</p>
+<p>我们设置信号量的初值为1，那么就可以实现同时仅能有一个访问者对资源操作的功能，就是锁的功能了。</p>
+<h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>源码：</p>
+<p><a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem">https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem</a></p>
+<p>运行效果</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:sem keep$ ./p</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">how many integers to caculate : 2</span><br><span class="line">Input the 0 integer : 1</span><br><span class="line">Input the 1 integer : 2</span><br><span class="line">how many integers to caculate : </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:sem keep$ ./c</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">1+2=3</span><br><span class="line">no tasks, waiting.</span><br><span class="line">no tasks, waiting.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>前几天到公司的时间早了一点，下车前突然想到很久没有在极客时间上面学习了，打开趣谈linux操作系统，开始学了大概半小时，感觉效果挺不错，四周挺安静的。嗯，每天挤出来半个小时，学习一下，积少成多，加油。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4115,27 +4115,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈（1）-一个yang解析错误问题</title>
-    <url>/2021/11/24/weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-<p>当然，不保证每周都有值得分享的问题，当然也可能有多个问题可以分享，那有时候会谈谈自己近期工作生活中遇到的琐事种种，大忙的时候也可能缺更。嗯，从这周开始这一个系列的文章, 看看我能坚持多久，嘿嘿!</p>
-<h2 id="一个yang解析错误问题"><a href="#一个yang解析错误问题" class="headerlink" title="一个yang解析错误问题"></a>一个yang解析错误问题</h2><p>情况是这样的，项目使用命令行进入，如果在未连接上netconf服务端的时候，马上敲入命令，会导致那个netconf连接不正常。好在这是一个必现的问题，通过定位发现一个日志报错的位于libyang库的代码中，然后打开netopeer2的日志，可以确定到出问题之前的那个rpc的xml内容。通过MG-SOFT netconf browser 软件发送这个rpc的xml， 知道的确是这个rpc导致的错误， 然后连接就断开了。</p>
-<p>下一步就看为什么导致错误的了，这个又需要看libyang的代码了，通过设置buildroot工程下的libyang.mk， 增加CMAKE_BUILD_TYP&#x3D;Debug选项，编译出一个带符号的libyang，然后就是上gdb调试了。</p>
-<p>后面定位到是一个xpath解析的问题，由于传入的xpath是没有带模块名的<code>/node0/node1/node2</code>, 在libyang中认为这是一个错误的xpath，然后就罢工抛异常了。紧接着libnetconf在应答接收不完全的情况下，认为连接异常了，然后把连接设置为invalid了，后续的命令就不能正常执行了。</p>
-<p>通过分析xpath的格式，搜索了一下，锁定了问题的源头。是在订阅sysrepo事件的时候传入的xpath问题，缺失了模块名。 通过修改对外接口， 增加了对xpath格式的校验， xpath必须格式为 <code>/m0:node0/m1:node1/m2:node2</code>这样，修改验证后，问题解决。然后就是修改整个项目相关的xpath路径，合并提交代码。最后在部门发个通告，增加这个约束说明。 OK， 问题解决。</p>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>开源代码也是人写的， 出现问题也是很正常。这个问题的根因是sysrepo的函数入口没有对xpath进行约束，却在libyang中又有对xpath有这种检查，导致了这个问题的出现。</p>
-<p>程序员定位bug就像是侦探破案，首先是确认问题，现场勘查，然后找寻各种蛛丝马迹，推演问题的产生原因。程序员更方便的是可以复现问题，各种尝试，修改后还可以进行验证。在这个过程中，逻辑思维很重要。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈（3）- python调试</title>
     <url>/2021/12/11/weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
@@ -4162,37 +4141,6 @@
 <p>当然，开源程序和商业代码也都是程序员贡献的，有问题也是正常的。毕竟人家很多是利用业余时间完成的，还有很多代码也是经验尚浅的人写的，或者是出于应用场景的局限有不同的考量。</p>
 <p>遇到问题，解决就是了。</p>
 <p>在定位问题的过程中，还是用top、perf等工具，后面整理了，​再来分享。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>周谈（4）- 系统时间更改导致的问题</title>
-    <url>/2021/12/17/weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第四篇, 下面看问题。</p>
-<h1 id="系统时间更改导致的问题"><a href="#系统时间更改导致的问题" class="headerlink" title="系统时间更改导致的问题"></a>系统时间更改导致的问题</h1><p>修改系统时间是一个不是常用的功能，但是又是很必须的。看起来很简单的系统时间的修改，也出了好几个问题。</p>
-<h2 id="rpc超时"><a href="#rpc超时" class="headerlink" title="rpc超时"></a>rpc超时</h2><p>修改系统时间，本身使用的是一个rpc调用，rpc使用超时机制的，就是在指定时间内如果执行函数没有返回，那么rpc就认为超时失败了。这个问题在前面的文章中讲过，具体可以看这篇文章 <a href="https://fishmwei.github.io/2021/10/23/timeout/">超时实现-sysrepo笔记(8)
-</a></p>
-<h2 id="dhcp接口ip失效"><a href="#dhcp接口ip失效" class="headerlink" title="dhcp接口ip失效"></a>dhcp接口ip失效</h2><p>同样的，接口配置了dhcp方式获取地址，由于修改了系统时间为未来的时间，导致dhcp的租期过期，接口自动释放了ip地址。相当于就是没有地址了。这样子，网络就不通的。网络不通算是一个挺大的问题吧，在web上面修改个时间，然后网络就断开了，无法连接了。</p>
-<p>这个问题修改也简单，在修改ip的时候，还得触发dhcp续租。</p>
-<h2 id="rpc返回时间与系统时间不一致"><a href="#rpc返回时间与系统时间不一致" class="headerlink" title="rpc返回时间与系统时间不一致"></a>rpc返回时间与系统时间不一致</h2><p>这个是又在rpc返回是使用的python代码，就是time模块获取时间。当系统时间更改之后，其实python并没有立刻同步到系统的时间，这样就导致了，rpc返回的时间跟使用date命令查看到的时间不一致。</p>
-<p>这个问题只需要通过python调用date命令，获取返回结果就可以解决。</p>
-<h2 id="系统时间修改之后，设备重启时间不正确"><a href="#系统时间修改之后，设备重启时间不正确" class="headerlink" title="系统时间修改之后，设备重启时间不正确"></a>系统时间修改之后，设备重启时间不正确</h2><p>操作系统的时间，有软件时间和硬件时间，平常使用date设置和获取的时间都是软件时间。在设备重启之后，系统时间会同步为硬件时间，这就导致了问题。</p>
-<p>也就是在修改系统时间的同时，需要同步修改到硬件时间，调用命令<code>hwclock -w</code>。</p>
-<h2 id="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"><a href="#系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时" class="headerlink" title="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"></a>系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时</h2><p>在上面那个问题修改之后，当当前时区是UTC时，功能正常。但是如果当前时区不是UTC时，重启之后，发现时间会快几个小时。这个就涉及到了时区跟时间轴的问题。</p>
-<p>随着时区的不同，即使显示的时间是一致的，实际上它那个时间轴却是不同的。上一个问题中，使用<code>hwclock -w</code>命令，实际是把时区转换后的时间同步给了硬件时间，但是硬件时间重启后是没有时区概念的，就是认为是零时区。就是你保存了1000进去，1000对应的是8时区的。重启后，它又给设到软件时间1000， 告诉你这个是0时区的时间。然后，你软件时间是8时区，最后显示出来的时间是1000 + 8小时。</p>
-<p>这个问题修改，需要在同步的时候，指定为0时区时间同步， 调用命令<code>hwclock -w -u</code>.</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>系统软件运行的时候，很多功能都是假定时间不变的基础上运行的。在修改了时间之后，系统实时时间就变了，很容易就导致了异常。只是这个时间更改是一个低频事件。</p>
-<p>最开始开发这个功能的时候，看了深信服产品web端的效果，发现修改个时间，都要求系统要重启，感觉很暴力。看来是人家踩过了不少坑，最后采用了最行之有效的重启大法，虽然重启导致了业务的中断，但是这个是低频事件，重启可以解决许多未知的问题。系统时间的更改是一个还蛮有风险的动作。</p>
-<p>时间更新除了手动修改外，还可以使用ntp自动同步，这里就不多说了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4252,6 +4200,58 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈（1）-一个yang解析错误问题</title>
+    <url>/2021/11/24/weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+<p>当然，不保证每周都有值得分享的问题，当然也可能有多个问题可以分享，那有时候会谈谈自己近期工作生活中遇到的琐事种种，大忙的时候也可能缺更。嗯，从这周开始这一个系列的文章, 看看我能坚持多久，嘿嘿!</p>
+<h2 id="一个yang解析错误问题"><a href="#一个yang解析错误问题" class="headerlink" title="一个yang解析错误问题"></a>一个yang解析错误问题</h2><p>情况是这样的，项目使用命令行进入，如果在未连接上netconf服务端的时候，马上敲入命令，会导致那个netconf连接不正常。好在这是一个必现的问题，通过定位发现一个日志报错的位于libyang库的代码中，然后打开netopeer2的日志，可以确定到出问题之前的那个rpc的xml内容。通过MG-SOFT netconf browser 软件发送这个rpc的xml， 知道的确是这个rpc导致的错误， 然后连接就断开了。</p>
+<p>下一步就看为什么导致错误的了，这个又需要看libyang的代码了，通过设置buildroot工程下的libyang.mk， 增加CMAKE_BUILD_TYP&#x3D;Debug选项，编译出一个带符号的libyang，然后就是上gdb调试了。</p>
+<p>后面定位到是一个xpath解析的问题，由于传入的xpath是没有带模块名的<code>/node0/node1/node2</code>, 在libyang中认为这是一个错误的xpath，然后就罢工抛异常了。紧接着libnetconf在应答接收不完全的情况下，认为连接异常了，然后把连接设置为invalid了，后续的命令就不能正常执行了。</p>
+<p>通过分析xpath的格式，搜索了一下，锁定了问题的源头。是在订阅sysrepo事件的时候传入的xpath问题，缺失了模块名。 通过修改对外接口， 增加了对xpath格式的校验， xpath必须格式为 <code>/m0:node0/m1:node1/m2:node2</code>这样，修改验证后，问题解决。然后就是修改整个项目相关的xpath路径，合并提交代码。最后在部门发个通告，增加这个约束说明。 OK， 问题解决。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>开源代码也是人写的， 出现问题也是很正常。这个问题的根因是sysrepo的函数入口没有对xpath进行约束，却在libyang中又有对xpath有这种检查，导致了这个问题的出现。</p>
+<p>程序员定位bug就像是侦探破案，首先是确认问题，现场勘查，然后找寻各种蛛丝马迹，推演问题的产生原因。程序员更方便的是可以复现问题，各种尝试，修改后还可以进行验证。在这个过程中，逻辑思维很重要。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈（4）- 系统时间更改导致的问题</title>
+    <url>/2021/12/17/weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第四篇, 下面看问题。</p>
+<h1 id="系统时间更改导致的问题"><a href="#系统时间更改导致的问题" class="headerlink" title="系统时间更改导致的问题"></a>系统时间更改导致的问题</h1><p>修改系统时间是一个不是常用的功能，但是又是很必须的。看起来很简单的系统时间的修改，也出了好几个问题。</p>
+<h2 id="rpc超时"><a href="#rpc超时" class="headerlink" title="rpc超时"></a>rpc超时</h2><p>修改系统时间，本身使用的是一个rpc调用，rpc使用超时机制的，就是在指定时间内如果执行函数没有返回，那么rpc就认为超时失败了。这个问题在前面的文章中讲过，具体可以看这篇文章 <a href="https://fishmwei.github.io/2021/10/23/timeout/">超时实现-sysrepo笔记(8)
+</a></p>
+<h2 id="dhcp接口ip失效"><a href="#dhcp接口ip失效" class="headerlink" title="dhcp接口ip失效"></a>dhcp接口ip失效</h2><p>同样的，接口配置了dhcp方式获取地址，由于修改了系统时间为未来的时间，导致dhcp的租期过期，接口自动释放了ip地址。相当于就是没有地址了。这样子，网络就不通的。网络不通算是一个挺大的问题吧，在web上面修改个时间，然后网络就断开了，无法连接了。</p>
+<p>这个问题修改也简单，在修改ip的时候，还得触发dhcp续租。</p>
+<h2 id="rpc返回时间与系统时间不一致"><a href="#rpc返回时间与系统时间不一致" class="headerlink" title="rpc返回时间与系统时间不一致"></a>rpc返回时间与系统时间不一致</h2><p>这个是又在rpc返回是使用的python代码，就是time模块获取时间。当系统时间更改之后，其实python并没有立刻同步到系统的时间，这样就导致了，rpc返回的时间跟使用date命令查看到的时间不一致。</p>
+<p>这个问题只需要通过python调用date命令，获取返回结果就可以解决。</p>
+<h2 id="系统时间修改之后，设备重启时间不正确"><a href="#系统时间修改之后，设备重启时间不正确" class="headerlink" title="系统时间修改之后，设备重启时间不正确"></a>系统时间修改之后，设备重启时间不正确</h2><p>操作系统的时间，有软件时间和硬件时间，平常使用date设置和获取的时间都是软件时间。在设备重启之后，系统时间会同步为硬件时间，这就导致了问题。</p>
+<p>也就是在修改系统时间的同时，需要同步修改到硬件时间，调用命令<code>hwclock -w</code>。</p>
+<h2 id="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"><a href="#系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时" class="headerlink" title="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"></a>系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时</h2><p>在上面那个问题修改之后，当当前时区是UTC时，功能正常。但是如果当前时区不是UTC时，重启之后，发现时间会快几个小时。这个就涉及到了时区跟时间轴的问题。</p>
+<p>随着时区的不同，即使显示的时间是一致的，实际上它那个时间轴却是不同的。上一个问题中，使用<code>hwclock -w</code>命令，实际是把时区转换后的时间同步给了硬件时间，但是硬件时间重启后是没有时区概念的，就是认为是零时区。就是你保存了1000进去，1000对应的是8时区的。重启后，它又给设到软件时间1000， 告诉你这个是0时区的时间。然后，你软件时间是8时区，最后显示出来的时间是1000 + 8小时。</p>
+<p>这个问题修改，需要在同步的时候，指定为0时区时间同步， 调用命令<code>hwclock -w -u</code>.</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>系统软件运行的时候，很多功能都是假定时间不变的基础上运行的。在修改了时间之后，系统实时时间就变了，很容易就导致了异常。只是这个时间更改是一个低频事件。</p>
+<p>最开始开发这个功能的时候，看了深信服产品web端的效果，发现修改个时间，都要求系统要重启，感觉很暴力。看来是人家踩过了不少坑，最后采用了最行之有效的重启大法，虽然重启导致了业务的中断，但是这个是低频事件，重启可以解决许多未知的问题。系统时间的更改是一个还蛮有风险的动作。</p>
+<p>时间更新除了手动修改外，还可以使用ntp自动同步，这里就不多说了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(5)-配置过多，服务启动不了</title>
     <url>/2021/12/25/weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
@@ -4265,6 +4265,32 @@
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>厂商提供的商业系统只是一个架子，满足基本的需求。针对不同的产品，可能遇到各种限制，各种难题。这个时候，除了在原有的架子里填东西，还需要进行老屋改造，以适应不同的需求，解决各种问题。这个过程中，需要先吃透原来的框架，便于打补丁。同时还得自己造轮子，增加新的解法。</p>
 <p>第一个版本都是比较艰难的，一个是对原有程序不熟悉，需要花费大量的时间去学习；另一个是需要在快速学习的过程中，活学活用，开发新的功能。近期遇到了许多程序崩溃、挂死、超时的问题，还是挺耗费精力的。</p>
 <p>最近把人生第一套房子卖了，过几天就交房了，这几天搬家。下周有可能没有网络，也许会停更一周了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(6)- yang版本升级兼容</title>
+    <url>/2022/01/07/weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第六篇, 下面看问题。</p>
+<h1 id="yang版本升级兼容"><a href="#yang版本升级兼容" class="headerlink" title="yang版本升级兼容"></a>yang版本升级兼容</h1><p>项目使用yang文件对数据进行管理，在开发阶段，yang文件定义经常变化，许多是不兼容的变化，毕竟在开发阶段许多数据都还没最终确定下来，随着开发的进展需求也渐渐的迭代，免不了出现不兼容的情况。原先使用sysrepo自带的sysrepocfg -U 命令升级yang文件，一旦出现有不兼容的问题，sysrepo就会抛出异常，无法安装新的yang文件，还把那个sysrepo的共享文件给锁死了，无法恢复。</p>
+<p>前面开发比较紧张，先提供了一个脚本，在不兼容升级的情况下，调用脚本进行数据清理，然后重新安装yang文件。这样子每次遇到有yang不兼容的情况，都需要进行数据清理。由于yang的不兼容，即使保存了原有的配置，重新导入也是不成功的。</p>
+<p>这周项目进入了尾声，手上就留了一两个无法复现的问题，暂时没有思路。抽空先研究一下如何自动升级而又可以保存配置，领导对这个事情也比较重视，亲自盯进度了。</p>
+<p>按原先的思路是进行不下去了，一旦有不兼容yang文件升级，libyang库就会报错，看了两天那个libyang的代码还是没有头绪，代码不熟悉，另外代码量也太大了，同时还总会被其他事情打断。只能另想法子了。</p>
+<p>先验证了一下把配置拆分，使得可以支持配置按模块导入，但是模块间相互依赖的话，会因为无法通过校验而导入失败，所以还是得整体一块导入。</p>
+<p>然后，就是看如何剔除不兼容的配置了。去看了sysrepo的代码，没有找着方法。</p>
+<p>正是山重水复疑无路，没想到柳暗花明又一村了。想着这种问题，原厂应该有解决方案才是的。认真研究了一下产商初始的deb的安装包逻辑，找到了一个脚本清理数据的，就是用来剔除不兼容配置的。在每次服务启动的时候，都会调用一下这个脚本，验证了一下，功能还是可用的。这样即使yang不兼容升级，也可以保证兼容部分的配置不会丢失，仅丢失不兼容的那部分配置。</p>
+<p>接下来就只需要解决不兼容yang安装报错，导致sysrepo锁死的问题了。时间比较紧，从头梳理sysrepo和libyang的代码逻辑是比较费时的，只能想法子绕过了。既然直接升级会报错，那么就先卸载旧的yang，再安装新的yang。嗯，验证了一下，发现部分被依赖的yang无法卸载，还是会存在部分yang不兼容升级不了的问题。这里，就去更改了sysrepo的源码，让特定的那几个yang即使被依赖也可以正常卸载。因为卸载这个动作，主要就是框架这边会用到，业务正常是不会执行这些动作的。</p>
+<p>最后，就是梳理一下完整的启动升级的流程，重构一下整个启动流程的代码，再各种场景验证一下，确保功能都是满足期望的。OK，程序升级改造完成，耗时一周，最终的效果还有个小惊喜，发现改造完之后，升级的速度比之前快了不少。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>有一句话叫做“认知决定思维,思维决定行为,行为决定结果”，工作当中遇到了问题，如何解决问题，解决问题的效果跟我们的知识也是一样的关系。不同的认知，决定不同的处理方式，会达到不同的结果。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4316,32 +4342,6 @@
 <p>正常这些文档工作在项目各个阶段都是需要闭环掉的。这个也主要是因为公司项目开发遵循CMMI模型，项目比较规范。CMMI就是一个软件项目的方法论吧，算是一些正规的软件公司都遵循的。不同的公司在发展的过程中都有一套自身的软件开发章程，只是流程有所差异。</p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>工作久了，除了一些业务和技术的积累。主要就是工作中总结了一些自身的方法，经过自身长期使用验证的思路，也就是所谓的经验、方法论。每一个行业都是经过了长久的发展的，都是有对应的前人经验的总结。跟软件行业最相似的就是建筑行业了，建筑行业有各种规范标准，软件行业也有。软件开发有对应的设计原则，流程。掌握了这些工作的原则、方法论，可以很轻松的应对工作中遇到的问题。</p>
 <p>这篇文章主要是闲谈, 讲一下这周的工作和自我的观点。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>周谈(6)- yang版本升级兼容</title>
-    <url>/2022/01/07/weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第六篇, 下面看问题。</p>
-<h1 id="yang版本升级兼容"><a href="#yang版本升级兼容" class="headerlink" title="yang版本升级兼容"></a>yang版本升级兼容</h1><p>项目使用yang文件对数据进行管理，在开发阶段，yang文件定义经常变化，许多是不兼容的变化，毕竟在开发阶段许多数据都还没最终确定下来，随着开发的进展需求也渐渐的迭代，免不了出现不兼容的情况。原先使用sysrepo自带的sysrepocfg -U 命令升级yang文件，一旦出现有不兼容的问题，sysrepo就会抛出异常，无法安装新的yang文件，还把那个sysrepo的共享文件给锁死了，无法恢复。</p>
-<p>前面开发比较紧张，先提供了一个脚本，在不兼容升级的情况下，调用脚本进行数据清理，然后重新安装yang文件。这样子每次遇到有yang不兼容的情况，都需要进行数据清理。由于yang的不兼容，即使保存了原有的配置，重新导入也是不成功的。</p>
-<p>这周项目进入了尾声，手上就留了一两个无法复现的问题，暂时没有思路。抽空先研究一下如何自动升级而又可以保存配置，领导对这个事情也比较重视，亲自盯进度了。</p>
-<p>按原先的思路是进行不下去了，一旦有不兼容yang文件升级，libyang库就会报错，看了两天那个libyang的代码还是没有头绪，代码不熟悉，另外代码量也太大了，同时还总会被其他事情打断。只能另想法子了。</p>
-<p>先验证了一下把配置拆分，使得可以支持配置按模块导入，但是模块间相互依赖的话，会因为无法通过校验而导入失败，所以还是得整体一块导入。</p>
-<p>然后，就是看如何剔除不兼容的配置了。去看了sysrepo的代码，没有找着方法。</p>
-<p>正是山重水复疑无路，没想到柳暗花明又一村了。想着这种问题，原厂应该有解决方案才是的。认真研究了一下产商初始的deb的安装包逻辑，找到了一个脚本清理数据的，就是用来剔除不兼容配置的。在每次服务启动的时候，都会调用一下这个脚本，验证了一下，功能还是可用的。这样即使yang不兼容升级，也可以保证兼容部分的配置不会丢失，仅丢失不兼容的那部分配置。</p>
-<p>接下来就只需要解决不兼容yang安装报错，导致sysrepo锁死的问题了。时间比较紧，从头梳理sysrepo和libyang的代码逻辑是比较费时的，只能想法子绕过了。既然直接升级会报错，那么就先卸载旧的yang，再安装新的yang。嗯，验证了一下，发现部分被依赖的yang无法卸载，还是会存在部分yang不兼容升级不了的问题。这里，就去更改了sysrepo的源码，让特定的那几个yang即使被依赖也可以正常卸载。因为卸载这个动作，主要就是框架这边会用到，业务正常是不会执行这些动作的。</p>
-<p>最后，就是梳理一下完整的启动升级的流程，重构一下整个启动流程的代码，再各种场景验证一下，确保功能都是满足期望的。OK，程序升级改造完成，耗时一周，最终的效果还有个小惊喜，发现改造完之后，升级的速度比之前快了不少。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>有一句话叫做“认知决定思维,思维决定行为,行为决定结果”，工作当中遇到了问题，如何解决问题，解决问题的效果跟我们的知识也是一样的关系。不同的认知，决定不同的处理方式，会达到不同的结果。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4405,6 +4405,33 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈(10)-数学与算法</title>
+    <url>/2022/02/20/weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十篇。</p>
+<h2 id="数学与算法"><a href="#数学与算法" class="headerlink" title="数学与算法"></a>数学与算法</h2><p>最近看了一篇文章，讲的是使用牛顿迭代用O(1)的时间复杂度求解平方根的。文章先是讲了使用二分法不断迭代求解方程的根，具体的就是每次获取到一个中间值之后，就取它的平方与目标值比较，直到获取到符合误差的结果为止。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> <span class="title function_">bi_sqrt</span><span class="params">(<span class="type">float</span> x)</span> &#123;</span><br><span class="line">  <span class="type">float</span> l = <span class="number">0.0f</span>, r = x;</span><br><span class="line">  <span class="type">float</span> mid = (l+r)/<span class="number">2.0f</span>;</span><br><span class="line">  <span class="type">float</span> last = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="built_in">abs</span>(mid - last) &gt; eps) &#123;</span><br><span class="line">    last = mid;</span><br><span class="line">    <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">      r = mid;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      l = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    mid = (l+r)/<span class="number">2.0f</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用二分法是可以求得一个近似值的，但是有可能需要迭代次数较多。然后文章就引入了牛顿迭代法。</p>
+<p>牛顿迭代法，把求平方根的方程式，映射到对应的函数曲线上，然后使用几何的方法，用导数及切线的方程不断逼近求解。结果就是可以很快的求得一个近似值。呵呵，这边具体数学的知识我已经基本还给老师了。</p>
+<p>通过对比牛顿迭代法和二分法，可以明显感觉到大部分情况下牛顿迭代法的运算更快一些。看来数学在求解某些问题的时候，是很有裨益的。前年的时候，看过一本书叫做《数学之美》，里面也涉及了大量使用数学方法解决实际问题的案例，数学真的是一门很美妙的学科。如果当初选择数学作为专业研究，应该很有趣吧。</p>
+<p>最近很火的机器学习，人工智能，也是数学在实际问题中的应用，数学专业的人在这个方面有很大的优势，算法其实也就是问题解法的抽象，然后使用代码来实现。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>上周日一个人自驾到了长沙，早上7点多出发，到下午六点多到达。中间在服务区休息了好几次，每次10分钟以上，总计大概一个半小时吧。一个人开车的话，精神清醒是比较重要的，我就买了几罐红牛还有一瓶雀巢咖啡，一路喝过来。没有很困的时候。一路上车不是很多，一直在下着小雨。中午的时候，就吃了几个自带的水煮蛋。开车刚开始还是比较悠哉，福建和江西限速一般都是100，110. 后面到湖南境内，限速都是120了，速度也就提了上来。这是第二次开这么远了，比上一次快了三个多小时，主要是因为没有带小孩，服务区停的少了，时间也更短一些。</p>
+<p>到长沙后，住的是民宿。后面的事情主要就是租房子了。</p>
+<p>第二天就开始去租房了。用的贝壳找房，上面的房源基本都是真实的。在上面问了几个中介，然后第二天下午去看房子，看了一个下午没有找到心仪的房源。晚上回去之后，总结了一下各个房源的缺点吧。第二天早上梳理了一下自己的租房需求，初步确认一下租房的区域，再到贝壳上面找了几个中介。下午继续去看房了。这次找的中介是贝壳app推荐的，却还是个未毕业的实习生，是很不专业的。我跟他约好了时间地点了，然后我早早的就到了，给他发消息回复总是很慢，在贝壳上面已经给过他电话，他也不舍得给我打个电话(我不知道他号码，不然我就打给他了)，然后他还迟到了半个小时，让我在那边干等了半小时。他给我发了几套房源，我看中了一套，结果他没有那个房源的钥匙，看不了。在带看了一套之后，我就赶紧撤了，不然一个下午就白费了。 再后面，在贝壳上面又约了一个资深的中介，跟他讲了需求，很快就推荐了几套过来，有几套看起来都比较中意。很快的约了时间，马上就安排了带看。晚上回去后，再考虑了一下就确定一套下来了。</p>
+<p>看来每一个行业有经验和没经验差别真的很大。新手抓不住用户的需求，做起事情来慢吞吞的，没有一套行之有效的方法。资深人员，一眼就可以确定用户的需求，精准定位，可以很快的响应，做起事情有条理，办成事的概率更大。然后，我作为用户，刚开始需求都是比较模糊的，在被带看了一个下午之后，经过梳理之后才得出了一个比较精确的需求，第二天再去看房，发了条件给中介，中介就可以很快的匹配好房源，而不需要再盲看了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(三十六) - 网络通信</title>
     <url>/2022/02/21/linux36/</url>
     <content><![CDATA[<p>这篇文章小结一下使用socket发送和接收网络包的流程。</p>
@@ -4437,33 +4464,6 @@
 <li>TCP层： 依次从不同的队列读取网络包。这里包含了TCP的处理逻辑，不深入分析了。</li>
 </ul>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>从网络包的发送和接收中，看到了分层系统的应用。所有复杂的逻辑，在软件系统中通过分层都可以来简化。不同协议、设备网卡等，通过分层的框架可以很快的进行适配。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>周谈(10)-数学与算法</title>
-    <url>/2022/02/20/weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第十篇。</p>
-<h2 id="数学与算法"><a href="#数学与算法" class="headerlink" title="数学与算法"></a>数学与算法</h2><p>最近看了一篇文章，讲的是使用牛顿迭代用O(1)的时间复杂度求解平方根的。文章先是讲了使用二分法不断迭代求解方程的根，具体的就是每次获取到一个中间值之后，就取它的平方与目标值比较，直到获取到符合误差的结果为止。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">float</span> <span class="title function_">bi_sqrt</span><span class="params">(<span class="type">float</span> x)</span> &#123;</span><br><span class="line">  <span class="type">float</span> l = <span class="number">0.0f</span>, r = x;</span><br><span class="line">  <span class="type">float</span> mid = (l+r)/<span class="number">2.0f</span>;</span><br><span class="line">  <span class="type">float</span> last = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="built_in">abs</span>(mid - last) &gt; eps) &#123;</span><br><span class="line">    last = mid;</span><br><span class="line">    <span class="keyword">if</span> (mid * mid &gt; x) &#123;</span><br><span class="line">      r = mid;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      l = mid;</span><br><span class="line">    &#125;</span><br><span class="line">    mid = (l+r)/<span class="number">2.0f</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用二分法是可以求得一个近似值的，但是有可能需要迭代次数较多。然后文章就引入了牛顿迭代法。</p>
-<p>牛顿迭代法，把求平方根的方程式，映射到对应的函数曲线上，然后使用几何的方法，用导数及切线的方程不断逼近求解。结果就是可以很快的求得一个近似值。呵呵，这边具体数学的知识我已经基本还给老师了。</p>
-<p>通过对比牛顿迭代法和二分法，可以明显感觉到大部分情况下牛顿迭代法的运算更快一些。看来数学在求解某些问题的时候，是很有裨益的。前年的时候，看过一本书叫做《数学之美》，里面也涉及了大量使用数学方法解决实际问题的案例，数学真的是一门很美妙的学科。如果当初选择数学作为专业研究，应该很有趣吧。</p>
-<p>最近很火的机器学习，人工智能，也是数学在实际问题中的应用，数学专业的人在这个方面有很大的优势，算法其实也就是问题解法的抽象，然后使用代码来实现。</p>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>上周日一个人自驾到了长沙，早上7点多出发，到下午六点多到达。中间在服务区休息了好几次，每次10分钟以上，总计大概一个半小时吧。一个人开车的话，精神清醒是比较重要的，我就买了几罐红牛还有一瓶雀巢咖啡，一路喝过来。没有很困的时候。一路上车不是很多，一直在下着小雨。中午的时候，就吃了几个自带的水煮蛋。开车刚开始还是比较悠哉，福建和江西限速一般都是100，110. 后面到湖南境内，限速都是120了，速度也就提了上来。这是第二次开这么远了，比上一次快了三个多小时，主要是因为没有带小孩，服务区停的少了，时间也更短一些。</p>
-<p>到长沙后，住的是民宿。后面的事情主要就是租房子了。</p>
-<p>第二天就开始去租房了。用的贝壳找房，上面的房源基本都是真实的。在上面问了几个中介，然后第二天下午去看房子，看了一个下午没有找到心仪的房源。晚上回去之后，总结了一下各个房源的缺点吧。第二天早上梳理了一下自己的租房需求，初步确认一下租房的区域，再到贝壳上面找了几个中介。下午继续去看房了。这次找的中介是贝壳app推荐的，却还是个未毕业的实习生，是很不专业的。我跟他约好了时间地点了，然后我早早的就到了，给他发消息回复总是很慢，在贝壳上面已经给过他电话，他也不舍得给我打个电话(我不知道他号码，不然我就打给他了)，然后他还迟到了半个小时，让我在那边干等了半小时。他给我发了几套房源，我看中了一套，结果他没有那个房源的钥匙，看不了。在带看了一套之后，我就赶紧撤了，不然一个下午就白费了。 再后面，在贝壳上面又约了一个资深的中介，跟他讲了需求，很快就推荐了几套过来，有几套看起来都比较中意。很快的约了时间，马上就安排了带看。晚上回去后，再考虑了一下就确定一套下来了。</p>
-<p>看来每一个行业有经验和没经验差别真的很大。新手抓不住用户的需求，做起事情来慢吞吞的，没有一套行之有效的方法。资深人员，一眼就可以确定用户的需求，精准定位，可以很快的响应，做起事情有条理，办成事的概率更大。然后，我作为用户，刚开始需求都是比较模糊的，在被带看了一个下午之后，经过梳理之后才得出了一个比较精确的需求，第二天再去看房，发了条件给中介，中介就可以很快的匹配好房源，而不需要再盲看了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4647,46 +4647,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(13) - 系统架构师教程读书笔记(1)</title>
-    <url>/2022/03/12/weekly-SA/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第十三篇。</p>
-<p>这一周主要就是看了系统架构师教程的前面四章，在专业知识层面上没有其他值得讲的。今天就当作是对本周看书的小结吧。</p>
-<h1 id="系统架构设计师教程"><a href="#系统架构设计师教程" class="headerlink" title="系统架构设计师教程"></a>系统架构设计师教程</h1><p><img src="/images/202203/systemdesign.jpeg" alt="avatar"></p>
-<p>下面分4个小结简单小结一下。</p>
-<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>系统架构的概念及发展历史。</p>
-<p>架构的三要素是构件、模式和规划。</p>
-<p>软件系统架构是关于软件系统的结构、行为和属性的高级抽象。描述阶段主要就是描述构成系统的抽象组件、各个构件的连接规则。实现阶段指定软件系统的组织结构和拓扑，显示系统需求和构成组件的对应关系，基本原理。文字看起来比较抽象。</p>
-<p>系统架构设计师的定义及职业素养。系统架构师主要着眼于实现和考虑系统的组织协调。要求有对应的技术素质和管理素质。主要配合项目管理师和系统分析师的工作。统筹技术实现及组织协调方面的工作吧。</p>
-<h2 id="计算机与网络基础知识"><a href="#计算机与网络基础知识" class="headerlink" title="计算机与网络基础知识"></a>计算机与网络基础知识</h2><p>操作系统的基础知识，操作系统的分类及主要功能。 主要功能：进程管理、文件管理、存储管理、设备管理和作业管理。</p>
-<p>数据库系统基础知识，数据库的分类：关系数据库系统、面向对象的数据库系统、对象关系数据库系统。平常用的基本是关系数据库系统多一些。E-R图， 数据库设计步骤等。(需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库应用程序设计)。</p>
-<p>计算机网络基础知识：OSI网络体系结构和TCP&#x2F;IP结构。</p>
-<p>多媒体技术及应用。</p>
-<p>系统性能： 性能指标、性能计算、性能设计、性能评估。不同的部件有不同的性能指标。性能计算的方法有定义法、公式法、程序检测法和仪器检测法。性能设计讲的就是如何进行性能调整，识别约束。阿姆达定律计算系统性能的改进。性能评估，按照一定的步骤，选用一定的度量项目，通过建模和实验，对系统的性能进行各项检测，形成一份结果文档，供性能优化参考。</p>
-<p>系统监视， 使用系统命令、查阅系统记录文件、集成命令和文件记录及可视化技术的应用程序。</p>
-<h2 id="信息系统基础知识"><a href="#信息系统基础知识" class="headerlink" title="信息系统基础知识"></a>信息系统基础知识</h2><p>信息的定义， 信息是对客观事物变化和特性的反映，是客观事物之间的相互作用和联系的表征，是客观事物经过感知或认识后的再现。看起来是很抽象的。</p>
-<p>讲了信息化的定义，内容及对其经济社会的意义。</p>
-<p>信息系统工程总体规划， 信息系统工程总体规划的软件架构组成：文件服务器架构、典型的客户&#x2F;服务器两层架构，客户&#x2F;服务器N层架构、基于web的架构。总体架构的实现过程：按规划报告购置和安装计算机系统、建立数据库系统、程序设计、系统转换、试运行。信息化的典型应用有政府信息化的电子政务、企业信息化的电子商务、企业门户等。</p>
-<h2 id="系统开发基础知识"><a href="#系统开发基础知识" class="headerlink" title="系统开发基础知识"></a>系统开发基础知识</h2><p>软件开发方法， 软件开发的生命周期：软件定义时期、软件开发时期、软件运行与维护。软件开发过程模型，从某个特定角度提出的软件过程的简单描述：瀑布模型、原型模型、螺旋模型、基于可重用构建的模型、基于面向对象的模型、基于四代技术的模型。敏捷方法，强调以人为本，面向人而非过程，具有适应性和预设性。迭代增量的开发过程。</p>
-<p>需求管理，建立软件需求基线，需求规格说明进行版本控制、需求变更控制、需求跟踪。</p>
-<p>开发管理，项目的范围、时间、成本控制。配置管理、文档管理、软件开发质量和风险。</p>
-<p>设计方法，结构化分析和设计、面向对象的分析设计。</p>
-<p>软件的重用。</p>
-<p>逆向工程与重构工程。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>以上是大概看的一些知识点。大部分是抽象了一点，需要在正常的工作工程中，相互联系消化。除了操作系统、数据库和计算机基础知识、网络这些知识外，感觉其他的都偏抽象了。考系统架构设计师是一个大工程，万里之行始于足下，一切才刚刚开始呢。。。加油!</p>
-<p>这周除了看书，就是到几个景点转了转，橘子洲、烈士公园、西湖。然后就是准备一下入职的材料，去体检，上班踩点。办理了宽带，还入手了一个联想小新Pro16。现在的笔记本都是使用的SSD硬盘，16G内存，使用起来的速度都还不错的，笔记本主要用于带到办公室编码吧，目前感觉那个微软的系统做的也越来越好了。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(14) - DPDK原理</title>
     <url>/2022/03/20/weekly-dpdk/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
@@ -4727,6 +4687,46 @@
       <categories>
         <category>技术</category>
         <category>DPDK</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(13) - 系统架构师教程读书笔记(1)</title>
+    <url>/2022/03/12/weekly-SA/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十三篇。</p>
+<p>这一周主要就是看了系统架构师教程的前面四章，在专业知识层面上没有其他值得讲的。今天就当作是对本周看书的小结吧。</p>
+<h1 id="系统架构设计师教程"><a href="#系统架构设计师教程" class="headerlink" title="系统架构设计师教程"></a>系统架构设计师教程</h1><p><img src="/images/202203/systemdesign.jpeg" alt="avatar"></p>
+<p>下面分4个小结简单小结一下。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>系统架构的概念及发展历史。</p>
+<p>架构的三要素是构件、模式和规划。</p>
+<p>软件系统架构是关于软件系统的结构、行为和属性的高级抽象。描述阶段主要就是描述构成系统的抽象组件、各个构件的连接规则。实现阶段指定软件系统的组织结构和拓扑，显示系统需求和构成组件的对应关系，基本原理。文字看起来比较抽象。</p>
+<p>系统架构设计师的定义及职业素养。系统架构师主要着眼于实现和考虑系统的组织协调。要求有对应的技术素质和管理素质。主要配合项目管理师和系统分析师的工作。统筹技术实现及组织协调方面的工作吧。</p>
+<h2 id="计算机与网络基础知识"><a href="#计算机与网络基础知识" class="headerlink" title="计算机与网络基础知识"></a>计算机与网络基础知识</h2><p>操作系统的基础知识，操作系统的分类及主要功能。 主要功能：进程管理、文件管理、存储管理、设备管理和作业管理。</p>
+<p>数据库系统基础知识，数据库的分类：关系数据库系统、面向对象的数据库系统、对象关系数据库系统。平常用的基本是关系数据库系统多一些。E-R图， 数据库设计步骤等。(需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库应用程序设计)。</p>
+<p>计算机网络基础知识：OSI网络体系结构和TCP&#x2F;IP结构。</p>
+<p>多媒体技术及应用。</p>
+<p>系统性能： 性能指标、性能计算、性能设计、性能评估。不同的部件有不同的性能指标。性能计算的方法有定义法、公式法、程序检测法和仪器检测法。性能设计讲的就是如何进行性能调整，识别约束。阿姆达定律计算系统性能的改进。性能评估，按照一定的步骤，选用一定的度量项目，通过建模和实验，对系统的性能进行各项检测，形成一份结果文档，供性能优化参考。</p>
+<p>系统监视， 使用系统命令、查阅系统记录文件、集成命令和文件记录及可视化技术的应用程序。</p>
+<h2 id="信息系统基础知识"><a href="#信息系统基础知识" class="headerlink" title="信息系统基础知识"></a>信息系统基础知识</h2><p>信息的定义， 信息是对客观事物变化和特性的反映，是客观事物之间的相互作用和联系的表征，是客观事物经过感知或认识后的再现。看起来是很抽象的。</p>
+<p>讲了信息化的定义，内容及对其经济社会的意义。</p>
+<p>信息系统工程总体规划， 信息系统工程总体规划的软件架构组成：文件服务器架构、典型的客户&#x2F;服务器两层架构，客户&#x2F;服务器N层架构、基于web的架构。总体架构的实现过程：按规划报告购置和安装计算机系统、建立数据库系统、程序设计、系统转换、试运行。信息化的典型应用有政府信息化的电子政务、企业信息化的电子商务、企业门户等。</p>
+<h2 id="系统开发基础知识"><a href="#系统开发基础知识" class="headerlink" title="系统开发基础知识"></a>系统开发基础知识</h2><p>软件开发方法， 软件开发的生命周期：软件定义时期、软件开发时期、软件运行与维护。软件开发过程模型，从某个特定角度提出的软件过程的简单描述：瀑布模型、原型模型、螺旋模型、基于可重用构建的模型、基于面向对象的模型、基于四代技术的模型。敏捷方法，强调以人为本，面向人而非过程，具有适应性和预设性。迭代增量的开发过程。</p>
+<p>需求管理，建立软件需求基线，需求规格说明进行版本控制、需求变更控制、需求跟踪。</p>
+<p>开发管理，项目的范围、时间、成本控制。配置管理、文档管理、软件开发质量和风险。</p>
+<p>设计方法，结构化分析和设计、面向对象的分析设计。</p>
+<p>软件的重用。</p>
+<p>逆向工程与重构工程。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>以上是大概看的一些知识点。大部分是抽象了一点，需要在正常的工作工程中，相互联系消化。除了操作系统、数据库和计算机基础知识、网络这些知识外，感觉其他的都偏抽象了。考系统架构设计师是一个大工程，万里之行始于足下，一切才刚刚开始呢。。。加油!</p>
+<p>这周除了看书，就是到几个景点转了转，橘子洲、烈士公园、西湖。然后就是准备一下入职的材料，去体检，上班踩点。办理了宽带，还入手了一个联想小新Pro16。现在的笔记本都是使用的SSD硬盘，16G内存，使用起来的速度都还不错的，笔记本主要用于带到办公室编码吧，目前感觉那个微软的系统做的也越来越好了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -4885,6 +4885,33 @@
       </categories>
   </entry>
   <entry>
+    <title>TailQ的使用及ssh配置等skills</title>
+    <url>/2022/04/05/tailq/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近看代码的时候看到了许多地方使用TailQ这个数据结构来组织数据，在过往的项目中一般都是直接使用的list这个链表的。稍微看了 一下代码的实现， 其实就是一个双向链表的实现，抽象出链表头保存头尾元素，然后链表的关系结构存放在具体节点的field域，提供一些常用宏的封装而已。链表成员关系主要如图所示：</p>
+<span id="more"></span>
+
+<p><img src="/images/202204/tailq.png" alt="avatar"></p>
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>稍微写了一个demo示例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/queue.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    TAILQ_ENTRY(node) link;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    struct &#123;</span></span><br><span class="line"><span class="comment">        struct node **prev;</span></span><br><span class="line"><span class="comment">        struct node *next;</span></span><br><span class="line"><span class="comment">    &#125; link;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">TAILQ_HEAD(heads, node); <span class="comment">// define a struct for tailq list</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">heads</span> &#123;</span>								 </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">type</span> *<span class="title">tqh_first</span>;</span>	<span class="comment">/* first element */</span>			 </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">type</span> **<span class="title">tqh_last</span>;</span>	<span class="comment">/* addr of last next element */</span>		 </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">heads</span> <span class="title">my_list</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">https://gcc.gnu.org/onlinedocs/gcc-6.2.0/gcc/Common-Function-Attributes.html</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">__attribute__((constructor(<span class="number">101</span>))) <span class="type">void</span> <span class="title function_">init101</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call %s\r\n&quot;</span>, __FUNCTION__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((constructor(<span class="number">102</span>))) <span class="type">void</span> <span class="title function_">init102</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call %s, init tailq my_list\r\n&quot;</span>, __FUNCTION__);</span><br><span class="line">    TAILQ_INIT(&amp;my_list);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__attribute__((destructor)) <span class="type">void</span> <span class="title function_">dealloc</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call dealloc free tail my_list\r\n&quot;</span>);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">ele</span> =</span> TAILQ_FIRST(&amp;my_list);</span><br><span class="line">    <span class="keyword">while</span> (ele) &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">prev</span> =</span> ele;</span><br><span class="line">        ele = TAILQ_NEXT(ele, link);</span><br><span class="line">        TAILQ_REMOVE(&amp;my_list, prev, link);</span><br><span class="line">        <span class="built_in">free</span>(prev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;After dealloc , list empty %d\r\n&quot;</span>, TAILQ_EMPTY(&amp;my_list)?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> i, value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">ele</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;enter %d elememt:\r\n&quot;</span>, i);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;value);</span><br><span class="line"></span><br><span class="line">        ele = (<span class="keyword">struct</span> node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> node));</span><br><span class="line">        ele-&gt;value = value;</span><br><span class="line">        TAILQ_INSERT_TAIL(&amp;my_list, ele, link);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;TailQ content:\r\n&quot;</span>);</span><br><span class="line">    TAILQ_FOREACH(ele, &amp;my_list, link) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d \r\n&quot;</span>, ele-&gt;value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;After main , list empty %d\r\n&quot;</span>, TAILQ_EMPTY(&amp;my_list)?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">gcc tailq.c -o q</span></span><br><span class="line"><span class="comment">./q</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>执行效果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">call init101</span><br><span class="line">call init102, init tailq my_list</span><br><span class="line">enter 0 elememt:</span><br><span class="line">3</span><br><span class="line">enter 1 elememt:</span><br><span class="line">4</span><br><span class="line">enter 2 elememt:</span><br><span class="line">5</span><br><span class="line">enter 3 elememt:</span><br><span class="line">2</span><br><span class="line">enter 4 elememt:</span><br><span class="line">3</span><br><span class="line">TailQ content:</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">After main , list empty 0</span><br><span class="line">dealloc free tail my_list</span><br><span class="line">After dealloc , list empty 1</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>学习一个数据结构或者新的API接口，最好的方法就是搞懂其原理后，动手写个小demo，化抽象为具体，真切的体验一下。代码中还掺杂了对__attribute的使用。</p>
+<h1 id="更多2"><a href="#更多2" class="headerlink" title="更多2"></a>更多2</h1><p>刚入职的时候配置那个gitlab之后，ssh死活连不上去， 原来是为了安全，gitlab的ssh端口号改了，不是默认的22。按照默认的配置是连接不上去的， 这个时候可以在~&#x2F;.ssh&#x2F;config里面指定配置端口号：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:~/.ssh# cat config</span><br><span class="line">Host gitlab.xxx.com.cn</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">User keep</span><br><span class="line">Port 88088</span><br><span class="line"></span><br><span class="line">Host gitee.com</span><br><span class="line">IdentityFile ~/.ssh/id_ed25519_qq</span><br><span class="line">User fishmwei</span><br></pre></td></tr></table></figure>
+<p>可以配置不同的证书、端口号以及对应的用户名，真的很方便，又学了一招。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(18)-测试框架的学习小结</title>
     <url>/2022/04/14/weekly-test-framework/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
@@ -4922,33 +4949,6 @@
       <categories>
         <category>技术</category>
         <category>DPDK</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>TailQ的使用及ssh配置等skills</title>
-    <url>/2022/04/05/tailq/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近看代码的时候看到了许多地方使用TailQ这个数据结构来组织数据，在过往的项目中一般都是直接使用的list这个链表的。稍微看了 一下代码的实现， 其实就是一个双向链表的实现，抽象出链表头保存头尾元素，然后链表的关系结构存放在具体节点的field域，提供一些常用宏的封装而已。链表成员关系主要如图所示：</p>
-<span id="more"></span>
-
-<p><img src="/images/202204/tailq.png" alt="avatar"></p>
-<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>稍微写了一个demo示例：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/queue.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    TAILQ_ENTRY(node) link;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    struct &#123;</span></span><br><span class="line"><span class="comment">        struct node **prev;</span></span><br><span class="line"><span class="comment">        struct node *next;</span></span><br><span class="line"><span class="comment">    &#125; link;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">TAILQ_HEAD(heads, node); <span class="comment">// define a struct for tailq list</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">heads</span> &#123;</span>								 </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">type</span> *<span class="title">tqh_first</span>;</span>	<span class="comment">/* first element */</span>			 </span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">type</span> **<span class="title">tqh_last</span>;</span>	<span class="comment">/* addr of last next element */</span>		 </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">heads</span> <span class="title">my_list</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">https://gcc.gnu.org/onlinedocs/gcc-6.2.0/gcc/Common-Function-Attributes.html</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">__attribute__((constructor(<span class="number">101</span>))) <span class="type">void</span> <span class="title function_">init101</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call %s\r\n&quot;</span>, __FUNCTION__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((constructor(<span class="number">102</span>))) <span class="type">void</span> <span class="title function_">init102</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call %s, init tailq my_list\r\n&quot;</span>, __FUNCTION__);</span><br><span class="line">    TAILQ_INIT(&amp;my_list);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__attribute__((destructor)) <span class="type">void</span> <span class="title function_">dealloc</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;call dealloc free tail my_list\r\n&quot;</span>);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">ele</span> =</span> TAILQ_FIRST(&amp;my_list);</span><br><span class="line">    <span class="keyword">while</span> (ele) &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">prev</span> =</span> ele;</span><br><span class="line">        ele = TAILQ_NEXT(ele, link);</span><br><span class="line">        TAILQ_REMOVE(&amp;my_list, prev, link);</span><br><span class="line">        <span class="built_in">free</span>(prev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;After dealloc , list empty %d\r\n&quot;</span>, TAILQ_EMPTY(&amp;my_list)?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> i, value;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">node</span> *<span class="title">ele</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;enter %d elememt:\r\n&quot;</span>, i);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;value);</span><br><span class="line"></span><br><span class="line">        ele = (<span class="keyword">struct</span> node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> node));</span><br><span class="line">        ele-&gt;value = value;</span><br><span class="line">        TAILQ_INSERT_TAIL(&amp;my_list, ele, link);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;TailQ content:\r\n&quot;</span>);</span><br><span class="line">    TAILQ_FOREACH(ele, &amp;my_list, link) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d \r\n&quot;</span>, ele-&gt;value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;After main , list empty %d\r\n&quot;</span>, TAILQ_EMPTY(&amp;my_list)?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">gcc tailq.c -o q</span></span><br><span class="line"><span class="comment">./q</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
-
-<p>执行效果：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">call init101</span><br><span class="line">call init102, init tailq my_list</span><br><span class="line">enter 0 elememt:</span><br><span class="line">3</span><br><span class="line">enter 1 elememt:</span><br><span class="line">4</span><br><span class="line">enter 2 elememt:</span><br><span class="line">5</span><br><span class="line">enter 3 elememt:</span><br><span class="line">2</span><br><span class="line">enter 4 elememt:</span><br><span class="line">3</span><br><span class="line">TailQ content:</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">After main , list empty 0</span><br><span class="line">dealloc free tail my_list</span><br><span class="line">After dealloc , list empty 1</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>学习一个数据结构或者新的API接口，最好的方法就是搞懂其原理后，动手写个小demo，化抽象为具体，真切的体验一下。代码中还掺杂了对__attribute的使用。</p>
-<h1 id="更多2"><a href="#更多2" class="headerlink" title="更多2"></a>更多2</h1><p>刚入职的时候配置那个gitlab之后，ssh死活连不上去， 原来是为了安全，gitlab的ssh端口号改了，不是默认的22。按照默认的配置是连接不上去的， 这个时候可以在~&#x2F;.ssh&#x2F;config里面指定配置端口号：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:~/.ssh# cat config</span><br><span class="line">Host gitlab.xxx.com.cn</span><br><span class="line">IdentityFile ~/.ssh/id_rsa</span><br><span class="line">User keep</span><br><span class="line">Port 88088</span><br><span class="line"></span><br><span class="line">Host gitee.com</span><br><span class="line">IdentityFile ~/.ssh/id_ed25519_qq</span><br><span class="line">User fishmwei</span><br></pre></td></tr></table></figure>
-<p>可以配置不同的证书、端口号以及对应的用户名，真的很方便，又学了一招。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -5097,6 +5097,32 @@
       </categories>
   </entry>
   <entry>
+    <title>撸了一个轻量级的C语言日志库</title>
+    <url>/2022/05/01/clog/</url>
+    <content><![CDATA[<p>最近在写代码的时候，因为是一个全新的工程，也没有引入什么日志库，直接就printf输出调试了。</p>
+<p>这个总归是有一点儿不雅，然后想到之前用的sysrepo这个开源库，他提供的那个日志功能挺简单的，支持向终端错误stderr输出日志，也支持向syslog输出日志，而且使用起来也比较简单，想着借鉴着写一个。</p>
+<span id="more"></span>
+
+<p>5月1日下午就着手整一个简单的C语言日志库出来，整体的功能逻辑跟sysrepo的log文件内容差不多，删掉了与sysrepo， libyang相关的依赖，然后通过前段时间刚学的cmake搭建起编译环境，编译生成一个动态库。<br>给这个库起了个简单的名字clog。</p>
+<p>所有代码都放到了个人的gitee仓库中了，有需要的看官可以参考使用一下，有想法的话也可以一起来完善。</p>
+<p>路径：<code>https://gitee.com/fishmwei/clog</code></p>
+<p>使用起来也很简单，只要初始化的时候设置一下日志的等级，后面就可以使用了。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;clog/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* turn logging on */</span></span><br><span class="line">    clog_log_stderr(CLOG_LL_DBG);</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLOG_SYSLOG</span></span><br><span class="line">    clog_log_syslog(<span class="string">&quot;test-log&quot;</span>, CLOG_LL_WRN);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    CLOG_LOG_WRN(<span class="string">&quot;This is warning message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_DBG(<span class="string">&quot;This is debug message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_INF(<span class="string">&quot;This is info message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_ERR(<span class="string">&quot;This is error message\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用效果图</p>
+<p><img src="/images/202205/clog_test.png" alt="avatar"></p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>openssl基础命令的使用</title>
     <url>/2022/05/03/openssl/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>来了解一下openssl这个工具的基础命令的使用。</p>
@@ -5194,32 +5220,6 @@
       <categories>
         <category>技术</category>
         <category>算法</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>撸了一个轻量级的C语言日志库</title>
-    <url>/2022/05/01/clog/</url>
-    <content><![CDATA[<p>最近在写代码的时候，因为是一个全新的工程，也没有引入什么日志库，直接就printf输出调试了。</p>
-<p>这个总归是有一点儿不雅，然后想到之前用的sysrepo这个开源库，他提供的那个日志功能挺简单的，支持向终端错误stderr输出日志，也支持向syslog输出日志，而且使用起来也比较简单，想着借鉴着写一个。</p>
-<span id="more"></span>
-
-<p>5月1日下午就着手整一个简单的C语言日志库出来，整体的功能逻辑跟sysrepo的log文件内容差不多，删掉了与sysrepo， libyang相关的依赖，然后通过前段时间刚学的cmake搭建起编译环境，编译生成一个动态库。<br>给这个库起了个简单的名字clog。</p>
-<p>所有代码都放到了个人的gitee仓库中了，有需要的看官可以参考使用一下，有想法的话也可以一起来完善。</p>
-<p>路径：<code>https://gitee.com/fishmwei/clog</code></p>
-<p>使用起来也很简单，只要初始化的时候设置一下日志的等级，后面就可以使用了。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;clog/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* turn logging on */</span></span><br><span class="line">    clog_log_stderr(CLOG_LL_DBG);</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLOG_SYSLOG</span></span><br><span class="line">    clog_log_syslog(<span class="string">&quot;test-log&quot;</span>, CLOG_LL_WRN);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    CLOG_LOG_WRN(<span class="string">&quot;This is warning message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_DBG(<span class="string">&quot;This is debug message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_INF(<span class="string">&quot;This is info message\r\n&quot;</span>);</span><br><span class="line">    CLOG_LOG_ERR(<span class="string">&quot;This is error message\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>使用效果图</p>
-<p><img src="/images/202205/clog_test.png" alt="avatar"></p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -5357,6 +5357,61 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈(26)-Linux文件系统与驱动</title>
+    <url>/2022/06/23/linux-fs/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
+<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
+<span id="more"></span>
+
+<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
+<ul>
+<li>bin 存放基本命令程序</li>
+<li>sbin 存放系统命令的程序</li>
+<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
+<li>etc 配置文件目录</li>
+<li>lib 库文件的存放目录</li>
+<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
+<li>opt 可选软件安装目录</li>
+<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
+<li>tmp 临时文件目录</li>
+<li>usr 用户存放程序的目录</li>
+<li>var 经常变动的文件放在这里 比如log文件</li>
+<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
+</ul>
+<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
+<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
+<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
+<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
+<p><img src="/images/202206/devfs.png" alt="avatar"></p>
+<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
+<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
+<p><img src="/images/202206/addcd.png" alt="avatar"></p>
+<p> 效果如下：</p>
+<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
+<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>udev有对应的工具监控netlink。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
+<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>Linux</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(25)-初识驱动开发</title>
     <url>/2022/06/19/driver/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>工作需要，开始接触驱动开发了。</p>
@@ -5421,61 +5476,6 @@
         <category>技术</category>
         <category>Linux</category>
         <category>算法</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>周谈(26)-Linux文件系统与驱动</title>
-    <url>/2022/06/23/linux-fs/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
-<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
-<span id="more"></span>
-
-<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
-<ul>
-<li>bin 存放基本命令程序</li>
-<li>sbin 存放系统命令的程序</li>
-<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
-<li>etc 配置文件目录</li>
-<li>lib 库文件的存放目录</li>
-<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
-<li>opt 可选软件安装目录</li>
-<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
-<li>tmp 临时文件目录</li>
-<li>usr 用户存放程序的目录</li>
-<li>var 经常变动的文件放在这里 比如log文件</li>
-<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
-</ul>
-<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
-<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
-<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
-<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
-<p><img src="/images/202206/devfs.png" alt="avatar"></p>
-<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
-<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
-<p><img src="/images/202206/addcd.png" alt="avatar"></p>
-<p> 效果如下：</p>
-<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
-<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>udev有对应的工具监控netlink。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
-<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>Linux</category>
       </categories>
   </entry>
   <entry>
@@ -5715,48 +5715,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(32)- 近期遇到的那些事儿</title>
-    <url>/2022/08/05/weekly-lately/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。</p>
-<span id="more"></span>
-
-<h1 id="知识盲区"><a href="#知识盲区" class="headerlink" title="知识盲区"></a>知识盲区</h1><h2 id="ECC曲线算法"><a href="#ECC曲线算法" class="headerlink" title="ECC曲线算法"></a>ECC曲线算法</h2><p>ECC曲线算法是数学知识的一个实际应用，在前面有出了两篇文章讲了一下大体的原理，更详细的需要看一下标准文档和网络上大神的详细的总结。在编码的过程中，同时也简单地了解了一下ASN1的编码格式。ECC曲线的应用主要是密钥导出、密钥交换、签名和验签。</p>
-<h2 id="流密码算法"><a href="#流密码算法" class="headerlink" title="流密码算法"></a>流密码算法</h2><p>了解了祖冲之算法和snow3G算法的大概实现流程，在前面也分别有文章简单地聊了一下这两种算法。</p>
-<p>在实现算法的过程中，又涉及到一个端序的概念。就是大小端数据的组织。在以往的工作中，默认网络包的格式是大端的，正常主机是小端的。然后，过去在开发的过程中，对于字节流而言，是不区分什么大小端的，大小端都是针对那些整型字段而言的，转换端序的时候也只是对那些整形字段作转换。开发驱动却不是这样的，它这个端序是针对所有数据的， 也就是大端顺序是0 - N, 转为小端顺序就是 N - 0， 这样子。</p>
-<h2 id="内核模块代码添加宏"><a href="#内核模块代码添加宏" class="headerlink" title="内核模块代码添加宏"></a>内核模块代码添加宏</h2><p>看到同事写的代码里面，需要主动通过添加 #define AAAA， 上网查了一下， 只需要在Makefile里面添加选项就可以了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">EXTRA_CFLAGS += -DAAAA</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>一般的Makefile可以直接在make之后添加-DAAA， 内核需要手动加到EXTRA_CFLAGS中去。</p>
-<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="dma映射方向搞错，获取不到数据"><a href="#dma映射方向搞错，获取不到数据" class="headerlink" title="dma映射方向搞错，获取不到数据"></a>dma映射方向搞错，获取不到数据</h2><p>刚开始驱动调试的时候，不了解dma的接口，然后死活获取不到硬件给的数据，原来是在映射的时候，方向没有设置成双向的。</p>
-<h2 id="无符号差值保存到有符号变量中，实际还是一个无符号的数"><a href="#无符号差值保存到有符号变量中，实际还是一个无符号的数" class="headerlink" title="无符号差值保存到有符号变量中，实际还是一个无符号的数"></a>无符号差值保存到有符号变量中，实际还是一个无符号的数</h2><p>这是昨天调试的时候发现的一个问题:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">u32 a = <span class="number">47</span>;</span><br><span class="line">u32 b = <span class="number">48</span>;</span><br><span class="line"><span class="type">ssize_t</span> diff = a - b; <span class="comment">// diff = -1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//... </span></span><br><span class="line"><span class="keyword">if</span> (diff &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do sth.</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// do other sth.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果走了do sth.分支。。。</span></span><br><span class="line"><span class="comment">// 最后只能改成这样   ssize_t diff = (int)a - (int)b;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="虚拟机升级了内核版本后，共享文件夹不可用了"><a href="#虚拟机升级了内核版本后，共享文件夹不可用了" class="headerlink" title="虚拟机升级了内核版本后，共享文件夹不可用了"></a>虚拟机升级了内核版本后，共享文件夹不可用了</h2><p>最近升级了一下虚拟机的内核版本，添加了对tcrypt和一些算法的支持。但是，重启之后，发现原来设置的共享文件夹不能用了，进入目录后一片空白。</p>
-<p>上网查了一下，重新设置一下共享文件夹。执行如下命令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">cd /mnt</span><br><span class="line">mkdir SF_SHARE</span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">报错</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/sbin/mount.vboxsf: mounting failed with the error: No such device</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这是由于增强工具没有安装， 继续下面的命令：</span></span><br><span class="line"></span><br><span class="line">cd /opt/VBoxGuestAdditions-*/init  </span><br><span class="line">./vboxadd setup</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装好之后， 继续执行， 就可以了。</span></span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE   # VM_SHARE是设置的共享文件夹名称</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="作dma映射后，程序卡死"><a href="#作dma映射后，程序卡死" class="headerlink" title="作dma映射后，程序卡死"></a>作dma映射后，程序卡死</h2><p>这个是由于作dma映射的空间不是cache对齐的， 导致cache刷新不同步，内容改变导致非法，再去访问就出问题了。所以说，后面要做dma映射的空间，要确保它的其实地址是cacheline对齐的，这样刷新的时候都是同步刷新的，不会跟其他数据混在一起。</p>
-<h2 id="使用局部变量作dma映射，程序卡死"><a href="#使用局部变量作dma映射，程序卡死" class="headerlink" title="使用局部变量作dma映射，程序卡死"></a>使用局部变量作dma映射，程序卡死</h2><p>执行dma映射的空间不能是全局变量和局部变量。</p>
-<h2 id="多个内核版本，修改默认启动版本"><a href="#多个内核版本，修改默认启动版本" class="headerlink" title="多个内核版本，修改默认启动版本"></a>多个内核版本，修改默认启动版本</h2><p>由于历史问题，在一台机器上更新了内核版本之后，默认启动的内核还是旧的版本，导致每次需要启动时，选择启动内核版本，有点麻烦。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改</span> </span><br><span class="line">vi /etc/default/grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置， 如果设置有问题 注意看后面update-grub的命令提示</span></span><br><span class="line">GRUB_DEFAULT=&quot;Advanced options for Ubuntu&gt;Ubuntu, with Linux 4.15.0&quot;</span><br><span class="line"></span><br><span class="line">update-grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启后就更新了</span></span><br></pre></td></tr></table></figure>
-
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>编写内核经常导致那个系统挂掉，原来可以在系统主板上也有串口的，可以插个串口线看那个堆栈的，请原谅我现在才知道，哈哈。</p>
-<p>生活可以忙忙碌碌随大流，思想必须偷偷摸摸求上进。</p>
-<p>最近吃了湾湾的那个瓜， 祖国加油！</p>
-<p>周末要去接娃来了，神兽又要来捣蛋了，^_^!</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(31)-ECC曲线的应用</title>
     <url>/2022/07/24/ecdh/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>ECC椭圆曲线的应用有两种： </p>
@@ -5801,6 +5759,48 @@
       <categories>
         <category>技术</category>
         <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(32)- 近期遇到的那些事儿</title>
+    <url>/2022/08/05/weekly-lately/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。</p>
+<span id="more"></span>
+
+<h1 id="知识盲区"><a href="#知识盲区" class="headerlink" title="知识盲区"></a>知识盲区</h1><h2 id="ECC曲线算法"><a href="#ECC曲线算法" class="headerlink" title="ECC曲线算法"></a>ECC曲线算法</h2><p>ECC曲线算法是数学知识的一个实际应用，在前面有出了两篇文章讲了一下大体的原理，更详细的需要看一下标准文档和网络上大神的详细的总结。在编码的过程中，同时也简单地了解了一下ASN1的编码格式。ECC曲线的应用主要是密钥导出、密钥交换、签名和验签。</p>
+<h2 id="流密码算法"><a href="#流密码算法" class="headerlink" title="流密码算法"></a>流密码算法</h2><p>了解了祖冲之算法和snow3G算法的大概实现流程，在前面也分别有文章简单地聊了一下这两种算法。</p>
+<p>在实现算法的过程中，又涉及到一个端序的概念。就是大小端数据的组织。在以往的工作中，默认网络包的格式是大端的，正常主机是小端的。然后，过去在开发的过程中，对于字节流而言，是不区分什么大小端的，大小端都是针对那些整型字段而言的，转换端序的时候也只是对那些整形字段作转换。开发驱动却不是这样的，它这个端序是针对所有数据的， 也就是大端顺序是0 - N, 转为小端顺序就是 N - 0， 这样子。</p>
+<h2 id="内核模块代码添加宏"><a href="#内核模块代码添加宏" class="headerlink" title="内核模块代码添加宏"></a>内核模块代码添加宏</h2><p>看到同事写的代码里面，需要主动通过添加 #define AAAA， 上网查了一下， 只需要在Makefile里面添加选项就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">EXTRA_CFLAGS += -DAAAA</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一般的Makefile可以直接在make之后添加-DAAA， 内核需要手动加到EXTRA_CFLAGS中去。</p>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="dma映射方向搞错，获取不到数据"><a href="#dma映射方向搞错，获取不到数据" class="headerlink" title="dma映射方向搞错，获取不到数据"></a>dma映射方向搞错，获取不到数据</h2><p>刚开始驱动调试的时候，不了解dma的接口，然后死活获取不到硬件给的数据，原来是在映射的时候，方向没有设置成双向的。</p>
+<h2 id="无符号差值保存到有符号变量中，实际还是一个无符号的数"><a href="#无符号差值保存到有符号变量中，实际还是一个无符号的数" class="headerlink" title="无符号差值保存到有符号变量中，实际还是一个无符号的数"></a>无符号差值保存到有符号变量中，实际还是一个无符号的数</h2><p>这是昨天调试的时候发现的一个问题:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">u32 a = <span class="number">47</span>;</span><br><span class="line">u32 b = <span class="number">48</span>;</span><br><span class="line"><span class="type">ssize_t</span> diff = a - b; <span class="comment">// diff = -1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//... </span></span><br><span class="line"><span class="keyword">if</span> (diff &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do sth.</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// do other sth.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果走了do sth.分支。。。</span></span><br><span class="line"><span class="comment">// 最后只能改成这样   ssize_t diff = (int)a - (int)b;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="虚拟机升级了内核版本后，共享文件夹不可用了"><a href="#虚拟机升级了内核版本后，共享文件夹不可用了" class="headerlink" title="虚拟机升级了内核版本后，共享文件夹不可用了"></a>虚拟机升级了内核版本后，共享文件夹不可用了</h2><p>最近升级了一下虚拟机的内核版本，添加了对tcrypt和一些算法的支持。但是，重启之后，发现原来设置的共享文件夹不能用了，进入目录后一片空白。</p>
+<p>上网查了一下，重新设置一下共享文件夹。执行如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">cd /mnt</span><br><span class="line">mkdir SF_SHARE</span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">报错</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/sbin/mount.vboxsf: mounting failed with the error: No such device</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这是由于增强工具没有安装， 继续下面的命令：</span></span><br><span class="line"></span><br><span class="line">cd /opt/VBoxGuestAdditions-*/init  </span><br><span class="line">./vboxadd setup</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装好之后， 继续执行， 就可以了。</span></span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE   # VM_SHARE是设置的共享文件夹名称</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="作dma映射后，程序卡死"><a href="#作dma映射后，程序卡死" class="headerlink" title="作dma映射后，程序卡死"></a>作dma映射后，程序卡死</h2><p>这个是由于作dma映射的空间不是cache对齐的， 导致cache刷新不同步，内容改变导致非法，再去访问就出问题了。所以说，后面要做dma映射的空间，要确保它的其实地址是cacheline对齐的，这样刷新的时候都是同步刷新的，不会跟其他数据混在一起。</p>
+<h2 id="使用局部变量作dma映射，程序卡死"><a href="#使用局部变量作dma映射，程序卡死" class="headerlink" title="使用局部变量作dma映射，程序卡死"></a>使用局部变量作dma映射，程序卡死</h2><p>执行dma映射的空间不能是全局变量和局部变量。</p>
+<h2 id="多个内核版本，修改默认启动版本"><a href="#多个内核版本，修改默认启动版本" class="headerlink" title="多个内核版本，修改默认启动版本"></a>多个内核版本，修改默认启动版本</h2><p>由于历史问题，在一台机器上更新了内核版本之后，默认启动的内核还是旧的版本，导致每次需要启动时，选择启动内核版本，有点麻烦。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改</span> </span><br><span class="line">vi /etc/default/grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置， 如果设置有问题 注意看后面update-grub的命令提示</span></span><br><span class="line">GRUB_DEFAULT=&quot;Advanced options for Ubuntu&gt;Ubuntu, with Linux 4.15.0&quot;</span><br><span class="line"></span><br><span class="line">update-grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启后就更新了</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>编写内核经常导致那个系统挂掉，原来可以在系统主板上也有串口的，可以插个串口线看那个堆栈的，请原谅我现在才知道，哈哈。</p>
+<p>生活可以忙忙碌碌随大流，思想必须偷偷摸摸求上进。</p>
+<p>最近吃了湾湾的那个瓜， 祖国加油！</p>
+<p>周末要去接娃来了，神兽又要来捣蛋了，^_^!</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -5893,60 +5893,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(35)-Makefile基础复习</title>
-    <url>/2022/09/04/weekly-makefile/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这周使用cmake构建了一个新工程代码，目录结构参照GmSSL3.0进行了划分，新增的代码和测试代码都编译测试运行OK，也增加了相应的README说明。在我看来，初步版本已经是完整的了。使用cmake可以使得构建中间文件跟源代码分离，而且cmake还提供了安装、打包的功能，已经相当的完善了。初期的工作是完成了。</p>
-<span id="more"></span>
-
-<p>代码提交审核，呵呵，人家不知道cmake是什么东东(兴许是搞驱动搞久了，没看过太多开源代码吧)，也不愿意接纳这个新事物，要求让手写Makefile，觉得这样才更符合C项目的编写惯例。虽然cmake很方便，但是会增加组内成员的学习成本，不方便大家使用。WTF，不懂学习一下不就行了，这么多的优点不值得学一下么？好吧，再搞个Makefile版本。有一句话说的是，”你不可能总是得到你想要的, 你想要的并不是别人要的”。</p>
-<p>复习复习Makefile的基础吧。</p>
-<h1 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h1><p>Makefile最主要的就是变量和函数了。</p>
-<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>变量的赋值跟shell类似，var&#x3D;value</p>
-<p>取值是$(变量名)或者${变量名}</p>
-<p>Makefile还提供了一些默认的变量名：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CC=gcc</span><br><span class="line">CFLAGS # 编译选项 如 -g -Wall</span><br><span class="line">LDFLAGS #链接选项</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">命令中使用的自动变量</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">@ <span class="comment"># 表示规则的目标</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">&lt; <span class="comment"># 表示规则中的第一个条件</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">^: <span class="comment"># 表示规则中的所有条件，空格分隔</span></span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="模式规则"><a href="#模式规则" class="headerlink" title="模式规则"></a>模式规则</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $(CFLAGS) $(CPPFLAGS) $&lt; -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
-
-<p>模式规则用来说明依赖文件是如何生成目标文件的，一般就是%号加上后缀，上面的例子表示.c文件如何生成.o文件。</p>
-<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>最常用的函数是wildcard, 和patsubst：</p>
-<ul>
-<li>wildcard 用于获取以某个后缀结尾的所有函数。</li>
-<li>patsubst 把指定后缀替换为新的后缀，如.c –&gt; .o</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">SRC=$(wildcard *.c) <span class="comment"># 获取所有.c结尾的文件</span></span><br><span class="line">OBJS=$(patsubst %.c, %.o, $(SRC)) <span class="comment"># SRC中.c替换为.o</span></span><br><span class="line">TARGET=main</span><br><span class="line">$(TARGET):$(OBJS)</span><br><span class="line">	$(CC) $(OBJS) -o $(TARGET)</span><br><span class="line">%.o:%.c</span><br><span class="line">	$(CC) -c $&lt; -o <span class="variable">$@</span> <span class="comment"># 依赖条件第一个$&lt; 编译成目标文件 $@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="伪目标"><a href="#伪目标" class="headerlink" title="伪目标"></a>伪目标</h2><p>经常使用make clean或者make all命令来清理或者编译目标，这里的clean和all一般都是伪目标，即不是实际存在的文件， 需要使用.PHONY声明。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">SRC=$(wildcard *.c)</span><br><span class="line">OBJS=$(patsubst %.c,%.o,$(SRC))</span><br><span class="line">TARGET=main</span><br><span class="line"></span><br><span class="line">.PHONY: all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">all: $(TARGET)</span><br><span class="line">    @<span class="built_in">echo</span> <span class="string">&quot;make all&quot;</span></span><br><span class="line"></span><br><span class="line">$(TARGET):$(OBJS)</span><br><span class="line">	$(CC) $(OBJS) -o $(TARGET)</span><br><span class="line">%.o:%.c</span><br><span class="line">	$(CC) -c $&lt; -o <span class="variable">$@</span></span><br><span class="line">.PHONY:clean</span><br><span class="line">clean:</span><br><span class="line">	<span class="built_in">rm</span> -rf $(OBJS) $(TARGET)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="Makefile嵌套"><a href="#Makefile嵌套" class="headerlink" title="Makefile嵌套"></a>Makefile嵌套</h2><p>Makefile的嵌套，一种是最外层的Makefile需要包含更深层的Makefile内容，才能编译完成。这种需要使用include关键字包含深层次的Makefile，类似于C语言的include，被include的Makefile内容会展开到对应的外层Makefile。</p>
-<p>另外一种是，更深层的Makefile本身就可以独立编译，最外层的Makefile可以调用到内层的Makefile完成功能。最外层可以通过<code>make -C path/to/subdir</code>的命令调用深层次的Makefile编译。</p>
-<p>更多的是第三种最外层的Makefile直接包含了所有内层目录的源文件，整个工程就一个Makefile。</p>
-<p>如果需要在Makefile间传递变量， 可以使用export关键字，这样深层次的Makefile可以获取到对应的变量值。 在深层次Makefile注意使用?&#x3D;方式给对应的变量设置默认值。</p>
-<p>第一种可以参考linux kernel 生成的Makefile。</p>
-<p>第二种参考<code>https://gitee.com/mirrors/intel-ipsec-mb</code> 代码的Makefile：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">.PHONY: all clean style install uninstall <span class="built_in">help</span> TAGS</span><br><span class="line"></span><br><span class="line">all:</span><br><span class="line">	$(MAKE) -C lib</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span></span><br><span class="line">	$(MAKE) -C perf</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	$(MAKE) -C lib clean</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span> clean</span><br><span class="line">	$(MAKE) -C perf clean</span><br><span class="line"></span><br><span class="line">style:</span><br><span class="line">	$(MAKE) -C lib style</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span> style</span><br><span class="line">	$(MAKE) -C perf style</span><br><span class="line"></span><br><span class="line">install:</span><br><span class="line">	$(MAKE) -C lib install</span><br><span class="line"></span><br><span class="line">uninstall:</span><br><span class="line">	$(MAKE) -C lib uninstall</span><br><span class="line"></span><br><span class="line"><span class="built_in">help</span>:</span><br><span class="line">	$(MAKE) -C lib <span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">doxy:</span><br><span class="line">	$(MAKE) -C lib doxy</span><br><span class="line"></span><br><span class="line">README: README.md</span><br><span class="line">	pandoc -f markdown -t plain $&lt; -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line">... <span class="comment"># 省略后续内容</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>第三种参考 <code>git@gitee.com:kunpengcompute/KAE.git</code>代码的Makefile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Src</span></span><br><span class="line">SRCDIRS   := <span class="variable">$&#123;WORK_PATH&#125;</span>/</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/pkey</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/dh</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/ciphers</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/digests</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/async</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/wdmngr</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/utils</span><br><span class="line"></span><br><span class="line">SRCEXTS   := .c <span class="comment"># C program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">SOURCES = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS))))</span><br><span class="line"></span><br><span class="line">OBJS    = $(foreach x,$(SRCEXTS), \</span><br><span class="line">      $(patsubst %$(x), %.o, $(filter %$(x),$(SOURCES))))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>Makefile的基础知识差不多是这些，更多的还可以命令调用不同的shell命令执行想要的操作。最基础的就是使用rm命令清理编译文件了。</p>
-<p>在码云gitee上面，基本上都有github上众多知名开源库的镜像库，可以提升我们的下载速度。毕竟很多时候github总是连接不上，如果单纯是下载代码学习的话，推荐直接使用gitee查找开源库代码来下载。</p>
-<p>不论是在生活，学习还是工作中，你不可能总是得到你想要的。那么就多学习一些知识，提高自身应对需求的能力吧。</p>
-<p>近期长沙开启了降温模式，已然进入了秋天，周末早起带我妈去橘子洲景区走了一圈，让她也在长沙旅游一下。我妈从老家来长沙帮忙带娃,平常一个人在陌生的环境中也不容易，周末有时间带她多走走逛逛了！</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>工具</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(34)-DMA地址映射api使用</title>
     <url>/2022/08/27/dma-weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>做驱动开发免不了要用到DMA技术， 这是一种高速的数据传输操作，允许外设直接读写存储器，不需要CPU的介入。这样CPU就可以继续做其它的事情了。控制这个操作的是DMA控制器。</p>
@@ -6018,6 +5964,60 @@
       <categories>
         <category>技术</category>
         <category>驱动</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(35)-Makefile基础复习</title>
+    <url>/2022/09/04/weekly-makefile/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这周使用cmake构建了一个新工程代码，目录结构参照GmSSL3.0进行了划分，新增的代码和测试代码都编译测试运行OK，也增加了相应的README说明。在我看来，初步版本已经是完整的了。使用cmake可以使得构建中间文件跟源代码分离，而且cmake还提供了安装、打包的功能，已经相当的完善了。初期的工作是完成了。</p>
+<span id="more"></span>
+
+<p>代码提交审核，呵呵，人家不知道cmake是什么东东(兴许是搞驱动搞久了，没看过太多开源代码吧)，也不愿意接纳这个新事物，要求让手写Makefile，觉得这样才更符合C项目的编写惯例。虽然cmake很方便，但是会增加组内成员的学习成本，不方便大家使用。WTF，不懂学习一下不就行了，这么多的优点不值得学一下么？好吧，再搞个Makefile版本。有一句话说的是，”你不可能总是得到你想要的, 你想要的并不是别人要的”。</p>
+<p>复习复习Makefile的基础吧。</p>
+<h1 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h1><p>Makefile最主要的就是变量和函数了。</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>变量的赋值跟shell类似，var&#x3D;value</p>
+<p>取值是$(变量名)或者${变量名}</p>
+<p>Makefile还提供了一些默认的变量名：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CC=gcc</span><br><span class="line">CFLAGS # 编译选项 如 -g -Wall</span><br><span class="line">LDFLAGS #链接选项</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">命令中使用的自动变量</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">@ <span class="comment"># 表示规则的目标</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">&lt; <span class="comment"># 表示规则中的第一个条件</span></span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">^: <span class="comment"># 表示规则中的所有条件，空格分隔</span></span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="模式规则"><a href="#模式规则" class="headerlink" title="模式规则"></a>模式规则</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $(CFLAGS) $(CPPFLAGS) $&lt; -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+
+<p>模式规则用来说明依赖文件是如何生成目标文件的，一般就是%号加上后缀，上面的例子表示.c文件如何生成.o文件。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>最常用的函数是wildcard, 和patsubst：</p>
+<ul>
+<li>wildcard 用于获取以某个后缀结尾的所有函数。</li>
+<li>patsubst 把指定后缀替换为新的后缀，如.c –&gt; .o</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">SRC=$(wildcard *.c) <span class="comment"># 获取所有.c结尾的文件</span></span><br><span class="line">OBJS=$(patsubst %.c, %.o, $(SRC)) <span class="comment"># SRC中.c替换为.o</span></span><br><span class="line">TARGET=main</span><br><span class="line">$(TARGET):$(OBJS)</span><br><span class="line">	$(CC) $(OBJS) -o $(TARGET)</span><br><span class="line">%.o:%.c</span><br><span class="line">	$(CC) -c $&lt; -o <span class="variable">$@</span> <span class="comment"># 依赖条件第一个$&lt; 编译成目标文件 $@</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="伪目标"><a href="#伪目标" class="headerlink" title="伪目标"></a>伪目标</h2><p>经常使用make clean或者make all命令来清理或者编译目标，这里的clean和all一般都是伪目标，即不是实际存在的文件， 需要使用.PHONY声明。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">SRC=$(wildcard *.c)</span><br><span class="line">OBJS=$(patsubst %.c,%.o,$(SRC))</span><br><span class="line">TARGET=main</span><br><span class="line"></span><br><span class="line">.PHONY: all</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">all: $(TARGET)</span><br><span class="line">    @<span class="built_in">echo</span> <span class="string">&quot;make all&quot;</span></span><br><span class="line"></span><br><span class="line">$(TARGET):$(OBJS)</span><br><span class="line">	$(CC) $(OBJS) -o $(TARGET)</span><br><span class="line">%.o:%.c</span><br><span class="line">	$(CC) -c $&lt; -o <span class="variable">$@</span></span><br><span class="line">.PHONY:clean</span><br><span class="line">clean:</span><br><span class="line">	<span class="built_in">rm</span> -rf $(OBJS) $(TARGET)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Makefile嵌套"><a href="#Makefile嵌套" class="headerlink" title="Makefile嵌套"></a>Makefile嵌套</h2><p>Makefile的嵌套，一种是最外层的Makefile需要包含更深层的Makefile内容，才能编译完成。这种需要使用include关键字包含深层次的Makefile，类似于C语言的include，被include的Makefile内容会展开到对应的外层Makefile。</p>
+<p>另外一种是，更深层的Makefile本身就可以独立编译，最外层的Makefile可以调用到内层的Makefile完成功能。最外层可以通过<code>make -C path/to/subdir</code>的命令调用深层次的Makefile编译。</p>
+<p>更多的是第三种最外层的Makefile直接包含了所有内层目录的源文件，整个工程就一个Makefile。</p>
+<p>如果需要在Makefile间传递变量， 可以使用export关键字，这样深层次的Makefile可以获取到对应的变量值。 在深层次Makefile注意使用?&#x3D;方式给对应的变量设置默认值。</p>
+<p>第一种可以参考linux kernel 生成的Makefile。</p>
+<p>第二种参考<code>https://gitee.com/mirrors/intel-ipsec-mb</code> 代码的Makefile：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">.PHONY: all clean style install uninstall <span class="built_in">help</span> TAGS</span><br><span class="line"></span><br><span class="line">all:</span><br><span class="line">	$(MAKE) -C lib</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span></span><br><span class="line">	$(MAKE) -C perf</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	$(MAKE) -C lib clean</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span> clean</span><br><span class="line">	$(MAKE) -C perf clean</span><br><span class="line"></span><br><span class="line">style:</span><br><span class="line">	$(MAKE) -C lib style</span><br><span class="line">	$(MAKE) -C <span class="built_in">test</span> style</span><br><span class="line">	$(MAKE) -C perf style</span><br><span class="line"></span><br><span class="line">install:</span><br><span class="line">	$(MAKE) -C lib install</span><br><span class="line"></span><br><span class="line">uninstall:</span><br><span class="line">	$(MAKE) -C lib uninstall</span><br><span class="line"></span><br><span class="line"><span class="built_in">help</span>:</span><br><span class="line">	$(MAKE) -C lib <span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">doxy:</span><br><span class="line">	$(MAKE) -C lib doxy</span><br><span class="line"></span><br><span class="line">README: README.md</span><br><span class="line">	pandoc -f markdown -t plain $&lt; -o <span class="variable">$@</span></span><br><span class="line"></span><br><span class="line">... <span class="comment"># 省略后续内容</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第三种参考 <code>git@gitee.com:kunpengcompute/KAE.git</code>代码的Makefile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Src</span></span><br><span class="line">SRCDIRS   := <span class="variable">$&#123;WORK_PATH&#125;</span>/</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/pkey</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/dh</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/ciphers</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/alg/digests</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/async</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/wdmngr</span><br><span class="line">SRCDIRS   += <span class="variable">$&#123;WORK_PATH&#125;</span>/utils</span><br><span class="line"></span><br><span class="line">SRCEXTS   := .c <span class="comment"># C program</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">SOURCES = $(foreach d,$(SRCDIRS),$(wildcard $(addprefix $(d)/*,$(SRCEXTS))))</span><br><span class="line"></span><br><span class="line">OBJS    = $(foreach x,$(SRCEXTS), \</span><br><span class="line">      $(patsubst %$(x), %.o, $(filter %$(x),$(SOURCES))))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>Makefile的基础知识差不多是这些，更多的还可以命令调用不同的shell命令执行想要的操作。最基础的就是使用rm命令清理编译文件了。</p>
+<p>在码云gitee上面，基本上都有github上众多知名开源库的镜像库，可以提升我们的下载速度。毕竟很多时候github总是连接不上，如果单纯是下载代码学习的话，推荐直接使用gitee查找开源库代码来下载。</p>
+<p>不论是在生活，学习还是工作中，你不可能总是得到你想要的。那么就多学习一些知识，提高自身应对需求的能力吧。</p>
+<p>近期长沙开启了降温模式，已然进入了秋天，周末早起带我妈去橘子洲景区走了一圈，让她也在长沙旅游一下。我妈从老家来长沙帮忙带娃,平常一个人在陌生的环境中也不容易，周末有时间带她多走走逛逛了！</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>工具</category>
       </categories>
   </entry>
   <entry>
@@ -6222,7 +6222,7 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   ...</span><br><span class="line">   globalmem_devp-&gt;dev_class = class_create(THIS_MODULE, <span class="string">&quot;driver_dev&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span> (IS_ERR(globalmem_devp-&gt;dev_class)) &#123;</span><br><span class="line">       printk(<span class="string">&quot;class create error\r\n&quot;</span>);</span><br><span class="line">       ret =  -EBUSY;</span><br><span class="line">       <span class="keyword">goto</span> fail_malloc;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   devices = device_create(globalmem_devp-&gt;dev_class, <span class="literal">NULL</span>, MKDEV(globalmem_major, <span class="number">0</span>), <span class="literal">NULL</span>, <span class="string">&quot;globalmem&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span>(<span class="literal">NULL</span> == devices)&#123;</span><br><span class="line">	printk(<span class="string">&quot;device_create error\r\n&quot;</span>);</span><br><span class="line">	ret =  -EBUSY;</span><br><span class="line">       class_destroy(globalmem_devp-&gt;dev_class);</span><br><span class="line">	<span class="keyword">goto</span> fail_malloc;</span><br><span class="line">&#125;</span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
 <p>安装之后， 可以在&#x2F;sys&#x2F;class和&#x2F;dev下找到driver_dev和globalmem</p>
 <p><img src="/images/202210/char_dev.png" alt="char_dev"></p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这篇知识比较零碎。具体的测试代码在Gitee仓库中<a href="mailto:&#x67;&#x69;&#x74;&#64;&#103;&#105;&#116;&#x65;&#x65;&#46;&#99;&#111;&#x6d;">&#x67;&#x69;&#x74;&#64;&#103;&#105;&#116;&#x65;&#x65;&#46;&#99;&#111;&#x6d;</a>:fishmwei&#x2F;blog_code.git。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这篇知识比较零碎。具体的测试代码在Gitee仓库中<a href="mailto:&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#101;&#x65;&#x2e;&#99;&#x6f;&#109;">&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#101;&#x65;&#x2e;&#99;&#x6f;&#109;</a>:fishmwei&#x2F;blog_code.git。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -6282,7 +6282,7 @@
 <p>对称算法根据明文的加密方式分成了流算法和分组算法。</p>
 <ul>
 <li>流算法一次加密明文中的一个位，解密也是按位解密的。主要的有祖冲之算法和SNOW3G算法，主要用于5G场景，由于5G场景中空口带宽比较珍贵，计算粒度到位。</li>
-<li>分组算法一次加密明文中的一个块，不同的算法块长度可以不一样，集体可以体现在算法的名称中，如AES-128-CBC。</li>
+<li>分组算法一次加密明文中的一个块，不同的算法块长度可以不一样，具体可以体现在算法的名称中，如AES-128-CBC。</li>
 </ul>
 <h1 id="算法模式"><a href="#算法模式" class="headerlink" title="算法模式"></a>算法模式</h1><p>对于分组算法，如果直接对明文块进行加密，如果不同的块内容一样，会导致加密出来的密文也都是一样的，比较容易被破译。为了处理这种问题，就引入了算法模式，给不同块的输入增加一些盐值，这样即使块的内容一样，由于盐值不一样，加密出的密文也会不一样。不同的算法模式，根据盐值如何产生，及模块加密的流程分为了ECB、CBC、CFB、OFB、CTR模式。</p>
 <h2 id="电子编码簿（ECB）模式"><a href="#电子编码簿（ECB）模式" class="headerlink" title="电子编码簿（ECB）模式"></a>电子编码簿（ECB）模式</h2><p>ECB模式是最简单的模式，也是最基础的模式。ECB模式没有盐值，直接将明文消息分成64位块，然后单独加密每个块。所有的块使用相同的密钥进行加密。如果原文中有多个相同的明文块，那么也会产生多个相同的密文块。</p>
@@ -6293,7 +6293,7 @@
 <p>CBC模式下加密有三个重要的相关项： 初始向量、密钥、明文消息。每个块的初始向量不一样，但是加密的密钥是一样的。</p>
 <h2 id="加密反馈（CFB）模式"><a href="#加密反馈（CFB）模式" class="headerlink" title="加密反馈（CFB）模式"></a>加密反馈（CFB）模式</h2><p>前面两种模式都是按块加密的，但不是所有的应用都适用块加密。这时候就使用流加密或者CFB模式了，CFB模式加密数据可以使用更小的单元，比如8位，小于块的长度（64位）。</p>
 <p>CFB模式一次处理8位，流程相对前面两种更复杂一些。</p>
-<p>1、CFB模式也才有64位的初始化向量，通过加密方式得到加密后的向量。</p>
+<p>1、CFB模式也采用64位的初始化向量，通过加密方式得到加密后的向量。</p>
 <p><img src="/images/202211/CFB1.png" alt="CFB1"></p>
 <p>2、加密后的向量的前j位和明文异或，产生j为密文C，把C发送给接收方。<br><img src="/images/202211/CFB2.jpg" alt="CFB2"></p>
 <p>3、加密后的向量左移j位，并把第二步得到的C填充到最右边的j位。</p>
@@ -6304,7 +6304,7 @@
 <h2 id="计数器-CTR-模式"><a href="#计数器-CTR-模式" class="headerlink" title="计数器(CTR)模式"></a>计数器(CTR)模式</h2><p>CTR模式各个块的IV采用一个计数器值，计数加密之后再和明文异或得到密文。计数块的大小等于明文块的大小。</p>
 <p><img src="/images/202211/CTR.jpg" alt="CTR"></p>
 <p>CTR模式可以并行地计算多个块，因为输入跟前面的明文没有什么关系。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>加密模式还有一种xts，具体带学习后再小结。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>加密模式还有一种xts，具体带学习后再小结。模式比较多，又很相似，刚开始看很容易混淆，后面慢慢地熟悉了就好了吧。</p>
 <h1 id="更多1"><a href="#更多1" class="headerlink" title="更多1"></a>更多1</h1><p>今年小组扩张的比较猛，从年初的5人扩充到了14人。人多了，就有很多人比较闲。后面招的基本都是应届生或者工作三年以下的，应届生就不用说了，基本等于白纸。工作几年的那几个呢，我感觉都不是技术爱好者，仅仅是工作糊口而已。</p>
 <p>人多了，问题也就多了。当然，这些问题主要还是因为大家没有很强的责任心导致的。联调一个功能，遇到问题了，不去积极解决问题，而是在互相推诿。A和B联调，A遇到问题了，首先自身没有深入定位，直接就去找B了。而B呢，直接说代码不是他写的，他没有改过，让找C。C又是说代码已经移交个B，又让找B。真的好扯，都是一个组的，代码就在那，都不愿意自己gdb去看看，总想着推脱责任，好无语。</p>
 <p>另外，很多工作并没有比较明确的时间点，有些也没有明确的目标，大家都在磨洋工啊。技术不好的也不想着提升技术，团队就是个散沙，然后有事情了又是拉几个老员工顶上去。呵呵。</p>
@@ -6318,6 +6318,41 @@
       <categories>
         <category>技术</category>
         <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈（42）- XTS算法模式</title>
+    <url>/2022/12/01/aes-xts-weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上一次了解了对称算法的基本模式ECB&#x2F;CBC&#x2F;CFB&#x2F;OFB&#x2F;CTR，今天学习一下xts模式。</p>
+<span id="more"></span>
+
+<h1 id="xts模式"><a href="#xts模式" class="headerlink" title="xts模式"></a>xts模式</h1><p>xts模式用于磁盘加密，对于磁盘数据都是按扇区存储的，不希望有额外的空间存储前面那些模式需要的IV向量，而且任意块都应该是可以随时加解密的，块(扇区)之间不应该有相关性。当然，我们也不能用ECB模式，这个是不安全的，容易被分析出来。后面就有人提出了可调整的分组密码算法，除了key和明文外，又引入了tweak值，这个tweak是可以调整的，不同的tweak会导致加密的结果不同（其实也是一个salt）。</p>
+<h2 id="加密一个块的流程："><a href="#加密一个块的流程：" class="headerlink" title="加密一个块的流程："></a>加密一个块的流程：</h2><p><img src="/images/202212/xts_tweak.png" alt="xts_tweak"></p>
+<p>公式表示就是：<code>C ← XTS-AES-blockEnc(Key, P, i, j)</code></p>
+<p>xts模式有两个密钥K1|K2，一个用于调整tweak， 另外一个用于分组加密。<br>P是一个128bit的明文块<br>i是一个128bit的tweak值<br>j是这个块在数据单元中的索引<br>C是这个块加密后的密文</p>
+<p>1、 tweak使用密钥K2进行AES加密(ECB模式， 不需要iv），结果进行一个有限域数aj的乘运算，得到T<br>2、T跟明文块P异或得到PP<br>3、PP再使用K1进行AES加密得到CC<br>4、CC再和1中的T异或得到最终的密文C</p>
+<h2 id="加密一个数据单元的流程"><a href="#加密一个数据单元的流程" class="headerlink" title="加密一个数据单元的流程"></a>加密一个数据单元的流程</h2><p>一个数据单元包含多个数据块。<br>公式表示：<code>C ← XTS-AES-Enc (Key, P, i) </code><br>Key， P, i含义跟上面一样。</p>
+<p>一个明文P分成m+1个明文块 <code>P = P0 |… |Pm−1|Pm</code>, 128*m &lt; P的位数， 前0-m-1块长度都是128bit， 最后一块为0-127bit。</p>
+<p>前面0 ~ m-2 块直接计算： <code>Cq ← XTS-AES-blockEnc(Key, Pj, i, q)</code></p>
+<p>最后两块的加密特殊一些<br>1、当最后一块长度为0时，<br><code>Cm-1 ← XTS-AES-blockEnc(Key, Pm-1, i, m-1)</code><br><code>Cm为空</code></p>
+<p>2、最后一块长度不为0时，<br><code>a) CC ← XTS-AES-blockEnc(Key, Pm-1, i, m-1)</code> 先根据第m-1计算加密密文 CC<br><code>b) Cm ← first b bits of CC</code> 取出CC中的前b个字节作为第m块的加密密文<br><code>c) CP ← last (128-b) bits of CC</code> 取CC的后128-b bit得到CP<br><code>d) PP ← Pm | CP </code>CP和Pm组成PP<br><code>e) Cm-1 ← XTS-AES-blockEnc(Key, PP, i, m)</code> 计算Cm-1</p>
+<p>最后汇总所有的密文。</p>
+<p><img src="/images/202212/xts_aes_m1127.png" alt="xts_aes_enc"></p>
+<h2 id="解密一个块的流程"><a href="#解密一个块的流程" class="headerlink" title="解密一个块的流程"></a>解密一个块的流程</h2><p><img src="/images/202212/xts_dec_block.png" alt="xts_aes_enc"></p>
+<p>解密跟加密基本一样，就是明文和密文对调一下。</p>
+<h2 id="解密一个数据单元的流程"><a href="#解密一个数据单元的流程" class="headerlink" title="解密一个数据单元的流程"></a>解密一个数据单元的流程</h2><p>解密数据单元跟加密数据单元也是相同的。同样的最后两块也是特殊处理一下。</p>
+<p><img src="/images/202212/xts_aes_decm1127.png" alt="xts_aes_decm1127"></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>tweak加密后会作一个什么有限域的运算aj， 这个aj的是怎么来的呢？ 有限域运算又是啥呢，最终还是没有搞懂。 </p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>年底了， 公司通知剩余的年假赶紧休掉，否则年底统一清零，要跨年的需要特殊申请。今年3月份入职的，折算一下有八天年假，领导让休假那就休假吧。年假只算工作日，那么我就连续休息11天啦。到今天算是第六天了， 过半了。脑袋也放空了5天了，接下来的时间得看点东西了。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
       </categories>
   </entry>
 </search>

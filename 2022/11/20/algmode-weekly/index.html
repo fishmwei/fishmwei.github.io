@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://fishmwei.github.io/images/202211/OFB.jpg">
 <meta property="og:image" content="https://fishmwei.github.io/images/202211/CTR.jpg">
 <meta property="article:published_time" content="2022-11-20T00:54:20.000Z">
-<meta property="article:modified_time" content="2022-11-23T14:22:59.970Z">
+<meta property="article:modified_time" content="2022-12-01T05:57:11.867Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/202211/ECB.png">
@@ -265,7 +265,7 @@
 <p>对称算法根据明文的加密方式分成了流算法和分组算法。</p>
 <ul>
 <li>流算法一次加密明文中的一个位，解密也是按位解密的。主要的有祖冲之算法和SNOW3G算法，主要用于5G场景，由于5G场景中空口带宽比较珍贵，计算粒度到位。</li>
-<li>分组算法一次加密明文中的一个块，不同的算法块长度可以不一样，集体可以体现在算法的名称中，如AES-128-CBC。</li>
+<li>分组算法一次加密明文中的一个块，不同的算法块长度可以不一样，具体可以体现在算法的名称中，如AES-128-CBC。</li>
 </ul>
 <h1 id="算法模式"><a href="#算法模式" class="headerlink" title="算法模式"></a>算法模式</h1><p>对于分组算法，如果直接对明文块进行加密，如果不同的块内容一样，会导致加密出来的密文也都是一样的，比较容易被破译。为了处理这种问题，就引入了算法模式，给不同块的输入增加一些盐值，这样即使块的内容一样，由于盐值不一样，加密出的密文也会不一样。不同的算法模式，根据盐值如何产生，及模块加密的流程分为了ECB、CBC、CFB、OFB、CTR模式。</p>
 <h2 id="电子编码簿（ECB）模式"><a href="#电子编码簿（ECB）模式" class="headerlink" title="电子编码簿（ECB）模式"></a>电子编码簿（ECB）模式</h2><p>ECB模式是最简单的模式，也是最基础的模式。ECB模式没有盐值，直接将明文消息分成64位块，然后单独加密每个块。所有的块使用相同的密钥进行加密。如果原文中有多个相同的明文块，那么也会产生多个相同的密文块。</p>
@@ -276,7 +276,7 @@
 <p>CBC模式下加密有三个重要的相关项： 初始向量、密钥、明文消息。每个块的初始向量不一样，但是加密的密钥是一样的。</p>
 <h2 id="加密反馈（CFB）模式"><a href="#加密反馈（CFB）模式" class="headerlink" title="加密反馈（CFB）模式"></a>加密反馈（CFB）模式</h2><p>前面两种模式都是按块加密的，但不是所有的应用都适用块加密。这时候就使用流加密或者CFB模式了，CFB模式加密数据可以使用更小的单元，比如8位，小于块的长度（64位）。</p>
 <p>CFB模式一次处理8位，流程相对前面两种更复杂一些。</p>
-<p>1、CFB模式也才有64位的初始化向量，通过加密方式得到加密后的向量。</p>
+<p>1、CFB模式也采用64位的初始化向量，通过加密方式得到加密后的向量。</p>
 <p><img src="/images/202211/CFB1.png" alt="CFB1"></p>
 <p>2、加密后的向量的前j位和明文异或，产生j为密文C，把C发送给接收方。<br><img src="/images/202211/CFB2.jpg" alt="CFB2"></p>
 <p>3、加密后的向量左移j位，并把第二步得到的C填充到最右边的j位。</p>
@@ -287,7 +287,7 @@
 <h2 id="计数器-CTR-模式"><a href="#计数器-CTR-模式" class="headerlink" title="计数器(CTR)模式"></a>计数器(CTR)模式</h2><p>CTR模式各个块的IV采用一个计数器值，计数加密之后再和明文异或得到密文。计数块的大小等于明文块的大小。</p>
 <p><img src="/images/202211/CTR.jpg" alt="CTR"></p>
 <p>CTR模式可以并行地计算多个块，因为输入跟前面的明文没有什么关系。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>加密模式还有一种xts，具体带学习后再小结。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>加密模式还有一种xts，具体带学习后再小结。模式比较多，又很相似，刚开始看很容易混淆，后面慢慢地熟悉了就好了吧。</p>
 <h1 id="更多1"><a href="#更多1" class="headerlink" title="更多1"></a>更多1</h1><p>今年小组扩张的比较猛，从年初的5人扩充到了14人。人多了，就有很多人比较闲。后面招的基本都是应届生或者工作三年以下的，应届生就不用说了，基本等于白纸。工作几年的那几个呢，我感觉都不是技术爱好者，仅仅是工作糊口而已。</p>
 <p>人多了，问题也就多了。当然，这些问题主要还是因为大家没有很强的责任心导致的。联调一个功能，遇到问题了，不去积极解决问题，而是在互相推诿。A和B联调，A遇到问题了，首先自身没有深入定位，直接就去找B了。而B呢，直接说代码不是他写的，他没有改过，让找C。C又是说代码已经移交个B，又让找B。真的好扯，都是一个组的，代码就在那，都不愿意自己gdb去看看，总想着推脱责任，好无语。</p>
 <p>另外，很多工作并没有比较明确的时间点，有些也没有明确的目标，大家都在磨洋工啊。技术不好的也不想着提升技术，团队就是个散沙，然后有事情了又是拉几个老员工顶上去。呵呵。</p>
@@ -315,7 +315,10 @@
     <a href="/2022/11/08/userlib/" rel="prev" title="周谈（40）-用户态库">
       <i class="fa fa-chevron-left"></i> 周谈（40）-用户态库
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/12/01/aes-xts-weekly/" rel="next" title="周谈（42）- XTS算法模式">
+      周谈（42）- XTS算法模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -391,7 +394,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">154</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
