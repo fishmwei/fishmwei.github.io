@@ -174,34 +174,6 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS知识点(1) - NSCache</title>
-    <url>/2019/06/19/NSCache-iOS/</url>
-    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
-<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage&#x2F;RCTImageCache.m中_decodedImageCache的使用。</p>
-<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
-<span id="more"></span>
-
-<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
-<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
-<p>NSCache主要有几个属性 及 方法</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
-<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&#x27;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>React-Native</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>iOS知识点(2) - iOS横竖屏旋转</title>
     <url>/2019/08/08/autorotateiOS/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近，业务方提了一个需求，希望RN页面支持横竖屏。就去研究了一下， 顺便聊聊遇到的一些问题。</p>
@@ -236,6 +208,34 @@
       </tags>
   </entry>
   <entry>
+    <title>iOS知识点(1) - NSCache</title>
+    <url>/2019/06/19/NSCache-iOS/</url>
+    <content><![CDATA[<p>最近在详细阅读React-Native源码，准备出一系列React-Native源码的解析及实现原理的连载文章，后续一一发布。 同时对遇到的iOS知识点进行梳理。基于React-Native 0.59.9版本的代码讲解。</p>
+<p>本文讲的是NSCache，在RCTImage库中使用到的， 具体可以看 RCTImage&#x2F;RCTImageCache.m中_decodedImageCache的使用。</p>
+<p>RCTImage把获取到的图片缓存到RCTImageCache中，具体保存在_decodedImageCache。对于没有loaderHandler处理的url的图片， 会先从cache中查找，否则就从网络下载。</p>
+<span id="more"></span>
+
+<p>NSCache是一个用于临时存储键数据的可变集合，当内存紧张时可以自动释放对象，避免高内存。NSCache是线程安全的，可以从任何线程添加、删除、查询对象。<br>NSCache不会拷贝key，不同于NSdictionary。</p>
+<p>包含可以释放的内容的对象可以实现NSDiscardableContent协议，来优化缓存管理。默认实现了该协议的对象，在内容被删除时会自动移除。移除之前，会调用discardContentIfPossible方法。</p>
+<p>NSCache主要有几个属性 及 方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@property NSUInteger totalCostLimit; // 最大缓存空间， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property NSUInteger countLimit; // 缓存对象的个数限制， 为0则不限制</span><br><span class="line"></span><br><span class="line">@property BOOL evictsObjectsWithDiscardedContent; // 是否主动移除内容过期的对象，默认YES， 配合 NSDiscardableContent协议使用</span><br><span class="line"></span><br><span class="line">- (nullable ObjectType)objectForKey:(KeyType)key;  // 获取key的缓存</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key; // 0 cost 添加缓存对象， 占用空间0</span><br><span class="line">- (void)setObject:(ObjectType)obj forKey:(KeyType)key cost:(NSUInteger)g; // 添加缓存对象， 占用空间g</span><br><span class="line"></span><br><span class="line">- (void)removeObjectForKey:(KeyType)key;  // 手动移除缓存</span><br><span class="line"></span><br><span class="line">- (void)removeAllObjects; // 移除所有缓存对象</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>NSCache 通过设置totalCostLimit的值限制最大的缓存空间， 在添加缓存对象时会指定缓存对象的占用空间， 为0则不限制，默认为0。如果总的占用空间超过totalCostLimit。 NSCache会自动释放一些对象直到空间小于totalCostLimit。哪个对象会被释放是不确定的、释放时机也是不确定的，依赖NSCache的实现。</p>
+<p>同样的 countLimit是对缓存的对象个数进行限制， 为0则不限制，默认为0. 当对象个数超过countLImit时，某些对象就会被释放掉。释放的时机和具体的对象也是不确定的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-(void)downloadDataForURL:(NSURL *)url&#123;</span><br><span class="line">    NSPurgeableData *cachedData = [_cache objectForKey:url];  // 实现NSDiscardableContent协议的对象</span><br><span class="line">    if(cachedData)&#123;</span><br><span class="line">        //Stop the data being purged</span><br><span class="line">        [cachedData beginContentAccess];</span><br><span class="line">        </span><br><span class="line">        //Use the cached data</span><br><span class="line">        [self useData:cachedData];</span><br><span class="line">        </span><br><span class="line">        //Mark that the data may be purged again</span><br><span class="line">        [cachedData endContentAccess];</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        //Cache miss</span><br><span class="line">        EOCNetworkFetcher *fetcher = [[EOCNetworkFetcher alloc]initWithURL:url];</span><br><span class="line">        [fetcher startWithCompletionHandler:^(NSData *data) &#123;</span><br><span class="line">            NSPurgeableData *purgeableData = [NSPurgeableData dataWithData:data];</span><br><span class="line">            [_cache setObject:purgeableData forKey:url cost:data.length];</span><br><span class="line">            </span><br><span class="line">            //Don&#x27;t need to beginContentAccess as it begins</span><br><span class="line">            //with access already marked</span><br><span class="line">            </span><br><span class="line">            //Use the retrieved data</span><br><span class="line">            [self useData:data];</span><br><span class="line">            </span><br><span class="line">            //Mark that the data may be purged now</span><br><span class="line">            [purgeableData endContentAccess];</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在RCTImage中设置缓存最大限制大小为20MB， 还根据NSURLResponse的缓存字段对缓存进行控制， 在获取缓存时，如果过期则主动删除缓存</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">_decodedImageCache.totalCostLimit = 20 * 1024 * 1024; // 20 MB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (UIImage *)imageForUrl:(NSString *)url</span><br><span class="line">                    size:(CGSize)size</span><br><span class="line">                   scale:(CGFloat)scale</span><br><span class="line">              resizeMode:(RCTResizeMode)resizeMode</span><br><span class="line">&#123;</span><br><span class="line">  NSString *cacheKey = RCTCacheKeyForImage(url, size, scale, resizeMode);</span><br><span class="line">  @synchronized(_cacheStaleTimes) &#123;</span><br><span class="line">    id staleTime = _cacheStaleTimes[cacheKey];</span><br><span class="line">    if (staleTime) &#123;</span><br><span class="line">      if ([[NSDate new] compare:(NSDate *)staleTime] == NSOrderedDescending) &#123;</span><br><span class="line">        // cached image has expired, clear it out to make room for others</span><br><span class="line">        [_cacheStaleTimes removeObjectForKey:cacheKey];</span><br><span class="line">        [_decodedImageCache removeObjectForKey:cacheKey];</span><br><span class="line">        return nil;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return [_decodedImageCache objectForKey:cacheKey];</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>React-Native</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>iOS知识点(3) - NSCopying/NSMutableCopying</title>
     <url>/2019/08/18/OCCopy-iOS/</url>
     <content><![CDATA[<p>有时候我们需要对某些对象作快照，需要复制对象当前的状态。OC中提供了copy&#x2F;mutableCopy的方法。系统提供的集合类，比人NSArray、NSSet、NSDictionary都提供了对于的方法。 对于我们自定义的对象，则可以通过实现NSCopying&#x2F;NSMutableCopying协议来实现对应的功能。</p>
@@ -259,60 +259,6 @@
 ]]></content>
       <tags>
         <tag>iOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>YTKKeyValueStore开源库使用</title>
-    <url>/2019/08/30/kvStore-iOS/</url>
-    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
-<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
-<span id="more"></span>
-
-<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
-<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
-<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
-<p>实现逻辑比较简单， 支持如下功能</p>
-<ul>
-<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
-<li>创建指定名称的表操作</li>
-<li>清空表操作</li>
-<li>关闭数据库</li>
-<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
-<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>插入对象， 存储对象的json字符串</li>
-<li>获取对象， 获取都json字符串，转为对象</li>
-<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
-<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
-<li>删除指定表名、指定id的条目</li>
-<li>删除指定表名、指定id数组的多个条目</li>
-<li>删除指定表明、指定前缀的id条目</li>
-<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
-</ul>
-<p>缺点： </p>
-<ul>
-<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。</li>
-</ul>
-<p>我新增了这个功能:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
-</ul>
-<p>番外知识点：</p>
-<ul>
-<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
-<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
-<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
-<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
-</ul>
-<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
-<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList">https://github.com/fishmwei/iOSLearnList</a></p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-]]></content>
-      <tags>
-        <tag>iOS</tag>
-        <tag>开源代码</tag>
       </tags>
   </entry>
   <entry>
@@ -394,6 +340,60 @@
       </tags>
   </entry>
   <entry>
+    <title>YTKKeyValueStore开源库使用</title>
+    <url>/2019/08/30/kvStore-iOS/</url>
+    <content><![CDATA[<p><code>YTKKeyValueStore</code>是一个轻量级的sqlite数据库开源库，基于FMDB封装的一个key、value的数据库, 由猿题库团队开源。适用于数据量不大的情况，进行简单的数据存储。比如配置信息，或者用户信息等。 </p>
+<p>在工作中，我用它来存储版本及组件的信息， 通过查询数据，确认ipa是否升级以及确定组件是否需要更新(RN热更新)等策略。</p>
+<span id="more"></span>
+
+<p>代码非常简单， 只有一个类 <code>YTKKeyValueStore</code></p>
+<p>数据表结构也很简单， 所有的表只有三个字段 id、json、createdTime</p>
+<p>id用来索引一个数据项<br>json用来保存数据对象的json字符串<br>createdTime是条目插入或者更新的时间轴</p>
+<p>实现逻辑比较简单， 支持如下功能</p>
+<ul>
+<li>创建数据库， 可以只指定数据库文件名， 也可以指定数据库文件的路径</li>
+<li>创建指定名称的表操作</li>
+<li>清空表操作</li>
+<li>关闭数据库</li>
+<li>插入字符串， 其实是把字符串转为数组，然后存储数组的json字符串</li>
+<li>获取字符串， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>插入对象， 存储对象的json字符串</li>
+<li>获取对象， 获取都json字符串，转为对象</li>
+<li>插入数字， 把数字封装成数组，然后存储数组的json字符串</li>
+<li>获取数字， 获取到json字符串，转为数组，返回数组第一个元素</li>
+<li>删除指定表名、指定id的条目</li>
+<li>删除指定表名、指定id数组的多个条目</li>
+<li>删除指定表明、指定前缀的id条目</li>
+<li>获取一个表的所有条目， 返回数组的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+<li>获取一个表指定id的条目， 返回的元素是内部的结构 <code>YTKKeyValueItem</code>， 然后获取<code>itemObject</code>对象， 即存入时的对象</li>
+</ul>
+<p>缺点： </p>
+<ul>
+<li>没有支持删除整个表的功能。 比如我们创建了一些临时的表， 无法删除， 那么就会有一些脏数据表在数据库中。</li>
+</ul>
+<p>我新增了这个功能:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">static NSString *const DROP_TABLE_SQL = @&quot;drop table %@&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (void)dropTable:(NSString *)tableName &#123;</span><br><span class="line">    if ([YTKKeyValueStore checkTableName:tableName] == NO) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    NSString * sql = [NSString stringWithFormat:DROP_TABLE_SQL, tableName];</span><br><span class="line">    __block BOOL result;</span><br><span class="line">    [_dbQueue inDatabase:^(FMDatabase *db) &#123;</span><br><span class="line">        result = [db executeUpdate:sql];</span><br><span class="line">    &#125;];</span><br><span class="line">    if (!result) &#123;</span><br><span class="line">        debugLog(@&quot;ERROR, failed to drop table: %@&quot;, tableName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>表名，貌似不支持以数字开头 写代码的时候， 默认在前面添加table前缀</li>
+</ul>
+<p>番外知识点：</p>
+<ul>
+<li>打开sqlite数据库， 命令<code>sqlite3 ytkstore.db</code></li>
+<li>查看数据库内所有表， SQL命令<code>select name from sqlite_master where type = &#39;table&#39;</code></li>
+<li>查看表数据 , SQL命令 <code>select * from tablename</code></li>
+<li>如何分页查询数据  SQL命令 <code>select * from tables order by id limit 5 offset 5;</code> 可以自己实现这个功能。</li>
+</ul>
+<p>sqltie数据库，默认会创建一个sqlite_master的表， 存储数据库的信息。 我们从中可以找到已经存在的表名。</p>
+<p>具体实现代码 请参考github库   <a href="https://github.com/fishmwei/iOSLearnList">https://github.com/fishmwei/iOSLearnList</a></p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+]]></content>
+      <tags>
+        <tag>iOS</tag>
+        <tag>开源代码</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>一次单例模式的代码重构</title>
     <url>/2019/09/30/sharedInstance-JOB/</url>
     <content><![CDATA[<p><strong>不要滥用设计模式</strong></p>
@@ -471,6 +471,27 @@
       </tags>
   </entry>
   <entry>
+    <title>2020书单</title>
+    <url>/2020/01/01/2020books/</url>
+    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间&#x2F;知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
+<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
+<li>[x]《数学之美》 实体书 </li>
+<li><input checked="" disabled="" type="checkbox"> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
+<li><input checked="" disabled="" type="checkbox"> 《程序员的自我修养》 实体书 2020.06 </li>
+<li><input disabled="" type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
+<li><input checked="" disabled="" type="checkbox"> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
+<li><input disabled="" type="checkbox"> 巨人三传 &#x2F;&#x2F; 贝多芬传、米开朗基罗传、托尔斯泰传</li>
+</ul>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>书单</category>
+      </categories>
+  </entry>
+  <entry>
     <title>CoreDump的使用</title>
     <url>/2019/12/24/CoreDump-JOB/</url>
     <content><![CDATA[<p>在linux下开发的工程师们对CoreDump肯定都不陌生，但凡有些许经验的工程师都或多或少使用过CoreDump文件定位过崩溃问题。之前工作中，在Android系统下开发C++程序时， 经常用到CoreDump。 中间转行去搞iOS已经五年了， 最近换了新工作，遇到程序宕掉同事让我看一下coredump文件，一时还没有反应过来， 今天好好复习一下。</p>
@@ -503,27 +524,6 @@
       <tags>
         <tag>linux</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>2020书单</title>
-    <url>/2020/01/01/2020books/</url>
-    <content><![CDATA[<h1 id="2020书单"><a href="#2020书单" class="headerlink" title="2020书单"></a>2020书单</h1><p>人不读书要落后，每年都需要读一些书来支持自我提升。电子书也好、实体书也好、亦或者是极客时间&#x2F;知乎上的专栏都可以纳入，看完之后，对应写一篇读后感总结之类的文章。书籍可以是新书，也可以是读过的书，不论是增长见识、还是温故而知新都是不错的体验。主要是要保证自己坚持写博客。</p>
-<h2 id="书单列表"><a href="#书单列表" class="headerlink" title="书单列表"></a>书单列表</h2><ul>
-<li>[x]《数学之美》 实体书 </li>
-<li><input checked="" disabled="" type="checkbox"> 《C程序设计语言》 实体书 2020.05-06 <a href="/2020/06/22/reflection4c/">读后感</a> </li>
-<li><input checked="" disabled="" type="checkbox"> 《程序员的自我修养》 实体书 2020.06 </li>
-<li><input disabled="" type="checkbox"> 《Linux命令行与shell脚本编程大全》实体书 </li>
-<li><input checked="" disabled="" type="checkbox"> 《明朝那些事儿》 微信读书电子书 2020.04.19读完 </li>
-<li><input disabled="" type="checkbox"> 巨人三传 &#x2F;&#x2F; 贝多芬传、米开朗基罗传、托尔斯泰传</li>
-</ul>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>书单</category>
-      </categories>
   </entry>
   <entry>
     <title>一次被坑的惨痛经历</title>
@@ -563,21 +563,6 @@
       <tags>
         <tag>开发经验</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>二进制包大小优化思路</title>
-    <url>/2020/06/09/tiny-program/</url>
-    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
-<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
-<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
   </entry>
   <entry>
     <title>todo</title>
@@ -655,6 +640,21 @@
       <tags>
         <tag>杂谈</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>二进制包大小优化思路</title>
+    <url>/2020/06/09/tiny-program/</url>
+    <content><![CDATA[<p>对于嵌入式开发这种对空间要求比较苛刻的环境，对程序包的大小还是比较敏感的。一来， 可以节省空间。二来，在一定程度上可以减少页错误导致的载入载出，提升程序的性能。第三，对一些低速网络(比如：zigbee)连接的设备，提升OTA升级的效率。</p>
+<p>可执行文件都是elf格式的， 文件都是由各个段组成的，对文件大小的优化就可以归结为各个段的优化。<br>第一，可以去掉执行时不需要的段，比如：release版本不需要调试信息、符号表等， 可以直接strip掉。 第二，还可以缩小一些段的内容，比如代码段。通过优化合并代码，减少重复代码。数据段，对于一些全局变量，定义的时候可以不进行初始化，在程序启动的时候初始化，使得这些全局变量放到bss段，不占用程序大小。只读的数据段，主要是一些字符串、const等不可变量。在发布的时候，通过宏控制删除大部分无用的调试信息，仅保留必要的错误日志的信息输出，这样可以减少只读数据段的大小。这个是单个文件的优化思路。</p>
+<p>对于同时运行不同程序的平台，可以使用动态库，共享基础库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
   </entry>
   <entry>
     <title>C程序的命令行参数处理函数getopt</title>
@@ -964,6 +964,34 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感(4)-可执行文件加载</title>
+    <url>/2020/07/17/reflection4self-4/</url>
+    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
+<span id="more"></span>
+
+<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
+<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
+<p><img src="/images/202007/vmaload.jpeg"></p>
+<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
+<li>读取文件的前面128字节， 判断文件类型</li>
+<li>查找不同文件的handler函数</li>
+<li>根据程序表头，对文件进行映射</li>
+<li>初始化进程环境， 修改入口地址</li>
+<li>开始执行</li>
+</ol>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>gdbserver</title>
     <url>/2020/07/16/gdbserver/</url>
     <content><![CDATA[<p>gdbserver是用于远程gdb的工具， 可以实现远程调试代码。很多嵌入式平台没有安装gdb，可以通过gdbserver启动，然后在网络可达的另一台主机起一个gdb进行远程代码调试。gdbserver占用空间比较小， 很适合在嵌入式系统里使用。</p>
@@ -984,34 +1012,6 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/bin/arm-linux-gdb ./exec_file</span><br><span class="line">target remote 192.168.183.127:1234</span><br></pre></td></tr></table></figure>
 
 <p>好了， 后面就是gdb调试了</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感(4)-可执行文件加载</title>
-    <url>/2020/07/17/reflection4self-4/</url>
-    <content><![CDATA[<h1 id="可执行文件的装载与运行"><a href="#可执行文件的装载与运行" class="headerlink" title="可执行文件的装载与运行"></a>可执行文件的装载与运行</h1><h2 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h2><p>程序通过编译链接之后，各个变量及函数的虚拟地址就已经确定了。每个程序都拥有独立的内存空间，程序运行时使用的是虚拟地址，操作系统通过内存映射的方式，把虚拟地址映射到物理地址，程序只需要通过虚拟地址操作即可，不需要关心实际的物理内存地址。程序可访问的虚拟地址的大小与系统的总线位宽相关， 32位系统允许访问4GB的地址。操作系统通过页映射的方式，加载程序的数据和指令到内存，没有被使用的数据和指令就被替换到磁盘中。</p>
-<span id="more"></span>
-
-<h2 id="文件的装载"><a href="#文件的装载" class="headerlink" title="文件的装载"></a>文件的装载</h2><p>进程创建时，操作系统首先创建一个独立的虚拟地址空间，并建立一个页目录结构，用于后面保存页与物理地址的映射关系。然后读取可执行文件的文件头，建立虚拟地址空间与执行文件的映射关系。<br>然后cpu指令寄存器设置为可执行文件的入口地址，启动运行。 CPU在运行的过程中，去访问对应的虚拟地址，会发现对应的页内容是空的，即发生了页错误，转而由系统分配物理内容，然后建立映射关系，加载数据与指令，再由程序继续运行。</p>
-<p>可执行文件  – 虚拟地址空间 – 物理内存空间</p>
-<p><img src="/images/202007/vmaload.jpeg"></p>
-<h2 id="虚拟地址空间的分配"><a href="#虚拟地址空间的分配" class="headerlink" title="虚拟地址空间的分配"></a>虚拟地址空间的分配</h2><p>由于页映射加载需要保证按页面大小对齐加载，那么每个段需要以页大小的倍数进行装载，不足一页也要占用一个页的大小，浪费了空间。系统通过合并多个相同属性的段进行加载。合并后的段，称为segment。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">readelf -l exec_file // 可以显示具体的地址及段</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看实际执行的内存分布情况</span><br><span class="line">cat /proc/&#123;pid&#125;/maps</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="Linux加载elf的简要步骤"><a href="#Linux加载elf的简要步骤" class="headerlink" title="Linux加载elf的简要步骤"></a>Linux加载elf的简要步骤</h2><ol>
-<li>读取文件的前面128字节， 判断文件类型</li>
-<li>查找不同文件的handler函数</li>
-<li>根据程序表头，对文件进行映射</li>
-<li>初始化进程环境， 修改入口地址</li>
-<li>开始执行</li>
-</ol>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1085,6 +1085,36 @@
       </categories>
   </entry>
   <entry>
+    <title>程序员自我修养读后感(7)-程序的内存布局</title>
+    <url>/2020/07/27/reflection4self-7/</url>
+    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
+<span id="more"></span>
+
+<ul>
+<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
+<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
+<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
+<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
+</ul>
+<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
+ <img src="/images/202007/memstruct.jpeg" width = "300" height = "600" alt="图片名称" align=center />
+
+
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
+<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
+<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
+<p>内存分配算法：空闲链表法、位图法。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>程序员自我修养读后感(8)-运行时库</title>
     <url>/2020/07/29/reflection4self-8/</url>
     <content><![CDATA[<h1 id="运行库"><a href="#运行库" class="headerlink" title="运行库"></a>运行库</h1><p>每种语言的程序运行都需要其运行库的支持， java需要java虚拟机、JavaScript需要js引擎， C语言也需要glibc(Linux上)的支持。所谓运行库，就类似于语言的框架，编写语言时，需要根据框架的定义进行编程。比如，我们约定程序都是从main函数开始执行，用户就必须编写main函数，运行库在准备好运行环境之后，再调用main函数开始运行。</p>
@@ -1107,36 +1137,6 @@
 <h1 id="系统调用"><a href="#系统调用" class="headerlink" title="系统调用"></a>系统调用</h1><p>所谓系统调用，就是用户程序为了访问系统资源而调用的系统提供的API接口。系统调用会对系统资源进行保护和调度，对用户程序屏蔽了具体的细节。很多资源用户程序本身是没有权限、或者没有途径直接进行访问，需要通过系统调用来实现。系统调用提供文件的读写、网络通信、终端输出、进程的创建与退出等功能。</p>
 <p>系统调用的接口比较原始，直接使用系统调用可能需要相关的知识。 运行库作为用户程序与系统调用的中间层，屏蔽了一些细节，对不同平台的系统调用进行了整合。</p>
 <p>现代CPU存在特权级， 分为用户模式和内核模式。用户程序处于用户态， 系统调用处于内核态。用户态代码对访问设备、开关终端等操作是受限的。系统通过中断切换运行的模式。当CPU接收到中断的时候，会暂停当前的处理流程，然后 根据中断向量表找到对应的中断处理程序进行处理，处理结束后再继续处理之前的流程。由于中断号是有限的， 因此，一般多个系统调用共用一个中断号，然后根据系统调用号来区分不同的系统调用。linux的系统调用中断一般是0x80, 然后通过eax寄存器存储系统调用号。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>程序员自我修养读后感(7)-程序的内存布局</title>
-    <url>/2020/07/27/reflection4self-7/</url>
-    <content><![CDATA[<h1 id="程序的内存布局"><a href="#程序的内存布局" class="headerlink" title="程序的内存布局"></a>程序的内存布局</h1><p>一个程序运行时的进程,都会被分配一块虚拟内存空间，虚拟内存空间再映射到内存中。程序可访问的虚拟内存空间的大小由CPU的位数决定，针对32位的系统最大可访问空间为4GB。 内存空间包含几个部分： 栈、堆、可执行文件映像、保留区。当然4GB不是全部分配给程序使用的，linux一般会把高1GB地址分配给系统内核，低3GB为用户进程空间。</p>
-<span id="more"></span>
-
-<ul>
-<li>栈：用户进程空间的最高位， 用于维护函数调用的上下文，一般只有几MB大小， 从高往低增长</li>
-<li>堆：用于存储应用程序动态分配的内存， 一般有几百MB大小， 从低往高分配</li>
-<li>可执行文件映像： 用于加载可执行文件映射，可执行文件各个段就在这里， 包含代码段、全局变量等</li>
-<li>保留区：一般是为了保护内存禁止访问的区域，比如很低的地址</li>
-</ul>
-<p>用户空间除了堆和栈，还存在一个动态链接库的映射区域。</p>
- <img src="/images/202007/memstruct.jpeg" width = "300" height = "600" alt="图片名称" align=center />
-
-
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>栈用来保存函数运行期间使用的一些寄存器、变量和地址。维护函数调用顺序</p>
-<p>栈的调用惯例，指的是约定的参数传递顺序、栈的维护方式、函数修饰、函数返回值的回传方式约定。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆用于程序中动态分配地址，栈在函数运行完毕后，地址会被释放，而全局变量不好动态的分配地址，所以有了堆。堆可以分配的地址为用户空间中剩余的大小。32位的话，一般不超过2.9GB吧， 可以自行计算一下， 堆需要连续的地址。</p>
-<p>linux使用2种系统调用分配堆空间， brk、mmap。 brk的作用就是设置数据段终止地址。mmap申请一块虚拟地址，并且映射到文件。使用mmap的方式申请地址， 可申请大小还受到系统剩余可使用内存大小和剩余磁盘交换空间的大小限制。</p>
-<p>内存分配算法：空闲链表法、位图法。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -1527,6 +1527,39 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(六)-内核启动</title>
+    <url>/2020/12/09/linux6/</url>
+    <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init&#x2F;main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
+<span id="more"></span>
+
+<img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
+<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
+<img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+
+<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
+<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
+<p>系统调用资源需要保存，调用之后再恢复。</p>
+<img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
+<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
+<img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom" />
+
+
+
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(五)-BIOS启动</title>
     <url>/2020/12/08/linux5/</url>
     <content><![CDATA[<h2 id="BIOS到bootloader"><a href="#BIOS到bootloader" class="headerlink" title="BIOS到bootloader"></a>BIOS到bootloader</h2><h3 id="BIOS"><a href="#BIOS" class="headerlink" title="BIOS"></a>BIOS</h3><p>在主板的ROM上保存有BIOS程序，计算机启动首先读取BIOS（Basic Input and Output System，基本输入输出系统）程序进行运行。此时，计算机运行在实模式下，只能访问1MB的空间。这个1MB的空间也有一个标准的约定。</p>
@@ -1551,39 +1584,6 @@
 <p>切换到保护模式后，访问的地址空间就大了。继续运行grub启动程序，选择启动的操作系统。装载启动的内核文件，启动内核。</p>
 <img src="/images/202012/linux_startup.jpeg" alt="图片替换文本" width="600" height="913" align="bottom" />
 
-
-
-
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(六)-内核启动</title>
-    <url>/2020/12/09/linux6/</url>
-    <content><![CDATA[<h2 id="内核的启动代码流程"><a href="#内核的启动代码流程" class="headerlink" title="内核的启动代码流程"></a>内核的启动代码流程</h2><p>内核启动代码位于 init&#x2F;main.c中的start_kernel函数。start_kernel函数初始化内核的多个模块。</p>
-<span id="more"></span>
-
-<img src="/images/202012/linux_kernel.png" alt="图片替换文本" width="600" height="313" align="bottom" />
-
-<p>这里还创建了0号、1号、2号进程。0号进程是第一个进程，唯一一个没有通过 fork 或者 kernel_thread 产生的进程，是进程列表的第一个。1号进程是第一个用户进程，也是所有用户态进程的祖先。</p>
-<p>进程之间需要隔离资源，因此系统有了权限分层的机制。</p>
-<img src="/images/202012/linux_layer.jpg" alt="图片替换文本" width="600" height="313" align="bottom" />
-
-
-<p>当一个用户态的程序运行到一半，要访问一个核心资源，例如访问网卡发一个网络包，就需要暂停当前的运行，调用系统调用，接下来就轮到内核中的代码运行了。</p>
-<p>首先，内核将从系统调用传过来的包，在网卡上排队，轮到的时候就发送。发送完了，系统调用就结束了，返回用户态，让暂停运行的程序接着运行。</p>
-<p>系统调用资源需要保存，调用之后再恢复。</p>
-<img src="/images/202012/linux_save.jpeg" alt="图片替换文本" width="600" height="313" align="bottom" />
-
-<p>创建1号进程的时候，需要访问1号进程的程序，这个程序是保存在ramdisk系统中的， ramdisk系统是一个内存文件系统， 因为我们访问设备的时候需要驱动，不同的设备驱动又不一样，不可能在内核里面内置所有的驱动，因此我们默认加载了ramdisk文件系统， 1号进程的文件 init就放在ramdisk中，从而可以快速的读取执行并运行init。1号进程是所有用户态进程的祖先。</p>
-<p>同理，2号进程 kthreadd，是所有内核态进程的祖先。</p>
-<img src="/images/202012/linux_init.jpeg" alt="图片替换文本" width="600" height="313" align="bottom" />
 
 
 
@@ -2098,70 +2098,6 @@
       </categories>
   </entry>
   <entry>
-    <title>《趣谈linux操作系统》小结(十七) - 虚拟内存管理</title>
-    <url>/2021/01/16/linux17-mm/</url>
-    <content><![CDATA[<h1 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h1><p>整个虚拟内存空间要一分为二，一部分是用户态地址空间，一部分是内核态地址空间，那这两部分的分界线在哪里呢？这就要 task_size 来定义。</p>
-<span id="more"></span>
-
-<img src="/images/202101/mm1.jpg" alt="图片替换文本" width="600" height="413" align="bottom" />
-
-<p>在内核任务结构 struct task_struct里面有一个成员保存内存管理信息的</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">struct mm_struct    *mm;</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="用户态布局"><a href="#用户态布局" class="headerlink" title="用户态布局"></a>用户态布局</h2><p>用户态虚拟空间里面有几类数据，例如代码、全局变量、堆、栈、内存映射区等。在 struct mm_struct 里面，有下面这些变量定义了这些区域的统计信息和位置。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> mmap_base;  <span class="comment">/* base of mmap area */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> total_vm;    <span class="comment">/* Total pages mapped */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> locked_vm;  <span class="comment">/* Pages that have PG_mlocked set */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> pinned_vm;  <span class="comment">/* Refcount permanently increased */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> data_vm;    <span class="comment">/* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> exec_vm;    <span class="comment">/* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> stack_vm;    <span class="comment">/* VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> start_code, end_code, start_data, end_data;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> start_brk, brk, start_stack;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> arg_start, arg_end, env_start, env_end;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>total_vm 是总共映射的页的数目。我们知道，这么大的虚拟地址空间，不可能都有真实内存对应，所以这里是映射的数目。当内存吃紧的时候，有些页可以换出到硬盘上，有的页因为比较重要，不能换出。locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</p>
-<p>data_vm 是存放数据的页的数目，exec_vm 是存放可执行文件的页的数目，stack_vm 是栈所占的页的数目。</p>
-<p>start_code 和 end_code 表示可执行代码的开始和结束位置，start_data 和 end_data 表示已初始化数据的开始位置和结束位置。</p>
-<p>start_brk 是堆的起始位置，brk 是堆当前的结束位置。</p>
-<p>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</p>
-<p>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</p>
-<p>mmap_base 表示虚拟地址空间中用于内存映射的起始地址。</p>
-<img src="/images/202101/mm_usr.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
-
-<p>除了位置信息之外，struct mm_struct 里面还专门有一个结构 vm_area_struct，来描述这些区域的属性。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/* The first cache line has the info for VMA tree walking. */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> vm_start;    <span class="comment">/* Our start address within vm_mm. */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> vm_end;    <span class="comment">/* The first byte after our end address within vm_mm. */</span></span><br><span class="line">  <span class="comment">/* linked list of VM areas per task, sorted by address */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">vm_next</span>, *<span class="title">vm_prev</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span> <span class="title">vm_rb</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">vm_mm</span>;</span>  <span class="comment">/* The address space we belong to. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">anon_vma_chain</span>;</span> <span class="comment">/* Serialized by mmap_sem &amp;</span></span><br><span class="line"><span class="comment">            * page_table_lock */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">anon_vma</span> *<span class="title">anon_vma</span>;</span>  <span class="comment">/* Serialized by page_table_lock */</span></span><br><span class="line">  <span class="comment">/* Function pointers to deal with this struct. */</span></span><br><span class="line">  <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">vm_operations_struct</span> *<span class="title">vm_ops</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> * <span class="title">vm_file</span>;</span>    <span class="comment">/* File we map to (can be NULL). */</span></span><br><span class="line">  <span class="type">void</span> * vm_private_data;    <span class="comment">/* was vm_pte (shared mem) */</span></span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
-
-<p>vm_start 和 vm_end 指定了该区域在用户空间中的起始和结束地址。vm_next 和 vm_prev 将这个区域串在链表上。vm_rb 将这个区域放在红黑树上。vm_ops 里面是对这个内存区域可以做的操作的定义。</p>
-<p>虚拟内存区域可以映射到物理内存，也可以映射到文件，映射到物理内存的时候称为匿名映射，anon_vma 中，anoy 就是 anonymous，匿名的意思，映射到文件就需要有 vm_file 指定被映射的文件。</p>
-<p>内存的映射建立是由函数load_elf_binary来完成的。</p>
-<img src="/images/202101/mm_map.jpeg" alt="图片替换文本" width="600" height="713" align="bottom" />
-
-<p>执行 brk 处理内存申请的操作，实现的入口是 sys_brk 函数。sys_brk 函数的参数 brk 是新的堆顶位置，而当前的 mm-&gt;brk 是原来堆顶的位置。</p>
-<p>将原来的堆顶和现在的堆顶，都按照页对齐地址，然后比较大小。如果两者相同，说明这次增加的堆的量很小，还在一个页里面，不需要另行分配页，直接跳到 set_brk 那里，设置 mm-&gt;brk 为新的 brk 就可以了。如果发现新旧堆顶不在一个页里面，麻烦了，这下要跨页了。</p>
-<p>如果发现新堆顶小于旧堆顶，这说明不是新分配内存了，而是释放内存了，释放的还不小，至少释放了一页，于是调用 do_munmap 将这一页的内存映射去掉。</p>
-<p>如果堆将要扩大，就要调用 find_vma。如果打开这个函数，看到的是对红黑树的查找，找到的是原堆顶所在的 vm_area_struct 的下一个 vm_area_struct，看当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页。如果不能，没办法只好直接退出返回，内存空间都被占满了。如果还有空间，就调用 do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</p>
-<p>在 do_brk 中，调用 find_vma_links 找到将来的 vm_area_struct 节点在红黑树的位置，找到它的父节点、前序节点。接下来调用 vma_merge，看这个新节点是否能够和现有树中的节点合并。如果地址是连着的，能够合并，则不用创建新的 vm_area_struct 了，直接跳到 out，更新统计值即可；如果不能合并，则创建新的 vm_area_struct，既加到 anon_vma_chain 链表中，也加到红黑树中。</p>
-<h2 id="内核态布局"><a href="#内核态布局" class="headerlink" title="内核态布局"></a>内核态布局</h2><p>内核态的虚拟空间和某一个进程没有关系，所有进程通过系统调用进入到内核之后，看到的虚拟地址空间都是一样的。内核态空间只有一份，共享的。</p>
-<img src="/images/202101/mm_kernel.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
-
-
-<p>32 位的内核态虚拟地址空间一共就 1G，占绝大部分的前 896M，我们称为直接映射区。所谓的直接映射区，就是这一块空间是连续的，和物理内存是非常简单的映射关系，其实就是虚拟内存地址减去 3G，就得到物理内存的位置。</p>
-<p>这 896M 还需要仔细分解。在系统启动的时候，物理内存的前 1M 已经被占用了，从 1M 开始加载内核代码段，然后就是内核的全局变量、BSS 等，也是 ELF 里面涵盖的。这样内核的代码段，全局变量，BSS 也就会被映射到 3G 后的虚拟地址空间里面。具体的物理内存布局可以查看 &#x2F;proc&#x2F;iomem。</p>
-<p>创建进程的系统调用会创建一个task_struct的实例， 这个实例就是保存在内核的直接映射区域内 即896MB的内存中。</p>
-<p>内核态地址：</p>
-<p>在 896M 到 VMALLOC_START 之间有 8M 的空间。VMALLOC_START 到 VMALLOC_END 之间称为内核动态映射空间，也即内核想像用户态进程一样 malloc 申请内存，在内核里面可以使用 vmalloc。假设物理内存里面，896M 到 1.5G 之间已经被用户态进程占用了，并且映射关系放在了进程的页表中，内核 vmalloc 的时候，只能从分配物理内存 1.5G 开始，就需要使用这一段的虚拟地址进行映射，映射关系放在专门给内核自己用的页表里面。</p>
-<p>PKMAP_BASE 到 FIXADDR_START 的空间称为持久内核映射。使用 alloc_pages() 函数的时候，在物理内存的高端内存得到 struct page 结构，可以调用 kmap 将其映射到这个区域。</p>
-<p>FIXADDR_START 到 FIXADDR_TOP(0xFFFF F000) 的空间，称为固定映射区域，主要用于满足特殊需求。</p>
-<p>在最后一个区域可以通过 kmap_atomic 实现临时内核映射。如果要把文件内容写入物理内存，这件事情要内核来干了，这就只好通过 kmap_atomic 做一个临时映射，写入物理内存完毕后，再 kunmap_atomic 来解映射即可。</p>
-<p>64位系统的内核布局也是同样的道理，不过是大小不一样，设计的功能区不一样。</p>
-<img src="/images/202101/mm_kernel64.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
-
-
-
-<p>进程虚拟内存的布局和物理内存的布局， 分别通过查看proc&#x2F;$PID&#x2F;maps 和 &#x2F;proc&#x2F;iomem。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>《趣谈linux操作系统》小结(十八) -物理内存管理</title>
     <url>/2021/01/20/linux18-pmm/</url>
     <content><![CDATA[<h1 id="物理内存管理"><a href="#物理内存管理" class="headerlink" title="物理内存管理"></a>物理内存管理</h1><h2 id="物理内存的组织方式"><a href="#物理内存的组织方式" class="headerlink" title="物理内存的组织方式"></a>物理内存的组织方式</h2><p>把内存想象成它是由连续的一页一页的块组成的。我们可以从 0 开始对物理页编号，这样每个物理页都会有个页号。物理内存按固定的页大小划分为多个页，连续的内存分配给连续页号的页。对于任何一个地址，只要直接除一下每页的大小，很容易直接算出在哪一页。每个页有一个结构 struct page 表示，这个结构也是放在一个数组里面，这样根据页号，很容易通过下标找到相应的 struct page 结构。整个物理内存的布局就非常简单、易管理，这就是最经典的平坦内存模型（Flat Memory Model）。</p>
@@ -2228,6 +2164,70 @@
 <p>存储每个区域不同指数级空闲的内存。</p>
 <p>当向内核请求分配 (2^(i-1)，2^i]数目的页块时，按照 2^i 页块请求处理。如果对应的页块链表中没有空闲页块，那我们就在更大的页块链表中去找。当分配的页块中有多余的页时，伙伴系统会根据多余的页块大小插入到对应的空闲页块链表中。</p>
 <p>具体的分配算法可以看alloc_pages_current(mm&#x2F;mempolicy.c)函数， 其实没有什么高深的， 如我此等常人页看得明白。复杂的东西都是由简单的器件组合而成的。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>《趣谈linux操作系统》小结(十七) - 虚拟内存管理</title>
+    <url>/2021/01/16/linux17-mm/</url>
+    <content><![CDATA[<h1 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h1><p>整个虚拟内存空间要一分为二，一部分是用户态地址空间，一部分是内核态地址空间，那这两部分的分界线在哪里呢？这就要 task_size 来定义。</p>
+<span id="more"></span>
+
+<img src="/images/202101/mm1.jpg" alt="图片替换文本" width="600" height="413" align="bottom" />
+
+<p>在内核任务结构 struct task_struct里面有一个成员保存内存管理信息的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">struct mm_struct    *mm;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="用户态布局"><a href="#用户态布局" class="headerlink" title="用户态布局"></a>用户态布局</h2><p>用户态虚拟空间里面有几类数据，例如代码、全局变量、堆、栈、内存映射区等。在 struct mm_struct 里面，有下面这些变量定义了这些区域的统计信息和位置。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> mmap_base;  <span class="comment">/* base of mmap area */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> total_vm;    <span class="comment">/* Total pages mapped */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> locked_vm;  <span class="comment">/* Pages that have PG_mlocked set */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> pinned_vm;  <span class="comment">/* Refcount permanently increased */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> data_vm;    <span class="comment">/* VM_WRITE &amp; ~VM_SHARED &amp; ~VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> exec_vm;    <span class="comment">/* VM_EXEC &amp; ~VM_WRITE &amp; ~VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> stack_vm;    <span class="comment">/* VM_STACK */</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> start_code, end_code, start_data, end_data;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> start_brk, brk, start_stack;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> arg_start, arg_end, env_start, env_end;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>total_vm 是总共映射的页的数目。我们知道，这么大的虚拟地址空间，不可能都有真实内存对应，所以这里是映射的数目。当内存吃紧的时候，有些页可以换出到硬盘上，有的页因为比较重要，不能换出。locked_vm 就是被锁定不能换出，pinned_vm 是不能换出，也不能移动。</p>
+<p>data_vm 是存放数据的页的数目，exec_vm 是存放可执行文件的页的数目，stack_vm 是栈所占的页的数目。</p>
+<p>start_code 和 end_code 表示可执行代码的开始和结束位置，start_data 和 end_data 表示已初始化数据的开始位置和结束位置。</p>
+<p>start_brk 是堆的起始位置，brk 是堆当前的结束位置。</p>
+<p>start_stack 是栈的起始位置，栈的结束位置在寄存器的栈顶指针中。</p>
+<p>arg_start 和 arg_end 是参数列表的位置， env_start 和 env_end 是环境变量的位置。它们都位于栈中最高地址的地方。</p>
+<p>mmap_base 表示虚拟地址空间中用于内存映射的起始地址。</p>
+<img src="/images/202101/mm_usr.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+<p>除了位置信息之外，struct mm_struct 里面还专门有一个结构 vm_area_struct，来描述这些区域的属性。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> &#123;</span></span><br><span class="line">  <span class="comment">/* The first cache line has the info for VMA tree walking. */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> vm_start;    <span class="comment">/* Our start address within vm_mm. */</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span> vm_end;    <span class="comment">/* The first byte after our end address within vm_mm. */</span></span><br><span class="line">  <span class="comment">/* linked list of VM areas per task, sorted by address */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">vm_area_struct</span> *<span class="title">vm_next</span>, *<span class="title">vm_prev</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span> <span class="title">vm_rb</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">vm_mm</span>;</span>  <span class="comment">/* The address space we belong to. */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">anon_vma_chain</span>;</span> <span class="comment">/* Serialized by mmap_sem &amp;</span></span><br><span class="line"><span class="comment">            * page_table_lock */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">anon_vma</span> *<span class="title">anon_vma</span>;</span>  <span class="comment">/* Serialized by page_table_lock */</span></span><br><span class="line">  <span class="comment">/* Function pointers to deal with this struct. */</span></span><br><span class="line">  <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">vm_operations_struct</span> *<span class="title">vm_ops</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> * <span class="title">vm_file</span>;</span>    <span class="comment">/* File we map to (can be NULL). */</span></span><br><span class="line">  <span class="type">void</span> * vm_private_data;    <span class="comment">/* was vm_pte (shared mem) */</span></span><br><span class="line">&#125; __randomize_layout;</span><br></pre></td></tr></table></figure>
+
+<p>vm_start 和 vm_end 指定了该区域在用户空间中的起始和结束地址。vm_next 和 vm_prev 将这个区域串在链表上。vm_rb 将这个区域放在红黑树上。vm_ops 里面是对这个内存区域可以做的操作的定义。</p>
+<p>虚拟内存区域可以映射到物理内存，也可以映射到文件，映射到物理内存的时候称为匿名映射，anon_vma 中，anoy 就是 anonymous，匿名的意思，映射到文件就需要有 vm_file 指定被映射的文件。</p>
+<p>内存的映射建立是由函数load_elf_binary来完成的。</p>
+<img src="/images/202101/mm_map.jpeg" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+<p>执行 brk 处理内存申请的操作，实现的入口是 sys_brk 函数。sys_brk 函数的参数 brk 是新的堆顶位置，而当前的 mm-&gt;brk 是原来堆顶的位置。</p>
+<p>将原来的堆顶和现在的堆顶，都按照页对齐地址，然后比较大小。如果两者相同，说明这次增加的堆的量很小，还在一个页里面，不需要另行分配页，直接跳到 set_brk 那里，设置 mm-&gt;brk 为新的 brk 就可以了。如果发现新旧堆顶不在一个页里面，麻烦了，这下要跨页了。</p>
+<p>如果发现新堆顶小于旧堆顶，这说明不是新分配内存了，而是释放内存了，释放的还不小，至少释放了一页，于是调用 do_munmap 将这一页的内存映射去掉。</p>
+<p>如果堆将要扩大，就要调用 find_vma。如果打开这个函数，看到的是对红黑树的查找，找到的是原堆顶所在的 vm_area_struct 的下一个 vm_area_struct，看当前的堆顶和下一个 vm_area_struct 之间还能不能分配一个完整的页。如果不能，没办法只好直接退出返回，内存空间都被占满了。如果还有空间，就调用 do_brk 进一步分配堆空间，从旧堆顶开始，分配计算出的新旧堆顶之间的页数。</p>
+<p>在 do_brk 中，调用 find_vma_links 找到将来的 vm_area_struct 节点在红黑树的位置，找到它的父节点、前序节点。接下来调用 vma_merge，看这个新节点是否能够和现有树中的节点合并。如果地址是连着的，能够合并，则不用创建新的 vm_area_struct 了，直接跳到 out，更新统计值即可；如果不能合并，则创建新的 vm_area_struct，既加到 anon_vma_chain 链表中，也加到红黑树中。</p>
+<h2 id="内核态布局"><a href="#内核态布局" class="headerlink" title="内核态布局"></a>内核态布局</h2><p>内核态的虚拟空间和某一个进程没有关系，所有进程通过系统调用进入到内核之后，看到的虚拟地址空间都是一样的。内核态空间只有一份，共享的。</p>
+<img src="/images/202101/mm_kernel.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+
+<p>32 位的内核态虚拟地址空间一共就 1G，占绝大部分的前 896M，我们称为直接映射区。所谓的直接映射区，就是这一块空间是连续的，和物理内存是非常简单的映射关系，其实就是虚拟内存地址减去 3G，就得到物理内存的位置。</p>
+<p>这 896M 还需要仔细分解。在系统启动的时候，物理内存的前 1M 已经被占用了，从 1M 开始加载内核代码段，然后就是内核的全局变量、BSS 等，也是 ELF 里面涵盖的。这样内核的代码段，全局变量，BSS 也就会被映射到 3G 后的虚拟地址空间里面。具体的物理内存布局可以查看 &#x2F;proc&#x2F;iomem。</p>
+<p>创建进程的系统调用会创建一个task_struct的实例， 这个实例就是保存在内核的直接映射区域内 即896MB的内存中。</p>
+<p>内核态地址：</p>
+<p>在 896M 到 VMALLOC_START 之间有 8M 的空间。VMALLOC_START 到 VMALLOC_END 之间称为内核动态映射空间，也即内核想像用户态进程一样 malloc 申请内存，在内核里面可以使用 vmalloc。假设物理内存里面，896M 到 1.5G 之间已经被用户态进程占用了，并且映射关系放在了进程的页表中，内核 vmalloc 的时候，只能从分配物理内存 1.5G 开始，就需要使用这一段的虚拟地址进行映射，映射关系放在专门给内核自己用的页表里面。</p>
+<p>PKMAP_BASE 到 FIXADDR_START 的空间称为持久内核映射。使用 alloc_pages() 函数的时候，在物理内存的高端内存得到 struct page 结构，可以调用 kmap 将其映射到这个区域。</p>
+<p>FIXADDR_START 到 FIXADDR_TOP(0xFFFF F000) 的空间，称为固定映射区域，主要用于满足特殊需求。</p>
+<p>在最后一个区域可以通过 kmap_atomic 实现临时内核映射。如果要把文件内容写入物理内存，这件事情要内核来干了，这就只好通过 kmap_atomic 做一个临时映射，写入物理内存完毕后，再 kunmap_atomic 来解映射即可。</p>
+<p>64位系统的内核布局也是同样的道理，不过是大小不一样，设计的功能区不一样。</p>
+<img src="/images/202101/mm_kernel64.jpg" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+
+
+<p>进程虚拟内存的布局和物理内存的布局， 分别通过查看proc&#x2F;$PID&#x2F;maps 和 &#x2F;proc&#x2F;iomem。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -3416,6 +3416,37 @@
       </categories>
   </entry>
   <entry>
+    <title>nginx交叉编译问题</title>
+    <url>/2021/07/24/nginx-compile/</url>
+    <content><![CDATA[<p>基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行<code>make nginx</code>。</p>
+<p>以下是前段时间编译nginx遇到的一些问题：</p>
+<span id="more"></span>
+
+<h2 id="1-checking-for-C-compiler-…-found-but-is-not-workong"><a href="#1-checking-for-C-compiler-…-found-but-is-not-workong" class="headerlink" title="1. checking for C compiler … found but is not workong"></a>1. checking for C compiler … found but is not workong</h2><p>这个主要是测试C编译器的， 在编译机器上肯定不能执行。 我们修改一下<code>auto/cc/name</code>下的配置，设置ngx_feature_run&#x3D;no。</p>
+<h2 id="2-can-not-detect-int-size"><a href="#2-can-not-detect-int-size" class="headerlink" title="2. can not detect int size"></a>2. can not detect int size</h2><p>原因跟1一样， 直接修改<code>auto/types/sizeof</code> 设置ngx_size&#x3D;4</p>
+<h2 id="3-checking-for-PCRE-library-…-not-found"><a href="#3-checking-for-PCRE-library-…-not-found" class="headerlink" title="3. checking for PCRE library … not found"></a>3. checking for PCRE library … not found</h2><p>依赖PCRE， 需要首先编译PCRE， 在make menuconfig 选择pcre。 如果没有，需要拷贝pcre相关的脚本 进行编译。</p>
+<h2 id="4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><a href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt" class="headerlink" title="4. the HTTP XSLT module requires the libxml2&#x2F;libxslt"></a>4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</h2><p>同理，需要编译libxslt</p>
+<h2 id="5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><a href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org" class="headerlink" title="5. Could not find libxml2 anywhere, check ftp://xmlsoft.org/"></a>5. Could not find libxml2 anywhere, check <a href="ftp://xmlsoft.org/">ftp://xmlsoft.org/</a></h2><p>这个是由于我执行了make clean, host下依赖包都卸载了， 需要重新编译libxml2</p>
+<h2 id="6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory"><a href="#6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory" class="headerlink" title="6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory"></a>6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</h2><p>需要编译gd</p>
+<h2 id="7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><a href="#7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory" class="headerlink" title="7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory"></a>7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</h2><p>需要编译geoip</p>
+<h2 id="8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’"><a href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’" class="headerlink" title="8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’"></a>8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</h2><p>在添加头文件的目录时， 在目录前面添加${STAGING_DIR}</p>
+<h2 id="9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><a href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined" class="headerlink" title="9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !"></a>9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</h2><p>需要编译libatomic_ops。  修改<code>auto/lib/conf</code>  run&#x3D;no</p>
+<h2 id="10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’"><a href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’" class="headerlink" title="10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?"></a>10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</h2><p>出错的原因仍然是因为交叉编译程序无法本地运行，手动在<code>auto/linux</code>下增加</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if [$ngx_found = no]; then</span><br><span class="line">  cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H</span><br><span class="line">#ifndef $ngx_feature_name</span><br><span class="line">#define $ngx_feature_name 132</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">END</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>具体的值可以看一下errno.h的宏</p>
+<h2 id="11-undefined-reference-to-gdImageCreateFromJpegPtr"><a href="#11-undefined-reference-to-gdImageCreateFromJpegPtr" class="headerlink" title="11. undefined reference to gdImageCreateFromJpegPtr"></a>11. undefined reference to <code>gdImageCreateFromJpegPtr</code></h2><p>gd版本升级  2.2.5 –&gt; 2.3.0</p>
+<h2 id="12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><a href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory" class="headerlink" title="12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package/nginx/nginx.logrotate: No such file or directory"></a>12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat <code>package/nginx/nginx.logrotate</code>: No such file or directory</h2><p>这个是目录错误了， 修改ngxin.mk。 相关<code>package/xxx</code>修改为<code>$(BR2_EXTERNAL_PATH)/package/xxx</code></p>
+<p>OK, 差不多就是这些问题， 然后就编译出了nginx包了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>谈谈Linux的systemd服务管理</title>
     <url>/2021/07/17/systemd/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目中很多进程都是注册为服务，在系统启动的时候自动运行。抽空仔细的学习了一下<code>systemd</code>服务管理，在此做一个小结。</p>
@@ -3471,37 +3502,6 @@
 <p><code>systemd</code>是一个原理简单，细节很多的一个服务管理程序。如果有需要使用到的话，还有待深入了解。一般使用的话，了解上面的那些命令及知识基本就足够了。</p>
 <p>学习<code>systemd</code>这个知识的话，比较简单易读的还是鸟哥的Linux私房菜，虽然有一些实现有一点点出入，还有就是湾湾翻译的跟我们的习惯还是有点不一样。看书籍还是有好处的， 当然最好的材料还是英文文档。另外一个就是阮一峰的博客，这位老师的博文质量都是杠杠的。</p>
 <p>另外， <code>systemd</code>是一个开源的程序,在<code>github</code>上面可以找到源代码，systemctl的实现跟一个dbus的程序相关，下一次聊一聊dbus服务，主要是项目中需要用到dbus服务实现一个功能，我也简单了解了一下。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>nginx交叉编译问题</title>
-    <url>/2021/07/24/nginx-compile/</url>
-    <content><![CDATA[<p>基于buildroot框架进行的交叉编译，首先拷贝官网buildroot包，然后拷贝里面的nginx的脚本配置。然后运行<code>make nginx</code>。</p>
-<p>以下是前段时间编译nginx遇到的一些问题：</p>
-<span id="more"></span>
-
-<h2 id="1-checking-for-C-compiler-…-found-but-is-not-workong"><a href="#1-checking-for-C-compiler-…-found-but-is-not-workong" class="headerlink" title="1. checking for C compiler … found but is not workong"></a>1. checking for C compiler … found but is not workong</h2><p>这个主要是测试C编译器的， 在编译机器上肯定不能执行。 我们修改一下<code>auto/cc/name</code>下的配置，设置ngx_feature_run&#x3D;no。</p>
-<h2 id="2-can-not-detect-int-size"><a href="#2-can-not-detect-int-size" class="headerlink" title="2. can not detect int size"></a>2. can not detect int size</h2><p>原因跟1一样， 直接修改<code>auto/types/sizeof</code> 设置ngx_size&#x3D;4</p>
-<h2 id="3-checking-for-PCRE-library-…-not-found"><a href="#3-checking-for-PCRE-library-…-not-found" class="headerlink" title="3. checking for PCRE library … not found"></a>3. checking for PCRE library … not found</h2><p>依赖PCRE， 需要首先编译PCRE， 在make menuconfig 选择pcre。 如果没有，需要拷贝pcre相关的脚本 进行编译。</p>
-<h2 id="4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt"><a href="#4-the-HTTP-XSLT-module-requires-the-libxml2-x2F-libxslt" class="headerlink" title="4. the HTTP XSLT module requires the libxml2&#x2F;libxslt"></a>4. the HTTP XSLT module requires the libxml2&#x2F;libxslt</h2><p>同理，需要编译libxslt</p>
-<h2 id="5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org"><a href="#5-Could-not-find-libxml2-anywhere-check-ftp-xmlsoft-org" class="headerlink" title="5. Could not find libxml2 anywhere, check ftp://xmlsoft.org/"></a>5. Could not find libxml2 anywhere, check <a href="ftp://xmlsoft.org/">ftp://xmlsoft.org/</a></h2><p>这个是由于我执行了make clean, host下依赖包都卸载了， 需要重新编译libxml2</p>
-<h2 id="6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory"><a href="#6-checking-for-GD-library-…objs-x2F-autotest-c-4-10-fatal-error-gd-h：-No-such-file-or-directory" class="headerlink" title="6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory"></a>6. checking for GD library …objs&#x2F;autotest.c:4:10: fatal error: gd.h： No such file or directory</h2><p>需要编译gd</p>
-<h2 id="7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory"><a href="#7-checking-for-GeoIP-library-…objs-x2F-autotest-c-4-10-fatal-error-GeoIP-h-No-such-file-or-directory" class="headerlink" title="7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory"></a>7. checking for GeoIP library …objs&#x2F;autotest.c:4:10: fatal error: GeoIP.h: No such file or directory</h2><p>需要编译geoip</p>
-<h2 id="8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’"><a href="#8-xxx-gcc-Error-unsafe-header-x2F-library-path-use-in-cross-compilation-‘-I’-‘-x2F-usr-x2F-include-x2F-libxml2’" class="headerlink" title="8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’"></a>8. xxx-gcc: Error: unsafe header&#x2F;library path use in cross-compilation: ‘-I’ ‘&#x2F;usr&#x2F;include&#x2F;libxml2’</h2><p>在添加头文件的目录时， 在目录前面添加${STAGING_DIR}</p>
-<h2 id="9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined"><a href="#9-src-x2F-core-x2F-ngx-spinlock-c-47-2-error-error-ngx-spinlock-or-ngx-atomic-cmp-set-are-not-defined" class="headerlink" title="9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !"></a>9. src&#x2F;core&#x2F;ngx_spinlock.c:47:2: error: #error ngx_spinlock() or ngx_atomic_cmp_set() are not defined !</h2><p>需要编译libatomic_ops。  修改<code>auto/lib/conf</code>  run&#x3D;no</p>
-<h2 id="10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’"><a href="#10-src-x2F-os-x2F-unix-x2F-ngx-errno-c-37-31-error-‘NGX-SYS-NERR’-undeclared-first-use-in-this-function-did-you-mean-‘NGX-LOG-ERR’" class="headerlink" title="10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?"></a>10. src&#x2F;os&#x2F;unix&#x2F;ngx_errno.c:37:31: error: ‘NGX_SYS_NERR’ undeclared(first use in this function); did you mean ‘NGX_LOG_ERR’?</h2><p>出错的原因仍然是因为交叉编译程序无法本地运行，手动在<code>auto/linux</code>下增加</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if [$ngx_found = no]; then</span><br><span class="line">  cat &lt;&lt; END &gt;&gt; $NGX_AUTO_CONFIG_H</span><br><span class="line">#ifndef $ngx_feature_name</span><br><span class="line">#define $ngx_feature_name 132</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">END</span><br><span class="line">fi</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>具体的值可以看一下errno.h的宏</p>
-<h2 id="11-undefined-reference-to-gdImageCreateFromJpegPtr"><a href="#11-undefined-reference-to-gdImageCreateFromJpegPtr" class="headerlink" title="11. undefined reference to gdImageCreateFromJpegPtr"></a>11. undefined reference to <code>gdImageCreateFromJpegPtr</code></h2><p>gd版本升级  2.2.5 –&gt; 2.3.0</p>
-<h2 id="12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory"><a href="#12-x2F-usr-x2F-bin-x2F-install-cannot-stat-package-nginx-nginx-logrotate-No-such-file-or-directory" class="headerlink" title="12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat package/nginx/nginx.logrotate: No such file or directory"></a>12. &#x2F;usr&#x2F;bin&#x2F;install: cannot stat <code>package/nginx/nginx.logrotate</code>: No such file or directory</h2><p>这个是目录错误了， 修改ngxin.mk。 相关<code>package/xxx</code>修改为<code>$(BR2_EXTERNAL_PATH)/package/xxx</code></p>
-<p>OK, 差不多就是这些问题， 然后就编译出了nginx包了。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -3935,6 +3935,51 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(三十三) - 信号量</title>
+    <url>/2021/10/31/linux33-sem/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>进程间通过共享内存实现进程间通信，但是临界资源需要保护，可以使用信号量进行控制。信号量在这里就起到了锁的作用， 对临界资源进行协调。</p>
+<span id="more"></span>
+
+<p>信号量也是System V体系的一部分， 跟共享内存、消息队列类似。</p>
+<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>之前讲sysrepo是一个基于共享内存的数据库，sysrepo主要还是通过文件映射的方式实现共享内存的，属于高一个层级的使用。这里讲一下，共享内存的底层接口使用。</p>
+<h3 id="创建共享内存"><a href="#创建共享内存" class="headerlink" title="创建共享内存"></a>创建共享内存</h3><p>首先，创建之前，我们要有一个 key 来唯一标识这个共享内存。这个 key 可以根据文件系统上的一个文件的 inode 随机生成。</p>
+<p>创建一个共享内存，都是使用 xxxget 来创建。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">size_t</span> size, <span class="type">int</span> shmflag)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>key 就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。这里返回一个共享内存的id。</p>
+<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>生成了共享内存以后，接下来就是将这个共享内存映射到进程的虚拟地址空间中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">shmat</span><span class="params">(<span class="type">int</span>  shm_id, <span class="type">const</span>  <span class="type">void</span> *addr, <span class="type">int</span> shmflg)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里面的 shm_id，就是上面创建的共享内存的 id，addr 就是指定映射在某个地方。如果不指定，则内核会自动选择一个地址，作为返回值返回。</p>
+<p>然后，我们通过强制类型转换，对该内存进行数据写入。</p>
+<p>当共享内存使用完毕，我们可以通过 shmdt 解除它到虚拟内存的映射。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmdt</span><span class="params">(<span class="type">const</span>  <span class="type">void</span> *shmaddr)</span>；</span><br></pre></td></tr></table></figure>
+
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量，也是类似的。</p>
+<p>首先，创建之前，我们同样需要有一个 key，来唯一标识这个信号量集合。这个 key 同样可以根据文件系统上的一个文件的 inode 随机生成。</p>
+<p>然后，我们需要创建一个信号量集合，同样也是使用 xxxget 来创建，其中创建信号量集合使用的是下面这个函数。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">semget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> nsems, <span class="type">int</span> semflg)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里面的 key，就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。</p>
+<p>信号量是以集合的形式存在，一次可以申请nsems个信号量，一般我们申请一个就可以了。</p>
+<p>信号量对应的有P、V的操作，分别用于获取信号量和释放信号量。信号量可以设置同时并发的个数，每一个P操作就是对信号量的值减一，每一个V操作就是对信号量的值加一。当信号量的值为0的时候，P操作就会挂住，等待信号量的值大于0之后才继续执行。</p>
+<p>我们设置信号量的初值为1，那么就可以实现同时仅能有一个访问者对资源操作的功能，就是锁的功能了。</p>
+<h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>源码：</p>
+<p><a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem">https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem</a></p>
+<p>运行效果</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:sem keep$ ./p</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">how many integers to caculate : 2</span><br><span class="line">Input the 0 integer : 1</span><br><span class="line">Input the 1 integer : 2</span><br><span class="line">how many integers to caculate : </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:sem keep$ ./c</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">1+2=3</span><br><span class="line">no tasks, waiting.</span><br><span class="line">no tasks, waiting.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>前几天到公司的时间早了一点，下车前突然想到很久没有在极客时间上面学习了，打开趣谈linux操作系统，开始学了大概半小时，感觉效果挺不错，四周挺安静的。嗯，每天挤出来半个小时，学习一下，积少成多，加油。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(三十四) - 网络通信</title>
     <url>/2021/11/06/linux34-net/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面学习的进程间的通信主要适用于同一台机器的两个进程间的通信，不同机器间的进程间通信就由网络通信来实现。通过定义好的网络协议，不同机器的进程传递交互的内容。当然，网络通信也可以适用于同一台机器的进程间通信，效率比其他方式差一些。进程间通信最快的属于共享内存。</p>
@@ -3989,51 +4034,6 @@
 <p><img src="/images/202111/output_TCP.jpg" alt="avatar"></p>
 <h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>之前对sysrepo的优化彻底结束了，解决了不相关模块的性能影响的问题，验证充分后上线测试了，转测试一周了暂时没有反馈相关的问题。</p>
 <p>前面还有一个超时问题的解决，后面发现系统时间不是可以任意设置的，比如设置3000年的时间就不能设置成功，最后限定了可设置的时间范围 ‘1970-01-01 23:59:59’到’2200-01-01 00:00:00’，正常我们的设备可以用到那个时间就很不错了，哈哈，到时候的系统应该可以设置的时间应该更往后了，后继者再来修改吧。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(三十三) - 信号量</title>
-    <url>/2021/10/31/linux33-sem/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>进程间通过共享内存实现进程间通信，但是临界资源需要保护，可以使用信号量进行控制。信号量在这里就起到了锁的作用， 对临界资源进行协调。</p>
-<span id="more"></span>
-
-<p>信号量也是System V体系的一部分， 跟共享内存、消息队列类似。</p>
-<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>之前讲sysrepo是一个基于共享内存的数据库，sysrepo主要还是通过文件映射的方式实现共享内存的，属于高一个层级的使用。这里讲一下，共享内存的底层接口使用。</p>
-<h3 id="创建共享内存"><a href="#创建共享内存" class="headerlink" title="创建共享内存"></a>创建共享内存</h3><p>首先，创建之前，我们要有一个 key 来唯一标识这个共享内存。这个 key 可以根据文件系统上的一个文件的 inode 随机生成。</p>
-<p>创建一个共享内存，都是使用 xxxget 来创建。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">size_t</span> size, <span class="type">int</span> shmflag)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>key 就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。这里返回一个共享内存的id。</p>
-<h3 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h3><p>生成了共享内存以后，接下来就是将这个共享内存映射到进程的虚拟地址空间中。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> *<span class="title function_">shmat</span><span class="params">(<span class="type">int</span>  shm_id, <span class="type">const</span>  <span class="type">void</span> *addr, <span class="type">int</span> shmflg)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这里面的 shm_id，就是上面创建的共享内存的 id，addr 就是指定映射在某个地方。如果不指定，则内核会自动选择一个地址，作为返回值返回。</p>
-<p>然后，我们通过强制类型转换，对该内存进行数据写入。</p>
-<p>当共享内存使用完毕，我们可以通过 shmdt 解除它到虚拟内存的映射。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shmdt</span><span class="params">(<span class="type">const</span>  <span class="type">void</span> *shmaddr)</span>；</span><br></pre></td></tr></table></figure>
-
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量，也是类似的。</p>
-<p>首先，创建之前，我们同样需要有一个 key，来唯一标识这个信号量集合。这个 key 同样可以根据文件系统上的一个文件的 inode 随机生成。</p>
-<p>然后，我们需要创建一个信号量集合，同样也是使用 xxxget 来创建，其中创建信号量集合使用的是下面这个函数。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">semget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> nsems, <span class="type">int</span> semflg)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>这里面的 key，就是前面生成的那个 key，shmflag 如果为 IPC_CREAT，就表示新创建，还可以指定读写权限 0777。</p>
-<p>信号量是以集合的形式存在，一次可以申请nsems个信号量，一般我们申请一个就可以了。</p>
-<p>信号量对应的有P、V的操作，分别用于获取信号量和释放信号量。信号量可以设置同时并发的个数，每一个P操作就是对信号量的值减一，每一个V操作就是对信号量的值加一。当信号量的值为0的时候，P操作就会挂住，等待信号量的值大于0之后才继续执行。</p>
-<p>我们设置信号量的初值为1，那么就可以实现同时仅能有一个访问者对资源操作的功能，就是锁的功能了。</p>
-<h2 id="示例程序"><a href="#示例程序" class="headerlink" title="示例程序"></a>示例程序</h2><p>源码：</p>
-<p><a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem">https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/sem</a></p>
-<p>运行效果</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">Keep:sem keep$ ./p</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">how many integers to caculate : 2</span><br><span class="line">Input the 0 integer : 1</span><br><span class="line">Input the 1 integer : 2</span><br><span class="line">how many integers to caculate : </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:sem keep$ ./c</span><br><span class="line">ftok error: No such file or directory</span><br><span class="line">1+2=3</span><br><span class="line">no tasks, waiting.</span><br><span class="line">no tasks, waiting.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>前几天到公司的时间早了一点，下车前突然想到很久没有在极客时间上面学习了，打开趣谈linux操作系统，开始学了大概半小时，感觉效果挺不错，四周挺安静的。嗯，每天挤出来半个小时，学习一下，积少成多，加油。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4115,32 +4115,17 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈（3）- python调试</title>
-    <url>/2021/12/11/weekly/</url>
+    <title>周谈（1）-一个yang解析错误问题</title>
+    <url>/2021/11/24/weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
 <span id="more"></span>
-
-<p>这是第三篇, 下面看问题。</p>
-<h2 id="python调试"><a href="#python调试" class="headerlink" title="python调试"></a>python调试</h2><p>刚开始定位问题的时候，如果python程序的进程挂住了或者是coredump了，使用gdb进行调试，只能通过bt看到c函数的调用栈，没有办法看到python对应的代码，问题的定位比较困难。</p>
-<p>然后就到gdb官网上去看了，是可以支持调试python的。</p>
-<p><code>https://sourceware.org/gdb/current/onlinedocs/gdb/Python.html#Python</code></p>
-<p>首先编译gdb的时候，需要带上–with-python，才能够支持调试python。</p>
-<p>如何进行gdb调试python， 可以参考python官网的文章<br><code>https://wiki.python.org/moin/DebuggingWithGdb</code></p>
-<p>文章指出，有些python难以调试的bug需要使用到gdb，分别是：</p>
-<ul>
-<li>段错误(未捕获到python异常)</li>
-<li>进程挂住（无法获取调用栈）</li>
-<li>不可控的daemon进程</li>
-</ul>
-<p>然后需要安装python-debuginfo库，否则会读不到python的符号表。</p>
-<p>最后使用命令 gdb attach <pid> 就可以开始调试python程序了。</p>
-<p>怎么进行调试也有文档<br><code>https://fedoraproject.org/wiki/Features/EasierPythonDebugging</code></p>
-<p>这个问题就讲这么多，最终使用py-bt可以看到python代码的调用栈，也就可以很轻松的看到问题了。</p>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>这一周，要处理的问题比较多，还需要完成之前欠下的文档，就在周六发文了。</p>
-<p>项目首轮内测快结束了，测试组开始性能压测了，那些个开源代码和商业源代码都抵挡不住败下阵来了，有程序死锁的问题，也有程序coredump的问题，还有就是执行慢的性能问题。根据coredump定位出了好几个异常分支，释放野指针的问题，基本上都是函数返回值未判断，变量未初始化导致的。这些问题，在正常的处理流程中不易暴露，但是在极端情况下，比如内存耗尽，CPU满载的时候，很容易就复现了。所以编码习惯很重要，如果在编码的时候，养成了习惯，对返回值进行了判断处理，变量都进行了初始化，那么程序将天生健壮。</p>
-<p>当然，开源程序和商业代码也都是程序员贡献的，有问题也是正常的。毕竟人家很多是利用业余时间完成的，还有很多代码也是经验尚浅的人写的，或者是出于应用场景的局限有不同的考量。</p>
-<p>遇到问题，解决就是了。</p>
-<p>在定位问题的过程中，还是用top、perf等工具，后面整理了，​再来分享。</p>
+<p>当然，不保证每周都有值得分享的问题，当然也可能有多个问题可以分享，那有时候会谈谈自己近期工作生活中遇到的琐事种种，大忙的时候也可能缺更。嗯，从这周开始这一个系列的文章, 看看我能坚持多久，嘿嘿!</p>
+<h2 id="一个yang解析错误问题"><a href="#一个yang解析错误问题" class="headerlink" title="一个yang解析错误问题"></a>一个yang解析错误问题</h2><p>情况是这样的，项目使用命令行进入，如果在未连接上netconf服务端的时候，马上敲入命令，会导致那个netconf连接不正常。好在这是一个必现的问题，通过定位发现一个日志报错的位于libyang库的代码中，然后打开netopeer2的日志，可以确定到出问题之前的那个rpc的xml内容。通过MG-SOFT netconf browser 软件发送这个rpc的xml， 知道的确是这个rpc导致的错误， 然后连接就断开了。</p>
+<p>下一步就看为什么导致错误的了，这个又需要看libyang的代码了，通过设置buildroot工程下的libyang.mk， 增加CMAKE_BUILD_TYP&#x3D;Debug选项，编译出一个带符号的libyang，然后就是上gdb调试了。</p>
+<p>后面定位到是一个xpath解析的问题，由于传入的xpath是没有带模块名的<code>/node0/node1/node2</code>, 在libyang中认为这是一个错误的xpath，然后就罢工抛异常了。紧接着libnetconf在应答接收不完全的情况下，认为连接异常了，然后把连接设置为invalid了，后续的命令就不能正常执行了。</p>
+<p>通过分析xpath的格式，搜索了一下，锁定了问题的源头。是在订阅sysrepo事件的时候传入的xpath问题，缺失了模块名。 通过修改对外接口， 增加了对xpath格式的校验， xpath必须格式为 <code>/m0:node0/m1:node1/m2:node2</code>这样，修改验证后，问题解决。然后就是修改整个项目相关的xpath路径，合并提交代码。最后在部门发个通告，增加这个约束说明。 OK， 问题解决。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>开源代码也是人写的， 出现问题也是很正常。这个问题的根因是sysrepo的函数入口没有对xpath进行约束，却在libyang中又有对xpath有这种检查，导致了这个问题的出现。</p>
+<p>程序员定位bug就像是侦探破案，首先是确认问题，现场勘查，然后找寻各种蛛丝马迹，推演问题的产生原因。程序员更方便的是可以复现问题，各种尝试，修改后还可以进行验证。在这个过程中，逻辑思维很重要。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4200,17 +4185,32 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈（1）-一个yang解析错误问题</title>
-    <url>/2021/11/24/weekly/</url>
+    <title>周谈（3）- python调试</title>
+    <url>/2021/12/11/weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
 <span id="more"></span>
-<p>当然，不保证每周都有值得分享的问题，当然也可能有多个问题可以分享，那有时候会谈谈自己近期工作生活中遇到的琐事种种，大忙的时候也可能缺更。嗯，从这周开始这一个系列的文章, 看看我能坚持多久，嘿嘿!</p>
-<h2 id="一个yang解析错误问题"><a href="#一个yang解析错误问题" class="headerlink" title="一个yang解析错误问题"></a>一个yang解析错误问题</h2><p>情况是这样的，项目使用命令行进入，如果在未连接上netconf服务端的时候，马上敲入命令，会导致那个netconf连接不正常。好在这是一个必现的问题，通过定位发现一个日志报错的位于libyang库的代码中，然后打开netopeer2的日志，可以确定到出问题之前的那个rpc的xml内容。通过MG-SOFT netconf browser 软件发送这个rpc的xml， 知道的确是这个rpc导致的错误， 然后连接就断开了。</p>
-<p>下一步就看为什么导致错误的了，这个又需要看libyang的代码了，通过设置buildroot工程下的libyang.mk， 增加CMAKE_BUILD_TYP&#x3D;Debug选项，编译出一个带符号的libyang，然后就是上gdb调试了。</p>
-<p>后面定位到是一个xpath解析的问题，由于传入的xpath是没有带模块名的<code>/node0/node1/node2</code>, 在libyang中认为这是一个错误的xpath，然后就罢工抛异常了。紧接着libnetconf在应答接收不完全的情况下，认为连接异常了，然后把连接设置为invalid了，后续的命令就不能正常执行了。</p>
-<p>通过分析xpath的格式，搜索了一下，锁定了问题的源头。是在订阅sysrepo事件的时候传入的xpath问题，缺失了模块名。 通过修改对外接口， 增加了对xpath格式的校验， xpath必须格式为 <code>/m0:node0/m1:node1/m2:node2</code>这样，修改验证后，问题解决。然后就是修改整个项目相关的xpath路径，合并提交代码。最后在部门发个通告，增加这个约束说明。 OK， 问题解决。</p>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>开源代码也是人写的， 出现问题也是很正常。这个问题的根因是sysrepo的函数入口没有对xpath进行约束，却在libyang中又有对xpath有这种检查，导致了这个问题的出现。</p>
-<p>程序员定位bug就像是侦探破案，首先是确认问题，现场勘查，然后找寻各种蛛丝马迹，推演问题的产生原因。程序员更方便的是可以复现问题，各种尝试，修改后还可以进行验证。在这个过程中，逻辑思维很重要。</p>
+
+<p>这是第三篇, 下面看问题。</p>
+<h2 id="python调试"><a href="#python调试" class="headerlink" title="python调试"></a>python调试</h2><p>刚开始定位问题的时候，如果python程序的进程挂住了或者是coredump了，使用gdb进行调试，只能通过bt看到c函数的调用栈，没有办法看到python对应的代码，问题的定位比较困难。</p>
+<p>然后就到gdb官网上去看了，是可以支持调试python的。</p>
+<p><code>https://sourceware.org/gdb/current/onlinedocs/gdb/Python.html#Python</code></p>
+<p>首先编译gdb的时候，需要带上–with-python，才能够支持调试python。</p>
+<p>如何进行gdb调试python， 可以参考python官网的文章<br><code>https://wiki.python.org/moin/DebuggingWithGdb</code></p>
+<p>文章指出，有些python难以调试的bug需要使用到gdb，分别是：</p>
+<ul>
+<li>段错误(未捕获到python异常)</li>
+<li>进程挂住（无法获取调用栈）</li>
+<li>不可控的daemon进程</li>
+</ul>
+<p>然后需要安装python-debuginfo库，否则会读不到python的符号表。</p>
+<p>最后使用命令 gdb attach <pid> 就可以开始调试python程序了。</p>
+<p>怎么进行调试也有文档<br><code>https://fedoraproject.org/wiki/Features/EasierPythonDebugging</code></p>
+<p>这个问题就讲这么多，最终使用py-bt可以看到python代码的调用栈，也就可以很轻松的看到问题了。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>这一周，要处理的问题比较多，还需要完成之前欠下的文档，就在周六发文了。</p>
+<p>项目首轮内测快结束了，测试组开始性能压测了，那些个开源代码和商业源代码都抵挡不住败下阵来了，有程序死锁的问题，也有程序coredump的问题，还有就是执行慢的性能问题。根据coredump定位出了好几个异常分支，释放野指针的问题，基本上都是函数返回值未判断，变量未初始化导致的。这些问题，在正常的处理流程中不易暴露，但是在极端情况下，比如内存耗尽，CPU满载的时候，很容易就复现了。所以编码习惯很重要，如果在编码的时候，养成了习惯，对返回值进行了判断处理，变量都进行了初始化，那么程序将天生健壮。</p>
+<p>当然，开源程序和商业代码也都是程序员贡献的，有问题也是正常的。毕竟人家很多是利用业余时间完成的，还有很多代码也是经验尚浅的人写的，或者是出于应用场景的局限有不同的考量。</p>
+<p>遇到问题，解决就是了。</p>
+<p>在定位问题的过程中，还是用top、perf等工具，后面整理了，​再来分享。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4275,32 +4275,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(6)- yang版本升级兼容</title>
-    <url>/2022/01/07/weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第六篇, 下面看问题。</p>
-<h1 id="yang版本升级兼容"><a href="#yang版本升级兼容" class="headerlink" title="yang版本升级兼容"></a>yang版本升级兼容</h1><p>项目使用yang文件对数据进行管理，在开发阶段，yang文件定义经常变化，许多是不兼容的变化，毕竟在开发阶段许多数据都还没最终确定下来，随着开发的进展需求也渐渐的迭代，免不了出现不兼容的情况。原先使用sysrepo自带的sysrepocfg -U 命令升级yang文件，一旦出现有不兼容的问题，sysrepo就会抛出异常，无法安装新的yang文件，还把那个sysrepo的共享文件给锁死了，无法恢复。</p>
-<p>前面开发比较紧张，先提供了一个脚本，在不兼容升级的情况下，调用脚本进行数据清理，然后重新安装yang文件。这样子每次遇到有yang不兼容的情况，都需要进行数据清理。由于yang的不兼容，即使保存了原有的配置，重新导入也是不成功的。</p>
-<p>这周项目进入了尾声，手上就留了一两个无法复现的问题，暂时没有思路。抽空先研究一下如何自动升级而又可以保存配置，领导对这个事情也比较重视，亲自盯进度了。</p>
-<p>按原先的思路是进行不下去了，一旦有不兼容yang文件升级，libyang库就会报错，看了两天那个libyang的代码还是没有头绪，代码不熟悉，另外代码量也太大了，同时还总会被其他事情打断。只能另想法子了。</p>
-<p>先验证了一下把配置拆分，使得可以支持配置按模块导入，但是模块间相互依赖的话，会因为无法通过校验而导入失败，所以还是得整体一块导入。</p>
-<p>然后，就是看如何剔除不兼容的配置了。去看了sysrepo的代码，没有找着方法。</p>
-<p>正是山重水复疑无路，没想到柳暗花明又一村了。想着这种问题，原厂应该有解决方案才是的。认真研究了一下产商初始的deb的安装包逻辑，找到了一个脚本清理数据的，就是用来剔除不兼容配置的。在每次服务启动的时候，都会调用一下这个脚本，验证了一下，功能还是可用的。这样即使yang不兼容升级，也可以保证兼容部分的配置不会丢失，仅丢失不兼容的那部分配置。</p>
-<p>接下来就只需要解决不兼容yang安装报错，导致sysrepo锁死的问题了。时间比较紧，从头梳理sysrepo和libyang的代码逻辑是比较费时的，只能想法子绕过了。既然直接升级会报错，那么就先卸载旧的yang，再安装新的yang。嗯，验证了一下，发现部分被依赖的yang无法卸载，还是会存在部分yang不兼容升级不了的问题。这里，就去更改了sysrepo的源码，让特定的那几个yang即使被依赖也可以正常卸载。因为卸载这个动作，主要就是框架这边会用到，业务正常是不会执行这些动作的。</p>
-<p>最后，就是梳理一下完整的启动升级的流程，重构一下整个启动流程的代码，再各种场景验证一下，确保功能都是满足期望的。OK，程序升级改造完成，耗时一周，最终的效果还有个小惊喜，发现改造完之后，升级的速度比之前快了不少。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>有一句话叫做“认知决定思维,思维决定行为,行为决定结果”，工作当中遇到了问题，如何解决问题，解决问题的效果跟我们的知识也是一样的关系。不同的认知，决定不同的处理方式，会达到不同的结果。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>2021小结</title>
     <url>/2022/01/09/2021/</url>
     <content><![CDATA[<h1 id="2021小结"><a href="#2021小结" class="headerlink" title="2021小结"></a>2021小结</h1><p>2021年过去了，依旧是一个大灾之年，疫情依然笼罩着世界。</p>
@@ -4319,6 +4293,32 @@
 <h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>新项目需要学习的东西就很多，学习都是为了更好更轻松地工作。由于本身的职位属于支撑类型的，主要服务于业务，需要时常总结文档在内部分享，同时也对知识进行了巩固，收到的咨询多了，逼迫自己更深入的去学习，渐渐的也就成了个半吊子的专家。业余的学习呢，就还是极客时间的专栏了。话说，2021年那个趣谈Linux操作系统终究还是没有刷完一遍，惭愧惭愧。</p>
 <h2 id="运动"><a href="#运动" class="headerlink" title="运动"></a>运动</h2><p>平常的运动就是带娃在小区里面走几圈，跑步的次数也少了，体重指数上升了，整个脸都圆了，可怕怕。去爬过两三次山吧，其他的运动就没了，整个亚健康的状态。</p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>2022年开始了，勇往直前吧!</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(6)- yang版本升级兼容</title>
+    <url>/2022/01/07/weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第六篇, 下面看问题。</p>
+<h1 id="yang版本升级兼容"><a href="#yang版本升级兼容" class="headerlink" title="yang版本升级兼容"></a>yang版本升级兼容</h1><p>项目使用yang文件对数据进行管理，在开发阶段，yang文件定义经常变化，许多是不兼容的变化，毕竟在开发阶段许多数据都还没最终确定下来，随着开发的进展需求也渐渐的迭代，免不了出现不兼容的情况。原先使用sysrepo自带的sysrepocfg -U 命令升级yang文件，一旦出现有不兼容的问题，sysrepo就会抛出异常，无法安装新的yang文件，还把那个sysrepo的共享文件给锁死了，无法恢复。</p>
+<p>前面开发比较紧张，先提供了一个脚本，在不兼容升级的情况下，调用脚本进行数据清理，然后重新安装yang文件。这样子每次遇到有yang不兼容的情况，都需要进行数据清理。由于yang的不兼容，即使保存了原有的配置，重新导入也是不成功的。</p>
+<p>这周项目进入了尾声，手上就留了一两个无法复现的问题，暂时没有思路。抽空先研究一下如何自动升级而又可以保存配置，领导对这个事情也比较重视，亲自盯进度了。</p>
+<p>按原先的思路是进行不下去了，一旦有不兼容yang文件升级，libyang库就会报错，看了两天那个libyang的代码还是没有头绪，代码不熟悉，另外代码量也太大了，同时还总会被其他事情打断。只能另想法子了。</p>
+<p>先验证了一下把配置拆分，使得可以支持配置按模块导入，但是模块间相互依赖的话，会因为无法通过校验而导入失败，所以还是得整体一块导入。</p>
+<p>然后，就是看如何剔除不兼容的配置了。去看了sysrepo的代码，没有找着方法。</p>
+<p>正是山重水复疑无路，没想到柳暗花明又一村了。想着这种问题，原厂应该有解决方案才是的。认真研究了一下产商初始的deb的安装包逻辑，找到了一个脚本清理数据的，就是用来剔除不兼容配置的。在每次服务启动的时候，都会调用一下这个脚本，验证了一下，功能还是可用的。这样即使yang不兼容升级，也可以保证兼容部分的配置不会丢失，仅丢失不兼容的那部分配置。</p>
+<p>接下来就只需要解决不兼容yang安装报错，导致sysrepo锁死的问题了。时间比较紧，从头梳理sysrepo和libyang的代码逻辑是比较费时的，只能想法子绕过了。既然直接升级会报错，那么就先卸载旧的yang，再安装新的yang。嗯，验证了一下，发现部分被依赖的yang无法卸载，还是会存在部分yang不兼容升级不了的问题。这里，就去更改了sysrepo的源码，让特定的那几个yang即使被依赖也可以正常卸载。因为卸载这个动作，主要就是框架这边会用到，业务正常是不会执行这些动作的。</p>
+<p>最后，就是梳理一下完整的启动升级的流程，重构一下整个启动流程的代码，再各种场景验证一下，确保功能都是满足期望的。OK，程序升级改造完成，耗时一周，最终的效果还有个小惊喜，发现改造完之后，升级的速度比之前快了不少。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>有一句话叫做“认知决定思维,思维决定行为,行为决定结果”，工作当中遇到了问题，如何解决问题，解决问题的效果跟我们的知识也是一样的关系。不同的认知，决定不同的处理方式，会达到不同的结果。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4432,6 +4432,41 @@
       </categories>
   </entry>
   <entry>
+    <title>《趣谈linux操作系统》小结(三十七) - 虚拟化</title>
+    <url>/2022/02/23/linux37/</url>
+    <content><![CDATA[<h1 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h1><p>虚拟化顾名思义就是不是真实的，非实际物理的。而是逻辑上面的一个概念。平常的机器资源大小是固定的，不能灵活改变。而且资源是不能够复用的， 在一台机器上的资源就那么多，系统编号都是按序来的，不能够大家都一样的。怎么说了，其实系统本身也是具有虚拟化的概念，比如进程的虚拟地址，每个进程都有4G的虚拟空间。</p>
+<span id="more"></span>
+
+<p>在linux上解决不灵活的问题方法就是创建虚拟机。每个虚拟机都有单独的操作系统，可以指定规格，通过一个命令就可以启动起来。我们平常使用到的VMWare， virtualBox就是虚拟化的具体应用案例。这些软件对于宿主机而言，是一个普通的用户程序，但是在内部运行时，他又好像就是系统程序。</p>
+<p>这些软件，充当一个虚拟化的层。大概就是hook了系统的接口，在虚拟机内核调用的都是其提供的接口，虚拟机内核无感知。</p>
+<p>虚拟化有三种方式：</p>
+<ol>
+<li>完全虚拟化，就是模拟假的CPU、内存、网卡、硬盘。凡事都是通过虚拟化软件来转一手执行。</li>
+<li>硬件辅助虚拟化，通过设置虚拟机的状态位，让他直接在CPU上执行指令，而不需要虚拟化软件转一手，提高执行的效率。</li>
+<li>半虚拟化，不同于前面两种，这中方式内核知道自己是虚拟机，采用特别的接口处理指令。</li>
+</ol>
+<p>有一种虚拟化软件叫qemu,就是使用的完全虚拟化的方式。现在qemu也结合了硬件辅助虚拟化提高了指令执行的速度，也使用了半虚拟化的方式加快了设备访问的效率。</p>
+<p>linux内核提供了一个KVM模块，暴露接口给用户态程序调用，提高指令的执行速度。</p>
+<h1 id="虚拟机的创建"><a href="#虚拟机的创建" class="headerlink" title="虚拟机的创建"></a>虚拟机的创建</h1><p>基本的操作跟安装virtualBox虚拟机一样：</p>
+<ul>
+<li>创建一个虚拟机指定一个名称</li>
+<li>设置虚拟内存的大小</li>
+<li>创建虚拟的硬盘，指定大小。可以选择固定大小，也可以动态分配的(占用实际的大小)</li>
+<li>挂载iOS系统安装盘</li>
+<li>选择网络模式，桥接网络的话就是会创建一个虚拟的交换机，把虚拟机网卡和物理网卡连接起来。桥接网络的话虚拟机的ip跟物理机是一个网段的。NAT网络的话，IP不是一个网段的。</li>
+</ul>
+<p><img src="/images/202202/bridge_net.jpeg" alt="avatar"></p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这里小结了一下虚拟化的原理。具体虚拟化的实现是一个很大的知识面了。以后有需要再深入。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>《趣谈linux操作系统》小结(三十六) - 网络通信</title>
     <url>/2022/02/21/linux36/</url>
     <content><![CDATA[<p>这篇文章小结一下使用socket发送和接收网络包的流程。</p>
@@ -4464,41 +4499,6 @@
 <li>TCP层： 依次从不同的队列读取网络包。这里包含了TCP的处理逻辑，不深入分析了。</li>
 </ul>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>从网络包的发送和接收中，看到了分层系统的应用。所有复杂的逻辑，在软件系统中通过分层都可以来简化。不同协议、设备网卡等，通过分层的框架可以很快的进行适配。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>《趣谈linux操作系统》小结(三十七) - 虚拟化</title>
-    <url>/2022/02/23/linux37/</url>
-    <content><![CDATA[<h1 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h1><p>虚拟化顾名思义就是不是真实的，非实际物理的。而是逻辑上面的一个概念。平常的机器资源大小是固定的，不能灵活改变。而且资源是不能够复用的， 在一台机器上的资源就那么多，系统编号都是按序来的，不能够大家都一样的。怎么说了，其实系统本身也是具有虚拟化的概念，比如进程的虚拟地址，每个进程都有4G的虚拟空间。</p>
-<span id="more"></span>
-
-<p>在linux上解决不灵活的问题方法就是创建虚拟机。每个虚拟机都有单独的操作系统，可以指定规格，通过一个命令就可以启动起来。我们平常使用到的VMWare， virtualBox就是虚拟化的具体应用案例。这些软件对于宿主机而言，是一个普通的用户程序，但是在内部运行时，他又好像就是系统程序。</p>
-<p>这些软件，充当一个虚拟化的层。大概就是hook了系统的接口，在虚拟机内核调用的都是其提供的接口，虚拟机内核无感知。</p>
-<p>虚拟化有三种方式：</p>
-<ol>
-<li>完全虚拟化，就是模拟假的CPU、内存、网卡、硬盘。凡事都是通过虚拟化软件来转一手执行。</li>
-<li>硬件辅助虚拟化，通过设置虚拟机的状态位，让他直接在CPU上执行指令，而不需要虚拟化软件转一手，提高执行的效率。</li>
-<li>半虚拟化，不同于前面两种，这中方式内核知道自己是虚拟机，采用特别的接口处理指令。</li>
-</ol>
-<p>有一种虚拟化软件叫qemu,就是使用的完全虚拟化的方式。现在qemu也结合了硬件辅助虚拟化提高了指令执行的速度，也使用了半虚拟化的方式加快了设备访问的效率。</p>
-<p>linux内核提供了一个KVM模块，暴露接口给用户态程序调用，提高指令的执行速度。</p>
-<h1 id="虚拟机的创建"><a href="#虚拟机的创建" class="headerlink" title="虚拟机的创建"></a>虚拟机的创建</h1><p>基本的操作跟安装virtualBox虚拟机一样：</p>
-<ul>
-<li>创建一个虚拟机指定一个名称</li>
-<li>设置虚拟内存的大小</li>
-<li>创建虚拟的硬盘，指定大小。可以选择固定大小，也可以动态分配的(占用实际的大小)</li>
-<li>挂载iOS系统安装盘</li>
-<li>选择网络模式，桥接网络的话就是会创建一个虚拟的交换机，把虚拟机网卡和物理网卡连接起来。桥接网络的话虚拟机的ip跟物理机是一个网段的。NAT网络的话，IP不是一个网段的。</li>
-</ul>
-<p><img src="/images/202202/bridge_net.jpeg" alt="avatar"></p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这里小结了一下虚拟化的原理。具体虚拟化的实现是一个很大的知识面了。以后有需要再深入。</p>
 <blockquote><p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
 </blockquote>
@@ -4647,6 +4647,46 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈(13) - 系统架构师教程读书笔记(1)</title>
+    <url>/2022/03/12/weekly-SA/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十三篇。</p>
+<p>这一周主要就是看了系统架构师教程的前面四章，在专业知识层面上没有其他值得讲的。今天就当作是对本周看书的小结吧。</p>
+<h1 id="系统架构设计师教程"><a href="#系统架构设计师教程" class="headerlink" title="系统架构设计师教程"></a>系统架构设计师教程</h1><p><img src="/images/202203/systemdesign.jpeg" alt="avatar"></p>
+<p>下面分4个小结简单小结一下。</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>系统架构的概念及发展历史。</p>
+<p>架构的三要素是构件、模式和规划。</p>
+<p>软件系统架构是关于软件系统的结构、行为和属性的高级抽象。描述阶段主要就是描述构成系统的抽象组件、各个构件的连接规则。实现阶段指定软件系统的组织结构和拓扑，显示系统需求和构成组件的对应关系，基本原理。文字看起来比较抽象。</p>
+<p>系统架构设计师的定义及职业素养。系统架构师主要着眼于实现和考虑系统的组织协调。要求有对应的技术素质和管理素质。主要配合项目管理师和系统分析师的工作。统筹技术实现及组织协调方面的工作吧。</p>
+<h2 id="计算机与网络基础知识"><a href="#计算机与网络基础知识" class="headerlink" title="计算机与网络基础知识"></a>计算机与网络基础知识</h2><p>操作系统的基础知识，操作系统的分类及主要功能。 主要功能：进程管理、文件管理、存储管理、设备管理和作业管理。</p>
+<p>数据库系统基础知识，数据库的分类：关系数据库系统、面向对象的数据库系统、对象关系数据库系统。平常用的基本是关系数据库系统多一些。E-R图， 数据库设计步骤等。(需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库应用程序设计)。</p>
+<p>计算机网络基础知识：OSI网络体系结构和TCP&#x2F;IP结构。</p>
+<p>多媒体技术及应用。</p>
+<p>系统性能： 性能指标、性能计算、性能设计、性能评估。不同的部件有不同的性能指标。性能计算的方法有定义法、公式法、程序检测法和仪器检测法。性能设计讲的就是如何进行性能调整，识别约束。阿姆达定律计算系统性能的改进。性能评估，按照一定的步骤，选用一定的度量项目，通过建模和实验，对系统的性能进行各项检测，形成一份结果文档，供性能优化参考。</p>
+<p>系统监视， 使用系统命令、查阅系统记录文件、集成命令和文件记录及可视化技术的应用程序。</p>
+<h2 id="信息系统基础知识"><a href="#信息系统基础知识" class="headerlink" title="信息系统基础知识"></a>信息系统基础知识</h2><p>信息的定义， 信息是对客观事物变化和特性的反映，是客观事物之间的相互作用和联系的表征，是客观事物经过感知或认识后的再现。看起来是很抽象的。</p>
+<p>讲了信息化的定义，内容及对其经济社会的意义。</p>
+<p>信息系统工程总体规划， 信息系统工程总体规划的软件架构组成：文件服务器架构、典型的客户&#x2F;服务器两层架构，客户&#x2F;服务器N层架构、基于web的架构。总体架构的实现过程：按规划报告购置和安装计算机系统、建立数据库系统、程序设计、系统转换、试运行。信息化的典型应用有政府信息化的电子政务、企业信息化的电子商务、企业门户等。</p>
+<h2 id="系统开发基础知识"><a href="#系统开发基础知识" class="headerlink" title="系统开发基础知识"></a>系统开发基础知识</h2><p>软件开发方法， 软件开发的生命周期：软件定义时期、软件开发时期、软件运行与维护。软件开发过程模型，从某个特定角度提出的软件过程的简单描述：瀑布模型、原型模型、螺旋模型、基于可重用构建的模型、基于面向对象的模型、基于四代技术的模型。敏捷方法，强调以人为本，面向人而非过程，具有适应性和预设性。迭代增量的开发过程。</p>
+<p>需求管理，建立软件需求基线，需求规格说明进行版本控制、需求变更控制、需求跟踪。</p>
+<p>开发管理，项目的范围、时间、成本控制。配置管理、文档管理、软件开发质量和风险。</p>
+<p>设计方法，结构化分析和设计、面向对象的分析设计。</p>
+<p>软件的重用。</p>
+<p>逆向工程与重构工程。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>以上是大概看的一些知识点。大部分是抽象了一点，需要在正常的工作工程中，相互联系消化。除了操作系统、数据库和计算机基础知识、网络这些知识外，感觉其他的都偏抽象了。考系统架构设计师是一个大工程，万里之行始于足下，一切才刚刚开始呢。。。加油!</p>
+<p>这周除了看书，就是到几个景点转了转，橘子洲、烈士公园、西湖。然后就是准备一下入职的材料，去体检，上班踩点。办理了宽带，还入手了一个联想小新Pro16。现在的笔记本都是使用的SSD硬盘，16G内存，使用起来的速度都还不错的，笔记本主要用于带到办公室编码吧，目前感觉那个微软的系统做的也越来越好了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(14) - DPDK原理</title>
     <url>/2022/03/20/weekly-dpdk/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
@@ -4687,46 +4727,6 @@
       <categories>
         <category>技术</category>
         <category>DPDK</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>周谈(13) - 系统架构师教程读书笔记(1)</title>
-    <url>/2022/03/12/weekly-SA/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
-<span id="more"></span>
-
-<p>这是第十三篇。</p>
-<p>这一周主要就是看了系统架构师教程的前面四章，在专业知识层面上没有其他值得讲的。今天就当作是对本周看书的小结吧。</p>
-<h1 id="系统架构设计师教程"><a href="#系统架构设计师教程" class="headerlink" title="系统架构设计师教程"></a>系统架构设计师教程</h1><p><img src="/images/202203/systemdesign.jpeg" alt="avatar"></p>
-<p>下面分4个小结简单小结一下。</p>
-<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><p>系统架构的概念及发展历史。</p>
-<p>架构的三要素是构件、模式和规划。</p>
-<p>软件系统架构是关于软件系统的结构、行为和属性的高级抽象。描述阶段主要就是描述构成系统的抽象组件、各个构件的连接规则。实现阶段指定软件系统的组织结构和拓扑，显示系统需求和构成组件的对应关系，基本原理。文字看起来比较抽象。</p>
-<p>系统架构设计师的定义及职业素养。系统架构师主要着眼于实现和考虑系统的组织协调。要求有对应的技术素质和管理素质。主要配合项目管理师和系统分析师的工作。统筹技术实现及组织协调方面的工作吧。</p>
-<h2 id="计算机与网络基础知识"><a href="#计算机与网络基础知识" class="headerlink" title="计算机与网络基础知识"></a>计算机与网络基础知识</h2><p>操作系统的基础知识，操作系统的分类及主要功能。 主要功能：进程管理、文件管理、存储管理、设备管理和作业管理。</p>
-<p>数据库系统基础知识，数据库的分类：关系数据库系统、面向对象的数据库系统、对象关系数据库系统。平常用的基本是关系数据库系统多一些。E-R图， 数据库设计步骤等。(需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库应用程序设计)。</p>
-<p>计算机网络基础知识：OSI网络体系结构和TCP&#x2F;IP结构。</p>
-<p>多媒体技术及应用。</p>
-<p>系统性能： 性能指标、性能计算、性能设计、性能评估。不同的部件有不同的性能指标。性能计算的方法有定义法、公式法、程序检测法和仪器检测法。性能设计讲的就是如何进行性能调整，识别约束。阿姆达定律计算系统性能的改进。性能评估，按照一定的步骤，选用一定的度量项目，通过建模和实验，对系统的性能进行各项检测，形成一份结果文档，供性能优化参考。</p>
-<p>系统监视， 使用系统命令、查阅系统记录文件、集成命令和文件记录及可视化技术的应用程序。</p>
-<h2 id="信息系统基础知识"><a href="#信息系统基础知识" class="headerlink" title="信息系统基础知识"></a>信息系统基础知识</h2><p>信息的定义， 信息是对客观事物变化和特性的反映，是客观事物之间的相互作用和联系的表征，是客观事物经过感知或认识后的再现。看起来是很抽象的。</p>
-<p>讲了信息化的定义，内容及对其经济社会的意义。</p>
-<p>信息系统工程总体规划， 信息系统工程总体规划的软件架构组成：文件服务器架构、典型的客户&#x2F;服务器两层架构，客户&#x2F;服务器N层架构、基于web的架构。总体架构的实现过程：按规划报告购置和安装计算机系统、建立数据库系统、程序设计、系统转换、试运行。信息化的典型应用有政府信息化的电子政务、企业信息化的电子商务、企业门户等。</p>
-<h2 id="系统开发基础知识"><a href="#系统开发基础知识" class="headerlink" title="系统开发基础知识"></a>系统开发基础知识</h2><p>软件开发方法， 软件开发的生命周期：软件定义时期、软件开发时期、软件运行与维护。软件开发过程模型，从某个特定角度提出的软件过程的简单描述：瀑布模型、原型模型、螺旋模型、基于可重用构建的模型、基于面向对象的模型、基于四代技术的模型。敏捷方法，强调以人为本，面向人而非过程，具有适应性和预设性。迭代增量的开发过程。</p>
-<p>需求管理，建立软件需求基线，需求规格说明进行版本控制、需求变更控制、需求跟踪。</p>
-<p>开发管理，项目的范围、时间、成本控制。配置管理、文档管理、软件开发质量和风险。</p>
-<p>设计方法，结构化分析和设计、面向对象的分析设计。</p>
-<p>软件的重用。</p>
-<p>逆向工程与重构工程。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>以上是大概看的一些知识点。大部分是抽象了一点，需要在正常的工作工程中，相互联系消化。除了操作系统、数据库和计算机基础知识、网络这些知识外，感觉其他的都偏抽象了。考系统架构设计师是一个大工程，万里之行始于足下，一切才刚刚开始呢。。。加油!</p>
-<p>这周除了看书，就是到几个景点转了转，橘子洲、烈士公园、西湖。然后就是准备一下入职的材料，去体检，上班踩点。办理了宽带，还入手了一个联想小新Pro16。现在的笔记本都是使用的SSD硬盘，16G内存，使用起来的速度都还不错的，笔记本主要用于带到办公室编码吧，目前感觉那个微软的系统做的也越来越好了。</p>
-<blockquote><p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
-]]></content>
-      <categories>
-        <category>技术</category>
       </categories>
   </entry>
   <entry>
@@ -5357,61 +5357,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(26)-Linux文件系统与驱动</title>
-    <url>/2022/06/23/linux-fs/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
-<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
-<span id="more"></span>
-
-<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
-<ul>
-<li>bin 存放基本命令程序</li>
-<li>sbin 存放系统命令的程序</li>
-<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
-<li>etc 配置文件目录</li>
-<li>lib 库文件的存放目录</li>
-<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
-<li>opt 可选软件安装目录</li>
-<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
-<li>tmp 临时文件目录</li>
-<li>usr 用户存放程序的目录</li>
-<li>var 经常变动的文件放在这里 比如log文件</li>
-<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
-</ul>
-<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
-<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
-<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
-<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
-<p><img src="/images/202206/devfs.png" alt="avatar"></p>
-<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
-<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
-<p><img src="/images/202206/addcd.png" alt="avatar"></p>
-<p> 效果如下：</p>
-<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
-<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>udev有对应的工具监控netlink。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
-<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>Linux</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(25)-初识驱动开发</title>
     <url>/2022/06/19/driver/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>工作需要，开始接触驱动开发了。</p>
@@ -5522,6 +5467,61 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈(26)-Linux文件系统与驱动</title>
+    <url>/2022/06/23/linux-fs/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
+<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
+<span id="more"></span>
+
+<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
+<ul>
+<li>bin 存放基本命令程序</li>
+<li>sbin 存放系统命令的程序</li>
+<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
+<li>etc 配置文件目录</li>
+<li>lib 库文件的存放目录</li>
+<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
+<li>opt 可选软件安装目录</li>
+<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
+<li>tmp 临时文件目录</li>
+<li>usr 用户存放程序的目录</li>
+<li>var 经常变动的文件放在这里 比如log文件</li>
+<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
+</ul>
+<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
+<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
+<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
+<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
+<p><img src="/images/202206/devfs.png" alt="avatar"></p>
+<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
+<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
+<p><img src="/images/202206/addcd.png" alt="avatar"></p>
+<p> 效果如下：</p>
+<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
+<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>udev有对应的工具监控netlink。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
+<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>Linux</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(28)-内核调用crypto算法代码解析</title>
     <url>/2022/07/09/linux-kernel-crypto/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上周讲了使用tcrypt对内核加密框架linux kernel crypto中算法的测试。今天具体看一下几个示例。</p>
@@ -5613,49 +5613,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(29)-snow3g流密码算法</title>
-    <url>/2022/07/17/snow3g/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面讲过<code>ZUC</code>算法是3GPP LTE 第三套加密标准核心算法，而<code>Snow 3G</code>则是第二套加密标准核心算法，<code>ZUC</code>和<code>Snow 3G</code>算法的英文描述可以在这个网站上找到:</p>
-<p><code>https://www.gsma.com/security/security-algorithms/</code></p>
-<p><img src="/images/202207/3gpp_security.png" alt="avatar"></p>
-<span id="more"></span>
-
-<p>实现完<code>ZUC</code>的驱动后，这周实现了一下<code>Snow 3G</code>的驱动，顺带学习了一下这个算法。</p>
-<h1 id="Snow-3G"><a href="#Snow-3G" class="headerlink" title="Snow 3G"></a>Snow 3G</h1><p><code>Snow 3G</code>也包含了完整性算法<code>UEA2</code>和保密性算法<code>UIA2</code>两个部分，同时也依赖一个算法描述如何生成密钥流。</p>
-<h2 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/snow3gspec.pdf</code></p>
-<p>根据输入的密钥和IV初始化，而后根据输入的数据长度产生密钥流。</p>
-<p><img src="/images/202207/snow3g_spec.png" alt="avatar"></p>
-<p>在文档后面还有对应的C语言实现程序，当然只是一个基础的实现，如果要应用到实际的产品中还需要重构一下。</p>
-<h2 id="保密性算法"><a href="#保密性算法" class="headerlink" title="保密性算法"></a>保密性算法</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/uea2uia2d1v21.pdf</code></p>
-<p><img src="/images/202207/uea2.png" alt="avatar"></p>
-<p><code>UEA2</code>是一种流加密算法，按位进行加解密。从上图中可以看到对应的输入参数和输出结果。这些参数首先会根据固定的算法产生IV数据，然后按照算法描述产生密钥流，最终跟要加密或者解密的数据进行运算得到最终的结果。</p>
-<p><img src="/images/202207/uea2b.png" alt="avatar"></p>
-<p>同样的，在文档的后面有对应的C语言实现程序。</p>
-<h2 id="完整性算法"><a href="#完整性算法" class="headerlink" title="完整性算法"></a>完整性算法</h2><p>文档链接跟保密性算法是同一个文档。</p>
-<p><img src="/images/202207/uia2.png" alt="avatar"></p>
-<p>具体的计算过程可以参考文档。在文档的后面也有对应的C语言实现程序。</p>
-<p>不过完整性算法的C语言代码，最后计算MAC是有错误的，需要修改一下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*原始代码 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"> <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++)</span><br><span class="line">    MAC_I[i] = (mac32 &gt;&gt; (<span class="number">8</span>*(<span class="number">3</span>-i))) &amp; <span class="number">0xff</span>; <span class="comment">/* mac32是一个没有定义的变量 */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> MAC_I; </span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改代码 */</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++) &#123;</span><br><span class="line">    MAC_I[i] = ((EVAL &gt;&gt; (<span class="number">56</span> - (i * <span class="number">8</span>))) ^ ((z[<span class="number">4</span>]) &gt;&gt; (<span class="number">24</span> - (i * <span class="number">8</span>)))) &amp; <span class="number">0xff</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">return</span> MAC_I;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>我也是参考了一个go语言的<code>snow3g</code>的实现，然后是验证通过了的。</p>
-<p><code>https://github.com/frankurcrazy/snow3g/blob/master/uia2/uia2.go</code></p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这个<code>3gpp</code>的英文文档内容还是比较齐全的，而且还自带了算法的实现代码。同样的，<code>ZUC</code>对应的<code>EEA3</code>和<code>EIA3</code>算法也有代码。不过，经过验证，我发现了一个问题，那就是<code>ZUC</code>的样例数据是按照大端字节序测试的，在小端主机上面，需要先把原始的数据转换一下字节序，才能得到正确的结果。而那个<code>snow 3g</code>的测试数据本身就认为你是小端的，在小端主机上面不需要转换字节序，计算出的结果就跟他的示例数据是一致的。如果有人研究的话，注意一下这点区别。</p>
-<p>多学点知识还是有好处的，这边有个工作中的小插曲。</p>
-<p>就是工作上需要在新的机型上验证一个功能，但是验证平台资源比较紧俏，运行速度又慢，而且很多人排着队等着去使用。那没有办法了，你只能在现有的机器资源上面先把代码编译测试了，然后再弄到新的机型上面去验证。也就是先本地验证了把基本的流程走通了，再换环境验证一下。不同的环境就有个系统版本不一致的问题，主要就是那个glibc的库不一样，系统内核版本不一样，那么就需要用到docker这个东西了。需要在本地搭建一个跟新机型上面环境一致的镜像系统，在这个镜像里面编译好了，再把生成的二进制拷贝到新机型上面验证。今年不是刚好看了一些docker的基础使用吗，然后自然就很快的用上了，节省了许多时间。</p>
-<p>多学点东西是不错的，有博客记录一下更不错了，到用的时候可以来查一查，事半功倍。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>算法</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(30)-ecc曲线原理</title>
     <url>/2022/07/24/ecc/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这周完成了流密码算法的驱动开发及调试。毕竟对驱动的一些机制了解的还不够深，还是花了许多时间才调试完成，加了三天的班。中间遇到了一个dma内存映射的问题，由于映射时参数错误导致数据一直没有更新。前面写驱动代码的时候，也只是参照着其它算法的代码写的，那个算法的代码比较久了，没有及时地更新，导致又走了些同样弯路。总之，还是自己对驱动相关的知识没有掌握导致的。</p>
@@ -5702,6 +5659,49 @@
 <p><a href="https://zhuanlan.zhihu.com/p/453717195">https://zhuanlan.zhihu.com/p/453717195</a></p>
 <p><a href="https://blog.csdn.net/sahusoft/article/details/6868016">https://blog.csdn.net/sahusoft/article/details/6868016</a></p>
 <p>后面再看一看椭圆曲线在内核中的应用。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈(29)-snow3g流密码算法</title>
+    <url>/2022/07/17/snow3g/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面讲过<code>ZUC</code>算法是3GPP LTE 第三套加密标准核心算法，而<code>Snow 3G</code>则是第二套加密标准核心算法，<code>ZUC</code>和<code>Snow 3G</code>算法的英文描述可以在这个网站上找到:</p>
+<p><code>https://www.gsma.com/security/security-algorithms/</code></p>
+<p><img src="/images/202207/3gpp_security.png" alt="avatar"></p>
+<span id="more"></span>
+
+<p>实现完<code>ZUC</code>的驱动后，这周实现了一下<code>Snow 3G</code>的驱动，顺带学习了一下这个算法。</p>
+<h1 id="Snow-3G"><a href="#Snow-3G" class="headerlink" title="Snow 3G"></a>Snow 3G</h1><p><code>Snow 3G</code>也包含了完整性算法<code>UEA2</code>和保密性算法<code>UIA2</code>两个部分，同时也依赖一个算法描述如何生成密钥流。</p>
+<h2 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/snow3gspec.pdf</code></p>
+<p>根据输入的密钥和IV初始化，而后根据输入的数据长度产生密钥流。</p>
+<p><img src="/images/202207/snow3g_spec.png" alt="avatar"></p>
+<p>在文档后面还有对应的C语言实现程序，当然只是一个基础的实现，如果要应用到实际的产品中还需要重构一下。</p>
+<h2 id="保密性算法"><a href="#保密性算法" class="headerlink" title="保密性算法"></a>保密性算法</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/uea2uia2d1v21.pdf</code></p>
+<p><img src="/images/202207/uea2.png" alt="avatar"></p>
+<p><code>UEA2</code>是一种流加密算法，按位进行加解密。从上图中可以看到对应的输入参数和输出结果。这些参数首先会根据固定的算法产生IV数据，然后按照算法描述产生密钥流，最终跟要加密或者解密的数据进行运算得到最终的结果。</p>
+<p><img src="/images/202207/uea2b.png" alt="avatar"></p>
+<p>同样的，在文档的后面有对应的C语言实现程序。</p>
+<h2 id="完整性算法"><a href="#完整性算法" class="headerlink" title="完整性算法"></a>完整性算法</h2><p>文档链接跟保密性算法是同一个文档。</p>
+<p><img src="/images/202207/uia2.png" alt="avatar"></p>
+<p>具体的计算过程可以参考文档。在文档的后面也有对应的C语言实现程序。</p>
+<p>不过完整性算法的C语言代码，最后计算MAC是有错误的，需要修改一下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*原始代码 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"> <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++)</span><br><span class="line">    MAC_I[i] = (mac32 &gt;&gt; (<span class="number">8</span>*(<span class="number">3</span>-i))) &amp; <span class="number">0xff</span>; <span class="comment">/* mac32是一个没有定义的变量 */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> MAC_I; </span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改代码 */</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++) &#123;</span><br><span class="line">    MAC_I[i] = ((EVAL &gt;&gt; (<span class="number">56</span> - (i * <span class="number">8</span>))) ^ ((z[<span class="number">4</span>]) &gt;&gt; (<span class="number">24</span> - (i * <span class="number">8</span>)))) &amp; <span class="number">0xff</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">return</span> MAC_I;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我也是参考了一个go语言的<code>snow3g</code>的实现，然后是验证通过了的。</p>
+<p><code>https://github.com/frankurcrazy/snow3g/blob/master/uia2/uia2.go</code></p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这个<code>3gpp</code>的英文文档内容还是比较齐全的，而且还自带了算法的实现代码。同样的，<code>ZUC</code>对应的<code>EEA3</code>和<code>EIA3</code>算法也有代码。不过，经过验证，我发现了一个问题，那就是<code>ZUC</code>的样例数据是按照大端字节序测试的，在小端主机上面，需要先把原始的数据转换一下字节序，才能得到正确的结果。而那个<code>snow 3g</code>的测试数据本身就认为你是小端的，在小端主机上面不需要转换字节序，计算出的结果就跟他的示例数据是一致的。如果有人研究的话，注意一下这点区别。</p>
+<p>多学点知识还是有好处的，这边有个工作中的小插曲。</p>
+<p>就是工作上需要在新的机型上验证一个功能，但是验证平台资源比较紧俏，运行速度又慢，而且很多人排着队等着去使用。那没有办法了，你只能在现有的机器资源上面先把代码编译测试了，然后再弄到新的机型上面去验证。也就是先本地验证了把基本的流程走通了，再换环境验证一下。不同的环境就有个系统版本不一致的问题，主要就是那个glibc的库不一样，系统内核版本不一样，那么就需要用到docker这个东西了。需要在本地搭建一个跟新机型上面环境一致的镜像系统，在这个镜像里面编译好了，再把生成的二进制拷贝到新机型上面验证。今年不是刚好看了一些docker的基础使用吗，然后自然就很快的用上了，节省了许多时间。</p>
+<p>多学点东西是不错的，有博客记录一下更不错了，到用的时候可以来查一查，事半功倍。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -5804,6 +5804,39 @@
       </categories>
   </entry>
   <entry>
+    <title>设备驱动的阻塞和非阻塞IO， 轮询编程</title>
+    <url>/2022/08/14/driver-io/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Linux IO中有阻塞和非阻塞之分。阻塞就是在执行操作的过程中，如果不能获得资源则挂起进程，直到满足可操作的条件后再进行操作。非阻塞则不会挂起，直接返回结果，然后可以不停的来查询直到可以进行操作，也可以放弃操作。</p>
+<span id="more"></span>
+<h2 id="驱动的阻塞和非阻塞IO"><a href="#驱动的阻塞和非阻塞IO" class="headerlink" title="驱动的阻塞和非阻塞IO"></a>驱动的阻塞和非阻塞IO</h2><p>驱动实现的read和write操作，可以支持阻塞和非阻塞的操作。需要在read和write接口实现代码中，根据文件的flag实现不同的流程。阻塞的话，进程会挂起，调用schedule让出cpu，直到中断返回才继续执行。非阻塞就直接返回。</p>
+<p><img src="/images/202208/driver_io.png" alt="driver_io"></p>
+<p>是否阻塞，需要在打开文件的时候，传入对应的标记O_NONBLOCK。也可以通过ioctl, fcntl改变属性。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">fd = open(<span class="string">&quot;/path/to/file&quot;</span>, O_RDWR | O_NON_BLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ioctl(m_sock, FIONBIO , &amp;has);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="阻塞实现"><a href="#阻塞实现" class="headerlink" title="阻塞实现"></a>阻塞实现</h2><p>阻塞实现是基于等待队列来实现的， 等待队列是linux的一个机制。在函数实现时，创建一个等待队列元素，保存当前任务的task结构，然后添加等待队列到等待队列头中。然后在需要阻塞的时候，调用schedule让出CPU。在满足条件的地方调用wake_up函数来调度之前阻塞的任务。</p>
+<p>下面分析一下read的代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title function_">globalfifo_read</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">char</span> __user *buf,</span></span><br><span class="line"><span class="params">			       <span class="type">size_t</span> count, <span class="type">loff_t</span> *ppos)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data; <span class="comment">// 获取驱动设备信息</span></span><br><span class="line">	DECLARE_WAITQUEUE(wait, current);  <span class="comment">// 创建一个等待队列，保存current task</span></span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	add_wait_queue(&amp;dev-&gt;r_wait, &amp;wait); <span class="comment">// 添加到等待队列头r_wait中</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (dev-&gt;current_len == <span class="number">0</span>) &#123; <span class="comment">// 只有当没有数据时 需要阻塞住</span></span><br><span class="line">		<span class="keyword">if</span> (filp-&gt;f_flags &amp; O_NONBLOCK) &#123; <span class="comment">// 非阻塞直接返回</span></span><br><span class="line">			ret = -EAGAIN;</span><br><span class="line">			<span class="keyword">goto</span> out;</span><br><span class="line">		&#125;</span><br><span class="line">		__set_current_state(TASK_INTERRUPTIBLE);</span><br><span class="line">		mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">		schedule();  <span class="comment">// 让出CPU</span></span><br><span class="line">		<span class="keyword">if</span> (signal_pending(current)) &#123; <span class="comment">// 被信号中断  直接返回</span></span><br><span class="line">			ret = -ERESTARTSYS;</span><br><span class="line">			<span class="keyword">goto</span> out2;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (count &gt; dev-&gt;current_len)</span><br><span class="line">		count = dev-&gt;current_len; <span class="comment">//最多只读当前的长度</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (copy_to_user(buf, dev-&gt;mem, count)) &#123; <span class="comment">// 读数据</span></span><br><span class="line">		ret = -EFAULT;</span><br><span class="line">		<span class="keyword">goto</span> out;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">memcpy</span>(dev-&gt;mem, dev-&gt;mem + count, dev-&gt;current_len - count);</span><br><span class="line">		dev-&gt;current_len -= count;</span><br><span class="line">		printk(KERN_INFO <span class="string">&quot;read %d bytes(s),current_len:%d\n&quot;</span>, count,</span><br><span class="line">		       dev-&gt;current_len);</span><br><span class="line"></span><br><span class="line">		wake_up_interruptible(&amp;dev-&gt;w_wait); <span class="comment">// 通知潜在的可能的写阻塞任务</span></span><br><span class="line"></span><br><span class="line">		ret = count;</span><br><span class="line">	&#125;</span><br><span class="line"> out:</span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"> out2:</span><br><span class="line">	remove_wait_queue(&amp;dev-&gt;r_wait, &amp;wait);</span><br><span class="line">	set_current_state(TASK_RUNNING);</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="轮询编程"><a href="#轮询编程" class="headerlink" title="轮询编程"></a>轮询编程</h2><p>非阻塞的IO可以通过select、poll等接口查询当前文件是否可进行读写操作。实际系统调用的是驱动的poll函数。poll函数的工作主要是调用poll_wait将等待队列添加到poll_table中，并返回对应的掩码标识。这样将触发select或者poll的进一步执行。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">__poll_t</span> (*poll) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> poll_table_struct *);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">globalfifo_poll</span><span class="params">(<span class="keyword">struct</span> file *filp, poll_table * wait)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> mask = <span class="number">0</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data;</span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;r_wait, wait);</span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;w_wait, wait);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != <span class="number">0</span>) &#123;</span><br><span class="line">		mask |= POLLIN | POLLRDNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != GLOBALFIFO_SIZE) &#123;</span><br><span class="line">		mask |= POLLOUT | POLLWRNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line">	<span class="keyword">return</span> mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在用户空间就可以写对应的poll函数监听文件了。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FIFO_CLEAR 0x1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFFER_LEN 20</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> fd, num;</span><br><span class="line">	<span class="type">char</span> rd_ch[BUFFER_LEN];</span><br><span class="line">	fd_set rfds, wfds;	<span class="comment">/* 读/写文件描述符集 */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 以非阻塞方式打开/dev/globalfifo设备文件 */</span></span><br><span class="line">	fd = open(<span class="string">&quot;/dev/globalfifo&quot;</span>, O_RDONLY | O_NONBLOCK);</span><br><span class="line">	<span class="keyword">if</span> (fd != <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="comment">/* FIFO清0 */</span></span><br><span class="line">		<span class="keyword">if</span> (ioctl(fd, FIFO_CLEAR, <span class="number">0</span>) &lt; <span class="number">0</span>)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;ioctl command failed\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">			FD_ZERO(&amp;rfds);</span><br><span class="line">			FD_ZERO(&amp;wfds);</span><br><span class="line">			FD_SET(fd, &amp;rfds);</span><br><span class="line">			FD_SET(fd, &amp;wfds);</span><br><span class="line"></span><br><span class="line">			select(fd + <span class="number">1</span>, &amp;rfds, &amp;wfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">			<span class="comment">/* 数据可获得 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;rfds)) &#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be read\n&quot;</span>);</span><br><span class="line">                <span class="type">int</span> len = read(fd, rd_ch, BUFFER_LEN);</span><br><span class="line">                rd_ch[len<span class="number">-1</span>] = <span class="number">0</span>;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read data %s\r\n&quot;</span>, rd_ch);</span><br><span class="line">            &#125;</span><br><span class="line">			<span class="comment">/* 数据可写入 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;wfds))</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be written\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">            sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Device open failure\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了驱动阻塞和非阻塞IO的实现，以及处理用户空间select&#x2F;poll&#x2F;epoll的并发IO处理的poll函数实现。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>驱动</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(33)-字符设备驱动</title>
     <url>/2022/08/14/driver-char/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>继续驱动学习小结。字符设备驱动是驱动架构的基础。</p>
@@ -5847,39 +5880,6 @@
 <p>现在发现的一个最主要问题就是缺少主动沟通，很少提问，需要我这边主动找他才有反馈。要求每天反馈的日报，也没有严格执行，要求整理总结文档也没有。本来担心他日报没啥写的，就让他晚上九点前给日报的，这周五的日报就没发了，相应的进度也有些慢，看来还是压力没有给到位，没有紧迫感，执行力不强。</p>
 <p>也许我对新人的期望高了一些，需要转变一下策略，得主动先给他讲一下再安排任务，直接给任务的话，他也不及时沟通确认任务，问一下都是明白了，做起来却不是一回事。</p>
 <p>00后都出来工作了，我们这些老骨头也要加强学习了，各方面都得加强。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>驱动</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>设备驱动的阻塞和非阻塞IO， 轮询编程</title>
-    <url>/2022/08/14/driver-io/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Linux IO中有阻塞和非阻塞之分。阻塞就是在执行操作的过程中，如果不能获得资源则挂起进程，直到满足可操作的条件后再进行操作。非阻塞则不会挂起，直接返回结果，然后可以不停的来查询直到可以进行操作，也可以放弃操作。</p>
-<span id="more"></span>
-<h2 id="驱动的阻塞和非阻塞IO"><a href="#驱动的阻塞和非阻塞IO" class="headerlink" title="驱动的阻塞和非阻塞IO"></a>驱动的阻塞和非阻塞IO</h2><p>驱动实现的read和write操作，可以支持阻塞和非阻塞的操作。需要在read和write接口实现代码中，根据文件的flag实现不同的流程。阻塞的话，进程会挂起，调用schedule让出cpu，直到中断返回才继续执行。非阻塞就直接返回。</p>
-<p><img src="/images/202208/driver_io.png" alt="driver_io"></p>
-<p>是否阻塞，需要在打开文件的时候，传入对应的标记O_NONBLOCK。也可以通过ioctl, fcntl改变属性。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">fd = open(<span class="string">&quot;/path/to/file&quot;</span>, O_RDWR | O_NON_BLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ioctl(m_sock, FIONBIO , &amp;has);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="阻塞实现"><a href="#阻塞实现" class="headerlink" title="阻塞实现"></a>阻塞实现</h2><p>阻塞实现是基于等待队列来实现的， 等待队列是linux的一个机制。在函数实现时，创建一个等待队列元素，保存当前任务的task结构，然后添加等待队列到等待队列头中。然后在需要阻塞的时候，调用schedule让出CPU。在满足条件的地方调用wake_up函数来调度之前阻塞的任务。</p>
-<p>下面分析一下read的代码</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title function_">globalfifo_read</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">char</span> __user *buf,</span></span><br><span class="line"><span class="params">			       <span class="type">size_t</span> count, <span class="type">loff_t</span> *ppos)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data; <span class="comment">// 获取驱动设备信息</span></span><br><span class="line">	DECLARE_WAITQUEUE(wait, current);  <span class="comment">// 创建一个等待队列，保存current task</span></span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	add_wait_queue(&amp;dev-&gt;r_wait, &amp;wait); <span class="comment">// 添加到等待队列头r_wait中</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (dev-&gt;current_len == <span class="number">0</span>) &#123; <span class="comment">// 只有当没有数据时 需要阻塞住</span></span><br><span class="line">		<span class="keyword">if</span> (filp-&gt;f_flags &amp; O_NONBLOCK) &#123; <span class="comment">// 非阻塞直接返回</span></span><br><span class="line">			ret = -EAGAIN;</span><br><span class="line">			<span class="keyword">goto</span> out;</span><br><span class="line">		&#125;</span><br><span class="line">		__set_current_state(TASK_INTERRUPTIBLE);</span><br><span class="line">		mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">		schedule();  <span class="comment">// 让出CPU</span></span><br><span class="line">		<span class="keyword">if</span> (signal_pending(current)) &#123; <span class="comment">// 被信号中断  直接返回</span></span><br><span class="line">			ret = -ERESTARTSYS;</span><br><span class="line">			<span class="keyword">goto</span> out2;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (count &gt; dev-&gt;current_len)</span><br><span class="line">		count = dev-&gt;current_len; <span class="comment">//最多只读当前的长度</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (copy_to_user(buf, dev-&gt;mem, count)) &#123; <span class="comment">// 读数据</span></span><br><span class="line">		ret = -EFAULT;</span><br><span class="line">		<span class="keyword">goto</span> out;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">memcpy</span>(dev-&gt;mem, dev-&gt;mem + count, dev-&gt;current_len - count);</span><br><span class="line">		dev-&gt;current_len -= count;</span><br><span class="line">		printk(KERN_INFO <span class="string">&quot;read %d bytes(s),current_len:%d\n&quot;</span>, count,</span><br><span class="line">		       dev-&gt;current_len);</span><br><span class="line"></span><br><span class="line">		wake_up_interruptible(&amp;dev-&gt;w_wait); <span class="comment">// 通知潜在的可能的写阻塞任务</span></span><br><span class="line"></span><br><span class="line">		ret = count;</span><br><span class="line">	&#125;</span><br><span class="line"> out:</span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"> out2:</span><br><span class="line">	remove_wait_queue(&amp;dev-&gt;r_wait, &amp;wait);</span><br><span class="line">	set_current_state(TASK_RUNNING);</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="轮询编程"><a href="#轮询编程" class="headerlink" title="轮询编程"></a>轮询编程</h2><p>非阻塞的IO可以通过select、poll等接口查询当前文件是否可进行读写操作。实际系统调用的是驱动的poll函数。poll函数的工作主要是调用poll_wait将等待队列添加到poll_table中，并返回对应的掩码标识。这样将触发select或者poll的进一步执行。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">__poll_t</span> (*poll) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> poll_table_struct *);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">globalfifo_poll</span><span class="params">(<span class="keyword">struct</span> file *filp, poll_table * wait)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> mask = <span class="number">0</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data;</span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;r_wait, wait);</span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;w_wait, wait);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != <span class="number">0</span>) &#123;</span><br><span class="line">		mask |= POLLIN | POLLRDNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != GLOBALFIFO_SIZE) &#123;</span><br><span class="line">		mask |= POLLOUT | POLLWRNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line">	<span class="keyword">return</span> mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>在用户空间就可以写对应的poll函数监听文件了。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FIFO_CLEAR 0x1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFFER_LEN 20</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> fd, num;</span><br><span class="line">	<span class="type">char</span> rd_ch[BUFFER_LEN];</span><br><span class="line">	fd_set rfds, wfds;	<span class="comment">/* 读/写文件描述符集 */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 以非阻塞方式打开/dev/globalfifo设备文件 */</span></span><br><span class="line">	fd = open(<span class="string">&quot;/dev/globalfifo&quot;</span>, O_RDONLY | O_NONBLOCK);</span><br><span class="line">	<span class="keyword">if</span> (fd != <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="comment">/* FIFO清0 */</span></span><br><span class="line">		<span class="keyword">if</span> (ioctl(fd, FIFO_CLEAR, <span class="number">0</span>) &lt; <span class="number">0</span>)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;ioctl command failed\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">			FD_ZERO(&amp;rfds);</span><br><span class="line">			FD_ZERO(&amp;wfds);</span><br><span class="line">			FD_SET(fd, &amp;rfds);</span><br><span class="line">			FD_SET(fd, &amp;wfds);</span><br><span class="line"></span><br><span class="line">			select(fd + <span class="number">1</span>, &amp;rfds, &amp;wfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">			<span class="comment">/* 数据可获得 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;rfds)) &#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be read\n&quot;</span>);</span><br><span class="line">                <span class="type">int</span> len = read(fd, rd_ch, BUFFER_LEN);</span><br><span class="line">                rd_ch[len<span class="number">-1</span>] = <span class="number">0</span>;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read data %s\r\n&quot;</span>, rd_ch);</span><br><span class="line">            &#125;</span><br><span class="line">			<span class="comment">/* 数据可写入 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;wfds))</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be written\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">            sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Device open failure\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了驱动阻塞和非阻塞IO的实现，以及处理用户空间select&#x2F;poll&#x2F;epoll的并发IO处理的poll函数实现。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -6021,70 +6021,6 @@
       </categories>
   </entry>
   <entry>
-    <title>周谈(37)-DPDK中cryptodev框架介绍</title>
-    <url>/2022/09/18/cryptodev-weekly/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>数据平面开发套件(DPDK, Data Plane Development Kit)是由6WIND,Intel等多家公司开发，主要基于Linux系统运行，用于快速数据包处理的函数库与驱动集合，可以极大提高数据处理性能和吞吐量，提高数据平面应用程序的工作效率。<br>CryptoDev库是DPDK中的一个软件库，提供的管理和配置Crypto poll mode drivers的软件，定义了统一的操作接口。支持加密、认证、链式加密认证、AEAD等对称类算法操作和非对称类算法操作。</p>
-<span id="more"></span>
-
-<p><img src="/images/202209/DPDK_CryptoDev.png" alt="cryptodev_algos"></p>
-<p>cryptodev库的文件大概十几个，代码仅3千行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/code/dpdk/lib<span class="comment"># tree cryptodev/</span></span><br><span class="line">cryptodev/</span><br><span class="line">├── cryptodev_pmd.c</span><br><span class="line">├── cryptodev_pmd.h</span><br><span class="line">├── cryptodev_trace_points.c</span><br><span class="line">├── meson.build</span><br><span class="line">├── rte_crypto_asym.h</span><br><span class="line">├── rte_cryptodev.c</span><br><span class="line">├── rte_cryptodev_core.h</span><br><span class="line">├── rte_cryptodev.h</span><br><span class="line">├── rte_cryptodev_trace_fp.h</span><br><span class="line">├── rte_cryptodev_trace.h</span><br><span class="line">├── rte_crypto.h</span><br><span class="line">├── rte_crypto_sym.h</span><br><span class="line">└── version.map</span><br><span class="line"></span><br><span class="line">0 directories, 13 files</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h1><p>CryptoDev库管理不同的crypto poll mode drivers， 对上提供统一的接口，把pmd抽象成不同的设备。主要功能模块如下图：<br><img src="/images/202209/cryptodev_arch.png" alt="cryptodev_arch"></p>
-<h2 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h2><p>类似linux的驱动管理，CryptoDev把每一种实现算法的硬件或者软件库当做一个crypto设备，定义了crypto设备对应的结构体rte_cryptodev。目前最大支持64个crypto设备，这些信息都会存在一个全局变量cryptodev_globals中。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> <span class="title">rte_crypto_devices</span>[<span class="title">RTE_CRYPTO_MAX_DEVS</span>];</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> *<span class="title">rte_cryptodevs</span> =</span> rte_crypto_devices;</span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_global</span> <span class="title">cryptodev_globals</span> =</span> &#123;</span><br><span class="line">		.devs			= rte_crypto_devices,</span><br><span class="line">		.data			= &#123; <span class="literal">NULL</span> &#125;,</span><br><span class="line">		.nb_devs		= <span class="number">0</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>在创建完设备之后，使用设备之前需要调用相关的接口对设备相关的资源进行配置和初始化，后面才开始正常处理。</p>
-<h3 id="设备创建"><a href="#设备创建" class="headerlink" title="设备创建"></a>设备创建</h3><p>物理加密设备在DPDK初始化阶段的PCI探测到。虚拟设备可以在程序执行时指定vdev或者在代码中硬编码创建。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">--vdev  <span class="string">&#x27;crypto_aesni_mb0,max_nb_queue_pairs=2,socket_id=0&#x27;</span></span><br><span class="line">rte_vdev_init(<span class="string">&quot;crypto_aesni_mb&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;max_nb_queue_pairs=2,socket_id=0&quot;</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
-
-<p>在PMD中调用RTE_PMD_REGISTER_VDEV注册为给定vdev的驱动。</p>
-<h3 id="设备描述标识"><a href="#设备描述标识" class="headerlink" title="设备描述标识"></a>设备描述标识</h3><p>描述一个设备有两种标识。一个是设备的索引，另外一个是设备的名称。可以类比接口名和接口索引。<br>设备索引主要在于设备创建的顺序，名称是PMD注册时指定的。</p>
-<h3 id="设备配置"><a href="#设备配置" class="headerlink" title="设备配置"></a>设备配置</h3><p>配置主要就是资源的配置(如：队列数目)，默认状态，计数器初始化。</p>
-<h3 id="队列对配置"><a href="#队列对配置" class="headerlink" title="队列对配置"></a>队列对配置</h3><p>pmd最主要的模式就是针对一个队列对入队出队，通过rte_cryptodev_queue_pair_setup接口分别设置crypto设备的队列对，从指定的socket申请资源。</p>
-<h2 id="设备特性及能力"><a href="#设备特性及能力" class="headerlink" title="设备特性及能力"></a>设备特性及能力</h2><p>Crypto设备定义全局的feature和算法能力，来描述crypto设备支持的功能。</p>
-<p>在设备创建时，定义设备支持的特性。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// openssl pmd 创建时设置 feature</span></span><br><span class="line"></span><br><span class="line">dev-&gt;feature_flags = RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_OPERATION_CHAINING |</span><br><span class="line">			RTE_CRYPTODEV_FF_CPU_AESNI |</span><br><span class="line">			RTE_CRYPTODEV_FF_IN_PLACE_SGL |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_SGL_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_LB_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_ASYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_EXP |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_QT |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_SESSIONLESS;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>每个PMD会提供各自的算法能力数组，类型为<code>struct rte_cryptodev_capabilities</code>。一般在算法执行前，使用者通过rte_cryptodev_info_get接口调用到具体PMD提供的接口，获取到PMD的能力，再决定能否继续操作。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">  	rte_cryptodev_info_get(dev_id, &amp;dev_info);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!(dev_info.feature_flags &amp; RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO)) &#123;</span><br><span class="line">	RTE_LOG(INFO, USER1, <span class="string">&quot;Feature flag requirements for Snow3G &quot;</span></span><br><span class="line">			<span class="string">&quot;testsuite not met\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> TEST_SKIPPED;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   ... </span><br><span class="line"></span><br><span class="line">   <span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_capabilities</span> <span class="title">openssl_pmd_capabilities</span>[] =</span> &#123;</span><br><span class="line">&#123;	<span class="comment">/* MD5 HMAC */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5_HMAC,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">64</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;	<span class="comment">/* MD5 */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">0</span>,</span><br><span class="line">				.max = <span class="number">0</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">16</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">   ... <span class="comment">// 省略</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="操作处理"><a href="#操作处理" class="headerlink" title="操作处理"></a>操作处理</h2><p>Crypto Operation使用入队出队的接口集实现操作处理。使用enqueue_burst接口接收待处理的operations，软件pmd一般会直接进行算法执行，硬件pmd会把数据放到硬件的input queue。使用dequeue_burst接口获取已经处理完成的operations，软件pmd一般从软件的已完成的队列中获取完成的operations，硬件pmd从硬件的output&#x2F;processed queue获取。</p>
-<h3 id="私有数据"><a href="#私有数据" class="headerlink" title="私有数据"></a>私有数据</h3><p>提供set和get接口API设置算法计算时需要的用户数据到crypto session数据结构中。对于session-less的操作，私有数据可以存放到operation内存尾部。所谓的私有数据一般是各个pmd内部识别算法使用的数据结构。</p>
-<h3 id="回调API"><a href="#回调API" class="headerlink" title="回调API"></a>回调API</h3><p>支持注册回调函数，在关联的队列对调用enqueue_burst之后，或者调用dequeue_burst之前，执行额外的操作。<br>这些回调函数，需要用户自己控制注销，以免造成内存泄漏。</p>
-<p>感觉这个没有多大用处。</p>
-<h3 id="Enqueue-x2F-Dequeue-Burst-接口"><a href="#Enqueue-x2F-Dequeue-Burst-接口" class="headerlink" title="Enqueue&#x2F;Dequeue Burst 接口"></a>Enqueue&#x2F;Dequeue Burst 接口</h3><p>提供接口往指定设备的指定队列队塞或者拉取operations。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_enqueue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_dequeue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Operation结构定义"><a href="#Operation结构定义" class="headerlink" title="Operation结构定义"></a>Operation结构定义</h3><p>定义了operation的结构。一部分通用的区域，然后再分别跟着sym或者asym的operation，最后是私有的数据。开发者需要填充好各个字段，后续PMD才能正常执行。不同的算法都有一个约定好的数据格式，各个pmd按照约定去解析数据。</p>
-<h3 id="Operation分配管理"><a href="#Operation分配管理" class="headerlink" title="Operation分配管理"></a>Operation分配管理</h3><p>对Operation空间的分配管理提供了一套API接口。<br>定义一个mempool来分配operation空间， 以及如何从pool申请&#x2F;释放空间：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> rte_mempool *</span><br><span class="line"><span class="title function_">rte_crypto_op_pool_create</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *name, <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                          <span class="type">unsigned</span> nb_elts, <span class="type">unsigned</span> cache_size, <span class="type">uint16_t</span> priv_size,</span></span><br><span class="line"><span class="params">                          <span class="type">int</span> socket_id)</span>;</span><br><span class="line"><span class="keyword">struct</span> rte_crypto_op *<span class="title function_">rte_crypto_op_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                          <span class="keyword">enum</span> rte_crypto_op_type type)</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="title function_">rte_crypto_op_bulk_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">rte_crypto_op_free</span><span class="params">(<span class="keyword">struct</span> rte_crypto_op *op)</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="对称算法支持"><a href="#对称算法支持" class="headerlink" title="对称算法支持"></a>对称算法支持</h3><p>主要用图描述一下对称算法的使用。</p>
-<p><img src="/images/202209/symflow.png" alt="symflow"></p>
-<h3 id="非对称算法支持"><a href="#非对称算法支持" class="headerlink" title="非对称算法支持"></a>非对称算法支持</h3><p>主要用图描述一下非对称算法的使用。</p>
-<p><img src="/images/202209/asymflow.png" alt="asymflow"></p>
-<h3 id="同步模式"><a href="#同步模式" class="headerlink" title="同步模式"></a>同步模式</h3><p>部分pmd支持同步模式，可以不使用enqueue_burst和dequeue_burst接口，而直接使用rte_cryptodev_sym_cpu_crypto_process。此时，需要设置feature 标记RTE_CRYPTODEV_FF_SYM_CPU_CRYPTO。</p>
-<h3 id="Raw-Data-path-API"><a href="#Raw-Data-path-API" class="headerlink" title="Raw Data-path API"></a>Raw Data-path API</h3><p>不使用DPDK提供的数据结构（rte_mbuf, rte_crypto_op等），可以使用用户定义的结构直接转换。待深入了解。</p>
-<h2 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h2><p>可以使用工具dpdk-telemetry.py查看设备信息。</p>
-<p><img src="/images/202209/telemetry.png" alt="telemetry"></p>
-<p>DPDK还提供了许多tools来作大页内存配置&#x2F;设备绑定等。</p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>CryptoDev库的代码使用了面向对象编程的方法，抽象出许多实体，使用指针的方式关联这些实体。</p>
-<p>随着软件行业的发展，面向对象编程使用的也更加广泛了。现在很多使用C语言编写的库都应用了面向对象编程的设计。包括Linux内核代码也一样，比如Linux Crypto框架，把算法抽象成了对象，还使用了模板，使得代码更加形象化。</p>
-<p>这周给组内分享了一下DPDK CryptoDev框架的基础，星期一的时候花了一整天的时间全面地看了一下cryptodev的主要代码。今天小结一下。</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>DPDK</category>
-      </categories>
-  </entry>
-  <entry>
     <title>周谈(36)-samba配置</title>
     <url>/2022/09/13/samba/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>相信大家大部分情况都是使用linux服务器写代码编译代码，看代码又是在Windows系统下。那么就需要有种方法，让我们可以在windows下面直接看linux服务器上面的代码，也就是可以共享linux服务器上面的文件到windows系统中。samba就是满足这种需求的软件。这个算是程序员工作中比较基础的脚手架了。</p>
@@ -6191,6 +6127,70 @@
       </categories>
   </entry>
   <entry>
+    <title>周谈(37)-DPDK中cryptodev框架介绍</title>
+    <url>/2022/09/18/cryptodev-weekly/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>数据平面开发套件(DPDK, Data Plane Development Kit)是由6WIND,Intel等多家公司开发，主要基于Linux系统运行，用于快速数据包处理的函数库与驱动集合，可以极大提高数据处理性能和吞吐量，提高数据平面应用程序的工作效率。<br>CryptoDev库是DPDK中的一个软件库，提供的管理和配置Crypto poll mode drivers的软件，定义了统一的操作接口。支持加密、认证、链式加密认证、AEAD等对称类算法操作和非对称类算法操作。</p>
+<span id="more"></span>
+
+<p><img src="/images/202209/DPDK_CryptoDev.png" alt="cryptodev_algos"></p>
+<p>cryptodev库的文件大概十几个，代码仅3千行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/code/dpdk/lib<span class="comment"># tree cryptodev/</span></span><br><span class="line">cryptodev/</span><br><span class="line">├── cryptodev_pmd.c</span><br><span class="line">├── cryptodev_pmd.h</span><br><span class="line">├── cryptodev_trace_points.c</span><br><span class="line">├── meson.build</span><br><span class="line">├── rte_crypto_asym.h</span><br><span class="line">├── rte_cryptodev.c</span><br><span class="line">├── rte_cryptodev_core.h</span><br><span class="line">├── rte_cryptodev.h</span><br><span class="line">├── rte_cryptodev_trace_fp.h</span><br><span class="line">├── rte_cryptodev_trace.h</span><br><span class="line">├── rte_crypto.h</span><br><span class="line">├── rte_crypto_sym.h</span><br><span class="line">└── version.map</span><br><span class="line"></span><br><span class="line">0 directories, 13 files</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h1><p>CryptoDev库管理不同的crypto poll mode drivers， 对上提供统一的接口，把pmd抽象成不同的设备。主要功能模块如下图：<br><img src="/images/202209/cryptodev_arch.png" alt="cryptodev_arch"></p>
+<h2 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h2><p>类似linux的驱动管理，CryptoDev把每一种实现算法的硬件或者软件库当做一个crypto设备，定义了crypto设备对应的结构体rte_cryptodev。目前最大支持64个crypto设备，这些信息都会存在一个全局变量cryptodev_globals中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> <span class="title">rte_crypto_devices</span>[<span class="title">RTE_CRYPTO_MAX_DEVS</span>];</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> *<span class="title">rte_cryptodevs</span> =</span> rte_crypto_devices;</span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_global</span> <span class="title">cryptodev_globals</span> =</span> &#123;</span><br><span class="line">		.devs			= rte_crypto_devices,</span><br><span class="line">		.data			= &#123; <span class="literal">NULL</span> &#125;,</span><br><span class="line">		.nb_devs		= <span class="number">0</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在创建完设备之后，使用设备之前需要调用相关的接口对设备相关的资源进行配置和初始化，后面才开始正常处理。</p>
+<h3 id="设备创建"><a href="#设备创建" class="headerlink" title="设备创建"></a>设备创建</h3><p>物理加密设备在DPDK初始化阶段的PCI探测到。虚拟设备可以在程序执行时指定vdev或者在代码中硬编码创建。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">--vdev  <span class="string">&#x27;crypto_aesni_mb0,max_nb_queue_pairs=2,socket_id=0&#x27;</span></span><br><span class="line">rte_vdev_init(<span class="string">&quot;crypto_aesni_mb&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;max_nb_queue_pairs=2,socket_id=0&quot;</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>在PMD中调用RTE_PMD_REGISTER_VDEV注册为给定vdev的驱动。</p>
+<h3 id="设备描述标识"><a href="#设备描述标识" class="headerlink" title="设备描述标识"></a>设备描述标识</h3><p>描述一个设备有两种标识。一个是设备的索引，另外一个是设备的名称。可以类比接口名和接口索引。<br>设备索引主要在于设备创建的顺序，名称是PMD注册时指定的。</p>
+<h3 id="设备配置"><a href="#设备配置" class="headerlink" title="设备配置"></a>设备配置</h3><p>配置主要就是资源的配置(如：队列数目)，默认状态，计数器初始化。</p>
+<h3 id="队列对配置"><a href="#队列对配置" class="headerlink" title="队列对配置"></a>队列对配置</h3><p>pmd最主要的模式就是针对一个队列对入队出队，通过rte_cryptodev_queue_pair_setup接口分别设置crypto设备的队列对，从指定的socket申请资源。</p>
+<h2 id="设备特性及能力"><a href="#设备特性及能力" class="headerlink" title="设备特性及能力"></a>设备特性及能力</h2><p>Crypto设备定义全局的feature和算法能力，来描述crypto设备支持的功能。</p>
+<p>在设备创建时，定义设备支持的特性。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// openssl pmd 创建时设置 feature</span></span><br><span class="line"></span><br><span class="line">dev-&gt;feature_flags = RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_OPERATION_CHAINING |</span><br><span class="line">			RTE_CRYPTODEV_FF_CPU_AESNI |</span><br><span class="line">			RTE_CRYPTODEV_FF_IN_PLACE_SGL |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_SGL_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_LB_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_ASYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_EXP |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_QT |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_SESSIONLESS;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>每个PMD会提供各自的算法能力数组，类型为<code>struct rte_cryptodev_capabilities</code>。一般在算法执行前，使用者通过rte_cryptodev_info_get接口调用到具体PMD提供的接口，获取到PMD的能力，再决定能否继续操作。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">  	rte_cryptodev_info_get(dev_id, &amp;dev_info);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!(dev_info.feature_flags &amp; RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO)) &#123;</span><br><span class="line">	RTE_LOG(INFO, USER1, <span class="string">&quot;Feature flag requirements for Snow3G &quot;</span></span><br><span class="line">			<span class="string">&quot;testsuite not met\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> TEST_SKIPPED;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   ... </span><br><span class="line"></span><br><span class="line">   <span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_capabilities</span> <span class="title">openssl_pmd_capabilities</span>[] =</span> &#123;</span><br><span class="line">&#123;	<span class="comment">/* MD5 HMAC */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5_HMAC,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">64</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;	<span class="comment">/* MD5 */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">0</span>,</span><br><span class="line">				.max = <span class="number">0</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">16</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">   ... <span class="comment">// 省略</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="操作处理"><a href="#操作处理" class="headerlink" title="操作处理"></a>操作处理</h2><p>Crypto Operation使用入队出队的接口集实现操作处理。使用enqueue_burst接口接收待处理的operations，软件pmd一般会直接进行算法执行，硬件pmd会把数据放到硬件的input queue。使用dequeue_burst接口获取已经处理完成的operations，软件pmd一般从软件的已完成的队列中获取完成的operations，硬件pmd从硬件的output&#x2F;processed queue获取。</p>
+<h3 id="私有数据"><a href="#私有数据" class="headerlink" title="私有数据"></a>私有数据</h3><p>提供set和get接口API设置算法计算时需要的用户数据到crypto session数据结构中。对于session-less的操作，私有数据可以存放到operation内存尾部。所谓的私有数据一般是各个pmd内部识别算法使用的数据结构。</p>
+<h3 id="回调API"><a href="#回调API" class="headerlink" title="回调API"></a>回调API</h3><p>支持注册回调函数，在关联的队列对调用enqueue_burst之后，或者调用dequeue_burst之前，执行额外的操作。<br>这些回调函数，需要用户自己控制注销，以免造成内存泄漏。</p>
+<p>感觉这个没有多大用处。</p>
+<h3 id="Enqueue-x2F-Dequeue-Burst-接口"><a href="#Enqueue-x2F-Dequeue-Burst-接口" class="headerlink" title="Enqueue&#x2F;Dequeue Burst 接口"></a>Enqueue&#x2F;Dequeue Burst 接口</h3><p>提供接口往指定设备的指定队列队塞或者拉取operations。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_enqueue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_dequeue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Operation结构定义"><a href="#Operation结构定义" class="headerlink" title="Operation结构定义"></a>Operation结构定义</h3><p>定义了operation的结构。一部分通用的区域，然后再分别跟着sym或者asym的operation，最后是私有的数据。开发者需要填充好各个字段，后续PMD才能正常执行。不同的算法都有一个约定好的数据格式，各个pmd按照约定去解析数据。</p>
+<h3 id="Operation分配管理"><a href="#Operation分配管理" class="headerlink" title="Operation分配管理"></a>Operation分配管理</h3><p>对Operation空间的分配管理提供了一套API接口。<br>定义一个mempool来分配operation空间， 以及如何从pool申请&#x2F;释放空间：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> rte_mempool *</span><br><span class="line"><span class="title function_">rte_crypto_op_pool_create</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *name, <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                          <span class="type">unsigned</span> nb_elts, <span class="type">unsigned</span> cache_size, <span class="type">uint16_t</span> priv_size,</span></span><br><span class="line"><span class="params">                          <span class="type">int</span> socket_id)</span>;</span><br><span class="line"><span class="keyword">struct</span> rte_crypto_op *<span class="title function_">rte_crypto_op_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                          <span class="keyword">enum</span> rte_crypto_op_type type)</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="title function_">rte_crypto_op_bulk_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">rte_crypto_op_free</span><span class="params">(<span class="keyword">struct</span> rte_crypto_op *op)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="对称算法支持"><a href="#对称算法支持" class="headerlink" title="对称算法支持"></a>对称算法支持</h3><p>主要用图描述一下对称算法的使用。</p>
+<p><img src="/images/202209/symflow.png" alt="symflow"></p>
+<h3 id="非对称算法支持"><a href="#非对称算法支持" class="headerlink" title="非对称算法支持"></a>非对称算法支持</h3><p>主要用图描述一下非对称算法的使用。</p>
+<p><img src="/images/202209/asymflow.png" alt="asymflow"></p>
+<h3 id="同步模式"><a href="#同步模式" class="headerlink" title="同步模式"></a>同步模式</h3><p>部分pmd支持同步模式，可以不使用enqueue_burst和dequeue_burst接口，而直接使用rte_cryptodev_sym_cpu_crypto_process。此时，需要设置feature 标记RTE_CRYPTODEV_FF_SYM_CPU_CRYPTO。</p>
+<h3 id="Raw-Data-path-API"><a href="#Raw-Data-path-API" class="headerlink" title="Raw Data-path API"></a>Raw Data-path API</h3><p>不使用DPDK提供的数据结构（rte_mbuf, rte_crypto_op等），可以使用用户定义的结构直接转换。待深入了解。</p>
+<h2 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h2><p>可以使用工具dpdk-telemetry.py查看设备信息。</p>
+<p><img src="/images/202209/telemetry.png" alt="telemetry"></p>
+<p>DPDK还提供了许多tools来作大页内存配置&#x2F;设备绑定等。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>CryptoDev库的代码使用了面向对象编程的方法，抽象出许多实体，使用指针的方式关联这些实体。</p>
+<p>随着软件行业的发展，面向对象编程使用的也更加广泛了。现在很多使用C语言编写的库都应用了面向对象编程的设计。包括Linux内核代码也一样，比如Linux Crypto框架，把算法抽象成了对象，还使用了模板，使得代码更加形象化。</p>
+<p>这周给组内分享了一下DPDK CryptoDev框架的基础，星期一的时候花了一整天的时间全面地看了一下cryptodev的主要代码。今天小结一下。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>DPDK</category>
+      </categories>
+  </entry>
+  <entry>
     <title>周谈(39)-近期小事</title>
     <url>/2022/10/16/lats-weekly/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>国庆后这周连续上来7天班，事情做了许多，也包含了许多小事儿，大的部分暂时没有准备好。本周就拼凑着讲一下几个小事儿。</p>
@@ -6222,7 +6222,7 @@
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   ...</span><br><span class="line">   globalmem_devp-&gt;dev_class = class_create(THIS_MODULE, <span class="string">&quot;driver_dev&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span> (IS_ERR(globalmem_devp-&gt;dev_class)) &#123;</span><br><span class="line">       printk(<span class="string">&quot;class create error\r\n&quot;</span>);</span><br><span class="line">       ret =  -EBUSY;</span><br><span class="line">       <span class="keyword">goto</span> fail_malloc;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   devices = device_create(globalmem_devp-&gt;dev_class, <span class="literal">NULL</span>, MKDEV(globalmem_major, <span class="number">0</span>), <span class="literal">NULL</span>, <span class="string">&quot;globalmem&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span>(<span class="literal">NULL</span> == devices)&#123;</span><br><span class="line">	printk(<span class="string">&quot;device_create error\r\n&quot;</span>);</span><br><span class="line">	ret =  -EBUSY;</span><br><span class="line">       class_destroy(globalmem_devp-&gt;dev_class);</span><br><span class="line">	<span class="keyword">goto</span> fail_malloc;</span><br><span class="line">&#125;</span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
 <p>安装之后， 可以在&#x2F;sys&#x2F;class和&#x2F;dev下找到driver_dev和globalmem</p>
 <p><img src="/images/202210/char_dev.png" alt="char_dev"></p>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这篇知识比较零碎。具体的测试代码在Gitee仓库中<a href="mailto:&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#101;&#x65;&#x2e;&#99;&#x6f;&#109;">&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#101;&#x65;&#x2e;&#99;&#x6f;&#109;</a>:fishmwei&#x2F;blog_code.git。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这篇知识比较零碎。具体的测试代码在Gitee仓库中<a href="mailto:&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#116;&#x65;&#101;&#46;&#x63;&#x6f;&#x6d;">&#x67;&#x69;&#x74;&#x40;&#x67;&#x69;&#116;&#x65;&#101;&#46;&#x63;&#x6f;&#x6d;</a>:fishmwei&#x2F;blog_code.git。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -6343,6 +6343,10 @@
 <h2 id="解密一个数据单元的流程"><a href="#解密一个数据单元的流程" class="headerlink" title="解密一个数据单元的流程"></a>解密一个数据单元的流程</h2><p>解密数据单元跟加密数据单元也是相同的。同样的最后两块也是特殊处理一下。</p>
 <p><img src="/images/202212/xts_aes_decm1127.png" alt="xts_aes_decm1127"></p>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>tweak加密后会作一个什么有限域的运算aj， 这个aj的是怎么来的呢？ 有限域运算又是啥呢，最终还是没有搞懂。 </p>
+<p>内核的linux kernel crypto 的源码需要认真的读一读。</p>
+<p>参考资料：</p>
+<p><a href="https://new.qq.com/rain/a/20220305A08CQ500">https://new.qq.com/rain/a/20220305A08CQ500</a></p>
+<p><a href="http://libeccio.di.unisa.it/Crypto14/Lab/p1619.pdf">http://libeccio.di.unisa.it/Crypto14/Lab/p1619.pdf</a></p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>年底了， 公司通知剩余的年假赶紧休掉，否则年底统一清零，要跨年的需要特殊申请。今年3月份入职的，折算一下有八天年假，领导让休假那就休假吧。年假只算工作日，那么我就连续休息11天啦。到今天算是第六天了， 过半了。脑袋也放空了5天了，接下来的时间得看点东西了。</p>
 <hr>
 <p>行动，才不会被动!</p>

@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://fishmwei.github.io/images/202212/xts_dec_block.png">
 <meta property="og:image" content="https://fishmwei.github.io/images/202212/xts_aes_decm1127.png">
 <meta property="article:published_time" content="2022-12-01T03:48:11.000Z">
-<meta property="article:modified_time" content="2022-12-02T03:54:19.651Z">
+<meta property="article:modified_time" content="2022-12-02T03:57:29.700Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/202212/xts_tweak.png">
@@ -271,6 +271,10 @@
 <h2 id="解密一个数据单元的流程"><a href="#解密一个数据单元的流程" class="headerlink" title="解密一个数据单元的流程"></a>解密一个数据单元的流程</h2><p>解密数据单元跟加密数据单元也是相同的。同样的最后两块也是特殊处理一下。</p>
 <p><img src="/images/202212/xts_aes_decm1127.png" alt="xts_aes_decm1127"></p>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>tweak加密后会作一个什么有限域的运算aj， 这个aj的是怎么来的呢？ 有限域运算又是啥呢，最终还是没有搞懂。 </p>
+<p>内核的linux kernel crypto 的源码需要认真的读一读。</p>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://new.qq.com/rain/a/20220305A08CQ500">https://new.qq.com/rain/a/20220305A08CQ500</a></p>
+<p><a target="_blank" rel="noopener" href="http://libeccio.di.unisa.it/Crypto14/Lab/p1619.pdf">http://libeccio.di.unisa.it/Crypto14/Lab/p1619.pdf</a></p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>年底了， 公司通知剩余的年假赶紧休掉，否则年底统一清零，要跨年的需要特殊申请。今年3月份入职的，折算一下有八天年假，领导让休假那就休假吧。年假只算工作日，那么我就连续休息11天啦。到今天算是第六天了， 过半了。脑袋也放空了5天了，接下来的时间得看点东西了。</p>
 <hr>
 <p>行动，才不会被动!</p>
