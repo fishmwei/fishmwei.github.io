@@ -20,19 +20,21 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="静态链接2前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。">
+  <meta name="description" content="前言最近在技术支持的时候，需要在客户机器上编译驱动代码，遇到了一个问题，客户机器上面没有相应的内核头文件编译环境，没办法编译。 后面由同事通过安装deb包的形式把头文件之类的安装后，就可以正常编译了。 在我之前的理解中，要替换内核的话，只能在目标机器上编译内核，然后按照之前编译内核的文章讲的步骤替换内核。 现在发现，内核也是可以通过软件包的方式安装的，自己动手走一下打包流程。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="程序员自我修养读后感(3)-静态链接">
-<meta property="og:url" content="https://fishmwei.github.io/2020/07/14/reflection4self-3-md/index.html">
+<meta property="og:title" content="周谈（50）- 内核编译打包">
+<meta property="og:url" content="https://fishmwei.github.io/2023/08/23/kernel-package/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="静态链接2前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。">
+<meta property="og:description" content="前言最近在技术支持的时候，需要在客户机器上编译驱动代码，遇到了一个问题，客户机器上面没有相应的内核头文件编译环境，没办法编译。 后面由同事通过安装deb包的形式把头文件之类的安装后，就可以正常编译了。 在我之前的理解中，要替换内核的话，只能在目标机器上编译内核，然后按照之前编译内核的文章讲的步骤替换内核。 现在发现，内核也是可以通过软件包的方式安装的，自己动手走一下打包流程。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-07-14T04:14:01.000Z">
-<meta property="article:modified_time" content="2022-03-31T00:55:30.601Z">
+<meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+<meta property="article:published_time" content="2023-08-23T11:17:53.000Z">
+<meta property="article:modified_time" content="2023-08-23T13:53:41.157Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/wx_gzh.png">
 
-<link rel="canonical" href="https://fishmwei.github.io/2020/07/14/reflection4self-3-md/">
+<link rel="canonical" href="https://fishmwei.github.io/2023/08/23/kernel-package/">
 
 
 <script id="page-configurations">
@@ -45,7 +47,7 @@
   };
 </script>
 
-  <title>程序员自我修养读后感(3)-静态链接 | IT攻城狮小明</title>
+  <title>周谈（50）- 内核编译打包 | IT攻城狮小明</title>
   
 
 
@@ -186,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2020/07/14/reflection4self-3-md/">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2023/08/23/kernel-package/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/assets/img/headerIcon.jpg">
@@ -199,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          程序员自我修养读后感(3)-静态链接
+          周谈（50）- 内核编译打包
         </h1>
 
         <div class="post-meta">
@@ -209,7 +211,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-14 12:14:01" itemprop="dateCreated datePublished" datetime="2020-07-14T12:14:01+08:00">2020-07-14</time>
+              <time title="创建时间：2023-08-23 19:17:53" itemprop="dateCreated datePublished" datetime="2023-08-23T19:17:53+08:00">2023-08-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,7 +219,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AF%BB%E5%90%8E%E6%84%9F/" itemprop="url" rel="index"><span itemprop="name">读后感</span></a>
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
                 </span>
             </span>
 
@@ -230,8 +232,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/07/14/reflection4self-3-md/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/14/reflection4self-3-md/" itemprop="commentCount"></span>
+    <a title="valine" href="/2023/08/23/kernel-package/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/08/23/kernel-package/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -246,46 +248,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="静态链接2"><a href="#静态链接2" class="headerlink" title="静态链接2"></a>静态链接2</h1><p>前面回顾了elf目标文件的结构，这里来讲一下静态链接的具体工作。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在技术支持的时候，需要在客户机器上编译驱动代码，遇到了一个问题，客户机器上面没有相应的内核头文件编译环境，没办法编译。</p>
+<p>后面由同事通过安装deb包的形式把头文件之类的安装后，就可以正常编译了。</p>
+<p>在我之前的理解中，要替换内核的话，只能在目标机器上编译内核，然后按照之前编译内核的文章讲的步骤替换内核。</p>
+<p>现在发现，内核也是可以通过软件包的方式安装的，自己动手走一下打包流程。</p>
 <span id="more"></span>
 
-<h2 id="空间与地址的分配"><a href="#空间与地址的分配" class="headerlink" title="空间与地址的分配"></a>空间与地址的分配</h2><p>链接的目的就是把多个文件加工合并成一个文件输出。输出文件的内容由多个文件的内容组成，这里就涉及文件的地址如何分配的问题。</p>
-<p>由于各个段存在着地址对齐的问题， 不能简单的进行段的叠加，否则会有很多空间浪费。主要通过相同段的合并。虚拟空间的重新分配。主要分2步：</p>
-<ol>
-<li><p>空间与地址的分配<br>  扫描各个文件的段的长度、属性及位置。收集符号表的所有符号和符号的引用，统一存放到全局的符号表。合并相同的段，计算出合并后的长度及位置，保存关系。</p>
-</li>
-<li><p>符号的解析与重定位<br>  读取输入文件的段的数据、重定位信息，进行符号的解析与重定位，调整代码中的地址。</p>
-</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld a.o b.o -e main -o ab</span><br></pre></td></tr></table></figure>
-
-<p>ELF可执行文件默认从地址0x08048000开始分配。</p>
-<h2 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h2><p>经过上一步，各个段的虚拟地址已经确定。由于各个符号在段内的偏移是固定的，很容易就可以得出各个符号的虚拟地址。链接器就可以更新全局符号表中的符号地址了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdum -t ab // 查看符号表</span><br></pre></td></tr></table></figure>
-
-<h2 id="符号的解析与重定位"><a href="#符号的解析与重定位" class="headerlink" title="符号的解析与重定位"></a>符号的解析与重定位</h2><p>在编译成目标文件的时候，外部引用的地址或者函数在指令中使用了假的地址作了替换。</p>
-<p>并且在对应段的重定位表中保存了哪些位置需要被重定位，当上一步的地址分配确定下来之后，根据重定位表的内容，一一替换段中的地址。</p>
-<p>重定位表保存了段的偏移位置以及符号在符号表中的下标，从而可以找到符号的地址，替换对应段偏移位置的内容。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Keep:programmer-up keep$ objdump -r a.o</span><br><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__text]:</span><br><span class="line">0000000000000024 X86_64_RELOC_BRANCH _swap</span><br><span class="line">000000000000000b X86_64_RELOC_GOT_LOAD _sharedInited@GOTPCREL</span><br><span class="line"></span><br><span class="line">RELOCATION RECORDS FOR [__compact_unwind]:</span><br><span class="line">0000000000000000 X86_64_RELOC_UNSIGNED __text</span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ </span><br></pre></td></tr></table></figure>
-
-<p>链接的过程中，涉及一个符号解析的过程。在引用外部符号的时候，外部符号在符号表中是UND的。链接的时候，会在全局符号表中查找是否存在对应的符号，如果不存在，就会报错。 undefine reference xxx。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a.o:    file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000000000 g     F __TEXT,__text  _main</span><br><span class="line">0000000000000000         *UND*  _sharedInited //外部变量</span><br><span class="line">0000000000000000         *UND*  _swap   // 外部函数</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:programmer-up keep$ objdump -t ab</span><br><span class="line"></span><br><span class="line">ab:     file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">SYMBOL TABLE:</span><br><span class="line">0000000000001000 g     F __TEXT,__text  __mh_execute_header</span><br><span class="line">0000000000001f60 g     F __TEXT,__text  _main</span><br><span class="line">0000000000002000 g       __DATA,__data  _sharedInited   // 变量</span><br><span class="line">0000000000002004 g       __DATA,__common        _sharedUndef </span><br><span class="line">0000000000001fa0 g     F __TEXT,__text  _swap   // 函数</span><br><span class="line">0000000000000000         *UND*  dyld_stub_binder</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="函数级别的链接"><a href="#函数级别的链接" class="headerlink" title="函数级别的链接"></a>函数级别的链接</h3><p>链接的时候一般会把所有的函数和变量都进行链接，实际很多函数和变量是没有被调用到的，这样有点浪费空间了。GCC提供了选项 -ffunction-sections, -fdata-sections， 将每个函数和变量存在独立的段中， 这样就使得目标文件的段很多。编译时，需要计算依赖关系，编译速度也降低了。</p>
-<h3 id="交叉编译链工具"><a href="#交叉编译链工具" class="headerlink" title="交叉编译链工具"></a>交叉编译链工具</h3><p>在开发嵌入式程序时，由于目标机器的环境限制(内存、空间、cpu速度)，无法在目标机器上对代码直接进行编译。需要在其他系统上进行编译，这就需要用到交叉编译工具。其实，就是目标机器程序的编译工具 ，类似gcc, g++，nm等一系列工具。 这些工具需要在编译系统上运行，也就是说， 他们需要是编译系统上的程序。通过调用这些编译工具编译的代码，不能在编译系统上运行，但是需要在嵌入式系统(目标机器)运行。</p>
-<p>实际上，大部分嵌入式系统也是类unix的系统，其可执行文件也遵循elf文件格式。只要在编译系统上，可以编译出目标机器上运行的可执行文件就可以了。 不管是windows，还是linux上，只要编译工具链完整，都是可以拿来编译程序的。</p>
-<p>现在，编译工具大多是开源了的，而且都支持编译出不同系统的程序，只需要在编译的时候指定目标机器，设置好相关的参数，就可以编译出对应的编译链工具。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configuare --host xxxlinux --prefix=/build/bin --target=arm-linux</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-
-<p>具体的编译配置可以使用选项-v查看</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arm-linux-gcc -v</span><br></pre></td></tr></table></figure>
+<h2 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h2><p>关于内核打包的方法在网络上找到了一些文章，本人也实践了一下，确实可行，主要流程如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载内核源码, 并编译， 提前编译可以加快后面打包速度</span></span><br><span class="line">wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz</span><br><span class="line"></span><br><span class="line">tar xvf linux-5.10.tar.xz</span><br><span class="line"></span><br><span class="line">cd linux-5.10</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">方便起见，直接使用当前的配置</span></span><br><span class="line"></span><br><span class="line">cp /boot/config-5.15.56 .config</span><br><span class="line"></span><br><span class="line">make menuconfig</span><br><span class="line"></span><br><span class="line">make -j 8</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">准备打包环境</span></span><br><span class="line">sudo apt install build-essential</span><br><span class="line">sudo apt install kernel-package</span><br><span class="line">sudo apt install dwarves</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo make-kpkg --initrd --revision 001 --append-to-version -20230823 kernel_image kernel_headers --config menuconfig</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">make-kpkg 用于为内核源码打包debian包， 这个命令需要在内核源码根目录下运行，打包结束后会在上层目录生成目标文件。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--initrd:选项会让make-kpkg自动帮我们生成initramfs。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--revision:会给生成的deb文件加上一个版本信息，这个参数只是影响到文件名，如果不指定，默认会是“10.00.Custom”。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--append-to-version:是一种版本信息，它不仅出现在deb安装包的文件名里，也会影响到kernel的名称，比如本例中，内核更新完成之后，用“<span class="built_in">uname</span> -r”查看会得到 5.10.0-20230823</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">kernel_image:表示生成内核和默认模块的安装包。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">kernel_headers:表示生成一个内核头文件的安装包；如果不生成这个deb包，那么我们就无法在/usr/src目录下生成linux-headers-x.x.x，这样就无法编译自己的内<span class="comment"># 核模块（虽然可以通过apt-get来安装，但是通过这个方式安装的不一定是自己正在使用的内核版本）。</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--config=menuconfig:表示以menuconfig的方式编译。</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译完成后，会在linux-5.10的上一级目录生成2个文件，一个是image的，一个是headers的</span></span><br><span class="line"></span><br><span class="line">linux-headers-5.10.0-20230823_001_arm64.deb</span><br><span class="line">linux-image-5.10.0-20230823_001_arm64.deb</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dpkg -i linux-headers-5.10.0-20230823_001_arm64.deb linux-image-5.10.0-20230823_001_arm64.deb</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
-
-<blockquote><p>行动，才不会被动!</p>
+<hr>
+<p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-</blockquote>
-
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
 
     </div>
 
@@ -301,13 +280,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/07/08/codeclean/" rel="prev" title="代码洁癖">
-      <i class="fa fa-chevron-left"></i> 代码洁癖
+    <a href="/2023/08/10/acpi/" rel="prev" title="周谈（49）- 从系统获取acpi表">
+      <i class="fa fa-chevron-left"></i> 周谈（49）- 从系统获取acpi表
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/16/gdbserver/" rel="next" title="gdbserver">
-      gdbserver <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -367,7 +343,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A52"><span class="nav-number">1.</span> <span class="nav-text">静态链接2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA%E9%97%B4%E4%B8%8E%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E9%85%8D"><span class="nav-number">1.1.</span> <span class="nav-text">空间与地址的分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E7%9A%84%E7%A1%AE%E5%AE%9A"><span class="nav-number">1.2.</span> <span class="nav-text">符号地址的确定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E7%9A%84%E8%A7%A3%E6%9E%90%E4%B8%8E%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.</span> <span class="nav-text">符号的解析与重定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">1.4.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%BA%A7%E5%88%AB%E7%9A%84%E9%93%BE%E6%8E%A5"><span class="nav-number">1.4.1.</span> <span class="nav-text">函数级别的链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E9%93%BE%E5%B7%A5%E5%85%B7"><span class="nav-number">1.4.2.</span> <span class="nav-text">交叉编译链工具</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%8C%85"><span class="nav-number">1.1.</span> <span class="nav-text">打包</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
