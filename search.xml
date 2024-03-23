@@ -6938,7 +6938,7 @@
       </categories>
   </entry>
   <entry>
-    <title>clang-format + vscode自动格式化代码</title>
+    <title>周谈（53）- clang-format代码格式化配置</title>
     <url>/2024/03/23/clang-format/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>组内代码格式不统一，每当我review的时候，总发现各种规范问题，比如代码行缩进不一致， 操作数和运算符之间空格时有时无，对于代码洁癖的人这是很难忍受。<br>那么就只能用工具了，鉴于Windows下编码大部分时候使用vscode，所以就找到了clang-format插件，而且在Linux下clang-format还可以集成到git hook里。</p>
 <p>我抽空研究了一下，然后形成配置文档，让组里的同事照着配置一下。</p>

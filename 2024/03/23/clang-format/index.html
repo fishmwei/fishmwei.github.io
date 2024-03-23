@@ -22,7 +22,7 @@
 
   <meta name="description" content="前言组内代码格式不统一，每当我review的时候，总发现各种规范问题，比如代码行缩进不一致， 操作数和运算符之间空格时有时无，对于代码洁癖的人这是很难忍受。那么就只能用工具了，鉴于Windows下编码大部分时候使用vscode，所以就找到了clang-format插件，而且在Linux下clang-format还可以集成到git hook里。 我抽空研究了一下，然后形成配置文档，让组里的同事照着配">
 <meta property="og:type" content="article">
-<meta property="og:title" content="clang-format + vscode自动格式化代码">
+<meta property="og:title" content="周谈（53）- clang-format代码格式化配置">
 <meta property="og:url" content="https://fishmwei.github.io/2024/03/23/clang-format/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="前言组内代码格式不统一，每当我review的时候，总发现各种规范问题，比如代码行缩进不一致， 操作数和运算符之间空格时有时无，对于代码洁癖的人这是很难忍受。那么就只能用工具了，鉴于Windows下编码大部分时候使用vscode，所以就找到了clang-format插件，而且在Linux下clang-format还可以集成到git hook里。 我抽空研究了一下，然后形成配置文档，让组里的同事照着配">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://fishmwei.github.io/images/202403/git_clang_format.png">
 <meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
 <meta property="article:published_time" content="2024-03-23T07:46:47.000Z">
-<meta property="article:modified_time" content="2024-03-23T08:30:28.592Z">
+<meta property="article:modified_time" content="2024-03-23T08:59:57.473Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/202403/vscode_clang_format.png">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>clang-format + vscode自动格式化代码 | IT攻城狮小明</title>
+  <title>周谈（53）- clang-format代码格式化配置 | IT攻城狮小明</title>
   
 
 
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          clang-format + vscode自动格式化代码
+          周谈（53）- clang-format代码格式化配置
         </h1>
 
         <div class="post-meta">
