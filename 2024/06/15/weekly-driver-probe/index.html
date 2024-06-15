@@ -22,14 +22,14 @@
 
   <meta name="description" content="背景本周收到一个客户需求，他们希望在系统里集成我们的驱动，希望驱动能够自动根据硬件来确定是否加载，最好就是只提供一份驱动，在不同机型下能自适应处理。 由于历史原因，我们的这些硬件从设计上就是不兼容的，且分别开发了不同的驱动，并没有一个统一的驱动架构。一般驱动是可以根据设备树或者ACPI表的描述，自动和硬件匹配的。只要硬件的描述不一样，那么加载了驱动后，也只有相应的驱动会匹配生效。 又由于各种原因，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="周谈（57）- 驱动平台适配问题">
+<meta property="og:title" content="周谈（57）- 根据CPU类型实现驱动平台适配">
 <meta property="og:url" content="https://fishmwei.github.io/2024/06/15/weekly-driver-probe/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
 <meta property="og:description" content="背景本周收到一个客户需求，他们希望在系统里集成我们的驱动，希望驱动能够自动根据硬件来确定是否加载，最好就是只提供一份驱动，在不同机型下能自适应处理。 由于历史原因，我们的这些硬件从设计上就是不兼容的，且分别开发了不同的驱动，并没有一个统一的驱动架构。一般驱动是可以根据设备树或者ACPI表的描述，自动和硬件匹配的。只要硬件的描述不一样，那么加载了驱动后，也只有相应的驱动会匹配生效。 又由于各种原因，">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
 <meta property="article:published_time" content="2024-06-15T02:24:28.000Z">
-<meta property="article:modified_time" content="2024-06-15T08:44:58.061Z">
+<meta property="article:modified_time" content="2024-06-15T08:48:01.044Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/wx_gzh.png">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>周谈（57）- 驱动平台适配问题 | IT攻城狮小明</title>
+  <title>周谈（57）- 根据CPU类型实现驱动平台适配 | IT攻城狮小明</title>
   
 
 
@@ -201,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          周谈（57）- 驱动平台适配问题
+          周谈（57）- 根据CPU类型实现驱动平台适配
         </h1>
 
         <div class="post-meta">
