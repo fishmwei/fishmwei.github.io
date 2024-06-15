@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言继续驱动学习小结。字符设备驱动是驱动架构的基础。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(33)-字符设备驱动">
+<meta property="og:url" content="https://fishmwei.github.io/2022/08/14/driver-char/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言继续驱动学习小结。字符设备驱动是驱动架构的基础。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202208/cdev_arch.png">
+<meta property="article:published_time" content="2022-08-14T00:03:33.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.207Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202208/cdev_arch.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/08/14/driver-char/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(33)-字符设备驱动 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/08/14/driver-char/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(33)-字符设备驱动
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-14 08:03:33" itemprop="dateCreated datePublished" datetime="2022-08-14T08:03:33+08:00">2022-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E9%A9%B1%E5%8A%A8/" itemprop="url" rel="index"><span itemprop="name">驱动</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/08/14/driver-char/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/14/driver-char/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>继续驱动学习小结。字符设备驱动是驱动架构的基础。</p>
+<span id="more"></span>
+
+<h2 id="字符设备驱动"><a href="#字符设备驱动" class="headerlink" title="字符设备驱动"></a>字符设备驱动</h2><p>字符设备的关键数据结构有cdev、file_operations</p>
+<p>cdev描述了一个字符设备的信息。file_operations描述了驱动提供给虚拟文件系统的接口。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cdev</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kobject</span> <span class="title">kobj</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">module</span> *<span class="title">owner</span>;</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> *<span class="title">ops</span>;</span> <span class="comment">/* 文件操作*/</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">list</span>;</span></span><br><span class="line">	<span class="type">dev_t</span> dev; <span class="comment">// 设备号  12位主设备号 + 20位次设备号</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> count; </span><br><span class="line">&#125; __randomize_layout;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">module</span> *<span class="title">owner</span>;</span></span><br><span class="line">	<span class="type">loff_t</span> (*llseek) (<span class="keyword">struct</span> file *, <span class="type">loff_t</span>, <span class="type">int</span>);</span><br><span class="line">	<span class="type">ssize_t</span> (*read) (<span class="keyword">struct</span> file *, <span class="type">char</span> __user *, <span class="type">size_t</span>, <span class="type">loff_t</span> *);</span><br><span class="line">	<span class="type">ssize_t</span> (*write) (<span class="keyword">struct</span> file *, <span class="type">const</span> <span class="type">char</span> __user *, <span class="type">size_t</span>, <span class="type">loff_t</span> *);</span><br><span class="line">	<span class="type">ssize_t</span> (*read_iter) (<span class="keyword">struct</span> kiocb *, <span class="keyword">struct</span> iov_iter *);</span><br><span class="line">	<span class="type">ssize_t</span> (*write_iter) (<span class="keyword">struct</span> kiocb *, <span class="keyword">struct</span> iov_iter *);</span><br><span class="line">	<span class="type">int</span> (*iopoll)(<span class="keyword">struct</span> kiocb *kiocb, <span class="keyword">struct</span> io_comp_batch *,</span><br><span class="line">			<span class="type">unsigned</span> <span class="type">int</span> flags);</span><br><span class="line">	<span class="type">int</span> (*iterate) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> dir_context *);</span><br><span class="line">	<span class="type">int</span> (*iterate_shared) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> dir_context *);</span><br><span class="line">	<span class="type">__poll_t</span> (*poll) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> poll_table_struct *);</span><br><span class="line">	<span class="type">long</span> (*unlocked_ioctl) (<span class="keyword">struct</span> file *, <span class="type">unsigned</span> <span class="type">int</span>, <span class="type">unsigned</span> <span class="type">long</span>);</span><br><span class="line">	<span class="type">long</span> (*compat_ioctl) (<span class="keyword">struct</span> file *, <span class="type">unsigned</span> <span class="type">int</span>, <span class="type">unsigned</span> <span class="type">long</span>);</span><br><span class="line">	<span class="type">int</span> (*mmap) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> vm_area_struct *);</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> mmap_supported_flags;</span><br><span class="line">	<span class="type">int</span> (*open) (<span class="keyword">struct</span> inode *, <span class="keyword">struct</span> file *);</span><br><span class="line">	<span class="type">int</span> (*flush) (<span class="keyword">struct</span> file *, <span class="type">fl_owner_t</span> id);</span><br><span class="line">	<span class="type">int</span> (*release) (<span class="keyword">struct</span> inode *, <span class="keyword">struct</span> file *);</span><br><span class="line">	<span class="type">int</span> (*fsync) (<span class="keyword">struct</span> file *, <span class="type">loff_t</span>, <span class="type">loff_t</span>, <span class="type">int</span> datasync);</span><br><span class="line">	<span class="type">int</span> (*fasync) (<span class="type">int</span>, <span class="keyword">struct</span> file *, <span class="type">int</span>);</span><br><span class="line">	<span class="type">int</span> (*lock) (<span class="keyword">struct</span> file *, <span class="type">int</span>, <span class="keyword">struct</span> file_lock *);</span><br><span class="line">	<span class="type">ssize_t</span> (*sendpage) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> page *, <span class="type">int</span>, <span class="type">size_t</span>, <span class="type">loff_t</span> *, <span class="type">int</span>);</span><br><span class="line">	<span class="type">unsigned</span> <span class="title function_">long</span> <span class="params">(*get_unmapped_area)</span><span class="params">(<span class="keyword">struct</span> file *, <span class="type">unsigned</span> <span class="type">long</span>, <span class="type">unsigned</span> <span class="type">long</span>, <span class="type">unsigned</span> <span class="type">long</span>, <span class="type">unsigned</span> <span class="type">long</span>)</span>;</span><br><span class="line">	<span class="type">int</span> (*check_flags)(<span class="type">int</span>);</span><br><span class="line">	<span class="type">int</span> (*flock) (<span class="keyword">struct</span> file *, <span class="type">int</span>, <span class="keyword">struct</span> file_lock *);</span><br><span class="line">	<span class="type">ssize_t</span> (*splice_write)(<span class="keyword">struct</span> pipe_inode_info *, <span class="keyword">struct</span> file *, <span class="type">loff_t</span> *, <span class="type">size_t</span>, <span class="type">unsigned</span> <span class="type">int</span>);</span><br><span class="line">	<span class="type">ssize_t</span> (*splice_read)(<span class="keyword">struct</span> file *, <span class="type">loff_t</span> *, <span class="keyword">struct</span> pipe_inode_info *, <span class="type">size_t</span>, <span class="type">unsigned</span> <span class="type">int</span>);</span><br><span class="line">	<span class="type">int</span> (*setlease)(<span class="keyword">struct</span> file *, <span class="type">long</span>, <span class="keyword">struct</span> file_lock **, <span class="type">void</span> **);</span><br><span class="line">	<span class="type">long</span> (*fallocate)(<span class="keyword">struct</span> file *file, <span class="type">int</span> mode, <span class="type">loff_t</span> offset,</span><br><span class="line">			  <span class="type">loff_t</span> len);</span><br><span class="line">	<span class="type">void</span> (*show_fdinfo)(<span class="keyword">struct</span> seq_file *m, <span class="keyword">struct</span> file *f);</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CONFIG_MMU</span></span><br><span class="line">	<span class="type">unsigned</span> (*mmap_capabilities)(<span class="keyword">struct</span> file *);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	<span class="type">ssize_t</span> (*copy_file_range)(<span class="keyword">struct</span> file *, <span class="type">loff_t</span>, <span class="keyword">struct</span> file *,</span><br><span class="line">			<span class="type">loff_t</span>, <span class="type">size_t</span>, <span class="type">unsigned</span> <span class="type">int</span>);</span><br><span class="line">	<span class="type">loff_t</span> (*remap_file_range)(<span class="keyword">struct</span> file *file_in, <span class="type">loff_t</span> pos_in,</span><br><span class="line">				   <span class="keyword">struct</span> file *file_out, <span class="type">loff_t</span> pos_out,</span><br><span class="line">				   <span class="type">loff_t</span> len, <span class="type">unsigned</span> <span class="type">int</span> remap_flags);</span><br><span class="line">	<span class="type">int</span> (*fadvise)(<span class="keyword">struct</span> file *, <span class="type">loff_t</span>, <span class="type">loff_t</span>, <span class="type">int</span>);</span><br><span class="line">&#125; __randomize_layout;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">cdev_init</span><span class="params">(<span class="keyword">struct</span> cdev *, <span class="type">const</span> <span class="keyword">struct</span> file_operations *)</span>;</span><br><span class="line"><span class="keyword">struct</span> cdev *<span class="title function_">cdev_alloc</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">cdev_add</span><span class="params">(<span class="keyword">struct</span> cdev *, <span class="type">dev_t</span>, <span class="type">unsigned</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">cdev_del</span><span class="params">(<span class="keyword">struct</span> cdev *)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">cdev_put</span><span class="params">(<span class="keyword">struct</span> cdev *p)</span>;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>内核提供了对cdev进行操作的接口，主要功能如下：</p>
+<ul>
+<li>cdev_init  关联cdev和file_operations结构</li>
+<li>cdev_alloc 申请一个cdev结构空间</li>
+<li>cdev_add, cdev_del 往系统添加&#x2F;删除一个cdev描述的字符设备， 一般分别在驱动probe, remove中调用。</li>
+<li>cdev_put  字符模块驱动的解引用， 引用一般在访问接口内部实现。</li>
+</ul>
+<h3 id="设备号的申请释放"><a href="#设备号的申请释放" class="headerlink" title="设备号的申请释放"></a>设备号的申请释放</h3><p>在调用cdev_add 前，需要调用register_chrdev_region或者alloc_chrdev_region向系统申请设备号。register_chrdev_region是已知主设备号时调用， alloc_chrdev_region则是不提供主设备号，由系统自动分配。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * register_chrdev_region() - register a range of device numbers</span></span><br><span class="line"><span class="comment"> * @from: the first in the desired range of device numbers; must include</span></span><br><span class="line"><span class="comment"> *        the major number.</span></span><br><span class="line"><span class="comment"> * @count: the number of consecutive device numbers required</span></span><br><span class="line"><span class="comment"> * @name: the name of the device or driver.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Return value is zero on success, a negative error code on failure.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">register_chrdev_region</span><span class="params">(<span class="type">dev_t</span> from, <span class="type">unsigned</span> count, <span class="type">const</span> <span class="type">char</span> *name)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * alloc_chrdev_region() - register a range of char device numbers</span></span><br><span class="line"><span class="comment"> * @dev: output parameter for first assigned number</span></span><br><span class="line"><span class="comment"> * @baseminor: first of the requested range of minor numbers</span></span><br><span class="line"><span class="comment"> * @count: the number of minor numbers required</span></span><br><span class="line"><span class="comment"> * @name: the name of the associated device or driver</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Allocates a range of char device numbers.  The major number will be</span></span><br><span class="line"><span class="comment"> * chosen dynamically, and returned (along with the first minor number)</span></span><br><span class="line"><span class="comment"> * in @dev.  Returns zero or a negative error code.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">alloc_chrdev_region</span><span class="params">(<span class="type">dev_t</span> *dev, <span class="type">unsigned</span> baseminor, <span class="type">unsigned</span> count,</span></span><br><span class="line"><span class="params">			<span class="type">const</span> <span class="type">char</span> *name)</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><p>文件操作提供几个接口，主要实现如下的功能：</p>
+<ul>
+<li>llseek 设置文件当前位置</li>
+<li>read 读取文件数据</li>
+<li>write 写入文件数据</li>
+<li>unlocked_ioctl 非读写操作，对应fcntl, ioctl等的接口</li>
+<li>mmap 将设备内存映射到进程空间</li>
+<li>open 打开文件</li>
+<li>poll 询问设备是否可以被非阻塞的读写</li>
+<li>aio_read, aio_write 异步读写操作</li>
+</ul>
+<p>读写文件传入的地址都是用户空间的地址，用户空间不能直接访问内核的内存，需要通过copy_from_user, copy_to_user函数来实现数据的复制。在这两个函数中，会判断传入的地址是否是用户空间，防止随意改写了内核空间导致出现不可预料的错误。</p>
+<p><img src="/images/202208/cdev_arch.png" alt="cdev_arch"></p>
+<p>在具体的实现中，在open接口中会把设备对应的cdev指针设置到file文件对应的私有数据private_data成员上，这样在其他接口中，可以很方便的从file指针获取到对应的cdev空间，从而访问相应的空间。</p>
+<h3 id="用户空间调用"><a href="#用户空间调用" class="headerlink" title="用户空间调用"></a>用户空间调用</h3><p>加载驱动模块后，对应的&#x2F;proce&#x2F;devices就可以看到对应的设备。这个时候需要手动在&#x2F;dev目录下，使用mknod创建一个文件跟设备关联起来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mknod /dev/globalmem c 230 0  # 创建字符设备文件 对应主设备号230， 次设备号 0</span><br></pre></td></tr></table></figure>
+
+<p>然后使用echo xxx &gt; <file> 或者 cat <file> 就会调用到对应的write和read函数了。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>字符设备主要就是一个cdev和file_operation结构。通过申请好设备号，然后注册到系统，手动创建文件关联设备，然后就可以在用户空间访问到驱动接口了。</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>这周项目组来了几个应届的新人，安排每个老同事带一个新人，结成个师徒关系吧，还宣布带新人也要占工作的40%绩效。说实话，项目组里的基本都是新人，除了两个呆了有一年以上的，其他的老同事也基本上是今年社招入职的，大部分都是跨领域的，有的也只是工作经验吧，也都是在学习的阶段。</p>
+<p>嗯，这算是我第二次带新人了，上一次是好多年前了。参照某为的新人试用期机制，以及这几个月我工作的心得，给安排了一些学习要点和minitask，先让他自己看了一周，动手学习并完成给定的任务，并及时输出总结文档。</p>
+<p>现在发现的一个最主要问题就是缺少主动沟通，很少提问，需要我这边主动找他才有反馈。要求每天反馈的日报，也没有严格执行，要求整理总结文档也没有。本来担心他日报没啥写的，就让他晚上九点前给日报的，这周五的日报就没发了，相应的进度也有些慢，看来还是压力没有给到位，没有紧迫感，执行力不强。</p>
+<p>也许我对新人的期望高了一些，需要转变一下策略，得主动先给他讲一下再安排任务，直接给任务的话，他也不及时沟通确认任务，问一下都是明白了，做起来却不是一回事。</p>
+<p>00后都出来工作了，我们这些老骨头也要加强学习了，各方面都得加强。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/05/weekly-lately/" rel="prev" title="周谈(32)- 近期遇到的那些事儿">
+      <i class="fa fa-chevron-left"></i> 周谈(32)- 近期遇到的那些事儿
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/14/driver-io/" rel="next" title="设备驱动的阻塞和非阻塞IO， 轮询编程">
+      设备驱动的阻塞和非阻塞IO， 轮询编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8"><span class="nav-number">1.1.</span> <span class="nav-text">字符设备驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E5%8F%B7%E7%9A%84%E7%94%B3%E8%AF%B7%E9%87%8A%E6%94%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">设备号的申请释放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">1.1.2.</span> <span class="nav-text">文件操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%B0%83%E7%94%A8"><span class="nav-number">1.1.3.</span> <span class="nav-text">用户空间调用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">2.</span> <span class="nav-text">更多</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">3.</span> <span class="nav-text">其他</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

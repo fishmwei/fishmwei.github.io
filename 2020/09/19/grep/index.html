@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="grep命令使用">
+<meta property="og:url" content="https://fishmwei.github.io/2020/09/19/grep/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-19T01:20:48.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.199Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2020/09/19/grep/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>grep命令使用 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2020/09/19/grep/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          grep命令使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-19 09:20:48" itemprop="dateCreated datePublished" datetime="2020-09-19T09:20:48+08:00">2020-09-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/09/19/grep/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/09/19/grep/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>无论使用什么产品，照着使用指南进行一番操作是学习它最便捷快速的方法。使用指南都是给用户看的， 一般都是简单易懂，有示例。linux命令行也是一样。</p>
+<span id="more"></span>
+
+<p>linux 命令行的使用指南有两种方法查看， 一种是命令行后面添加 –help选项，查看最基础的使用概要。 另一种是使用man 命令查看详细的命令使用指南。第一种适合快捷查询，但是信息不够详细。 第二种，适合深入详细的查询，可以了解各个选项的意义。通过这两种方式基本上可以搞懂linux的命令使用，然后再结合网络上的一些博客、百科什么的示例，就基本可以掌握该linux命令了。对于不懂的概念，再深入扩展学习一下，再加上日积月累的使用，对该linux命令就可以更加熟练、信手拈来了。这个方法也是我学习的主要套路。不知道大家是否也一样？。</p>
+<p>不唠叨了。今年还有一个todo是掌握linux命令三剑客grep&#x2F;awk&#x2F;sed，下面整理一下比较简单的grep命令使用(基本上就是手册的翻译及使用举例)。</p>
+<h1 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h1><p>用于文件内容的模式匹配搜索</p>
+<h2 id="使用概要"><a href="#使用概要" class="headerlink" title="使用概要"></a>使用概要</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep [-abcdDEFGHhIiJLlmnOopqRSsUVvwxZ] [-A num] [-B num] [-C[num]]</span><br><span class="line">     [-e pattern] [-f file] [--binary-files=value] [--color[=when]]</span><br><span class="line">     [--colour[=when]] [--context[=num]] [--label] [--line-buffered]</span><br><span class="line">     [--null] [pattern] [file ...]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p> grep会搜索给定的文件，获取符号指定匹配模式(pattern)的行并输出。默认的，pattern只会一行行的进行匹配，不包含结尾的换行。空的pattern则匹配每一行。</p>
+<p> grep用来作简单的模式匹配和基础的正则表达式匹配。 egrep可以处理扩展的正则表达式。fgrep处理的效率比grep和egrep更好，但是只能处理固定的pattern。pattern可以包含多行。</p>
+<p> zgrep, zegrep和zfgrep的功能和grep、egrep、fgrep的功能一样，但是处理之前会对文件进行解压， 也就是用来处理压缩文件的版本。</p>
+<h2 id="命令选项："><a href="#命令选项：" class="headerlink" title="命令选项："></a>命令选项：</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">-A num， 显示匹配行之后的num行</span><br><span class="line"></span><br><span class="line">-a, --text 把所有文件当作ASCII文本处理。</span><br><span class="line"></span><br><span class="line">-B num, 显示匹配行之前的num行</span><br><span class="line"></span><br><span class="line">-b ， 显示匹配pattern的行首在文件的偏移</span><br><span class="line"></span><br><span class="line">-C 包含-A, -B的功能</span><br><span class="line"></span><br><span class="line">-c num 输出前面num行的匹配结果</span><br><span class="line"></span><br><span class="line">--colour=when   高亮匹配pattern的字符串， 可以为never， always 和 auto</span><br><span class="line"></span><br><span class="line">-D action ， --devices=action 指定处理设备、FIFOs和sockets的动作。默认动作是`read`，当作普通文件进行匹配， 可以设置成`skip`，不作匹配</span><br><span class="line"></span><br><span class="line">-d action, --direcotries=action, 指定处理目录的动作， 默认动作是`read`， 当作普通文件进行匹配。可以设置成`skip`， 递归地进入处理，同`-R`/`-r`</span><br><span class="line"></span><br><span class="line">-E 指定扩展正则表达式， 作用同egrep</span><br><span class="line"></span><br><span class="line">-e pattern, --regexp=pattern 指定一个正则表达式， 一般使用-e来指定多个正则表达式， 只要匹配到任一正则表达式就会选中该行输出</span><br><span class="line"></span><br><span class="line">--exclude 如果指定了，那么符合给定pattern的文件名的文件将不会被查找。--exclude的优先级高于--include的优先级。pattern匹配的是全路径，不仅仅是文件名。</span><br><span class="line">		grep -i -e &#x27;^Hello*&#x27; -e &#x27;^aa&#x27;  -b --color --exclude hello.* *.md</span><br><span class="line">		grep keep$ grep -i -e &#x27;^Hello*&#x27; -e &#x27;^aa&#x27;  -b --color --exclude hello.* ./* -R</span><br><span class="line"></span><br><span class="line">--exclude-dir 如果指定了-R选项，那么就不会查找符合给定pattern的目录。--exclude-dir的优先级高于--include-dir</span><br><span class="line"></span><br><span class="line">-F, --fixed-strings 给定的pattern当作一个固定的字符串， 作用同fgrep</span><br><span class="line"></span><br><span class="line">-f file, --file=file 从file文件中读取多行的pattern。如果文件内容为空，将不匹配任何东西</span><br><span class="line">		grep -i -f pattern  -b --color --exclude &#x27;*.md&#x27;  -R &#x27;./&#x27; --exclude-dir &#x27;2&#x27; </span><br><span class="line"></span><br><span class="line">-G, --basic-regexp 给定的pattern当作基础的正则表达式。 </span><br><span class="line"></span><br><span class="line">-H 输出结果时，前面显示文件名</span><br><span class="line"></span><br><span class="line">-h, --no-filename 输出结果时，前面不显示文件名</span><br><span class="line"></span><br><span class="line">--help 显示帮助</span><br><span class="line"></span><br><span class="line">-I 忽略二进制文件， 就是不对二进制文件匹配处理</span><br><span class="line"></span><br><span class="line">-i, --ignore-case 对pattern忽略大小写</span><br><span class="line"></span><br><span class="line">--include 只有符合给定pattern的文件名的文件才进行搜索。pattern针对的是全路径，而不仅仅是文件名.</span><br><span class="line">	grep -i -f pattern  -b --color --include &#x27;*.md&#x27; ~/Documents/code/GitHub/blog_code/grep/* -R</span><br><span class="line"></span><br><span class="line">--include-dir 如果设置了`-R`，只有目录符合给定pattern的文件名的文件才进行搜索。</span><br><span class="line"></span><br><span class="line">-J, --bz2decompress 解压缩bzip2的文件再进行搜索</span><br><span class="line"></span><br><span class="line">-L, --files-without-match 只显示文件内容不符合pattern的， 文件名符合-L值的文件的文件名</span><br><span class="line">	grep -i &#x27;hello&#x27; -L *.md ./ -r</span><br><span class="line"></span><br><span class="line">-l, --files-with-matches 只显示文件内容符合pattern的，文件名符合-l值的文件的文件名</span><br><span class="line"></span><br><span class="line">--mmap 使用mmap而不是read来读取输入的内容。可以获取更好的性能， 但有时候行为不确定。</span><br><span class="line"></span><br><span class="line">-m num, --max-count=num 获取num个结果后，不再读取文件</span><br><span class="line"></span><br><span class="line">-n, --line-number 输出结果显示行号</span><br><span class="line"></span><br><span class="line">--null Prints a zero-byte after the file name.</span><br><span class="line"></span><br><span class="line">-O 如果给定了-R选项， 而且命令行显式的写出了符号链接， 则进行处理， 否则跳过。 就不处理符号连接的内容</span><br><span class="line"></span><br><span class="line">-o 只显示匹配patter的部分。</span><br><span class="line"></span><br><span class="line">-p 如果给定了-R选项，默认不处理符号连接</span><br><span class="line"></span><br><span class="line">-q, --quiet, --silent 静默搜索，直到搜索到一个匹配的项，不会输出。 可以用在shell中， 仅仅判断有没有找到内容。</span><br><span class="line"></span><br><span class="line">-R, -r, --recursive  递归的查找子目录</span><br><span class="line"></span><br><span class="line">-S 如果指定了-R选项，所有符号连接都处理</span><br><span class="line"></span><br><span class="line">-s, --no-messages Silent mode . 不存在或者不可读的文件 信息不会被显示</span><br><span class="line">	grep -i &#x27;hello&#x27; -n --mmap --null  *.json -s</span><br><span class="line"></span><br><span class="line">-U, --binary 搜索二进制文件，但是不打印结果</span><br><span class="line"></span><br><span class="line">-V, --version 显示grep的版本信息</span><br><span class="line"></span><br><span class="line">-v, --invert-match 显示不匹配pattern的行</span><br><span class="line"></span><br><span class="line">-w, --word-regexp pattern被当做一个word来匹配查询</span><br><span class="line"></span><br><span class="line">-x, --line-regexp 只有输入行全部匹配字符串或者regular expression才算匹配上</span><br><span class="line"></span><br><span class="line">-y, 同-i  废弃了</span><br><span class="line"></span><br><span class="line">-Z, -z, --decompress 先解压，动作同 zgrep</span><br><span class="line"></span><br><span class="line">--binary-files=value  value为binary， 则默认搜索二进制文件，但是不输出。value为without-match,则不处理二进制文件， </span><br><span class="line"> 	value为text ， 二进制文件当做text文件进行查找 输出</span><br><span class="line"></span><br><span class="line">--context=num 输出匹配行的前后num行内容， 和 -C 一样, 默认值为2</span><br><span class="line"></span><br><span class="line">--line-buffered 强制输出为line buffered， 默认标准输出为terminal时，使用line-buffered， 其他使用block buffered</span><br><span class="line"></span><br><span class="line">如果没有指定输入文件， 则输入为标准输入。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>GREP_OPTIONS 变量可以设置默认的选项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">export GREP_OPTIONS=&#x27;-i -n -H&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Keep:grep keep$ grep &#x27;hello&#x27; hello.md </span><br><span class="line">hello.md:3:啊啊啊   Hello, World!!</span><br><span class="line">hello.md:5:hello world</span><br><span class="line">hello.md:7:helloool man.</span><br><span class="line">hello.md:9:boy helloM</span><br><span class="line">hello.md:15:heLLO+</span><br><span class="line">Keep:grep keep$ </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="命令退出值"><a href="#命令退出值" class="headerlink" title="命令退出值"></a>命令退出值</h2><p>grep命令执行完后，会根据不同情况返回不同的值。</p>
+<pre><code>0  有匹配的行
+1  没有任何行匹配
+&gt;1  命令执行错误
+</code></pre>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">grep &#x27;patricia&#x27; file_name</span><br><span class="line"></span><br><span class="line">grep &#x27;^\.Pp&#x27; file_name // 查找以.Pp开头的行</span><br><span class="line"></span><br><span class="line">grep -v -e &#x27;foo&#x27; -e &#x27;bar&#x27; filename // 查找没有foo和bar的行 -v </span><br><span class="line"></span><br><span class="line">egrep &#x27;19|20|25&#x27; file_name // 在文件中查找 19， 20， 25</span><br><span class="line"></span><br><span class="line">grep -E &#x27;[0-9]\&#123;1,3\&#125;&#x27; sed.md --color</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><p>grep符合 IEEE Std 1003.1-2008 标准。</p>
+<h2 id="HISTORY"><a href="#HISTORY" class="headerlink" title="HISTORY"></a>HISTORY</h2><pre><code> The grep command first appeared in Version 6 AT&amp;T UNIX.
+</code></pre>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/14/overflow/" rel="prev" title="位域左移溢出问题">
+      <i class="fa fa-chevron-left"></i> 位域左移溢出问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/24/sed/" rel="next" title="sed命令使用">
+      sed命令使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#grep"><span class="nav-number">1.</span> <span class="nav-text">grep</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%A6%82%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">使用概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E9%80%89%E9%A1%B9%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">命令选项：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">1.3.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E9%80%80%E5%87%BA%E5%80%BC"><span class="nav-number">1.4.</span> <span class="nav-text">命令退出值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86"><span class="nav-number">1.6.</span> <span class="nav-text">标准</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HISTORY"><span class="nav-number">1.7.</span> <span class="nav-text">HISTORY</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
