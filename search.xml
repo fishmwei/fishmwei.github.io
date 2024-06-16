@@ -7323,4 +7323,32 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>Linux基础复学（4）- RCU同步机制</title>
+    <url>/2024/06/16/linux4-rcu/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>复习一下linux内核中的同步管理机制，内核中用于同步管理的几个机制主要有：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">自旋锁- 同一个时刻只能被一个代码路径持有锁，其他代码路径一直忙等待，不会休眠，适合占用锁比较短的场景，可以用于中断上下文</span><br><span class="line">原子量- 适合临界区只是一个变量的情况，开销比较小</span><br><span class="line">内存屏障-这个主要是为了阻止编译器的优化而进行指令重排，导致实际执行路径不符合预期的场景</span><br><span class="line">信号量-适合生产者消费者模型，等待会进入睡眠状态，不能用于中断上下文，适合情况复杂，加锁时间较长的场景</span><br><span class="line">互斥量-同一个时刻只有一个代码路径持有锁，会进入睡眠状态，不能用于中断上下文，比信号量简单，结构更小</span><br><span class="line">读写锁-允许同时多个读，同时只能一个写，读写互斥</span><br><span class="line">RCU- read-copy-update 目的是减少多CPU间缓存一致性的开销，允许写者在读者访问期间就修改内容，没有读者的时候更新内容</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h1 id="RCU"><a href="#RCU" class="headerlink" title="RCU"></a>RCU</h1><p>其他机制都是用了原子操作指令，多CPU争抢变量的时候会导致性能下降，同步开销比较大。RCU通过创建副本，在读者访问时就可以提前修改，没有读者时更新数据。可以在不阻塞读者的情况下更新数据结构。一般用来对一个指针指向的空间进行保护。RCU可以用来替换读写锁。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// RCU 相关的API</span><br><span class="line"></span><br><span class="line">rcu_read_lock()/rcu_read_unlock(): 读保护</span><br><span class="line">rcu_dereference(): 获取被保护的指针</span><br><span class="line">rcu_assign_pointer(): 写者更新指针</span><br><span class="line">synchronize_rcu()：同步等待读者访问结束后更新,但是不保证所有清理动作结束，会阻塞当前进程</span><br><span class="line">call_rcu()：注册一个毁掉函数，销毁旧数据，不会阻塞直接返回</span><br><span class="line">rcu_barrier()：等待所有回调调用结束，一般在模块卸载时使用</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写者删除一个rcu时，可以通过synchronize_rcu等待没有读者访问了，再释放数据。在中断上下文中，则使用call_rcu来处理。</p>
+<p>在可卸载的模块中，如果要卸载模块需要首先保证不再发送回调了，然后调用rcu_barrier确保前面的回调已经被调用了，最终才能卸载模块。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  list_del_rcu(p);</span><br><span class="line">  synchronize_rcu();</span><br><span class="line">  kfree(p);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">list_del_rcu(p);</span><br><span class="line">call_rcu(&amp;p-&gt;rcu, p_callback);</span><br><span class="line"></span><br><span class="line">static void p_callback(struct rcu_head *rp)</span><br><span class="line">&#123;</span><br><span class="line">  struct pstruct *p = container_of(rp, struct pstruct, rcu);</span><br><span class="line"></span><br><span class="line">  kfree(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void test_exit(void)</span><br><span class="line">&#123;</span><br><span class="line">  // stop post delete callback</span><br><span class="line"></span><br><span class="line">  // call rcu_barrier</span><br><span class="line"></span><br><span class="line">  // return , allow unload module</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
