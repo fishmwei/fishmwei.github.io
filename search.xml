@@ -7338,7 +7338,7 @@
 <p>在可卸载的模块中，如果要卸载模块需要首先保证不再发送回调了，然后调用rcu_barrier确保前面的回调已经被调用了，最终才能卸载模块。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  list_del_rcu(p);</span><br><span class="line">  synchronize_rcu();</span><br><span class="line">  kfree(p);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">list_del_rcu(p);</span><br><span class="line">call_rcu(&amp;p-&gt;rcu, p_callback);</span><br><span class="line"></span><br><span class="line">static void p_callback(struct rcu_head *rp)</span><br><span class="line">&#123;</span><br><span class="line">  struct pstruct *p = container_of(rp, struct pstruct, rcu);</span><br><span class="line"></span><br><span class="line">  kfree(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void test_exit(void)</span><br><span class="line">&#123;</span><br><span class="line">  // stop post delete callback</span><br><span class="line"></span><br><span class="line">  // call rcu_barrier</span><br><span class="line"></span><br><span class="line">  // return , allow unload module</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>测试代码：</p>
+<p>测试代码：<a href="https://gitee.com/fishmwei/blog_code/blob/master/linux-kernel/rcu/myrcu.c">https://gitee.com/fishmwei/blog_code/blob/master/linux-kernel/rcu/myrcu.c</a></p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
