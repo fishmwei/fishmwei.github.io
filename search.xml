@@ -7351,4 +7351,57 @@
         <category>技术</category>
       </categories>
   </entry>
+  <entry>
+    <title>Linux基础复学（5）- 调试手段</title>
+    <url>/2024/06/22/linux5-dbg/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>复习一下Linux内核开发使用的调试手段，主要包含如下方法：</p>
+<ul>
+<li>printk及pr_xxx</li>
+<li>动态输出</li>
+<li>procfs文件系统</li>
+<li>sysfs文件系统</li>
+<li>debugfs文件系统</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="printk"><a href="#printk" class="headerlink" title="printk"></a>printk</h1><p>printk是最常用的调试方法，可以在代码中加入一些打印信息，了解内核模块执行的情况。类似于printf,不过printk是区分了打印等级的，可以通过配置让内核打印相应的等级日志。</p>
+<p>printk提供8个打印等级，分别为 DEBUG, INFO, NOTICE, WARNING, ERROR, CRITICAL, ALERT, EMERGE，等级越来越高，对应7-0，值越小等级越高。</p>
+<p>内核编译配置可以通过CONFIG_MESSAGE_LOGLEVEL_DEFAULT设置默认打印等级，默认是4（WARNING）。</p>
+<p>还可以通过系统启动参数配置打印等级 loglevel&#x3D;8, 也可以在启动后动态修改等级，修改 &#x2F;proc&#x2F;sys&#x2F;kernel&#x2F;printk的值。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-Inspiron-3020-S:/home/keep/code/raw_blog# cat /proc/sys/kernel/printk</span><br><span class="line">4       4       1       7</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分别对于 控制台等级/默认消息等级/最低打印等级/默认控制台打印等级</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>pr_xxx是对printk的一个包装，printk是基础的接口，而pr_xxx可以通过名称体现出等级。</p>
+<p>还有2个常用的打印接口</p>
+<ul>
+<li>print_hex_dump 打印内存数据</li>
+<li>dump_stack 打印调用栈</li>
+</ul>
+<h1 id="动态输出"><a href="#动态输出" class="headerlink" title="动态输出"></a>动态输出</h1><p>内核配置CONFIG_DYNAMIC_DEBUG配置使能动态输出功能，可以在内核运行时动态配置信息的输出，而printk属于全局的静态配置。</p>
+<p>使用动态输出需要在代码中使用pr_debug&#x2F;dev_dbg函数打印信息。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看内核动态输出代码分布情况</span></span><br><span class="line">cat /sys/kernel/debug/dynamic_debug/control </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">filename:lineno [module]<span class="keyword">function</span> flags format</span></span><br><span class="line">init/main.c:1113 [main]initcall_blacklist =p &quot;blacklisting initcall %s\n&quot;</span><br><span class="line">init/main.c:1152 [main]initcall_blacklisted =p &quot;initcall %s blacklisted\n&quot;</span><br><span class="line">init/main.c:1347 [main]run_init_process =p &quot;  with arguments:\n&quot;</span><br><span class="line">init/main.c:1349 [main]run_init_process =p &quot;    %s\n&quot;</span><br><span class="line">...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过往contrl文件写入内容，打开对于模块的打印</span></span><br><span class="line"></span><br><span class="line">echo &#x27;file init/main.c +p&#x27; &gt; /sys/kernel/debug/dynamic_debug/control </span><br><span class="line">echo &#x27;module main +p&#x27; &gt; /sys/kernel/debug/dynamic_debug/control </span><br><span class="line">echo &#x27;func run_init_process +p&#x27; &gt; /sys/kernel/debug/dynamic_debug/control </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打开包含usb的路径所有文件的打印</span></span><br><span class="line">echo -n &#x27;*usb* +p&#x27; &gt; /sys/kernel/debug/dynamic_debug/control </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">打开所有动态打印</span></span><br><span class="line">echo -n &#x27;+p&#x27; &gt; /sys/kernel/debug/dynamic_debug/control </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">对一些需要在启动时查看的打印可以在启动参数中添加开关， main.dyndbg=+plft</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">也可以在子模块的Makefile 设置ccflags</span></span><br><span class="line"></span><br><span class="line">ccflags += -DDEBUG -DVERBOSE_DEBUG</span><br></pre></td></tr></table></figure>
+
+<h1 id="proc和sys文件系统"><a href="#proc和sys文件系统" class="headerlink" title="proc和sys文件系统"></a>proc和sys文件系统</h1><p>proc系统提供了一种内核和内核模块向用户态发送消息的机制。这个虚拟文件系统主要提供内核内部的数据结构信息，也可以用来查看系统的信息。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看系统启动的参数</span></span><br><span class="line"></span><br><span class="line">cat /proc/cmdline</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看cpu信息</span></span><br><span class="line">cat /proc/cpuinfo</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看内存信息</span></span><br><span class="line">cat /proc/meminfo</span><br><span class="line">cat /proc/slabinfo</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看设备io内存占用信息</span></span><br><span class="line">cat /proc/iomem</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看对于<span class="built_in">id</span>的进程信息</span></span><br><span class="line">cat /proc/xxx/*</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看misc设备模块</span></span><br><span class="line">cat /proc/misc</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看内核加密算法</span></span><br><span class="line">cat /proc/crypto</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看中断</span></span><br><span class="line">cat /proc/interrupts</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>proc文件系统主要用于显示系统相关的信息，对于一般模块而言，则使用sys文件系统，提供了一套统一的设备驱动模型。<br>现在很多模块都是用sys作为与用户空间的友好接口，比如uio模块。系统默认创建的字符设备等，也会在sys下创建对应的文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/dev/kvm有对应的目录</span></span><br><span class="line"><span class="meta prompt_">xxx# </span><span class="language-bash"><span class="built_in">ls</span> /sys/devices/virtual/misc/kvm/</span></span><br><span class="line">dev  power  subsystem  uevent</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="debugfs文件系统"><a href="#debugfs文件系统" class="headerlink" title="debugfs文件系统"></a>debugfs文件系统</h1><p>debugfs则是一个纯粹用来调试内核的文件系统， 而proc和sys则是作为用户接口来使用的，不适合暴露私有的调试信息。最基础的内核调试是打印日志，但是如果涉及到数据修改的，就可以使用debugfs文件系统了，否则只能修改代码重新编译加载。</p>
+<p>debugfs 一般挂在到&#x2F;sys&#x2F;kernel&#x2F;debug目录下，比如dma模块就有相关的文件在该目录下。之前看的dma-api使用接口，当开启了CONFIG_DMA_API_DEBUG就会在&#x2F;sys&#x2F;kernel&#x2F;debug目录下创建一个dma-api的目录。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@keep-Inspiron-3020-S:~# ls /sys/kernel/debug/dma-api/</span><br><span class="line">all_errors  driver_filter  error_count       nr_total_entries  num_free_entries</span><br><span class="line">disabled    dump           min_free_entries  num_errors</span><br><span class="line">root@keep-Inspiron-3020-S:~#</span><br></pre></td></tr></table></figure>
+
+<p>类似proc和sys, debugfs也提供了api来读写文件的接口来实现数据通信，用于调试。</p>
+<p>本文相关测试代码： <a href="https://gitee.com/fishmwei/blog_code/blob/master/linux-kernel/dbgm/dbgm.c">https://gitee.com/fishmwei/blog_code/blob/master/linux-kernel/dbgm/dbgm.c</a></p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>
