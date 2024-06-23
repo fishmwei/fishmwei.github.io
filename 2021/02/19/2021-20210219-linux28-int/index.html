@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="字符设备中断前面在学习文件读写的时候，如果是读取设备上的内容， 那么在读取完毕的时候，设备会发送一个中断告知CPU内容读取完毕。同样的，字符设备也是有中断来通知CPU处理事件， 比如鼠标设备就是通过中断来告知系统自己的位置和按键信息，传递给驱动程序。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《趣谈linux操作系统》小结(二十八) - 字符设备中断">
+<meta property="og:url" content="https://fishmwei.github.io/2021/02/19/2021-20210219-linux28-int/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="字符设备中断前面在学习文件读写的时候，如果是读取设备上的内容， 那么在读取完毕的时候，设备会发送一个中断告知CPU内容读取完毕。同样的，字符设备也是有中断来通知CPU处理事件， 比如鼠标设备就是通过中断来告知系统自己的位置和按键信息，传递给驱动程序。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202102/dev_irq.png">
+<meta property="article:published_time" content="2021-02-19T00:55:27.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.199Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202102/dev_irq.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2021/02/19/2021-20210219-linux28-int/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《趣谈linux操作系统》小结(二十八) - 字符设备中断 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2021/02/19/2021-20210219-linux28-int/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《趣谈linux操作系统》小结(二十八) - 字符设备中断
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-19 08:55:27" itemprop="dateCreated datePublished" datetime="2021-02-19T08:55:27+08:00">2021-02-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/02/19/2021-20210219-linux28-int/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/02/19/2021-20210219-linux28-int/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="字符设备中断"><a href="#字符设备中断" class="headerlink" title="字符设备中断"></a>字符设备中断</h1><p>前面在学习文件读写的时候，如果是读取设备上的内容， 那么在读取完毕的时候，设备会发送一个中断告知CPU内容读取完毕。同样的，字符设备也是有中断来通知CPU处理事件， 比如鼠标设备就是通过中断来告知系统自己的位置和按键信息，传递给驱动程序。</p>
+<span id="more"></span>
+
+<h2 id="注册中断处理函数"><a href="#注册中断处理函数" class="headerlink" title="注册中断处理函数"></a>注册中断处理函数</h2><p>处理中断，需要一个中断的处理函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">logibm_open</span><span class="params">(<span class="keyword">struct</span> input_dev *dev)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (request_irq(logibm_irq, logibm_interrupt, <span class="number">0</span>, <span class="string">&quot;logibm&quot;</span>, <span class="literal">NULL</span>)) &#123;</span><br><span class="line">    printk(KERN_ERR <span class="string">&quot;logibm.c: Can&#x27;t allocate irq %d\n&quot;</span>, logibm_irq);</span><br><span class="line">    <span class="keyword">return</span> -EBUSY;</span><br><span class="line">  &#125;</span><br><span class="line">  outb(LOGIBM_ENABLE_IRQ, LOGIBM_CONTROL_PORT);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">irqreturn_t</span> <span class="title function_">logibm_interrupt</span><span class="params">(<span class="type">int</span> irq, <span class="type">void</span> *dev_id)</span>&#123;</span><br><span class="line"> ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>鼠标的中断处理函数就是<code>logibm_interrupt</code>。通过<code>request_irq</code>函数注册中断处理函数。</p>
+<p>中断处理函数的返回值表示中断处理的结果。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">irqreturn_t</span> (*<span class="type">irq_handler_t</span>)(<span class="type">int</span> irq, <span class="type">void</span> * dev_id);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * enum irqreturn</span></span><br><span class="line"><span class="comment"> * @IRQ_NONE    interrupt was not from this device or was not handled</span></span><br><span class="line"><span class="comment"> * @IRQ_HANDLED    interrupt was handled by this device</span></span><br><span class="line"><span class="comment"> * @IRQ_WAKE_THREAD  handler requests to wake the handler thread</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">irqreturn</span> &#123;</span></span><br><span class="line">  IRQ_NONE    = (<span class="number">0</span> &lt;&lt; <span class="number">0</span>),</span><br><span class="line">  IRQ_HANDLED    = (<span class="number">1</span> &lt;&lt; <span class="number">0</span>),</span><br><span class="line">  IRQ_WAKE_THREAD    = (<span class="number">1</span> &lt;&lt; <span class="number">1</span>),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里使用void指针参数， 可以达到同一个函数处理不同设备的中断事件，根据中断号可以区分是什么设备，然后强转为特定设备的结构，这种实现是很普遍的用在通过流程的入口函数的。</p>
+<p>这里的返回值有三种：IRQ_NONE 表示不是我的中断，不归我管；IRQ_HANDLED 表示处理完了的中断；IRQ_WAKE_THREAD 表示有一个进程正在等待这个中断，中断处理完了，应该唤醒它。</p>
+<p>鼠标的中断处理相对比较简单，没有耗时长的操作，整体也不是很复杂。在中断处理的过程中，这个中断信号是被关闭的， 如果连续来几个相同的中断，后续的中断可能不被即时响应，显得系统很慢。对于其他复杂的中断，可能需要分成关键处理部分和延迟处理部分，在中断处理函数中，仅仅处理关键部分，完成了就将中断信号打开，使得新的中断可以进来，需要比较长时间处理的部分，也即延迟部分，往往通过工作队列等方式慢慢处理。</p>
+<p><code>request_irq</code>函数注册中断处理函数。对于每一个中断，都有一个对中断的描述结构 struct irq_desc。它有一个重要的成员变量是 struct irqaction，用于表示处理这个中断的动作。处理动作可以有多个，通过 irqaction的next串起来。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">irq_desc</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">action</span>;</span>  <span class="comment">/* IRQ action list */</span></span><br><span class="line">......</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">module</span>    *<span class="title">owner</span>;</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span>    *name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * struct irqaction - per interrupt action descriptor</span></span><br><span class="line"><span class="comment"> * @handler:  interrupt handler function</span></span><br><span class="line"><span class="comment"> * @name:  name of the device</span></span><br><span class="line"><span class="comment"> * @dev_id:  cookie to identify the device</span></span><br><span class="line"><span class="comment"> * @percpu_dev_id:  cookie to identify the device</span></span><br><span class="line"><span class="comment"> * @next:  pointer to the next irqaction for shared interrupts</span></span><br><span class="line"><span class="comment"> * @irq:  interrupt number</span></span><br><span class="line"><span class="comment"> * @flags:  flags (see IRQF_* above)</span></span><br><span class="line"><span class="comment"> * @thread_fn:  interrupt handler function for threaded interrupts</span></span><br><span class="line"><span class="comment"> * @thread:  thread pointer for threaded interrupts</span></span><br><span class="line"><span class="comment"> * @secondary:  pointer to secondary irqaction (force threading)</span></span><br><span class="line"><span class="comment"> * @thread_flags:  flags related to @thread</span></span><br><span class="line"><span class="comment"> * @thread_mask:  bitmask for keeping track of @thread activity</span></span><br><span class="line"><span class="comment"> * @dir:  pointer to the proc/irq/NN/name entry</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span> &#123;</span></span><br><span class="line">  <span class="type">irq_handler_t</span>    handler;</span><br><span class="line">  <span class="type">void</span>      *dev_id;</span><br><span class="line">  <span class="type">void</span> __percpu    *percpu_dev_id;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">next</span>;</span></span><br><span class="line">  <span class="type">irq_handler_t</span>    thread_fn;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span>  *<span class="title">thread</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">irqaction</span>  *<span class="title">secondary</span>;</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>    irq;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span>    flags;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span>    thread_flags;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">long</span>    thread_mask;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span>    *name;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc_dir_entry</span>  *<span class="title">dir</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这个desc结构可以通过中断号调用irq_to_desc函数来查找。当然这里的中断号也只是一个内核逻辑的中断编号，不同的设备实际发出的中断号可能不一样，这个有一个中断控制器控制。</p>
+<p>request_threaded_irq 函数分配了一个 struct irqaction，并且初始化它，接着调用 __setup_irq。在这个函数里面，如果 struct irq_desc 里面已经有 struct irqaction 了，我们就将新的 struct irqaction 挂在链表的末端。如果设定了以单独的线程运行中断处理函数，setup_irq_thread 就会创建这个内核线程，wake_up_process 会唤醒它。</p>
+<p>注册处理函数其实也不复杂，只是查找一下中断描述符，然后建立action链表。</p>
+<h2 id="触发中断处理"><a href="#触发中断处理" class="headerlink" title="触发中断处理"></a>触发中断处理</h2><p>中断触发有几个阶段</p>
+<ul>
+<li>外部设备给中断控制器发送物理中断信号</li>
+<li>中断控制器将物理中断信号转换成为中断向量 interrupt vector，发给各个 CPU。</li>
+<li>每个 CPU 都会有一个中断向量表，根据 interrupt vector 调用一个 IRQ 处理函数。</li>
+<li>在 IRQ 处理函数中，将 interrupt vector 转化为抽象中断层的中断信号 irq，调用中断信号 irq 对应的中断描述结构里面的 irq_handler_t。</li>
+</ul>
+<p>CPU 能够处理的中断总共 256 个，用宏 NR_VECTOR 或者 FIRST_SYSTEM_VECTOR 表示。</p>
+<p>CPU 硬件要求每一个 CPU 都有一个中断向量表，通过 load_idt 加载，里面记录着每一个中断对应的处理方法，这个中断向量表定义在文件 arch&#x2F;x86&#x2F;kernel&#x2F;traps.c 中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gate_desc idt_table[NR_VECTORS] __page_aligned_bss;</span><br></pre></td></tr></table></figure>
+
+<p>0-31是系统异常的中断，在内核初始化的时候 trap_init函数设置了中断函数。在trap_init还设置了127系统调用的中断处理函数。同时给used_vectors全局变量对应的位置位。其他设备的中断初始化调用的是init_IRQ函数。</p>
+<p>任何硬件中断向量处理最终都会调用到do_IRQ函数。do_IRQ就通过每个CPU对应的中断向量表获取最终全局的中断desc，然后调用对应的处理函数进行处理。</p>
+<img src="/images/202102/dev_irq.png" alt="图片替换文本" width="600" height="713" align="bottom" />
+
+
+
+
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/08/2021-20210208-linux27-driver/" rel="prev" title="《趣谈linux操作系统》小结(二十七) - 字符设备驱动">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(二十七) - 字符设备驱动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/19/2021-20210219-linux29-bdev/" rel="next" title="《趣谈linux操作系统》小结(二十九) - 块设备">
+      《趣谈linux操作系统》小结(二十九) - 块设备 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%AE%BE%E5%A4%87%E4%B8%AD%E6%96%AD"><span class="nav-number">1.</span> <span class="nav-text">字符设备中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">注册中断处理函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">触发中断处理</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员自我修养读后感(5)-动态链接">
+<meta property="og:url" content="https://fishmwei.github.io/2020/07/23/2020-20200718-reflection4self-5/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="动态链接经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-23T15:09:07.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.195Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2020/07/23/2020-20200718-reflection4self-5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>程序员自我修养读后感(5)-动态链接 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2020/07/23/2020-20200718-reflection4self-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员自我修养读后感(5)-动态链接
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-23 23:09:07" itemprop="dateCreated datePublished" datetime="2020-07-23T23:09:07+08:00">2020-07-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/07/23/2020-20200718-reflection4self-5/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/07/23/2020-20200718-reflection4self-5/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h1><p>经过前面一些列的学习，可以知道一个程序运行时，可执行文件映像是需要被载入到内存中的。为了复用，很多程序使用了相同的静态库，那么这些静态库都是需要被分别链接合并到各个程序的可执行文件的。那么在磁盘上，其实有很多同一个静态库的内容的副本。 各个程序同时运行时，内存中也存在多个同一个静态库的内容的副本。很显然，浪费了很多空间， 也增加了许多载入内存的时间。同一个静态库，比如是C语言的基础库的静态版本，还有许多自研的共享库。</p>
+<span id="more"></span>
+
+<p>因此，出现了动态链接的技术。 在编译时，不链接依赖模块的库，在运行时才进行链接。在程序运行的初期，系统对依赖的库进行链接，当所依赖的库都存在磁盘中的时候，链接完成。链接的整体过程和静态链接的过程相似， 都包含了符号解析，地址重定位等步骤。 完成动态链接主要工作的是一个称为动态链接器的程序。</p>
+<h2 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -fPIC -shared -o common.so common.c // 命令行创建动态链接库</span><br><span class="line">gcc -o main main.c common.so // 链接产生main</span><br></pre></td></tr></table></figure>
+
+<p>我们可以通过前面学习到的objdump命令查看可执行文件的符号表， 我们发现 common.c中的函数及变量依旧是 UND的。他们只有在动态库被加载之后才能确定地址，也就是装载时重定位。<br>装载时重定位，需要修改指令的地址，那么多个程序间的指令就不可以共享了，由于不同程序的数据部分是分开的则没有这个问题。</p>
+<h2 id="地址无关代码"><a href="#地址无关代码" class="headerlink" title="地址无关代码"></a>地址无关代码</h2><p>为了使得共享库的指令部分可以共享，需要把可变的指令分离出来，放到一个全局偏移表中，即got段。got段放在数据部分， 各个程序都有一个副本。指定部分存储变量或者函数在got表中的偏移地址，然后找到got表中对应偏移的内容，即变量&#x2F;函数的地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d foo.so | grep TEXTREL // 没有输出就是地址无关的so</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="延迟加载技术"><a href="#延迟加载技术" class="headerlink" title="延迟加载技术"></a>延迟加载技术</h2><p>got段中的各个项， 只会在第一次调用的时候进行重定位填充。后面就不再加载。而不是一开始就计算好全部的重定位地址。 got段用于存储变量地址， got.plt段用于存储函数地址。</p>
+<h2 id="动态链接相关结构"><a href="#动态链接相关结构" class="headerlink" title="动态链接相关结构"></a>动态链接相关结构</h2><h3 id="interp段"><a href="#interp段" class="headerlink" title=".interp段"></a>.interp段</h3><p>静态链接的文件在装载到内存之后，指令寄存器地址指向程序入口地址，控制权会转交给程序。而动态链接文件，需要先加载一个动态链接器，然后转交给动态链接器加载程序依赖的动态库，最后才转交给程序运行。</p>
+<p>动态链接器的信息由elf中的.interp段保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看各个段的内容</span><br><span class="line"></span><br><span class="line">objdump -s exec_file</span><br><span class="line"></span><br><span class="line">readelf -l exec_file | grep interpreter // 也会显示动态链接器的路径</span><br></pre></td></tr></table></figure>
+
+<h3 id="dynamic段"><a href="#dynamic段" class="headerlink" title=".dynamic段"></a>.dynamic段</h3><p>保存动态链接器需要的基本信息， 依赖哪些共享对象、动态链接符号表的位置、动态链接重定位表的位置、初始化代码的地址等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -d exec_file</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>动态符号表、动态符号字符串表、符号哈希表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objdump -T exec_file // 动态符号表</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="显示加载动态库"><a href="#显示加载动态库" class="headerlink" title="显示加载动态库"></a>显示加载动态库</h2><p>动态库支持动态加载、删除。 </p>
+<p>可以使用 dlopen&#x2F;dlclose&#x2F;dlsym函数操作。灵活的替换使用的库。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/17/2020-20200717-reflection4self-4/" rel="prev" title="程序员自我修养读后感(4)-可执行文件加载">
+      <i class="fa fa-chevron-left"></i> 程序员自我修养读后感(4)-可执行文件加载
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/24/2020-20200724-reflection4self-6/" rel="next" title="程序员自我修养读后感(6)-共享库的组织">
+      程序员自我修养读后感(6)-共享库的组织 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">动态链接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">基础命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E6%97%A0%E5%85%B3%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">地址无关代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD%E6%8A%80%E6%9C%AF"><span class="nav-number">1.3.</span> <span class="nav-text">延迟加载技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E7%9B%B8%E5%85%B3%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.</span> <span class="nav-text">动态链接相关结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#interp%E6%AE%B5"><span class="nav-number">1.4.1.</span> <span class="nav-text">.interp段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dynamic%E6%AE%B5"><span class="nav-number">1.4.2.</span> <span class="nav-text">.dynamic段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">1.4.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E5%8A%A0%E8%BD%BD%E5%8A%A8%E6%80%81%E5%BA%93"><span class="nav-number">1.5.</span> <span class="nav-text">显示加载动态库</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

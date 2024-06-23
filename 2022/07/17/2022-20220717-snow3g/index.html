@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言前面讲过ZUC算法是3GPP LTE 第三套加密标准核心算法，而Snow 3G则是第二套加密标准核心算法，ZUC和Snow 3G算法的英文描述可以在这个网站上找到: https:&#x2F;&#x2F;www.gsma.com&#x2F;security&#x2F;security-algorithms&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(29)-snow3g流密码算法">
+<meta property="og:url" content="https://fishmwei.github.io/2022/07/17/2022-20220717-snow3g/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言前面讲过ZUC算法是3GPP LTE 第三套加密标准核心算法，而Snow 3G则是第二套加密标准核心算法，ZUC和Snow 3G算法的英文描述可以在这个网站上找到: https:&#x2F;&#x2F;www.gsma.com&#x2F;security&#x2F;security-algorithms&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202207/3gpp_security.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202207/snow3g_spec.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202207/uea2.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202207/uea2b.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202207/uia2.png">
+<meta property="article:published_time" content="2022-07-17T14:15:01.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.207Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202207/3gpp_security.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/07/17/2022-20220717-snow3g/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(29)-snow3g流密码算法 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/07/17/2022-20220717-snow3g/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(29)-snow3g流密码算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-17 22:15:01" itemprop="dateCreated datePublished" datetime="2022-07-17T22:15:01+08:00">2022-07-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/07/17/2022-20220717-snow3g/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/17/2022-20220717-snow3g/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面讲过<code>ZUC</code>算法是3GPP LTE 第三套加密标准核心算法，而<code>Snow 3G</code>则是第二套加密标准核心算法，<code>ZUC</code>和<code>Snow 3G</code>算法的英文描述可以在这个网站上找到:</p>
+<p><code>https://www.gsma.com/security/security-algorithms/</code></p>
+<p><img src="/images/202207/3gpp_security.png" alt="avatar"></p>
+<span id="more"></span>
+
+<p>实现完<code>ZUC</code>的驱动后，这周实现了一下<code>Snow 3G</code>的驱动，顺带学习了一下这个算法。</p>
+<h1 id="Snow-3G"><a href="#Snow-3G" class="headerlink" title="Snow 3G"></a>Snow 3G</h1><p><code>Snow 3G</code>也包含了完整性算法<code>UEA2</code>和保密性算法<code>UIA2</code>两个部分，同时也依赖一个算法描述如何生成密钥流。</p>
+<h2 id="算法描述"><a href="#算法描述" class="headerlink" title="算法描述"></a>算法描述</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/snow3gspec.pdf</code></p>
+<p>根据输入的密钥和IV初始化，而后根据输入的数据长度产生密钥流。</p>
+<p><img src="/images/202207/snow3g_spec.png" alt="avatar"></p>
+<p>在文档后面还有对应的C语言实现程序，当然只是一个基础的实现，如果要应用到实际的产品中还需要重构一下。</p>
+<h2 id="保密性算法"><a href="#保密性算法" class="headerlink" title="保密性算法"></a>保密性算法</h2><p>文档链接 <code>https://www.gsma.com/security/wp-content/uploads/2019/05/uea2uia2d1v21.pdf</code></p>
+<p><img src="/images/202207/uea2.png" alt="avatar"></p>
+<p><code>UEA2</code>是一种流加密算法，按位进行加解密。从上图中可以看到对应的输入参数和输出结果。这些参数首先会根据固定的算法产生IV数据，然后按照算法描述产生密钥流，最终跟要加密或者解密的数据进行运算得到最终的结果。</p>
+<p><img src="/images/202207/uea2b.png" alt="avatar"></p>
+<p>同样的，在文档的后面有对应的C语言实现程序。</p>
+<h2 id="完整性算法"><a href="#完整性算法" class="headerlink" title="完整性算法"></a>完整性算法</h2><p>文档链接跟保密性算法是同一个文档。</p>
+<p><img src="/images/202207/uia2.png" alt="avatar"></p>
+<p>具体的计算过程可以参考文档。在文档的后面也有对应的C语言实现程序。</p>
+<p>不过完整性算法的C语言代码，最后计算MAC是有错误的，需要修改一下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*原始代码 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> 0</span></span><br><span class="line"> <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++)</span><br><span class="line">    MAC_I[i] = (mac32 &gt;&gt; (<span class="number">8</span>*(<span class="number">3</span>-i))) &amp; <span class="number">0xff</span>; <span class="comment">/* mac32是一个没有定义的变量 */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">return</span> MAC_I; </span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 修改代码 */</span></span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++) &#123;</span><br><span class="line">    MAC_I[i] = ((EVAL &gt;&gt; (<span class="number">56</span> - (i * <span class="number">8</span>))) ^ ((z[<span class="number">4</span>]) &gt;&gt; (<span class="number">24</span> - (i * <span class="number">8</span>)))) &amp; <span class="number">0xff</span>;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">return</span> MAC_I;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我也是参考了一个go语言的<code>snow3g</code>的实现，然后是验证通过了的。</p>
+<p><code>https://github.com/frankurcrazy/snow3g/blob/master/uia2/uia2.go</code></p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这个<code>3gpp</code>的英文文档内容还是比较齐全的，而且还自带了算法的实现代码。同样的，<code>ZUC</code>对应的<code>EEA3</code>和<code>EIA3</code>算法也有代码。不过，经过验证，我发现了一个问题，那就是<code>ZUC</code>的样例数据是按照大端字节序测试的，在小端主机上面，需要先把原始的数据转换一下字节序，才能得到正确的结果。而那个<code>snow 3g</code>的测试数据本身就认为你是小端的，在小端主机上面不需要转换字节序，计算出的结果就跟他的示例数据是一致的。如果有人研究的话，注意一下这点区别。</p>
+<p>多学点知识还是有好处的，这边有个工作中的小插曲。</p>
+<p>就是工作上需要在新的机型上验证一个功能，但是验证平台资源比较紧俏，运行速度又慢，而且很多人排着队等着去使用。那没有办法了，你只能在现有的机器资源上面先把代码编译测试了，然后再弄到新的机型上面去验证。也就是先本地验证了把基本的流程走通了，再换环境验证一下。不同的环境就有个系统版本不一致的问题，主要就是那个glibc的库不一样，系统内核版本不一样，那么就需要用到docker这个东西了。需要在本地搭建一个跟新机型上面环境一致的镜像系统，在这个镜像里面编译好了，再把生成的二进制拷贝到新机型上面验证。今年不是刚好看了一些docker的基础使用吗，然后自然就很快的用上了，节省了许多时间。</p>
+<p>多学点东西是不错的，有博客记录一下更不错了，到用的时候可以来查一查，事半功倍。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/10/2022-20220710-zuc/" rel="prev" title="ZUC(祖冲之)算法">
+      <i class="fa fa-chevron-left"></i> ZUC(祖冲之)算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/24/2022-20220724-ecc/" rel="next" title="周谈(30)-ecc曲线原理">
+      周谈(30)-ecc曲线原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Snow-3G"><span class="nav-number">2.</span> <span class="nav-text">Snow 3G</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">算法描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E5%AF%86%E6%80%A7%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">保密性算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E6%80%A7%E7%AE%97%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">完整性算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

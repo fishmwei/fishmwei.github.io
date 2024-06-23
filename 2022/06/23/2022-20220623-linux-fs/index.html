@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。 驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(26)-Linux文件系统与驱动">
+<meta property="og:url" content="https://fishmwei.github.io/2022/06/23/2022-20220623-linux-fs/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。 驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202206/fs_driver.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202206/devfs.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202206/addcd.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202206/getuevent.png">
+<meta property="article:published_time" content="2022-06-23T14:34:23.000Z">
+<meta property="article:modified_time" content="2024-06-10T03:55:37.207Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202206/fs_driver.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/06/23/2022-20220623-linux-fs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(26)-Linux文件系统与驱动 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/06/23/2022-20220623-linux-fs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(26)-Linux文件系统与驱动
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-23 22:34:23" itemprop="dateCreated datePublished" datetime="2022-06-23T22:34:23+08:00">2022-06-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/06/23/2022-20220623-linux-fs/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/06/23/2022-20220623-linux-fs/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Linux中一切都是文件，所有的资源都是通过文件的形式来访问控制的。</p>
+<p>驱动最终通过文件相关的系统调用来访问，Linux的驱动架构也是基于文件系统而设计的。</p>
+<span id="more"></span>
+
+<h1 id="Linux文件系统"><a href="#Linux文件系统" class="headerlink" title="Linux文件系统"></a>Linux文件系统</h1><h2 id="Linux文件目录"><a href="#Linux文件目录" class="headerlink" title="Linux文件目录"></a>Linux文件目录</h2><p>Linux根目录下面存在一些特定的目录，这些目录里面存放约定好的文件。</p>
+<ul>
+<li>bin 存放基本命令程序</li>
+<li>sbin 存放系统命令的程序</li>
+<li>dev 设备文件存储目录，通过这些文件的访问操作来控制设备</li>
+<li>etc 配置文件目录</li>
+<li>lib 库文件的存放目录</li>
+<li>mnt 一般用于存放挂载存储设备的目录， &#x2F;etc&#x2F;fstab里面可以设置一些自动挂载的目录</li>
+<li>opt 可选软件安装目录</li>
+<li>proc 操作系统运行时， 进程及内核的信息， proc不是真正的文件系统，而是存在内存中的</li>
+<li>tmp 临时文件目录</li>
+<li>usr 用户存放程序的目录</li>
+<li>var 经常变动的文件放在这里 比如log文件</li>
+<li>sys sysfs文件系统映射的目录。Linux设备驱动模型中的总线、驱动和设备都可以在这里找到对应的文件节点。上篇文章中的内核模块安装后也会在&#x2F;sys&#x2F;module里面创建对应的节点。</li>
+</ul>
+<p>在内核中，用一个file_operations的结构控制文件的访问接口。每个打开的文件都有一个struct file对应，文件关闭后才释放， 里面存放了文件的一些flag和属性。在vfs中文件还对应一个indode的结构体，保存文件的权限属性、大小、访问时间等。</p>
+<p><img src="/images/202206/fs_driver.png" alt="avatar"></p>
+<p>在&#x2F;proc&#x2F;devices文件中记录了系统中的所有设备。第一列是主设备号，第二列是设备名。</p>
+<h2 id="devfs和udev"><a href="#devfs和udev" class="headerlink" title="devfs和udev"></a>devfs和udev</h2><p>devfs设备文件系统使得驱动可以自己管理设备文件，内核2.4版本引入的。一般在驱动加载的时候创建文件，在驱动卸载的时候删除文件。</p>
+<p><img src="/images/202206/devfs.png" alt="avatar"></p>
+<p>udev用于取代devfs， 在内核2.6版本引入。udev工作在用户态，利用设备加入或者移除时发送的热插拔事件来工作。在设备热插拔时，内核会通过netlink套接字把信息发送出来， uevent。程序在接收到uevent后，根据信息管理文件。</p>
+<p>下面有个例子，接收内核通过netlink发送出来的uevent的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netlink.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">die</span><span class="params">(<span class="type">char</span> *s)</span></span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">2</span>, s, <span class="built_in">strlen</span>(s));</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_nl</span> <span class="title">nls</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">pfd</span>;</span></span><br><span class="line">    <span class="type">char</span> buf[<span class="number">512</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;nls, <span class="number">0</span>, <span class="keyword">sizeof</span>(nls));</span><br><span class="line">    nls.nl_family = AF_NETLINK;</span><br><span class="line">    nls.nl_pid = getpid();</span><br><span class="line">    nls.nl_groups= <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    pfd.events = POLLIN;</span><br><span class="line">    pfd.fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);</span><br><span class="line">    <span class="keyword">if</span> (pfd.fd == <span class="number">-1</span>)</span><br><span class="line">        die(<span class="string">&quot;not root\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bind(pfd.fd, (<span class="type">void</span>*)&amp;nls, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_nl)))</span><br><span class="line">        die(<span class="string">&quot;bind error\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">-1</span> != poll(&amp;pfd, <span class="number">1</span>, <span class="number">-1</span>)) &#123;</span><br><span class="line">        <span class="type">int</span> i, len = recv(pfd.fd, buf, <span class="keyword">sizeof</span>(buf), MSG_DONTWAIT);</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">-1</span>)</span><br><span class="line">            die(<span class="string">&quot;recv\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; len ) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%s\r\n&quot;</span>, buf+i);</span><br><span class="line">            i += <span class="built_in">strlen</span>(buf+i) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    die(<span class="string">&quot;poll\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行之后，在virtual虚拟机可以控制CD光盘的加载删除触发uevent， 点击确定。</p>
+<p><img src="/images/202206/addcd.png" alt="avatar"></p>
+<p> 效果如下：</p>
+<p><img src="/images/202206/getuevent.png" alt="avatar"></p>
+<p>对于冷设备， 可以往&#x2F;sys&#x2F;module&#x2F;psmouse&#x2F;uevent写入一个add触发uevent。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">echo &quot;add&quot;&gt;/sys/module/psmouse/uevent</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">收到的信息如下</span></span><br><span class="line"></span><br><span class="line">ACTION=add</span><br><span class="line">DEVPATH=/module/psmouse</span><br><span class="line">SUBSYSTEM=module</span><br><span class="line">SYNTH_UUID=0</span><br><span class="line">SEQNUM=2736</span><br><span class="line">USEC_INITIALIZED=384805379</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>udev有对应的工具监控netlink。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">udevadm monitor --kernel --property --udev</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了netlink的使用， udev文件系统的工作的原理， 还有linux系统主要目录的用途、驱动跟文件系统的关联。一步步地加深对Linux内核的了解。</p>
+<p>最近看了项目的驱动的代码，从一头雾水到渐渐明晰，这是个学习的过程，通过小结记录下相关的知识，加深印象和理解，不断进步中。。。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/19/2022-20220619-driver/" rel="prev" title="周谈(25)-初识驱动开发">
+      <i class="fa fa-chevron-left"></i> 周谈(25)-初识驱动开发
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/02/2022-20220702-weekly-tcrypt/" rel="next" title="周谈(27)-内核tcrypt加密算法测试模块代码解读">
+      周谈(27)-内核tcrypt加密算法测试模块代码解读 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.</span> <span class="nav-text">Linux文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95"><span class="nav-number">2.1.</span> <span class="nav-text">Linux文件目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#devfs%E5%92%8Cudev"><span class="nav-number">2.2.</span> <span class="nav-text">devfs和udev</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
