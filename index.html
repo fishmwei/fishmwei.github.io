@@ -246,65 +246,14 @@
       
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。<br>perf的源码在Linux内核源码的tools&#x2F;perf下。</p>
 <h1 id="perf"><a href="#perf" class="headerlink" title="perf"></a>perf</h1><p>perf包含许多二级命令，实现不同的功能：</p>
-<p><img src="/images/202406/perf.jpg" alt="perf"></p>
-<h2 id="perf-list"><a href="#perf-list" class="headerlink" title="perf list"></a>perf list</h2><p>list显示系统支持的事件类型，主要有hardware, software, tracepoint三类：</p>
-<ul>
-<li>hardware PMU单元产生的事件</li>
-<li>software 内核产生的事件，比如进程切换</li>
-<li>tracepoint 内核静态跟踪点触发的事件</li>
-</ul>
-<h2 id="perf-record"><a href="#perf-record" class="headerlink" title="perf record"></a>perf record</h2><p>record用来采集数据并存储到文件中，然后可以使用report命令分析数据。</p>
-<p>record有如下几个选项：</p>
-<ul>
-<li>e 选择一个事件</li>
-<li>a 全系统范围内采集</li>
-<li>p 指定一个进程ID</li>
-<li>o 指定要输出的文件，默认是perf.data</li>
-<li>g 使能函数调用图功能， 分析时 可以查看调用栈</li>
-<li>C 只采集某个CPU的数据</li>
-</ul>
-<p>report常见的几个选项</p>
-<ul>
-<li>i 输入待分析的数据文件，默认perf.data</li>
-<li>g 生产函数调用关系图</li>
-<li>sort 分类统计信息，比如pid, comm, cpu等</li>
-</ul>
-<h2 id="perf-stat"><a href="#perf-stat" class="headerlink" title="perf stat"></a>perf stat</h2><p>stat通过概括，精简的方式对被调试的程序分析展示运行的整体情况，汇总数据，包含如下选项：</p>
-<ul>
-<li>a 显示所有CPU的统计信息</li>
-<li>c 显示指定CPU的统计信息</li>
-<li>e 指定要显示的事件</li>
-<li>p 指定要显示的进程的ID</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@keep-Inspiron-3020-S:/home/keep# perf stat -p 5353</span><br><span class="line"></span><br><span class="line"> Performance counter stats for process id &#x27;5353&#x27;:</span><br><span class="line"></span><br><span class="line">         24,937.97 msec task-clock                       #    0.996 CPUs utilized   真正占用处理器的时间          </span><br><span class="line">                94      context-switches                 #    3.769 /sec                      </span><br><span class="line">                 1      cpu-migrations                   #    0.040 /sec            程序运行期间处理器迁移的次数</span><br><span class="line">                 0      page-faults                      #    0.000 /sec             发生缺页异常的次数</span><br><span class="line">     &lt;not counted&gt;      cpu_atom/cycles/                                                        (0.00%)</span><br><span class="line">   129,338,465,839      cpu_core/cycles/                 #    5.186 GHz                       </span><br><span class="line">     &lt;not counted&gt;      cpu_atom/instructions/                                                  (0.00%)</span><br><span class="line">   434,900,571,908      cpu_core/instructions/                                                </span><br><span class="line">     &lt;not counted&gt;      cpu_atom/branches/                                                      (0.00%)</span><br><span class="line">    82,583,280,228      cpu_core/branches/               #    3.312 G/sec                     </span><br><span class="line">     &lt;not counted&gt;      cpu_atom/branch-misses/                                                 (0.00%)</span><br><span class="line">            53,783      cpu_core/branch-misses/                                               </span><br><span class="line">             TopdownL1 (cpu_core)                 #     40.7 %  tma_backend_bound      </span><br><span class="line">                                                  #      0.0 %  tma_bad_speculation    </span><br><span class="line">                                                  #      6.0 %  tma_frontend_bound     </span><br><span class="line">                                                  #     53.3 %  tma_retiring           </span><br><span class="line"></span><br><span class="line">      25.025841987 seconds time elapsed</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="perf-top"><a href="#perf-top" class="headerlink" title="perf top"></a>perf top</h2><p>top命令按占比列出CPU使用比较多的进程，包含以下选项：</p>
-<ul>
-<li>e 指定要分析的事件</li>
-<li>p 分析指定进程</li>
-<li>k 指定内核映像路径</li>
-<li>K 不显示内核或者内核模块的符号</li>
-<li>U 不显示用户态程序的符号</li>
-<li>g 显示函数调用关系</li>
-</ul>
-<p><img src="/images/202406/perftop.png" alt="perf"></p>
-<h2 id="火焰图"><a href="#火焰图" class="headerlink" title="火焰图"></a>火焰图</h2><p>下载<a target="_blank" rel="noopener" href="https://github.com/brendangregg/FlameGraph%E4%BB%93%E5%BA%93%E4%BB%A3%E7%A0%81">https://github.com/brendangregg/FlameGraph仓库代码</a></p>
-<ol>
-<li>首先使用perf record 采集数据生成 perf.data文件</li>
-<li>使用perf script -i perf.data &amp;&gt; perf.unfold 解析</li>
-<li>.&#x2F;stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
-<li>.&#x2F;flamegraph.pl perf.folded &gt; perf.svg 生成火焰图</li>
-</ol>
-<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>perf是一个工具，可以帮助我们定位到程序的瓶颈，修改就要看具体的代码了，不断的尝试优化，以达到更优的性能。</p>
-<p>今天软考出成绩了，好伤心，没有考过，挂在案例了，最担心的论文反而通过了。案例也的确是练习的不多，下半年再站一次吧，好好学习还是学到了不少东西，结果很重要，但过程也很精彩！</p>
-<hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/26/linux7-perf/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

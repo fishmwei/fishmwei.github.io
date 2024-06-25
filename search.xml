@@ -7465,6 +7465,8 @@
     <url>/2024/06/26/linux7-perf/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。<br>perf的源码在Linux内核源码的tools&#x2F;perf下。</p>
 <h1 id="perf"><a href="#perf" class="headerlink" title="perf"></a>perf</h1><p>perf包含许多二级命令，实现不同的功能：</p>
+<span id="more"></span>
+
 <p><img src="/images/202406/perf.jpg" alt="perf"></p>
 <h2 id="perf-list"><a href="#perf-list" class="headerlink" title="perf list"></a>perf list</h2><p>list显示系统支持的事件类型，主要有hardware, software, tracepoint三类：</p>
 <ul>
@@ -7514,6 +7516,8 @@
 <li>.&#x2F;stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
 <li>.&#x2F;flamegraph.pl perf.folded &gt; perf.svg 生成火焰图</li>
 </ol>
+<h1 id="constructor函数编译成静态库后不生效"><a href="#constructor函数编译成静态库后不生效" class="headerlink" title="constructor函数编译成静态库后不生效"></a>constructor函数编译成静态库后不生效</h1><p>最近在项目中，为了解耦合代码，使用__attribute__((constructor)) 函数将一些信息在程序运行前自动注入全局变量，当库代码编译成动态库时，的确可以正常工作。但是，编译成静态库的时候，就不生效了。</p>
+<p>上网查了一下，大概就是编译成静态库时，链接器会把那些没有被调用到的函数优化掉，因此在最终程序中就没有相关函数了，解决办法就是在链接的时候，在静态库前后添加-Wl,–whole-archive和-Wl,–no-whold-archive，亲测有效！</p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>perf是一个工具，可以帮助我们定位到程序的瓶颈，修改就要看具体的代码了，不断的尝试优化，以达到更优的性能。</p>
 <p>今天软考出成绩了，好伤心，没有考过，挂在案例了，最担心的论文反而通过了。案例也的确是练习的不多，下半年再站一次吧，好好学习还是学到了不少东西，结果很重要，但过程也很精彩！</p>
 <hr>

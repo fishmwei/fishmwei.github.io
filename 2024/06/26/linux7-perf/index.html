@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前言perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。perf的源码在Linux内核源码的tools&#x2F;perf下。 perfperf包含许多二级命令，实现不同的功能：  perf listlist显示系统支持的事件类型，主要有hardware, software, tracepoint三类：  hardware PMU单">
+  <meta name="description" content="前言perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。perf的源码在Linux内核源码的tools&#x2F;perf下。 perfperf包含许多二级命令，实现不同的功能：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux基础复学（7）- 性能分析工具perf">
 <meta property="og:url" content="https://fishmwei.github.io/2024/06/26/linux7-perf/index.html">
 <meta property="og:site_name" content="IT攻城狮小明">
-<meta property="og:description" content="前言perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。perf的源码在Linux内核源码的tools&#x2F;perf下。 perfperf包含许多二级命令，实现不同的功能：  perf listlist显示系统支持的事件类型，主要有hardware, software, tracepoint三类：  hardware PMU单">
+<meta property="og:description" content="前言perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。perf的源码在Linux内核源码的tools&#x2F;perf下。 perfperf包含许多二级命令，实现不同的功能：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://fishmwei.github.io/images/202406/perf.jpg">
 <meta property="og:image" content="https://fishmwei.github.io/images/202406/perftop.png">
 <meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
 <meta property="article:published_time" content="2024-06-25T20:40:18.000Z">
-<meta property="article:modified_time" content="2024-06-25T13:26:00.297Z">
+<meta property="article:modified_time" content="2024-06-25T13:38:57.161Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/202406/perf.jpg">
@@ -252,6 +252,8 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>perf是Linux内置的性能分析工具，主要是利用了硬件技术单元比如CPU, PMU和软件的计数，软件计数器及跟踪点。<br>perf的源码在Linux内核源码的tools&#x2F;perf下。</p>
 <h1 id="perf"><a href="#perf" class="headerlink" title="perf"></a>perf</h1><p>perf包含许多二级命令，实现不同的功能：</p>
+<span id="more"></span>
+
 <p><img src="/images/202406/perf.jpg" alt="perf"></p>
 <h2 id="perf-list"><a href="#perf-list" class="headerlink" title="perf list"></a>perf list</h2><p>list显示系统支持的事件类型，主要有hardware, software, tracepoint三类：</p>
 <ul>
@@ -301,6 +303,8 @@
 <li>.&#x2F;stackcollapse-perf.pl perf.unfold &amp;&gt; perf.folded</li>
 <li>.&#x2F;flamegraph.pl perf.folded &gt; perf.svg 生成火焰图</li>
 </ol>
+<h1 id="constructor函数编译成静态库后不生效"><a href="#constructor函数编译成静态库后不生效" class="headerlink" title="constructor函数编译成静态库后不生效"></a>constructor函数编译成静态库后不生效</h1><p>最近在项目中，为了解耦合代码，使用__attribute__((constructor)) 函数将一些信息在程序运行前自动注入全局变量，当库代码编译成动态库时，的确可以正常工作。但是，编译成静态库的时候，就不生效了。</p>
+<p>上网查了一下，大概就是编译成静态库时，链接器会把那些没有被调用到的函数优化掉，因此在最终程序中就没有相关函数了，解决办法就是在链接的时候，在静态库前后添加-Wl,–whole-archive和-Wl,–no-whold-archive，亲测有效！</p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>perf是一个工具，可以帮助我们定位到程序的瓶颈，修改就要看具体的代码了，不断的尝试优化，以达到更优的性能。</p>
 <p>今天软考出成绩了，好伤心，没有考过，挂在案例了，最担心的论文反而通过了。案例也的确是练习的不多，下半年再站一次吧，好好学习还是学到了不少东西，结果很重要，但过程也很精彩！</p>
 <hr>
@@ -388,7 +392,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#perf"><span class="nav-number">2.</span> <span class="nav-text">perf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-list"><span class="nav-number">2.1.</span> <span class="nav-text">perf list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-record"><span class="nav-number">2.2.</span> <span class="nav-text">perf record</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-stat"><span class="nav-number">2.3.</span> <span class="nav-text">perf stat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-top"><span class="nav-number">2.4.</span> <span class="nav-text">perf top</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%81%AB%E7%84%B0%E5%9B%BE"><span class="nav-number">2.5.</span> <span class="nav-text">火焰图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#perf"><span class="nav-number">2.</span> <span class="nav-text">perf</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-list"><span class="nav-number">2.1.</span> <span class="nav-text">perf list</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-record"><span class="nav-number">2.2.</span> <span class="nav-text">perf record</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-stat"><span class="nav-number">2.3.</span> <span class="nav-text">perf stat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-top"><span class="nav-number">2.4.</span> <span class="nav-text">perf top</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%81%AB%E7%84%B0%E5%9B%BE"><span class="nav-number">2.5.</span> <span class="nav-text">火焰图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#constructor%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E6%88%90%E9%9D%99%E6%80%81%E5%BA%93%E5%90%8E%E4%B8%8D%E7%94%9F%E6%95%88"><span class="nav-number">3.</span> <span class="nav-text">constructor函数编译成静态库后不生效</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">4.</span> <span class="nav-text">更多</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
