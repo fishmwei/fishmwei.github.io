@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://fishmwei.github.io/images/202406/char_arch.jpg">
 <meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
 <meta property="article:published_time" content="2024-06-09T00:24:55.000Z">
-<meta property="article:modified_time" content="2024-06-10T02:31:31.707Z">
+<meta property="article:modified_time" content="2024-06-10T02:32:54.970Z">
 <meta property="article:author" content="IT攻城狮小明">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://fishmwei.github.io/images/202406/char_arch.jpg">
@@ -275,7 +275,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">platform_get_irq</span><span class="params">(<span class="keyword">struct</span> platform_device *pdev, <span class="type">int</span> index)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">pci_alloc_irq_vectors</span><span class="params">(<span class="keyword">struct</span> pci_dev *dev, <span class="type">unsigned</span> <span class="type">int</span> min_vecs,</span></span><br><span class="line"><span class="params">                          <span class="type">unsigned</span> <span class="type">int</span> max_vecs, <span class="type">unsigned</span> <span class="type">int</span> flags)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">pci_free_irq_vectors</span><span class="params">(<span class="keyword">struct</span> pci_dev *dev)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">pci_irq_vector</span><span class="params">(<span class="keyword">struct</span> pci_dev *dev, <span class="type">unsigned</span> <span class="type">int</span> nr)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> __must_check</span><br><span class="line"><span class="title function_">devm_request_threaded_irq</span><span class="params">(<span class="keyword">struct</span> device *dev, <span class="type">unsigned</span> <span class="type">int</span> irq,</span></span><br><span class="line"><span class="params">			  <span class="type">irq_handler_t</span> handler, <span class="type">irq_handler_t</span> thread_fn,</span></span><br><span class="line"><span class="params">			  <span class="type">unsigned</span> <span class="type">long</span> irqflags, <span class="type">const</span> <span class="type">char</span> *devname,</span></span><br><span class="line"><span class="params">			  <span class="type">void</span> *dev_id)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> __must_check</span><br><span class="line"><span class="title function_">devm_request_irq</span><span class="params">(<span class="keyword">struct</span> device *dev, <span class="type">unsigned</span> <span class="type">int</span> irq, <span class="type">irq_handler_t</span> handler,</span></span><br><span class="line"><span class="params">		 <span class="type">unsigned</span> <span class="type">long</span> irqflags, <span class="type">const</span> <span class="type">char</span> *devname, <span class="type">void</span> *dev_id)</span>			  </span><br></pre></td></tr></table></figure>
 
 <h2 id="同步和锁相关的API"><a href="#同步和锁相关的API" class="headerlink" title="同步和锁相关的API"></a>同步和锁相关的API</h2><p>驱动常用的主要是struct mutex 和 struct spinlock，其中mutex会导致线程阻塞挂起，而spinlock则类似while循环一直在忙。API省略。</p>
-<h2 id="具体芯片的工作原理及操作方式"><a href="#具体芯片的工作原理及操作方式" class="headerlink" title="具体芯片的工作原理及操作方式"></a>具体芯片的工作原理及操作方式</h2><p>根据具体硬件的手册来操作。</p>
+<h2 id="具体芯片的工作原理及操作方式"><a href="#具体芯片的工作原理及操作方式" class="headerlink" title="具体芯片的工作原理及操作方式"></a>具体芯片的工作原理及操作方式</h2><p>根据具体硬件的手册来操作，了解实现逻辑和寄存器地址与功能。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
@@ -301,7 +301,10 @@
     <a href="/2024/06/05/linx2-module/" rel="prev" title="Linux基础复学（2）- 内核模块基础">
       <i class="fa fa-chevron-left"></i> Linux基础复学（2）- 内核模块基础
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/06/15/weekly-driver-probe/" rel="next" title="周谈（57）- 根据CPU类型实现驱动平台适配">
+      周谈（57）- 根据CPU类型实现驱动平台适配 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -377,7 +380,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">184</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
