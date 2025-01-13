@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈（4）- 系统时间更改导致的问题">
+<meta property="og:url" content="https://fishmwei.github.io/2021/12/17/2021-20211217-weekly/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-16T22:50:57.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.784Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2021/12/17/2021-20211217-weekly/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈（4）- 系统时间更改导致的问题 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2021/12/17/2021-20211217-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈（4）- 系统时间更改导致的问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-17 06:50:57" itemprop="dateCreated datePublished" datetime="2021-12-17T06:50:57+08:00">2021-12-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/12/17/2021-20211217-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/12/17/2021-20211217-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在工作中，每周都会遇到一些问题，这些问题在大家工作中可能会有许多共性，于我也是一种经验的积累小结。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常工作遇到的问题，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第四篇, 下面看问题。</p>
+<h1 id="系统时间更改导致的问题"><a href="#系统时间更改导致的问题" class="headerlink" title="系统时间更改导致的问题"></a>系统时间更改导致的问题</h1><p>修改系统时间是一个不是常用的功能，但是又是很必须的。看起来很简单的系统时间的修改，也出了好几个问题。</p>
+<h2 id="rpc超时"><a href="#rpc超时" class="headerlink" title="rpc超时"></a>rpc超时</h2><p>修改系统时间，本身使用的是一个rpc调用，rpc使用超时机制的，就是在指定时间内如果执行函数没有返回，那么rpc就认为超时失败了。这个问题在前面的文章中讲过，具体可以看这篇文章 <a href="https://fishmwei.github.io/2021/10/23/timeout/">超时实现-sysrepo笔记(8)
+</a></p>
+<h2 id="dhcp接口ip失效"><a href="#dhcp接口ip失效" class="headerlink" title="dhcp接口ip失效"></a>dhcp接口ip失效</h2><p>同样的，接口配置了dhcp方式获取地址，由于修改了系统时间为未来的时间，导致dhcp的租期过期，接口自动释放了ip地址。相当于就是没有地址了。这样子，网络就不通的。网络不通算是一个挺大的问题吧，在web上面修改个时间，然后网络就断开了，无法连接了。</p>
+<p>这个问题修改也简单，在修改ip的时候，还得触发dhcp续租。</p>
+<h2 id="rpc返回时间与系统时间不一致"><a href="#rpc返回时间与系统时间不一致" class="headerlink" title="rpc返回时间与系统时间不一致"></a>rpc返回时间与系统时间不一致</h2><p>这个是又在rpc返回是使用的python代码，就是time模块获取时间。当系统时间更改之后，其实python并没有立刻同步到系统的时间，这样就导致了，rpc返回的时间跟使用date命令查看到的时间不一致。</p>
+<p>这个问题只需要通过python调用date命令，获取返回结果就可以解决。</p>
+<h2 id="系统时间修改之后，设备重启时间不正确"><a href="#系统时间修改之后，设备重启时间不正确" class="headerlink" title="系统时间修改之后，设备重启时间不正确"></a>系统时间修改之后，设备重启时间不正确</h2><p>操作系统的时间，有软件时间和硬件时间，平常使用date设置和获取的时间都是软件时间。在设备重启之后，系统时间会同步为硬件时间，这就导致了问题。</p>
+<p>也就是在修改系统时间的同时，需要同步修改到硬件时间，调用命令<code>hwclock -w</code>。</p>
+<h2 id="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"><a href="#系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时" class="headerlink" title="系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时"></a>系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时</h2><p>在上面那个问题修改之后，当当前时区是UTC时，功能正常。但是如果当前时区不是UTC时，重启之后，发现时间会快几个小时。这个就涉及到了时区跟时间轴的问题。</p>
+<p>随着时区的不同，即使显示的时间是一致的，实际上它那个时间轴却是不同的。上一个问题中，使用<code>hwclock -w</code>命令，实际是把时区转换后的时间同步给了硬件时间，但是硬件时间重启后是没有时区概念的，就是认为是零时区。就是你保存了1000进去，1000对应的是8时区的。重启后，它又给设到软件时间1000， 告诉你这个是0时区的时间。然后，你软件时间是8时区，最后显示出来的时间是1000 + 8小时。</p>
+<p>这个问题修改，需要在同步的时候，指定为0时区时间同步， 调用命令<code>hwclock -w -u</code>.</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>系统软件运行的时候，很多功能都是假定时间不变的基础上运行的。在修改了时间之后，系统实时时间就变了，很容易就导致了异常。只是这个时间更改是一个低频事件。</p>
+<p>最开始开发这个功能的时候，看了深信服产品web端的效果，发现修改个时间，都要求系统要重启，感觉很暴力。看来是人家踩过了不少坑，最后采用了最行之有效的重启大法，虽然重启导致了业务的中断，但是这个是低频事件，重启可以解决许多未知的问题。系统时间的更改是一个还蛮有风险的动作。</p>
+<p>时间更新除了手动修改外，还可以使用ntp自动同步，这里就不多说了。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/11/2021-20211211-weekly/" rel="prev" title="周谈（3）- python调试">
+      <i class="fa fa-chevron-left"></i> 周谈（3）- python调试
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/25/2021-20211225-weekly/" rel="next" title="周谈(5)-配置过多，服务启动不了">
+      周谈(5)-配置过多，服务启动不了 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E6%9B%B4%E6%94%B9%E5%AF%BC%E8%87%B4%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">系统时间更改导致的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rpc%E8%B6%85%E6%97%B6"><span class="nav-number">2.1.</span> <span class="nav-text">rpc超时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dhcp%E6%8E%A5%E5%8F%A3ip%E5%A4%B1%E6%95%88"><span class="nav-number">2.2.</span> <span class="nav-text">dhcp接口ip失效</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rpc%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4%E4%B8%8E%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-number">2.3.</span> <span class="nav-text">rpc返回时间与系统时间不一致</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E4%BF%AE%E6%94%B9%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%AE%BE%E5%A4%87%E9%87%8D%E5%90%AF%E6%97%B6%E9%97%B4%E4%B8%8D%E6%AD%A3%E7%A1%AE"><span class="nav-number">2.4.</span> <span class="nav-text">系统时间修改之后，设备重启时间不正确</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E4%BF%AE%E6%94%B9%E4%B9%8B%E5%90%8E%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%B8%8D%E5%90%8C%E9%9B%B6%E6%97%B6%E5%8C%BA%EF%BC%8C%E8%AE%BE%E5%A4%87%E9%87%8D%E5%90%AF%E5%90%8E%E6%97%B6%E9%97%B4%E4%BC%9A%E5%BF%AB%E5%87%A0%E4%B8%AA%E5%B0%8F%E6%97%B6"><span class="nav-number">2.5.</span> <span class="nav-text">系统时间修改之后，如果不同零时区，设备重启后时间会快几个小时</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

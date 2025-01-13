@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(14) - DPDK原理">
+<meta property="og:url" content="https://fishmwei.github.io/2022/03/20/2022-20220320-weekly-dpdk/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202203/dpdk.png">
+<meta property="article:published_time" content="2022-03-20T01:39:03.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.787Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202203/dpdk.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/03/20/2022-20220320-weekly-dpdk/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(14) - DPDK原理 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/03/20/2022-20220320-weekly-dpdk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(14) - DPDK原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-20 09:39:03" itemprop="dateCreated datePublished" datetime="2022-03-20T09:39:03+08:00">2022-03-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/dpdk/" itemprop="url" rel="index"><span itemprop="name">DPDK</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/03/20/2022-20220320-weekly-dpdk/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/03/20/2022-20220320-weekly-dpdk/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十四篇。</p>
+<p>这周开始上班，工作的主要内容就是性能优化相关的。基于硬件加速，编写内核及用户接口，在主流的一些框架上做适配。做的还是服务支持级的内容。</p>
+<h1 id="DPDK原理"><a href="#DPDK原理" class="headerlink" title="DPDK原理"></a>DPDK原理</h1><p>DPDK是INTEL公司开发的一款高性能的网络驱动组件，也是工作中需要涉及到的一个框架。DPDK为数据面应用程序提供一个简单方便的，完整的，快速的数据包处理解决方案，主要技术有用户态、轮询取代中断、零拷贝、网卡RSS、访存DirectIO等。</p>
+<p>目前很多网络设备底层都是基于DPDK框架，直接从驱动层截取数据包，然后通过用户程序实现功能。</p>
+<h2 id="UIO（Linux-Userspace-I-x2F-O）"><a href="#UIO（Linux-Userspace-I-x2F-O）" class="headerlink" title="UIO（Linux Userspace I&#x2F;O）"></a>UIO（Linux Userspace I&#x2F;O）</h2><p>提供应用空间下驱动程序的支持，也就是说网卡驱动是运行在用户空间的，减下了报文在用户空间和应用空间的多次拷贝。DPDK就绕过了Linux内核的网络驱动模块，直接从硬件层面获取数据包到用户态程序，减少了频繁的系统调用和内存拷贝。显著的提高了数据的采集效率。</p>
+<p>UIO技术将设备驱动分为用户空间驱动和内核空间驱动两部分，内核空间驱动主要负责设备资源分配、UIO设备注册以及小部分中断响应函数，驱动的大部分工作在用户空间的驱动程序下完成。</p>
+<p><img src="/images/202203/dpdk.png" alt="avatar"></p>
+<h2 id="用户空间轮询模式（PMD）"><a href="#用户空间轮询模式（PMD）" class="headerlink" title="用户空间轮询模式（PMD）"></a>用户空间轮询模式（PMD）</h2><p><em>传统中断模式</em>： 传统Linux系统中，当网络设备检测到数据帧过来的时候，会使用DMA（直接内存访问）将帧发送到预先分配好的内核缓冲区里面，然后更新相应的接收描述符环，之后产生中断通知有数据帧过来。Linux系统会进行相应的响应，然后更新相应的描述符环，再将接收到的数据帧交给内核中的网络堆栈进行处理，网络堆栈处理完之后会将相应的数据拷贝到相应的套接字，从而数据就被复制到了用户空间，应用程序就可以使用这些数据了；</p>
+<p>在发送的时候，一旦用户程序处理完了数据，会通过一个系统调用将数据写入到套接字，将数据从用户空间拷贝到内核空间的缓冲区，交由网络堆栈进行处理，网络堆栈根据需要对数据进行封装并调用网卡设备的驱动程序，网卡设备驱动程序会更新传输描述符环，然后向网卡设备告知有数据帧需要传输。网卡设备会将数据帧从内核中的缓冲区拷贝到自己的缓冲区中并发送到网络链路上，传送到链路上之后，网卡设备会通过一个中断告知成功发送，然后内核会释放相应的缓冲区。 </p>
+<p>由于linux系统是通过中断的方式告知CPU有数据包过来的，当网络的流量越来越大，linux系统会浪费越来越多的时间去处理中断，当流量速率达到10G的时候，linux系统可能会被中断淹没，浪费很多CPU资源。</p>
+<p><em>DPDK用户空间的轮询模式驱动</em>：用户空间驱动使得应用程序不需要经过linux内核就可以访问网络设备卡。网卡设备可以通过DMA方式将数据包传输到事先分配好的缓冲区，这个缓冲区位于用户空间，应用程序通过不断轮询的方式可以读取数据包并在原地址上直接处理，不需要中断，而且也省去了内核到应用层的数据包拷贝过程。</p>
+<p>因此相对于linux系统传统中断方式，Intel DPDK避免了中断处理、上下文切换、系统调用、数据复制带来的性能上的消耗，大大提升了数据包的处理性能。同时由于Intel DPDK在用户空间就可以开发驱动，与传统的在内核中开发驱动相比，安全系数大大降低。因为内核层权限比较高，操作相对比较危险，可能因为小的代码bug就会导致系统崩溃，需要仔细的开发和广泛的测试。而在应用层则相反，比较安全，且在应用层调试代码要方便的多。 </p>
+<h2 id="大页内存"><a href="#大页内存" class="headerlink" title="大页内存"></a>大页内存</h2><p>Linux操作系统通过查找TLB来实现快速的虚拟地址到物理地址的转化。由于TLB是一块高速缓冲cache，容量比较小，容易发生没有命中。当没有命中的时候，会触发一个中断，然后会访问内存来刷新页表，这样会造成比较大的时延，降低性能。Linux操作系统的页大小只有4K，所以当应用程序占用的内存比较大的时候，会需要较多的页表，开销比较大，而且容易造成未命中。相比于linux系统的4KB页，Intel DPDK缓冲区管理库提供了Hugepage大页内存，大小有2MB和1GB页面两种，可以得到明显性能的提升，因为采用大页内存的话，可以需要更少的页，从而需要更少的TLB，这样就减少了虚拟页地址到物理页地址的转换时间。 </p>
+<p>简单的说，DPDK一次分配大段内存，然后自行管理这块内存。减少了内存缺页引起的中断处理，提高性能。</p>
+<h2 id="CPU亲和性"><a href="#CPU亲和性" class="headerlink" title="CPU亲和性"></a>CPU亲和性</h2><p>CPU的亲和性（CPU affinity），它是多核CPU发展的结果。随着核心的数量越来越多，为了提高程序工作的效率必须使用多线程。但是随着CPU的核心的数目的增长，Linux的核心间的调度和共享内存争用会严重影响性能。利用Intel DPDK的CPU affinity可以将各个线程绑定到不同的cpu，可以省去来回反复调度带来的性能上的消耗。 特别的，可以一定程度上减少临界资源的所操作，特定的业务只在指定CPU上执行的话，不会存在资源竞争的情况。</p>
+<p>另外，多核机器上面，每个CPU核心本身都存在自己的缓存，缓冲区里存放着线程使用的信息。如果线程没有绑定CPU核，那么线程可能被Linux系统调度到其他的CPU上，这样的话，CPU的cache命中率就降低了。利用CPU的affinity技术，一旦线程绑定到某个CPU后，线程就会一直在指定的CPU上运行，操作系统不会将其调度到其他的CPU上，节省了调度的性能消耗，从而提升了程序执行的效率。 </p>
+<h2 id="内存池和无锁环形缓存管理"><a href="#内存池和无锁环形缓存管理" class="headerlink" title="内存池和无锁环形缓存管理"></a>内存池和无锁环形缓存管理</h2><p>此外Intel DPDK将库和API优化成了无锁，比如无锁队列，可以防止多线程程序发生死锁。然后对缓冲区等数据结构进行了cache对齐。如果没有cache对齐，则可能在内存访问的时候多读写一次内存和cache。</p>
+<p>内存池缓存区的申请和释放采用的是生产者-消费者模式无锁缓存队列进行管理，避免队列中锁的开销，在缓存区的使用过程中提高了缓冲区申请释放的效率。</p>
+<p>主要也是减少了临界资源的锁操作，提升性能。</p>
+<h2 id="网络存储优化"><a href="#网络存储优化" class="headerlink" title="网络存储优化"></a>网络存储优化</h2><p>具体的没有深入了解。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这周在新公司开始了新的工作，刚来嘛 就是先看看文档和代码。文档相对比较少，就一两个，稍微浏览了一遍，然后就开始干代码了。</p>
+<p>用sourcecounter计算了一下，代码总共近5万行。 </p>
+<p>还是用老办法，也是笨办法，快速按文件扫一下代码，5万行需要花个四五天的时间，中间把跟业务无关的机制类的代码详细看看，做做笔记吧。业务相关的就扫描一下，记住一些关键的函数名，等扫描完一遍代码，再找几个入口函数串一下大的流程。这样很快就可以对软件整体架构有了具体的认识，最后就是把软件的整个框架稍微整理一下。接下去就是深入业务细节了，细节这个东西就会遇到比较多的问题了，可以先上网络搜一下，实在搞不清楚的都记录下来，找时间问问老员工。这样子后面就可以比较轻松的增删需求。从中也可以找找优化点啊。</p>
+<p>在没有文档的情况下，一头栽进代码里，不求甚解，混个脸熟也好。只有这样才能快速成长，也比较容易对代码流程具象化。这个时间还是需要花的，代码也得认真看。这个就是刻意练习加一万小时定律，不要急躁，沉下心来，看到心里去。</p>
+<p>上周末看了一个电视剧《大舜》，不论是虞舜还是大禹，他们治水也是这么个过程。都是走遍了大河的上下游，才能真正了解洪水，了解之后才能找到更好的破解之法。随着华夏的统一，对整个水系网络看的也更全面了，后面就自然而然的找到更好的解法。</p>
+<p>从中看出，其实做事情的道理都是相同的。先有了足够的认知，才能有更好的解决办法。开头是比较难的，但是坚持下来结果还是不会辜负这份辛苦的。</p>
+<p>在看代码的过程中，也可以看到很多设计模式的影子和原则，万事皆相通。做代码笔记的时候，很容易使用到类图来勾画各个结构体之间的关系，使用面向对象的思想读代码也很受益。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/12/2022-20220312-weekly-SA/" rel="prev" title="周谈(13) - 系统架构师教程读书笔记(1)">
+      <i class="fa fa-chevron-left"></i> 周谈(13) - 系统架构师教程读书笔记(1)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/26/2022-20220326-weekly-io/" rel="next" title="周谈(15) - Linux IO">
+      周谈(15) - Linux IO <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DPDK%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">DPDK原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UIO%EF%BC%88Linux-Userspace-I-x2F-O%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">UIO（Linux Userspace I&#x2F;O）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4%E8%BD%AE%E8%AF%A2%E6%A8%A1%E5%BC%8F%EF%BC%88PMD%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">用户空间轮询模式（PMD）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E9%A1%B5%E5%86%85%E5%AD%98"><span class="nav-number">2.3.</span> <span class="nav-text">大页内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E4%BA%B2%E5%92%8C%E6%80%A7"><span class="nav-number">2.4.</span> <span class="nav-text">CPU亲和性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B1%A0%E5%92%8C%E6%97%A0%E9%94%81%E7%8E%AF%E5%BD%A2%E7%BC%93%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.5.</span> <span class="nav-text">内存池和无锁环形缓存管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%AD%98%E5%82%A8%E4%BC%98%E5%8C%96"><span class="nav-number">2.6.</span> <span class="nav-text">网络存储优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言openssl的性能测试主要就是测试在固定时间内、不同长度数据进行算法操作的次数。最后统计每1000秒钟处理的数据量或是每秒钟进行运算的次数，可以通过执行md5&#x2F;rsa512&#x2F;aes-128-cbc算法的性能测试看一下输出的结果：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(22)-openssl speed性能测试详解">
+<meta property="og:url" content="https://fishmwei.github.io/2022/05/21/2022-20220521-weekly-openssl-speed/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言openssl的性能测试主要就是测试在固定时间内、不同长度数据进行算法操作的次数。最后统计每1000秒钟处理的数据量或是每秒钟进行运算的次数，可以通过执行md5&#x2F;rsa512&#x2F;aes-128-cbc算法的性能测试看一下输出的结果：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-21T12:09:04.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.788Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/05/21/2022-20220521-weekly-openssl-speed/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(22)-openssl speed性能测试详解 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/05/21/2022-20220521-weekly-openssl-speed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(22)-openssl speed性能测试详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-21 20:09:04" itemprop="dateCreated datePublished" datetime="2022-05-21T20:09:04+08:00">2022-05-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/openssl/" itemprop="url" rel="index"><span itemprop="name">openssl</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/05/21/2022-20220521-weekly-openssl-speed/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/05/21/2022-20220521-weekly-openssl-speed/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>openssl的性能测试主要就是测试在固定时间内、不同长度数据进行算法操作的次数。最后统计每1000秒钟处理的数据量或是每秒钟进行运算的次数，可以通过执行md5&#x2F;rsa512&#x2F;aes-128-cbc算法的性能测试看一下输出的结果：</p>
+<span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# /usr/bin/openssl speed md5</span><br><span class="line">Doing md5 for 3s on 16 size blocks: 23848303 md5&#x27;s in 2.56s</span><br><span class="line">Doing md5 for 3s on 64 size blocks: 13073221 md5&#x27;s in 2.50s</span><br><span class="line">Doing md5 for 3s on 256 size blocks: 5745354 md5&#x27;s in 3.00s</span><br><span class="line">Doing md5 for 3s on 1024 size blocks: 1927877 md5&#x27;s in 3.01s</span><br><span class="line">Doing md5 for 3s on 8192 size blocks: 259000 md5&#x27;s in 3.01s</span><br><span class="line">Doing md5 for 3s on 16384 size blocks: 171425 md5&#x27;s in 3.98s</span><br><span class="line">OpenSSL 1.1.1f  31 Mar 2020</span><br><span class="line">built on: Tue May  3 17:49:36 2022 UTC</span><br><span class="line">options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)</span><br><span class="line">compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-7zx7z2/openssl-1.1.1f=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_TLS_SECURITY_LEVEL=2 -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2</span><br><span class="line">The &#x27;numbers&#x27; are in 1000s of bytes per second processed.</span><br><span class="line">type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes</span><br><span class="line">md5             149051.89k   334674.46k   490270.21k   655862.47k   704893.02k   705685.23k</span><br><span class="line">root@keep-VirtualBox:~#</span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# /usr/bin/openssl speed aes-128-cbc</span><br><span class="line">Doing aes-128 cbc for 3s on 16 size blocks: 32626951 aes-128 cbc&#x27;s in 3.00s</span><br><span class="line">Doing aes-128 cbc for 3s on 64 size blocks: 8663154 aes-128 cbc&#x27;s in 3.00s</span><br><span class="line">Doing aes-128 cbc for 3s on 256 size blocks: 2921912 aes-128 cbc&#x27;s in 3.01s</span><br><span class="line">Doing aes-128 cbc for 3s on 1024 size blocks: 727405 aes-128 cbc&#x27;s in 3.00s</span><br><span class="line">Doing aes-128 cbc for 3s on 8192 size blocks: 91505 aes-128 cbc&#x27;s in 3.00s</span><br><span class="line">Doing aes-128 cbc for 3s on 16384 size blocks: 46708 aes-128 cbc&#x27;s in 3.00s</span><br><span class="line">OpenSSL 1.1.1f  31 Mar 2020</span><br><span class="line">built on: Tue May  3 17:49:36 2022 UTC</span><br><span class="line">options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)</span><br><span class="line">compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-7zx7z2/openssl-1.1.1f=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_TLS_SECURITY_LEVEL=2 -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2</span><br><span class="line">The &#x27;numbers&#x27; are in 1000s of bytes per second processed.</span><br><span class="line">type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes</span><br><span class="line">aes-128 cbc     174010.41k   184813.95k   248508.13k   248287.57k   249869.65k   255087.96k</span><br><span class="line">root@keep-VirtualBox:~#</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:~# /usr/bin/openssl speed rsa512</span><br><span class="line">Doing 512 bits private rsa&#x27;s for 10s: 196101 512 bits private RSA&#x27;s in 9.99s</span><br><span class="line">Doing 512 bits public rsa&#x27;s for 10s: 3471653 512 bits public RSA&#x27;s in 10.00s</span><br><span class="line">OpenSSL 1.1.1f  31 Mar 2020</span><br><span class="line">built on: Tue May  3 17:49:36 2022 UTC</span><br><span class="line">options:bn(64,64) rc4(8x,int) des(int) aes(partial) blowfish(ptr)</span><br><span class="line">compiler: gcc -fPIC -pthread -m64 -Wa,--noexecstack -Wall -Wa,--noexecstack -g -O2 -fdebug-prefix-map=/build/openssl-7zx7z2/openssl-1.1.1f=. -fstack-protector-strong -Wformat -Werror=format-security -DOPENSSL_TLS_SECURITY_LEVEL=2 -DOPENSSL_USE_NODELETE -DL_ENDIAN -DOPENSSL_PIC -DOPENSSL_CPUID_OBJ -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DKECCAK1600_ASM -DRC4_ASM -DMD5_ASM -DAESNI_ASM -DVPAES_ASM -DGHASH_ASM -DECP_NISTZ256_ASM -DX25519_ASM -DPOLY1305_ASM -DNDEBUG -Wdate-time -D_FORTIFY_SOURCE=2</span><br><span class="line">                  sign    verify    sign/s verify/s</span><br><span class="line">rsa  512 bits 0.000051s 0.000003s  19629.7 347165.3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到对于对称算法和摘要算法，主要关心的是每秒钟处理数据的量，对于非对称算法，主要关心的是每秒钟执行操作的次数。</p>
+<h2 id="代码详解"><a href="#代码详解" class="headerlink" title="代码详解"></a>代码详解</h2><p>性能测试的入口函数是speed_main。</p>
+<p>首先，初始化了所有算法用到的不同长度的key，原始的明文数据，还有一些相关的参数（如类型， 模式等）。</p>
+<p>然后，就是解析命令行参数，设定不同的参数。比如：运行测试的时长， 并发运行数、是加密还是解密等， 最后解析要测试的算法类型。</p>
+<p>如果是设置了并发运行数，那么就会fork多个子进程，父进程与子进程间使用管道获取数据。子进程执行完之后会把结果通过管道传递给父进程， 父进程读取所有结果再平均计算最终结果。这里每个子进程都执行一样的测试逻辑。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NO_FORK</span></span><br><span class="line">    <span class="keyword">if</span> (multi &amp;&amp; do_multi(multi, size_num))</span><br><span class="line">        <span class="keyword">goto</span> show_res;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">do_multi</span><span class="params">(<span class="type">int</span> multi, <span class="type">int</span> size_num)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    <span class="type">int</span> fd[<span class="number">2</span>];</span><br><span class="line">    <span class="type">int</span> *fds;</span><br><span class="line">    <span class="type">static</span> <span class="type">char</span> sep[] = <span class="string">&quot;:&quot;</span>;</span><br><span class="line"></span><br><span class="line">    fds = app_malloc(<span class="keyword">sizeof</span>(*fds) * multi, <span class="string">&quot;fd buffer for do_multi&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (n = <span class="number">0</span>; n &lt; multi; ++n) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pipe(fd) == <span class="number">-1</span>) &#123;</span><br><span class="line">            BIO_printf(bio_err, <span class="string">&quot;pipe failure\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line">        (<span class="type">void</span>)BIO_flush(bio_err);</span><br><span class="line">        <span class="keyword">if</span> (fork()) &#123;</span><br><span class="line">            close(fd[<span class="number">1</span>]);</span><br><span class="line">            fds[n] = fd[<span class="number">0</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            close(fd[<span class="number">0</span>]);</span><br><span class="line">            close(<span class="number">1</span>); <span class="meta"># then lowest-numbered unused file des is 1</span></span><br><span class="line">            <span class="keyword">if</span> (dup(fd[<span class="number">1</span>]) == <span class="number">-1</span>) &#123; <span class="meta"># use 1 for new des</span></span><br><span class="line">                BIO_printf(bio_err, <span class="string">&quot;dup failed\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            close(fd[<span class="number">1</span>]);</span><br><span class="line">            mr = <span class="number">1</span>;</span><br><span class="line">            usertime = <span class="number">0</span>;</span><br><span class="line">            <span class="built_in">free</span>(fds);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Forked child %d\n&quot;</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 父进程 读取管道内容。</span></span><br><span class="line">    <span class="comment">/* for now, assume the pipe is long enough to take all the output */</span></span><br><span class="line">    <span class="keyword">for</span> (n = <span class="number">0</span>; n &lt; multi; ++n) &#123;</span><br><span class="line">        FILE *f;</span><br><span class="line">        <span class="type">char</span> buf[<span class="number">1024</span>];</span><br><span class="line">        <span class="type">char</span> *p;</span><br><span class="line"></span><br><span class="line">        f = fdopen(fds[n], <span class="string">&quot;r&quot;</span>);</span><br><span class="line">        <span class="keyword">while</span> (fgets(buf, <span class="keyword">sizeof</span>(buf), f)) &#123;</span><br><span class="line">            ... </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        fclose(f);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(fds);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>接着后面就是循环执行算法了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if (doit[D_MD5]) &#123;</span><br><span class="line">       for (testnum = 0; testnum &lt; size_num; testnum++) &#123;</span><br><span class="line">           print_message(names[D_MD5], c[D_MD5][testnum], lengths[testnum],</span><br><span class="line">                         seconds.sym);</span><br><span class="line">           Time_F(START);</span><br><span class="line">           count = run_benchmark(async_jobs, MD5_loop, loopargs);</span><br><span class="line">           d = Time_F(STOP);</span><br><span class="line">           print_result(D_MD5, testnum, count, d);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>doit数组保存的是该算法是否是要测试的，size_num表示多少种块大小的数据。在print_message中，会开启一个设置一个固定时长的信号，在一定时长之后会出发一个alarm信号。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">print_message</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *s, <span class="type">long</span> num, <span class="type">int</span> length, <span class="type">int</span> tm)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> SIGALRM</span></span><br><span class="line">    BIO_printf(bio_err,</span><br><span class="line">               mr ? <span class="string">&quot;+DT:%s:%d:%d\n&quot;</span></span><br><span class="line">               : <span class="string">&quot;Doing %s for %ds on %d size blocks: &quot;</span>, s, tm, length);</span><br><span class="line">    (<span class="type">void</span>)BIO_flush(bio_err);</span><br><span class="line">    alarm(tm);			<span class="comment">// tm秒后 发送alarm信号</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    BIO_printf(bio_err,</span><br><span class="line">               mr ? <span class="string">&quot;+DN:%s:%ld:%d\n&quot;</span></span><br><span class="line">               : <span class="string">&quot;Doing %s %ld times on %d size blocks: &quot;</span>, s, num, length);</span><br><span class="line">    (<span class="type">void</span>)BIO_flush(bio_err);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在之前注册了信号处理函数，设置了一个全局变量run为0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">signal(SIGALRM, alarmed);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">alarmed</span><span class="params">(<span class="type">int</span> sig)</span></span><br><span class="line">&#123;</span><br><span class="line">    signal(SIGALRM, alarmed);</span><br><span class="line">    run = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>再之后调用Time_F(START); 记录当前时间， 紧接着就开始了run_benchmark，传入md5算法操作函数MD5_loop。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">run_benchmark</span><span class="params">(<span class="type">int</span> async_jobs,</span></span><br><span class="line"><span class="params">                         <span class="type">int</span> (*loop_function) (<span class="type">void</span> *), <span class="type">loopargs_t</span> * loopargs)</span></span><br><span class="line">&#123;</span><br><span class="line">	</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	run = <span class="number">1</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在run_benchmark里面设置run&#x3D;1， 然后开始调用md5的算法操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">MD5_loop</span><span class="params">(<span class="type">void</span> *args)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">loopargs_t</span> *tempargs = *(<span class="type">loopargs_t</span> **) args;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *buf = tempargs-&gt;buf;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> md5[MD5_DIGEST_LENGTH];</span><br><span class="line">    <span class="type">int</span> count;</span><br><span class="line">    <span class="keyword">for</span> (count = <span class="number">0</span>; COND(c[D_MD5][testnum]); count++)</span><br><span class="line">        MD5(buf, lengths[testnum], md5);</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> COND(unused_cond) (run &amp;&amp; count&lt;0x7fffffff)</span></span><br></pre></td></tr></table></figure>
+
+<p>MD5_loop里面就是一个循环一直执行同样的动作。直到run&#x3D;0 或者count达到0x7fffffff</p>
+<p>然后调用Time_F(STOP)，获取执行的时长。</p>
+<p>最后再汇总输出结果，这里要注意的是，如果设置了multi，那么结果是多个进程处理数据的总和，而不是平均值。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>openssl这个性能测试的输入数据都是固定的，然后通过在一定时长内运行算法操作，统计出运行的次数，综合对应的数据长度，计算出每秒钟运行的次数或者处理的数据量。这个测试适合不同机器间横向的对比，没有做单机纵向的对比，缺少随机数据的比较。</p>
+<p>了解这个openssl的性能测试逻辑，主要就是为了借鉴到项目中来做性能测试。当然，后面性能也要跟openssl进行对比。所以在数据层面上，也是需要跟openssl一样的。所有的执行逻辑和最终结果的展示，最好跟openssl相差不大，可以方便的进行对比。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/16/2022-20220516-weekly-rsa/" rel="prev" title="周谈(21)-浅谈RSA算法">
+      <i class="fa fa-chevron-left"></i> 周谈(21)-浅谈RSA算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/04/2022-20220604-weekly-ccmd/" rel="next" title="周谈(23)-撸了一个轻量级的C语言命令行库">
+      周谈(23)-撸了一个轻量级的C语言命令行库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">代码详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.2.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

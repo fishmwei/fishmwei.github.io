@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(20)-信息安全技术">
+<meta property="og:url" content="https://fishmwei.github.io/2022/04/30/2022-20220430-weekly-security/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202204/sign.jpg">
+<meta property="article:published_time" content="2022-04-30T05:49:53.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.788Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202204/sign.jpg">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/04/30/2022-20220430-weekly-security/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(20)-信息安全技术 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/04/30/2022-20220430-weekly-security/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(20)-信息安全技术
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-30 13:49:53" itemprop="dateCreated datePublished" datetime="2022-04-30T13:49:53+08:00">2022-04-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/04/30/2022-20220430-weekly-security/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/04/30/2022-20220430-weekly-security/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第二十篇。</p>
+<h1 id="信息安全技术"><a href="#信息安全技术" class="headerlink" title="信息安全技术"></a>信息安全技术</h1><p>简单来说，信息安全技术就是对数据进行保护的技术，避免数据被窃取或者破坏。对电子数据的攻击方式有2种：被动攻击就是在传输过程中被截取信息、或者通过载体上窃取赋值数据；主动攻击就是对传输或者存储的数据进行恶意删除、篡改。</p>
+<h2 id="密码技术"><a href="#密码技术" class="headerlink" title="密码技术"></a>密码技术</h2><p>密码技术是解决问题的一种有效的方法。发送者(信源)通过对数据(明文)使用特定的算法及秘钥进行加密后得到新的数据(密文)传输，接收者(信宿)对接收到的数据再根据算法和秘钥进行解密得到原始数据。对于加密和解密使用相同的秘钥的算法称作对称密码体制，不同的就称作非对称密码体制。</p>
+<p>对称的密码体制有DES, 3DES, IDEA, AES、SM4等算法。<br>非对称密码体制有RSA, DSA, ECC, SM2等算法。</p>
+<p>对称算法一般是块加密算法，加密解密过程使用同一个秘钥，适合大量数据的操作。算法公开、计算量小、加密速度快、加密效率高。由于实现需要知道密钥，导致秘钥维护大。应用场景主要就是数据加解密。</p>
+<p>非对称算法加密解密过程使用不同的秘钥，运算相对慢一点，适合数据量小的数据的操作，安全性比较高。公钥加密+私钥解密的时候，适用于加密传输。私钥加密+公钥解密，适合用于签名验证。</p>
+<h2 id="摘要与数字签名"><a href="#摘要与数字签名" class="headerlink" title="摘要与数字签名"></a>摘要与数字签名</h2><p>密码技术主要用于数据的加密，对于数据完整性的校验则使用散列函数和数字签名来解决。</p>
+<p>散列算法通过对不同数据进行计算得到一个固定长度的结果数据。原始数据长度没有限定，而且不同的原始数据进行运算得到的结果一般是不一样的。散列算法是不可逆的，无法通过结果得到原始的数据。 一般在传输数据的时候，同时传递原始数据和结果数据。接收者对收到的原始数据部分进行计算得到一个结果，然后跟接收到的结果部分对比，确认数据没有被改变。</p>
+<p>数字签名就是发送方使用自身的私钥加密数据，然后接收方使用发送方的公钥解密数据。如果能够得到正确的结果，那么就可以确认这个消息是发送方发送的，因为只有发送方才能使用私钥加密。这个就是不可抵赖性。</p>
+<p>但是非对称算法加密慢，总不能把所有数据都是用数字签名的方式吧。一般我们都是对计算出的散列值做数字签名就可以了。大概流程如下：</p>
+<p><img src="/images/202204/sign.jpg" alt="avatar"></p>
+<ul>
+<li>A对消息M使用散列算法得到摘要MD1</li>
+<li>A对摘要使用私钥加密得到签名DS</li>
+<li>A把消息M和签名DS发送给B</li>
+<li>B收到消息M和签名DS， 对消息M使用散列算法得到摘要MD2</li>
+<li>B使用A的公钥解密签名DS得到签名的MD3(A的公钥能解开的必须是A私钥加密的)</li>
+<li>B对比MD3和MD2，如果一致就确认消息是A发送的了，这里MD1, MD2, MD3都是一样的</li>
+</ul>
+<p>这里我们假设B确定知道了A的公钥，但是实际应用中，我们需要有一个机制来保证，B获取的公钥就是A的公钥。否则，就有可能受到中间人攻击，被骗了，其实消息来自于第三者C。</p>
+<h2 id="公钥交换"><a href="#公钥交换" class="headerlink" title="公钥交换"></a>公钥交换</h2><p>公钥的公布使用的是PKI技术，公钥存在与一个数字证书中，然后这个证书需要有一个可信任的证书机构(CA)来签发。数字证书包含公钥、主体、签发日期、有效日期、序号、签发者等信息。</p>
+<p>证书的生成流程：</p>
+<ul>
+<li>主体通过特殊程序创建公钥和私钥，然后保存好私钥，把公钥和其他信息发送给注册机构</li>
+<li>注册机构收到信息，生成证书签名请求</li>
+<li>注册机构验证材料、确定主体拥有对应的私钥</li>
+<li>完成上述步骤后，注册机构把所有资料上传给证书机构，证书机构对用户生成数字证书。可能是X.509标准格式的证书。发送证书给主体，并且保存证书记录</li>
+<li>主体获取证书</li>
+</ul>
+<p>怎么确认证书是可信任的呢， 那就是证书机构对这个证书使用私钥作了签名，使用者可以使用证书机构的公钥验证，确定这个证书是证书机构颁发的，并且里面的信息是可以信任的。这里又陷入了一个问题，怎么知道证书机构的公钥是可信任的呢。这里有个证书机构的层次，下级的公钥需要上一级的证书机构认证，直到最顶级的证书机构，最顶级的证书用的是一个自签名证书公布他的公钥，就是证书发布者和主体是一样的，默认最顶级的自签名证书是可以信任的。这样一级级认证，最后确认证书机构的公钥是可以信任的，用来验证他签发的证书也是可以信任的。</p>
+<p>对于不同PKI域的证书，顶级CA交叉认证。</p>
+<h2 id="证书的应用"><a href="#证书的应用" class="headerlink" title="证书的应用"></a>证书的应用</h2><p>之前做iOS APP开发的时候，如果要发布app还需要申请对应的证书。证书就是用来对app包进行加密， 然后苹果通过对app包校验，来保证安装的应用的确是你发布的，没有被篡改过。 同时，苹果还在中间添加了一些小伎俩， 通过证书里面的配置文件，控制不同类型证书的用途及适用的设备，从而通过此来收取开发者费用。比如，个人证书只能添加一台设备默认安装(不需要经过appstore下载)，企业证书却可以添加几百台默认安装。</p>
+<p>下面是苹果证书申请的流程：</p>
+<p>0、交钱申请一个开发者账户，开通权限。 这里个人用户比较简单，企业用户还需要提供一个邓白氏码，表示你是真正存在的一个企业。</p>
+<p>1、开发者本地生成certSigningRequest文件，在这个过程中，苹果会生成一对公钥与私钥， 在certSigningRequest中会包含公钥，私钥保存在本地机器中， 可以通过keychain看到</p>
+<p>2、开发者到苹果开发者网站申请证书, .cer证书(分为开发和分发等类型) </p>
+<p>3、安装这个证书后，然后安装对应的私钥后 本地相当于登录了这个账号，可以进行对应的操作</p>
+<p>4、创建AppId， 主要是用于后面创建对应的mobileProfile<br>配置Provisioning Profiles文件， 选择对应的AppId， 还有类型。 如果是开发证书，还可以选择设备列表<br>开发者下载Provisioning Profiles文件， 打包的时候就可以选择对应的证书了。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>今天是五一长假第一天，疫情原因也没有出去浪，宅在家里好好学习一下。个人计划清单越来越长了，得花时间好好地消灭一下了，难得这么完整安静的假期，且行且珍惜！</p>
+<p>信息安全相关的算法了解有待深入，前段时间买了一本书《密码学与网络安全》，加油搞定之。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io/</a><br>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/24/2022-20220424-weekly-docker/" rel="prev" title="周谈(19)-docker基础">
+      <i class="fa fa-chevron-left"></i> 周谈(19)-docker基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/01/2022-20220501-clog/" rel="next" title="撸了一个轻量级的C语言日志库">
+      撸了一个轻量级的C语言日志库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">信息安全技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E6%8A%80%E6%9C%AF"><span class="nav-number">2.1.</span> <span class="nav-text">密码技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81%E4%B8%8E%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-number">2.2.</span> <span class="nav-text">摘要与数字签名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E9%92%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.3.</span> <span class="nav-text">公钥交换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">2.4.</span> <span class="nav-text">证书的应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

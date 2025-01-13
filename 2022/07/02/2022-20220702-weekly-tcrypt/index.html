@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言Linux内核里有一个密码学框架Linux kernel crypto。框架内部提供了常用的标准算法，比如：AES， DES， MD5， SHA1， RSA，DSA等。框架也是支持开发者自定义算法的，通过框架可以注册我们自己的算法，比如国标的SM2, SM3, SM4等， 或者某个公司内部的私有算法。当然了， 也支持对已有的算法重新注册，可以通过优先级设置让用户调用到我们注册的算法。框架代码在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(27)-内核tcrypt加密算法测试模块代码解读">
+<meta property="og:url" content="https://fishmwei.github.io/2022/07/02/2022-20220702-weekly-tcrypt/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言Linux内核里有一个密码学框架Linux kernel crypto。框架内部提供了常用的标准算法，比如：AES， DES， MD5， SHA1， RSA，DSA等。框架也是支持开发者自定义算法的，通过框架可以注册我们自己的算法，比如国标的SM2, SM3, SM4等， 或者某个公司内部的私有算法。当然了， 也支持对已有的算法重新注册，可以通过优先级设置让用户调用到我们注册的算法。框架代码在">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-02T11:44:40.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.789Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/07/02/2022-20220702-weekly-tcrypt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(27)-内核tcrypt加密算法测试模块代码解读 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/07/02/2022-20220702-weekly-tcrypt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(27)-内核tcrypt加密算法测试模块代码解读
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-02 19:44:40" itemprop="dateCreated datePublished" datetime="2022-07-02T19:44:40+08:00">2022-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/linux/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/07/02/2022-20220702-weekly-tcrypt/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/07/02/2022-20220702-weekly-tcrypt/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Linux内核里有一个密码学框架Linux kernel crypto。框架内部提供了常用的标准算法，比如：AES， DES， MD5， SHA1， RSA，DSA等。框架也是支持开发者自定义算法的，通过框架可以注册我们自己的算法，比如国标的SM2, SM3, SM4等， 或者某个公司内部的私有算法。当然了， 也支持对已有的算法重新注册，可以通过优先级设置让用户调用到我们注册的算法。框架代码在内核源码下的crypto目录。</p>
+<span id="more"></span>
+
+<p>框架提供了一个算法的自检的实现，也就是tcrypt。在我们注册算法的时候，框架会自动使用我们提供的数据执行用例。</p>
+<h1 id="tcrypt"><a href="#tcrypt" class="headerlink" title="tcrypt"></a>tcrypt</h1><p>tcrypt其实分为两个部分，一个是编译进内核的testmgr.c， 另外一个就是编译成模块的tcrypt.c。</p>
+<h2 id="testmgr"><a href="#testmgr" class="headerlink" title="testmgr"></a>testmgr</h2><p>在我们往框架注册算法的时候，框架默认就会调用testmgr.c里的alg_test函数，查找对应的测试用例函数，找到之后就会执行用例，检测算法实现是否符合预期。如果没有对应的用例或者用例执行成功的话，则算法直接注册成功，否则注册失败。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 注册算法</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">crypto_register_alg</span><span class="params">(<span class="keyword">struct</span> crypto_alg *alg)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">crypto_larval</span> *<span class="title">larval</span>;</span></span><br><span class="line">	<span class="type">bool</span> test_started;</span><br><span class="line">	<span class="type">int</span> err;</span><br><span class="line"></span><br><span class="line">	alg-&gt;cra_flags &amp;= ~CRYPTO_ALG_DEAD;</span><br><span class="line">	err = crypto_check_alg(alg);</span><br><span class="line">	<span class="keyword">if</span> (err)</span><br><span class="line">		<span class="keyword">return</span> err;</span><br><span class="line"></span><br><span class="line">	down_write(&amp;crypto_alg_sem);</span><br><span class="line">	larval = __crypto_register_alg(alg);</span><br><span class="line">	test_started = static_key_enabled(&amp;crypto_boot_test_finished);</span><br><span class="line">	<span class="keyword">if</span> (!IS_ERR_OR_NULL(larval))</span><br><span class="line">		larval-&gt;test_started = test_started;</span><br><span class="line">	up_write(&amp;crypto_alg_sem);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (IS_ERR_OR_NULL(larval))</span><br><span class="line">		<span class="keyword">return</span> PTR_ERR(larval);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (test_started)</span><br><span class="line">		crypto_wait_for_test(larval);  <span class="comment">// 执行测试</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">crypto_wait_for_test</span><span class="params">(<span class="keyword">struct</span> crypto_larval *larval)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> err;</span><br><span class="line"></span><br><span class="line">	err = crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER, larval-&gt;adult);</span><br><span class="line">	<span class="keyword">if</span> (WARN_ON_ONCE(err != NOTIFY_STOP))</span><br><span class="line">		<span class="keyword">goto</span> out;</span><br><span class="line"></span><br><span class="line">	err = wait_for_completion_killable(&amp;larval-&gt;completion);</span><br><span class="line">	WARN_ON(err);</span><br><span class="line">	<span class="keyword">if</span> (!err)</span><br><span class="line">		crypto_notify(CRYPTO_MSG_ALG_LOADED, larval);</span><br><span class="line"></span><br><span class="line">out:</span><br><span class="line">	crypto_larval_kill(&amp;larval-&gt;alg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 最终调用到这边</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">cryptomgr_test</span><span class="params">(<span class="type">void</span> *data)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">crypto_test_param</span> *<span class="title">param</span> =</span> data;</span><br><span class="line">	u32 type = param-&gt;type;</span><br><span class="line">	<span class="type">int</span> err = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_CRYPTO_MANAGER_DISABLE_TESTS</span></span><br><span class="line">	<span class="keyword">goto</span> skiptest;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (type &amp; CRYPTO_ALG_TESTED)</span><br><span class="line">		<span class="keyword">goto</span> skiptest;</span><br><span class="line"></span><br><span class="line">	err = alg_test(param-&gt;driver, param-&gt;alg, type, CRYPTO_ALG_TESTED);</span><br><span class="line"></span><br><span class="line">skiptest:</span><br><span class="line">	crypto_alg_tested(param-&gt;driver, err);</span><br><span class="line"></span><br><span class="line">	kfree(param);</span><br><span class="line">	module_put_and_exit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们需要在testmgr.h里面定义测试的几组数据。如下 MD5算法的测试数据：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * MD5 test vectors from RFC1321</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">hash_testvec</span> <span class="title">md5_tv_template</span>[] =</span> &#123;</span><br><span class="line">	&#123;</span><br><span class="line">		.digest	= <span class="string">&quot;\xd4\x1d\x8c\xd9\x8f\x00\xb2\x04&quot;</span></span><br><span class="line">			  <span class="string">&quot;\xe9\x80\x09\x98\xec\xf8\x42\x7e&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;a&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">1</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\x0c\xc1\x75\xb9\xc0\xf1\xb6\xa8&quot;</span></span><br><span class="line">			  <span class="string">&quot;\x31\xc3\x99\xe2\x69\x77\x26\x61&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;abc&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">3</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\x90\x01\x50\x98\x3c\xd2\x4f\xb0&quot;</span></span><br><span class="line">			  <span class="string">&quot;\xd6\x96\x3f\x7d\x28\xe1\x7f\x72&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;message digest&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">14</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\xf9\x6b\x69\x7d\x7c\xb7\x93\x8d&quot;</span></span><br><span class="line">			  <span class="string">&quot;\x52\x5a\x2f\x31\xaa\xf1\x61\xd0&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">26</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\xc3\xfc\xd3\xd7\x61\x92\xe4\x00&quot;</span></span><br><span class="line">			  <span class="string">&quot;\x7d\xfb\x49\x6c\xca\x67\xe1\x3b&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">62</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\xd1\x74\xab\x98\xd2\x77\xd9\xf5&quot;</span></span><br><span class="line">			  <span class="string">&quot;\xa5\x61\x1c\x2c\x9f\x41\x9d\x9f&quot;</span>,</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.plaintext = <span class="string">&quot;12345678901234567890123456789012345678901234567890123456789012&quot;</span></span><br><span class="line">			   <span class="string">&quot;345678901234567890&quot;</span>,</span><br><span class="line">		.psize	= <span class="number">80</span>,</span><br><span class="line">		.digest	= <span class="string">&quot;\x57\xed\xf4\xa2\x2b\xe3\xc9\x55&quot;</span></span><br><span class="line">			  <span class="string">&quot;\xac\x49\xda\x2e\x21\x07\xb6\x7a&quot;</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后再在alg_test_descs里面添加映射关系， 注意这里有个巧妙的实现， 映射关系需要按照算法名升序加入。 因为在查找算法用例的时候，它其实是一个二分查找的过程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">		.alg = <span class="string">&quot;md4&quot;</span>,</span><br><span class="line">		.test = alg_test_hash,</span><br><span class="line">		.suite = &#123;</span><br><span class="line">			.hash = __VECS(md4_tv_template)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.alg = <span class="string">&quot;md5&quot;</span>,</span><br><span class="line">		.test = alg_test_hash,</span><br><span class="line">		.suite = &#123;</span><br><span class="line">			.hash = __VECS(md5_tv_template)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;, &#123;</span><br><span class="line">		.alg = <span class="string">&quot;michael_mic&quot;</span>,</span><br><span class="line">		.test = alg_test_hash,</span><br><span class="line">		.suite = &#123;</span><br><span class="line">			.hash = __VECS(michael_mic_tv_template)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 二分法查找算法用例</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> alg_find_test(<span class="type">const</span> <span class="type">char</span> *alg)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> start = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> end = ARRAY_SIZE(alg_test_descs);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (start &lt; end) &#123;</span><br><span class="line">		<span class="type">int</span> i = (start + end) / <span class="number">2</span>;</span><br><span class="line">		<span class="type">int</span> diff = <span class="built_in">strcmp</span>(alg_test_descs[i].alg, alg);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (diff &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			end = i;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (diff &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			start = i + <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> i;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>alg_test_hash是内核提供的一个测试hash算法的用例模板，里面的流程就是调用Linux kernel crypto框架提供的接口来运行算法，然后拿结果跟提供的数据作对比。关于这个接口的使用，在后面出文章讲一下。<br>不同的算法类型都有对应的测试函数，没有的话， 得研究一下怎么自己加一下。</p>
+<h2 id="tcrypt模块"><a href="#tcrypt模块" class="headerlink" title="tcrypt模块"></a>tcrypt模块</h2><p>tcrypt.c则编译成一个内核模块，允许我们通过insmod&#x2F;modprobe 动态加载来测试不同的算法。它提供了好几个模块参数，加载模块的时候传递不同参数来控制调用不同的算法用例。</p>
+<p>在我们编译完内核之后， 可以在&#x2F;lib&#x2F;modules&#x2F;5.17.1&#x2F;kernel&#x2F;crypto (5.17.1 是内核版本号)找到tcrypt.ko</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:/lib/modules/5.17.1/kernel/crypto# ls</span><br><span class="line">842.ko             authencesn.ko        chacha20poly1305.ko    ecdsa_generic.ko   ofb.ko               twofish_common.ko</span><br><span class="line">adiantum.ko        authenc.ko           chacha_generic.ko      echainiv.ko        pcbc.ko              twofish_generic.ko</span><br><span class="line">aegis128.ko        blake2b_generic.ko   cmac.ko                ecrdsa_generic.ko  pcrypt.ko            vmac.ko</span><br><span class="line">aes_ti.ko          blake2s_generic.ko   crc32_generic.ko       essiv.ko           poly1305_generic.ko  wp512.ko</span><br><span class="line">af_alg.ko          blowfish_common.ko   cryptd.ko              fcrypt.ko          rmd160.ko            xcbc.ko</span><br><span class="line">algif_aead.ko      blowfish_generic.ko  crypto_engine.ko       keywrap.ko         serpent_generic.ko   xor.ko</span><br><span class="line">algif_hash.ko      camellia_generic.ko  crypto_simd.ko         lrw.ko             sha3_generic.ko      xxhash_generic.ko</span><br><span class="line">algif_rng.ko       cast5_generic.ko     crypto_user.ko         lz4hc.ko           sm2_generic.ko       zstd.ko</span><br><span class="line">algif_skcipher.ko  cast6_generic.ko     curve25519-generic.ko  lz4.ko             sm3_generic.ko</span><br><span class="line">ansi_cprng.ko      cast_common.ko       des_generic.ko         md4.ko             sm4_generic.ko</span><br><span class="line">asymmetric_keys    ccm.ko               ecc.ko                 michael_mic.ko     streebog_generic.ko</span><br><span class="line">async_tx           cfb.ko               ecdh_generic.ko        nhpoly1305.ko      tcrypt.ko</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@keep-VirtualBox:/lib/modules/5.17.1/kernel/crypto# insmod tcrypt.ko mode=1000</span><br><span class="line">insmod: ERROR: could not insert module tcrypt.ko: Resource temporarily unavailable</span><br><span class="line">root@keep-VirtualBox:/lib/modules/5.17.1/kernel/crypto# 7月 02 20:16:02 keep-VirtualBox kernel: alg des</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg md5</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg des3_ede</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg rot13</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha1</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha224</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha256</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sm3</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg blowfish</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg twofish</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg serpent</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha384</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha512</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg md4</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg aes</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg cast6</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg arc4</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg michael_mic</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg deflate</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg crc32c</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg tea</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg xtea</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg khazad</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg wp512</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg wp384</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg wp256</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg xeta</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg fcrypt</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg camellia</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg seed</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg rmd160</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg lzo</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg lzo-rle</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg cts</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: not found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha3-224</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha3-256</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha3-384</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg sha3-512</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg streebog256</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: alg streebog512</span><br><span class="line">7月 02 20:16:02 keep-VirtualBox kernel: found</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>传入mode&#x3D;1000表示输出内核中注册的算法， 这里不包含组合的算法。具体的参数可以去看tcrypt.c的do_test函数。如果我们要自己添加一个测试算法的入口，那么只需要增加一个case， 然后调用我们自己指定的算法就可以了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">do_test</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *alg, u32 type, u32 mask, <span class="type">int</span> m, u32 num_mb)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="type">int</span> ret = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">switch</span> (m) &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">case</span> <span class="number">159</span>:</span><br><span class="line">            ret += tcrypt_test(<span class="string">&quot;cmac(sm4)&quot;</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">160</span>:</span><br><span class="line">            ret += tcrypt_test(<span class="string">&quot;zuc&quot;</span>); <span class="comment">// 加一个祖冲之算法测试用例调用入口</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>要能tcrypt测试， 还需要在内核编译make menuconfig的时候选择</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">--- Cryptographic API                                                                        │ │</span><br><span class="line"> │ │                            *** Crypto core or helper ***                                                          │ │</span><br><span class="line"> │ │                      -*-   Cryptographic algorithm manager                                                        │ │</span><br><span class="line"> │ │                      &lt;M&gt;   Userspace cryptographic algorithm configuration                                        │ │</span><br><span class="line"> │ │                      [ ]   Disable run-time self tests                                                            │ │ # 不选择</span><br><span class="line"> │ │                      -*-   Null algorithms                                                                        │ │</span><br><span class="line"> │ │                      &lt;M&gt;   Parallel crypto engine                                                                 │ │</span><br><span class="line"> │ │                      &#123;M&#125;   Software async crypto daemon                                                           │ │</span><br><span class="line"> │ │                      &#123;M&#125;   Authenc support                                                                        │ │</span><br><span class="line"> │ │                      &lt;M&gt;   Testing module                                                                         │ │  # 选择</span><br><span class="line"> │ │                            *** Public-key cryptography ***                                                        │ │</span><br><span class="line"> │ │                      -*-   RSA algorithm                                                                          │ │</span><br><span class="line"> │ │                      -*-   Diffie-Hellman algorithm                                                               │ │</span><br><span class="line"> │ │                      &#123;M&#125;   ECDH algorithm                                                                         │ │</span><br><span class="line"> │ │                      &lt;M&gt;   ECDSA (NIST P192, P256 etc.) algorithm                                                 │ │</span><br><span class="line"> │ │                      &lt;M&gt;   EC-RDSA (GOST 34.10) algorithm                                                         │ │</span><br><span class="line"> │ │                      &lt;M&gt;   SM2 algorithm                                                                          │ │</span><br><span class="line"> │ │                      &lt;M&gt;   Curve25519 algorithm                                                                   │ │</span><br><span class="line"> │ │                      &#123;M&#125;   x86_64 accelerated Curve25519 scalar multiplication library                            │ │</span><br><span class="line"> │ │                            *** Authenticated Encryption with Associated Data ***                                  │ │</span><br><span class="line"> │ │                      &#123;M&#125;   CCM support                                                                            │ │</span><br><span class="line"> │ │                      &#123;*&#125;   GCM/GMAC support                                                                       │ │</span><br><span class="line"> │ │                      &#123;M&#125;   ChaCha20-Poly1305 AEAD support                                                         │ │</span><br><span class="line"> │ │                      &lt;M&gt;   AEGIS-128 AEAD algorithm                                                               │ │</span><br><span class="line"> │ │                      &lt;M&gt;   AEGIS-128 AEAD algorithm (x86_64 AESNI+SSE2 implementation)  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>最近股市行情不错，账户也已经回血了许多。但是搞了大半年，发现也就是几千块钱的收益(哈哈，主要是本金少)，还不如好好工作，拿个好绩效，做出成绩来得更实在一些。</p>
+<p>另外，六月份的时候工作也转正了，工作上的事情还是蛮多的，有很多事情可以做，单单把目前看到的事情做好就得有个一两年吧。好好学习，天天向上吧。</p>
+<p>现在开始做驱动开发，每天都会花个半小时到1小时的时间看驱动的书《Linux驱动开发详解：基于最新Linux4.0内核》,也是个大块头啊，发现内核里面做的事情还是很多的，有的学了。工作的时候，看到很多新的概念名词，还有知识点，由于实在太多，很多没有深入，但是基本上都记录下来了，需要多花写时间梳理小结一下，下半年出文章的数量估计会多一些, 当然保底依旧是每周一篇的。</p>
+<p>周末和晚上的时间可以好好利用，做好规划，不断地在知识的海洋中遨游！</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/23/2022-20220623-linux-fs/" rel="prev" title="周谈(26)-Linux文件系统与驱动">
+      <i class="fa fa-chevron-left"></i> 周谈(26)-Linux文件系统与驱动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/09/2022-20220709-linux-kernel-crypto/" rel="next" title="周谈(28)-内核调用crypto算法代码解析">
+      周谈(28)-内核调用crypto算法代码解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcrypt"><span class="nav-number">2.</span> <span class="nav-text">tcrypt</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#testmgr"><span class="nav-number">2.1.</span> <span class="nav-text">testmgr</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcrypt%E6%A8%A1%E5%9D%97"><span class="nav-number">2.2.</span> <span class="nav-text">tcrypt模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">2.3.</span> <span class="nav-text">编译</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

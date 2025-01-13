@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言国庆后这周连续上来7天班，事情做了许多，也包含了许多小事儿，大的部分暂时没有准备好。本周就拼凑着讲一下几个小事儿。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(39)-近期小事">
+<meta property="og:url" content="https://fishmwei.github.io/2022/10/16/2022-20221016-lats-weekly/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言国庆后这周连续上来7天班，事情做了许多，也包含了许多小事儿，大的部分暂时没有准备好。本周就拼凑着讲一下几个小事儿。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/rte_ring.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/destructor.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/char_dev.png">
+<meta property="article:published_time" content="2022-10-16T09:07:12.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.792Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202210/rte_ring.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/10/16/2022-20221016-lats-weekly/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(39)-近期小事 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/10/16/2022-20221016-lats-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(39)-近期小事
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-16 17:07:12" itemprop="dateCreated datePublished" datetime="2022-10-16T17:07:12+08:00">2022-10-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/10/16/2022-20221016-lats-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/16/2022-20221016-lats-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>国庆后这周连续上来7天班，事情做了许多，也包含了许多小事儿，大的部分暂时没有准备好。本周就拼凑着讲一下几个小事儿。</p>
+<span id="more"></span>
+
+<h1 id="DPDK-ring出队是否卡住"><a href="#DPDK-ring出队是否卡住" class="headerlink" title="DPDK ring出队是否卡住"></a>DPDK ring出队是否卡住</h1><p>节前的时候，组里的同事检视我的代码，提了一个意见。说是rte_ring这个环状队列，被调用批量出队的时候，如果对内里面的个数小于期望的个数，那么会返回0或者卡住。我就写了个demo验证了一下，结果如下：</p>
+<p><img src="/images/202210/rte_ring.png" alt="rte_ring"></p>
+<p>可以看出，出队时并不会卡住，即使不满足期望个数也会出队实际的个数。</p>
+<h1 id="动态库的constructor方法在库被加载时才会被调用"><a href="#动态库的constructor方法在库被加载时才会被调用" class="headerlink" title="动态库的constructor方法在库被加载时才会被调用"></a>动态库的constructor方法在库被加载时才会被调用</h1><p>我们知道，如果设置了一个函数的gcc属性为__attribute__(constructor)，那么在main函数运行之前就会调用这个函数。</p>
+<p>同事在把DPDK的driver库编译为动态库的时候，发现运行的时候很多数据没有正常初始化。然后打印了断点，函数也没有被断到，可以确定对应的函数没有执行。</p>
+<p>想来没有加载动态库的时候，这些函数也就在main运行之前不会被调用了，很正常。DPDK的eal参数提供了加载指定驱动的命令选项， 可以通过加载指定的so，后续在运行的时候发现数据正常初始化了。</p>
+<p>看了一下这块的代码，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-d LIB.so|DIR       Add a driver or driver directory</span><br><span class="line">                     (can be used multiple times)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">eal_parse_common_option</span><span class="params">(<span class="type">int</span> opt, <span class="type">const</span> <span class="type">char</span> *optarg,</span></span><br><span class="line"><span class="params">			<span class="keyword">struct</span> internal_config *conf)</span></span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* force loading of external driver */</span></span><br><span class="line">	<span class="keyword">case</span> &#x27;d&#x27;:</span><br><span class="line">		<span class="title function_">if</span> <span class="params">(eal_plugin_add(optarg) == <span class="number">-1</span>)</span></span><br><span class="line">			<span class="keyword">return</span> -1;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span></span><br><span class="line"><span class="title function_">eal_plugin_add</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">shared_driver</span> *<span class="title">solib</span>;</span></span><br><span class="line"></span><br><span class="line">	solib = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*solib));</span><br><span class="line">	<span class="keyword">if</span> (solib == <span class="literal">NULL</span>) &#123;</span><br><span class="line">		RTE_LOG(ERR, EAL, <span class="string">&quot;malloc(solib) failed\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">memset</span>(solib, <span class="number">0</span>, <span class="keyword">sizeof</span>(*solib));</span><br><span class="line">	strlcpy(solib-&gt;name, path, PATH_MAX);</span><br><span class="line">	TAILQ_INSERT_TAIL(&amp;solib_list, solib, next);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">eal_plugins_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">shared_driver</span> *<span class="title">solib</span> =</span> <span class="literal">NULL</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">sb</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* If we are not statically linked, add default driver loading</span></span><br><span class="line"><span class="comment">	 * path if it exists as a directory.</span></span><br><span class="line"><span class="comment">	 * (Using dlopen with NOLOAD flag on EAL, will return NULL if the EAL</span></span><br><span class="line"><span class="comment">	 * shared library is not already loaded i.e. it&#x27;s statically linked.)</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">if</span> (is_shared_build() &amp;&amp;</span><br><span class="line">			*default_solib_dir != <span class="string">&#x27;\0&#x27;</span> &amp;&amp;</span><br><span class="line">			stat(default_solib_dir, &amp;sb) == <span class="number">0</span> &amp;&amp;</span><br><span class="line">			S_ISDIR(sb.st_mode))</span><br><span class="line">		eal_plugin_add(default_solib_dir);</span><br><span class="line"></span><br><span class="line">	TAILQ_FOREACH(solib, &amp;solib_list, next) &#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (stat(solib-&gt;name, &amp;sb) == <span class="number">0</span> &amp;&amp; S_ISDIR(sb.st_mode)) &#123;</span><br><span class="line">			<span class="keyword">if</span> (eal_plugindir_init(solib-&gt;name) == <span class="number">-1</span>) &#123;</span><br><span class="line">				RTE_LOG(ERR, EAL,</span><br><span class="line">					<span class="string">&quot;Cannot init plugin directory %s\n&quot;</span>,</span><br><span class="line">					solib-&gt;name);</span><br><span class="line">				<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			RTE_LOG(DEBUG, EAL, <span class="string">&quot;open shared lib %s\n&quot;</span>,</span><br><span class="line">				solib-&gt;name);</span><br><span class="line">			solib-&gt;lib_handle = eal_dlopen(solib-&gt;name);</span><br><span class="line">			<span class="keyword">if</span> (solib-&gt;lib_handle == <span class="literal">NULL</span>)</span><br><span class="line">				<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在参数解析的时候会把driver对应的路径存起来， 在后面的eal_plugins_init时候调用dlopen加载该动态库。<br>很多插件的实现原理也是类似，通过加载固定文件夹下的so，触发特定的函数执行，或者是调用so内部的特定函数，实现对应的功能。</p>
+<h1 id="destructor在函数异常退出是不会调用被调用"><a href="#destructor在函数异常退出是不会调用被调用" class="headerlink" title="destructor在函数异常退出是不会调用被调用"></a>destructor在函数异常退出是不会调用被调用</h1><p>最近在设计一个用户态库的接口，需要对外提供资源的申请释放的接口，资源是通过ioctl调用内核的驱动模块来操作的，也就是多个用户态进程会共同使用内核的资源。我本来是想着，如果使用接口的进程异常退出了，那么就由用户态的库自动释放这些资源。本来我是想着使用attribute(destructor)属性的函数来实现已申请的资源的释放的。实验了一下，发现此路不同。</p>
+<p>show you code:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">用于验证异常情况下， destructor是否会被调用。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">结论：</span></span><br><span class="line"><span class="comment">进程异常(被kill)退出，不会调用destructor函数。</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">__attribute__((constructor)) <span class="type">static</span> <span class="type">void</span> <span class="title function_">beforeFunction</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;beforeFunction\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((destructor)) <span class="type">static</span> <span class="type">void</span> <span class="title function_">afterFunction</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;afterFunction\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> times = <span class="number">60</span>;</span><br><span class="line">    <span class="keyword">while</span> (i++ &lt; times)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;current i = %d\r\n&quot;</span>, i);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编译运行之后，我使用kill -9 命令杀死这个进程，可以看到，并没有输出afterFunction。</p>
+<p><img src="/images/202210/destructor.png" alt="destructor"></p>
+<h1 id="device-create创建设备文件"><a href="#device-create创建设备文件" class="headerlink" title="device_create创建设备文件"></a>device_create创建设备文件</h1><p>之前在学习驱动的时候，文章<a href="https://fishmwei.github.io/2022/08/14/driver-char/">字符设备驱动</a>使用的mknod命令手动创建了设备文件。这周看了之前的驱动代码， 使用device_create函数创建了设备文件。</p>
+<p>在调用device_create前要先用class_create创建一个类。类这个概念在Linux中被抽象成一种设备的集合。类在&#x2F;sys&#x2F;class目录中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:/sys/class# ls /sys/class/</span><br><span class="line">ata_device  block          devlink   drm_dp_aux_dev  hidraw       intel_scu_ipc  mem       net       power_supply  ptp           remoteproc   scsi_generic  thermal   vc            watchdog</span><br><span class="line">ata_link    bsg            dma       extcon          hwmon        iommu          misc      pci_bus   ppdev         pwm           rfkill       scsi_host     tpm       vfio          wwan</span><br><span class="line">ata_port    devcoredump    dma_heap  firmware        i2c-adapter  leds           mmc_host  pci_epc   ppp           rapidio_port  rtc          sound         tpmrm     virtio-ports</span><br><span class="line">backlight   devfreq        dmi       gpio            i2c-dev      lirc           msr       phy       pps           rc            scsi_device  spi_master    tty       vtconsole</span><br><span class="line">bdi         devfreq-event  drm       graphics        input        mdio_bus       nd        powercap  printer       regulator     scsi_disk    spi_slave     usb_role  wakeup</span><br><span class="line">root@keep-VirtualBox:/sys/class#</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>主要代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   ...</span><br><span class="line">   globalmem_devp-&gt;dev_class = class_create(THIS_MODULE, <span class="string">&quot;driver_dev&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span> (IS_ERR(globalmem_devp-&gt;dev_class)) &#123;</span><br><span class="line">       printk(<span class="string">&quot;class create error\r\n&quot;</span>);</span><br><span class="line">       ret =  -EBUSY;</span><br><span class="line">       <span class="keyword">goto</span> fail_malloc;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   devices = device_create(globalmem_devp-&gt;dev_class, <span class="literal">NULL</span>, MKDEV(globalmem_major, <span class="number">0</span>), <span class="literal">NULL</span>, <span class="string">&quot;globalmem&quot;</span>);</span><br><span class="line">   <span class="keyword">if</span> (<span class="literal">NULL</span> == devices)&#123;</span><br><span class="line">	printk(<span class="string">&quot;device_create error\r\n&quot;</span>);</span><br><span class="line">	ret =  -EBUSY;</span><br><span class="line">       class_destroy(globalmem_devp-&gt;dev_class);</span><br><span class="line">	<span class="keyword">goto</span> fail_malloc;</span><br><span class="line">&#125;</span><br><span class="line">   ...</span><br></pre></td></tr></table></figure>
+<p>安装之后， 可以在&#x2F;sys&#x2F;class和&#x2F;dev下找到driver_dev和globalmem</p>
+<p><img src="/images/202210/char_dev.png" alt="char_dev"></p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>这篇知识比较零碎。具体的测试代码在Gitee仓库中<a href="mailto:&#103;&#x69;&#116;&#x40;&#103;&#105;&#116;&#101;&#x65;&#46;&#99;&#x6f;&#x6d;">&#103;&#x69;&#116;&#x40;&#103;&#105;&#116;&#101;&#x65;&#46;&#99;&#x6f;&#x6d;</a>:fishmwei&#x2F;blog_code.git。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/01/2022-20221001-zuc-weekly/" rel="prev" title="DPDK ZUC PMD代码笔记">
+      <i class="fa fa-chevron-left"></i> DPDK ZUC PMD代码笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/08/2022-20221108-userlib/" rel="next" title="周谈（40）-用户态库">
+      周谈（40）-用户态库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DPDK-ring%E5%87%BA%E9%98%9F%E6%98%AF%E5%90%A6%E5%8D%A1%E4%BD%8F"><span class="nav-number">2.</span> <span class="nav-text">DPDK ring出队是否卡住</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%BA%93%E7%9A%84constructor%E6%96%B9%E6%B3%95%E5%9C%A8%E5%BA%93%E8%A2%AB%E5%8A%A0%E8%BD%BD%E6%97%B6%E6%89%8D%E4%BC%9A%E8%A2%AB%E8%B0%83%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">动态库的constructor方法在库被加载时才会被调用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#destructor%E5%9C%A8%E5%87%BD%E6%95%B0%E5%BC%82%E5%B8%B8%E9%80%80%E5%87%BA%E6%98%AF%E4%B8%8D%E4%BC%9A%E8%B0%83%E7%94%A8%E8%A2%AB%E8%B0%83%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">destructor在函数异常退出是不会调用被调用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#device-create%E5%88%9B%E5%BB%BA%E8%AE%BE%E5%A4%87%E6%96%87%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">device_create创建设备文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">6.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

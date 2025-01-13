@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="模块和数据节点的树结构sysrepo对yang文件节点数据及模块的解析是一个有层次的关系结构：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构-sysrepo笔记(3)">
+<meta property="og:url" content="https://fishmwei.github.io/2021/09/12/2021-20210912-nodetree/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="模块和数据节点的树结构sysrepo对yang文件节点数据及模块的解析是一个有层次的关系结构：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202109/node_tree.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202109/sysrepo.png">
+<meta property="article:published_time" content="2021-09-12T13:50:07.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.781Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202109/node_tree.jpeg">
+
+<link rel="canonical" href="https://fishmwei.github.io/2021/09/12/2021-20210912-nodetree/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据结构-sysrepo笔记(3) | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2021/09/12/2021-20210912-nodetree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构-sysrepo笔记(3)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-12 21:50:07" itemprop="dateCreated datePublished" datetime="2021-09-12T21:50:07+08:00">2021-09-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/09/12/2021-20210912-nodetree/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/09/12/2021-20210912-nodetree/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="模块和数据节点的树结构"><a href="#模块和数据节点的树结构" class="headerlink" title="模块和数据节点的树结构"></a>模块和数据节点的树结构</h1><p><code>sysrepo</code>对<code>yang</code>文件节点数据及模块的解析是一个有层次的关系结构：</p>
+<span id="more"></span>
+
+<p><img src="/images/202109/node_tree.jpeg" alt="avatar"></p>
+<ul>
+<li>顶级节点没有parent&#x3D;NULL， 兄弟节点的parent是相同的。 </li>
+<li>兄弟节点间是一个特殊的双向链表。第一个节点的<code>prev</code>指向最后一个节点，<code>next</code>指向下一个节点。如图所示，最后一个兄弟节点的<code>next</code>为<code>NULL</code>。如果只有一个节点，那么<code>prev</code>指向自身， next&#x3D;NULL</li>
+<li>父节点的<code>child</code>指向第一个子节点。</li>
+<li>每个节点有对应的节点类型，根据节点类型有对应的<code>value</code>。</li>
+</ul>
+<h1 id="模块管理"><a href="#模块管理" class="headerlink" title="模块管理"></a>模块管理</h1><p>所有安装的模块由一个名为<code>sysrepo</code>的模块管理。这个模块的定义在<code>https://github.com/sysrepo/sysrepo/blob/master/modules/sysrepo.yang</code>文件中。</p>
+<p><img src="/images/202109/sysrepo.png" alt="avatar"></p>
+<p>里面会记录哪些模块已经安装了，哪些模块待安装。<code>module</code>列表表示已经安装过的模块，存放模块的名称、版本、特性列表。每个安装的模块的依赖和反向依赖的模块列表，还可以存放这个模块是否将被移动或者被更新， 使能的特性列表等。新安装的模块在<code>installed-module</code>里面， 等待<code>sysrepo</code>没有连接的时候进行安装，从<code>yang</code>文件中解析出各种属性，添加为<code>module</code>列表的一个项。 已安装的<code>yang</code>文件默认会被存放到<code>/etc/sysrepo/yang</code>目录下，这个目录可以在编译的之前在CMakeList.txt文件中设置。</p>
+<h1 id="数据内容存储"><a href="#数据内容存储" class="headerlink" title="数据内容存储"></a>数据内容存储</h1><p>所有相关的数据结构被存放在两个共享内存文件中， 分别是 <code>sr_main</code>和 <code>sr_ext</code>。</p>
+<h2 id="sr-main"><a href="#sr-main" class="headerlink" title="sr_main"></a>sr_main</h2><p><code>sr_main</code>文件里面前面是<code>sr_main_shm_t</code>， 后面保存的是所有模块的信息<code>sr_mod_t</code>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> shm_ver;           <span class="comment">/**&lt; Main and ext SHM version of all expected data stored in them. Is increased with</span></span><br><span class="line"><span class="comment">                                     every change of their structure content (ABI change). */</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> lydmods_lock; <span class="comment">/**&lt; Process-shared lock for accessing sysrepo module data. */</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> ext_lock;   <span class="comment">/**&lt; Process-shared lock for accessing holes and truncating ext SHM. */</span></span><br><span class="line">    <span class="type">uint32_t</span> mod_count;         <span class="comment">/**&lt; Number of installed modules stored after this structure. */</span></span><br><span class="line"></span><br><span class="line">    ATOMIC_T new_sr_cid;        <span class="comment">/**&lt; Connection ID for a new connection. */</span></span><br><span class="line">    ATOMIC_T new_sr_sid;        <span class="comment">/**&lt; SID for a new session. */</span></span><br><span class="line">    ATOMIC_T new_sub_id;        <span class="comment">/**&lt; Subscription ID of a new subscription. */</span></span><br><span class="line">    ATOMIC_T new_evpipe_num;    <span class="comment">/**&lt; Event pipe number for a new subscription. */</span></span><br><span class="line">&#125; <span class="type">sr_main_shm_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sr_mod_lock_s</span> &#123;</span></span><br><span class="line">        <span class="type">sr_rwlock_t</span> lock;       <span class="comment">/**&lt; Process-shared lock for accessing module instance data and DS lock information. */</span></span><br><span class="line">        <span class="type">uint32_t</span> ds_lock_sid;   <span class="comment">/**&lt; SID of the module data datastore lock (NETCONF lock), the data can be modified only</span></span><br><span class="line"><span class="comment">                                     by this session. If 0, the DS lock is not held. */</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">timespec</span> <span class="title">ds_lock_ts</span>;</span> <span class="comment">/**&lt; Timestamp of the datastore lock. */</span></span><br><span class="line">    &#125; data_lock_info[SR_DS_COUNT]; <span class="comment">/**&lt; Module data lock information for each datastore. */</span></span><br><span class="line">    <span class="type">sr_rwlock_t</span> replay_lock;    <span class="comment">/**&lt; Process-shared lock for accessing stored notifications for replay. */</span></span><br><span class="line">    <span class="type">uint32_t</span> ver;               <span class="comment">/**&lt; Module data version (non-zero). */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">off_t</span> name;                 <span class="comment">/**&lt; Module name (offset in main SHM). */</span></span><br><span class="line">    <span class="type">char</span> rev[<span class="number">11</span>];               <span class="comment">/**&lt; Module revision. */</span></span><br><span class="line">    ATOMIC_T replay_supp;       <span class="comment">/**&lt; Whether module supports replay. */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">off_t</span> features;             <span class="comment">/**&lt; Array of enabled features (off_t *) (offset in main SHM). */</span></span><br><span class="line">    <span class="type">uint16_t</span> feat_count;        <span class="comment">/**&lt; Number of enabled features. */</span></span><br><span class="line">    <span class="type">off_t</span> rpcs;                 <span class="comment">/**&lt; Array of RPCs/actions of the module (offset in main SHM). */</span></span><br><span class="line">    <span class="type">uint16_t</span> rpc_count;         <span class="comment">/**&lt; Number of RPCs/actions. */</span></span><br><span class="line">    <span class="type">off_t</span> notifs;               <span class="comment">/**&lt; Array of notifications of the module (offset in main SHM). */</span></span><br><span class="line">    <span class="type">uint16_t</span> notif_count;       <span class="comment">/**&lt; Number of notifications. */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">off_t</span> deps;                 <span class="comment">/**&lt; Array of module data dependencies (offset in main SHM). */</span></span><br><span class="line">    <span class="type">uint16_t</span> dep_count;         <span class="comment">/**&lt; Number of module data dependencies. */</span></span><br><span class="line">    <span class="type">off_t</span> inv_deps;             <span class="comment">/**&lt; Array of inverse module data dependencies (off_t *) (offset in main SHM). */</span></span><br><span class="line">    <span class="type">uint16_t</span> inv_dep_count;     <span class="comment">/**&lt; Number of inverse module data dependencies. */</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">        <span class="type">sr_rwlock_t</span> lock;       <span class="comment">/**&lt; Process-shared lock for reading or preventing changes (READ) or modifying (WRITE)</span></span><br><span class="line"><span class="comment">                                     change subscriptions. */</span></span><br><span class="line">        <span class="type">off_t</span> subs;             <span class="comment">/**&lt; Array of change subscriptions (offset in ext SHM). */</span></span><br><span class="line">        <span class="type">uint32_t</span> sub_count;     <span class="comment">/**&lt; Number of change subscriptions. */</span></span><br><span class="line">    &#125; change_sub[SR_DS_COUNT];  <span class="comment">/**&lt; Change subscriptions for each datastore. */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">sr_rwlock_t</span> oper_lock;      <span class="comment">/**&lt; Process-shared lock for reading or preventing changes (READ) or modifying (WRITE)</span></span><br><span class="line"><span class="comment">                                     operational subscriptions. */</span></span><br><span class="line">    <span class="type">off_t</span> oper_subs;            <span class="comment">/**&lt; Array of operational subscriptions (offset in ext SHM). */</span></span><br><span class="line">    <span class="type">uint32_t</span> oper_sub_count;    <span class="comment">/**&lt; Number of operational subscriptions. */</span></span><br><span class="line"></span><br><span class="line">    <span class="type">sr_rwlock_t</span> notif_lock;     <span class="comment">/**&lt; Process-shared lock for reading or preventing changes (READ) or modifying (WRITE)</span></span><br><span class="line"><span class="comment">                                     notification subscriptions. */</span></span><br><span class="line">    <span class="type">off_t</span> notif_subs;           <span class="comment">/**&lt; Array of notification subscriptions (offset in ext SHM). */</span></span><br><span class="line">    <span class="type">uint32_t</span> notif_sub_count;   <span class="comment">/**&lt; Number of notification subscriptions. */</span></span><br><span class="line">&#125; <span class="type">sr_mod_t</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在<code>sr_mod_t</code>里面保存的都是各个数据在<code>sr_ext</code>里面对应的偏移， 具体的数据存在<code>sr_ext</code>里面。</p>
+<h2 id="sr-ext"><a href="#sr-ext" class="headerlink" title="sr_ext"></a>sr_ext</h2><p><code>sr_ext</code>的头部是<code>sr_ext_shm_t</code>， 后面存的是一个个结构<code>sr_ext_hole_t</code>， 指向了各个模块的内存偏移。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Ext SHM structure.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> first_hole_off;    <span class="comment">/**&lt; Offset of the first memory hole, 0 if there is none. */</span></span><br><span class="line">&#125; <span class="type">sr_ext_shm_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Ext SHM memory hole.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> size;</span><br><span class="line">    <span class="type">uint32_t</span> next_hole_off;</span><br><span class="line">&#125; <span class="type">sr_ext_hole_t</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>还有具体的数据也是存放在共享内存文件中， 不同模块的数据存放在不同的文件中， sr_modulename.datatype。</p>
+<p>订阅的信息存放在sr_sub_xxxx等文件里。</p>
+<p>后面再详细描述。</p>
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/12/2021-20210912-mmap/" rel="prev" title="共享内存文件的应用-sysrepo笔记(2)">
+      <i class="fa fa-chevron-left"></i> 共享内存文件的应用-sysrepo笔记(2)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/21/2021-20210921-plugin/" rel="next" title="动态库实现插件-sysrepo笔记(4)">
+      动态库实现插件-sysrepo笔记(4) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%92%8C%E6%95%B0%E6%8D%AE%E8%8A%82%E7%82%B9%E7%9A%84%E6%A0%91%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">模块和数据节点的树结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">模块管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%86%85%E5%AE%B9%E5%AD%98%E5%82%A8"><span class="nav-number">3.</span> <span class="nav-text">数据内容存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sr-main"><span class="nav-number">3.1.</span> <span class="nav-text">sr_main</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sr-ext"><span class="nav-number">3.2.</span> <span class="nav-text">sr_ext</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

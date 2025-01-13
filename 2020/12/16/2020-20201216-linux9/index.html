@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="进程数据结构进程在linux内核中管理，使用了一个统一的结构体 task_struct">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《趣谈linux操作系统》小结(九)-进程数据结构">
+<meta property="og:url" content="https://fishmwei.github.io/2020/12/16/2020-20201216-linux9/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="进程数据结构进程在linux内核中管理，使用了一个统一的结构体 task_struct">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202012/linux_task.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202012/linux_task_state.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202012/linux_task_content.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202012/linux_task_parent.jpeg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202012/linux_task_content2.jpeg">
+<meta property="article:published_time" content="2020-12-16T07:02:08.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.775Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202012/linux_task.jpeg">
+
+<link rel="canonical" href="https://fishmwei.github.io/2020/12/16/2020-20201216-linux9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《趣谈linux操作系统》小结(九)-进程数据结构 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2020/12/16/2020-20201216-linux9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《趣谈linux操作系统》小结(九)-进程数据结构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-16 15:02:08" itemprop="dateCreated datePublished" datetime="2020-12-16T15:02:08+08:00">2020-12-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/12/16/2020-20201216-linux9/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/12/16/2020-20201216-linux9/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="进程数据结构"><a href="#进程数据结构" class="headerlink" title="进程数据结构"></a>进程数据结构</h2><p>进程在linux内核中管理，使用了一个统一的结构体 <strong>task_struct</strong></p>
+<span id="more"></span>
+
+<img src="/images/202012/linux_task.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<p>内核由一个链表用来存储<strong>task_struct</strong></p>
+<h2 id="task-struct内容"><a href="#task-struct内容" class="headerlink" title="task_struct内容"></a>task_struct内容</h2><h3 id="任务ID"><a href="#任务ID" class="headerlink" title="任务ID"></a>任务ID</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">pid_t</span> pid;</span><br><span class="line"><span class="type">pid_t</span> tgid;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">group_leader</span>;</span> </span><br></pre></td></tr></table></figure>
+
+<p>任何一个进程，如果只有主线程，那 pid 是自己，tgid 是自己，group_leader 指向的还是自己。但是，如果一个进程创建了其他线程，那就会有所变化了。线程有自己的 pid，tgid 就是进程的主线程的 pid，group_leader 指向的就是进程的主线程。</p>
+<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>结构体中包含了许多信号处理相关的字段</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Signal handlers: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">signal_struct</span>    *<span class="title">signal</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sighand_struct</span>    *<span class="title">sighand</span>;</span></span><br><span class="line"><span class="type">sigset_t</span>      blocked;</span><br><span class="line"><span class="type">sigset_t</span>      real_blocked;</span><br><span class="line"><span class="type">sigset_t</span>      saved_sigmask;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sigpending</span>    <span class="title">pending</span>;</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span>      sas_ss_sp;</span><br><span class="line"><span class="type">size_t</span>        sas_ss_size;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span>      sas_ss_flags;</span><br></pre></td></tr></table></figure>
+
+<p>定义了哪些信号被阻塞暂不处理（blocked），哪些信号尚等待处理（pending），哪些信号正在通过信号处理函数进行处理（sighand）。处理的结果可以是忽略，可以是结束进程等等。</p>
+<p>信号处理函数默认使用用户态的函数栈，当然也可以开辟新的栈专门用于信号处理，这就是 sas_ss_xxx 这三个变量的作用。</p>
+<p>task_struct 里面有一个 struct sigpending pending。如果我们进入 struct signal_struct *signal 去看的话，还有一个 struct sigpending shared_pending。它们一个是本任务的，一个是线程组共享的。</p>
+<h3 id="任务状态"><a href="#任务状态" class="headerlink" title="任务状态"></a>任务状态</h3><p>状态相关的变量有3个</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">volatile</span> <span class="type">long</span> state;    <span class="comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span></span><br><span class="line"> <span class="type">int</span> exit_state;</span><br><span class="line"> <span class="type">unsigned</span> <span class="type">int</span> flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_RUNNING                    0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_INTERRUPTIBLE              1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_UNINTERRUPTIBLE            2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_STOPPED                  4</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __TASK_TRACED                   8</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;exit_state: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_DEAD                       16</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_ZOMBIE                     32</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> EXIT_TRACE                      (EXIT_ZOMBIE | EXIT_DEAD)</span></span><br><span class="line"><span class="comment">/* Used in tsk-&gt;state again: */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_DEAD                       64</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_WAKEKILL                   128</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_WAKING                     256</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_PARKED                     512</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NOLOAD                     1024</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_NEW                        2048</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TASK_STATE_MAX                  4096</span></span><br></pre></td></tr></table></figure>
+
+<p>任务的切换流程</p>
+<img src="/images/202012/linux_task_state.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<h3 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//是否在运行队列上</span></span><br><span class="line"><span class="type">int</span>        on_rq;</span><br><span class="line"><span class="comment">//优先级</span></span><br><span class="line"><span class="type">int</span>        prio;</span><br><span class="line"><span class="type">int</span>        static_prio;</span><br><span class="line"><span class="type">int</span>        normal_prio;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span>      rt_priority;</span><br><span class="line"><span class="comment">//调度器类</span></span><br><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">sched_class</span>  *<span class="title">sched_class</span>;</span></span><br><span class="line"><span class="comment">//调度实体</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_entity</span>    <span class="title">se</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_rt_entity</span>    <span class="title">rt</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_dl_entity</span>    <span class="title">dl</span>;</span></span><br><span class="line"><span class="comment">//调度策略</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span>      policy;</span><br><span class="line"><span class="comment">//可以使用哪些CPU</span></span><br><span class="line"><span class="type">int</span>        nr_cpus_allowed;</span><br><span class="line"><span class="type">cpumask_t</span>      cpus_allowed;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sched_info</span>    <span class="title">sched_info</span>;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="结构体内容概览"><a href="#结构体内容概览" class="headerlink" title="结构体内容概览"></a>结构体内容概览</h3><img src="/images/202012/linux_task_content.jpeg" alt="图片替换文本" width="600" height="513" align="bottom" />
+
+<h3 id="运行统计信息"><a href="#运行统计信息" class="headerlink" title="运行统计信息"></a>运行统计信息</h3><p>在进程的运行过程中，会有一些统计量，具体你可以看下面的列表。这里面有进程在用户态和内核态消耗的时间、上下文切换的次数等等。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">u64        utime;<span class="comment">//用户态消耗的CPU时间</span></span><br><span class="line">u64        stime;<span class="comment">//内核态消耗的CPU时间</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span>      nvcsw;<span class="comment">//自愿(voluntary)上下文切换计数</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span>      nivcsw;<span class="comment">//非自愿(involuntary)上下文切换计数</span></span><br><span class="line">u64        start_time;<span class="comment">//进程启动时间，不包含睡眠时间</span></span><br><span class="line">u64        real_start_time;<span class="comment">//进程启动时间，包含睡眠时间</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="进程亲缘关系"><a href="#进程亲缘关系" class="headerlink" title="进程亲缘关系"></a>进程亲缘关系</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">real_parent</span>;</span> <span class="comment">/* real parent process */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> __<span class="title">rcu</span> *<span class="title">parent</span>;</span> <span class="comment">/* recipient of SIGCHLD, wait4() reports */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">children</span>;</span>      <span class="comment">/* list of my children */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">sibling</span>;</span>       <span class="comment">/* linkage in my parent&#x27;s children list */</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>保存了父进程、子进程、兄弟进程的信息。</p>
+<img src="/images/202012/linux_task_parent.jpeg" alt="图片替换文本" width="600" height="813" align="bottom" />
+
+<p>real_parent 和 parent 是一样的，但是也会有另外的情况存在。例如，bash 创建一个进程，那进程的 parent 和 real_parent 就都是 bash。如果在 bash 上使用 GDB 来 debug 一个进程，这个时候 GDB 是 parent，bash 是这个进程的 real_parent。 具体如何实现的， 还需要深入了解代码后才能清楚。</p>
+<h3 id="进程权限"><a href="#进程权限" class="headerlink" title="进程权限"></a>进程权限</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Objective and real subjective task credentials (COW): */</span></span><br><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">real_cred</span>;</span></span><br><span class="line"><span class="comment">/* Effective (overridable) subjective task credentials (COW): */</span></span><br><span class="line"><span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>         *<span class="title">cred</span>;</span></span><br></pre></td></tr></table></figure>
+
+<p>real_cred 就是说明谁能操作我这个进程，而 cred 就是说明我这个进程能够操作谁。</p>
+<p>cred结构保存的基本上就是一些用户或者组的id， 权限控制时，通过比较这些id来确定是否拥有权限。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cred</span> &#123;</span></span><br><span class="line">......</span><br><span class="line">        <span class="type">kuid_t</span>          uid;            <span class="comment">/* real UID of the task */</span></span><br><span class="line">        <span class="type">kgid_t</span>          gid;            <span class="comment">/* real GID of the task */</span></span><br><span class="line">        <span class="type">kuid_t</span>          suid;           <span class="comment">/* saved UID of the task */</span></span><br><span class="line">        <span class="type">kgid_t</span>          sgid;           <span class="comment">/* saved GID of the task */</span></span><br><span class="line">        <span class="type">kuid_t</span>          euid;           <span class="comment">/* effective UID of the task */</span></span><br><span class="line">        <span class="type">kgid_t</span>          egid;           <span class="comment">/* effective GID of the task */</span></span><br><span class="line">        <span class="type">kuid_t</span>          fsuid;          <span class="comment">/* UID for VFS ops */</span></span><br><span class="line">        <span class="type">kgid_t</span>          fsgid;          <span class="comment">/* GID for VFS ops */</span></span><br><span class="line">......</span><br><span class="line">        <span class="type">kernel_cap_t</span>    cap_inheritable; <span class="comment">/* caps our children can inherit */</span></span><br><span class="line">        <span class="type">kernel_cap_t</span>    cap_permitted;  <span class="comment">/* caps we&#x27;re permitted */</span></span><br><span class="line">        <span class="type">kernel_cap_t</span>    cap_effective;  <span class="comment">/* caps we can actually use */</span></span><br><span class="line">        <span class="type">kernel_cap_t</span>    cap_bset;       <span class="comment">/* capability bounding set */</span></span><br><span class="line">        <span class="type">kernel_cap_t</span>    cap_ambient;    <span class="comment">/* Ambient capability set */</span></span><br><span class="line">......</span><br><span class="line">&#125; __randomize_layout;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第一个是 uid 和 gid，注释是 real user&#x2F;group id。一般情况下，谁启动的进程，就是谁的 ID。但是权限审核的时候，往往不比较这两个，也就是说不大起作用。</p>
+<p>第二个是 euid 和 egid，注释是 effective user&#x2F;group id。一看这个名字，就知道这个是起“作用”的。当这个进程要操作消息队列、共享内存、信号量等对象的时候，其实就是在比较这个用户和组是否有权限。</p>
+<p>第三个是 fsuid 和 fsgid，也就是 filesystem user&#x2F;group id。这个是对文件操作会审核的权限。一般说来，fsuid、euid，和 uid 是一样的，fsgid、egid，和 gid 也是一样的。因为谁启动的进程，就应该审核启动的用户到底有没有这个权限。</p>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>每个进程都有自己独立的虚拟内存空间，这需要有一个数据结构来表示，就是 mm_struct。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">mm</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span>                *<span class="title">active_mm</span>;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="文件与文件系统"><a href="#文件与文件系统" class="headerlink" title="文件与文件系统"></a>文件与文件系统</h3><p>每个进程有一个文件系统的数据结构，还有一个打开文件的数据结构。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Filesystem information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fs_struct</span>                *<span class="title">fs</span>;</span></span><br><span class="line"><span class="comment">/* Open file information: */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">files_struct</span>             *<span class="title">files</span>;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<img src="/images/202012/linux_task_content2.jpeg" alt="图片替换文本" width="600" height="813" align="bottom" />
+
+
+
+<blockquote><p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+</blockquote>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/16/2020-20201216-linux8/" rel="prev" title="《趣谈linux操作系统》小结(八)-进程与线程">
+      <i class="fa fa-chevron-left"></i> 《趣谈linux操作系统》小结(八)-进程与线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/12/21/2020-20201221-linux10/" rel="next" title="《趣谈linux操作系统》小结(十)-进程数据结构">
+      《趣谈linux操作系统》小结(十)-进程数据结构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">进程数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#task-struct%E5%86%85%E5%AE%B9"><span class="nav-number">2.</span> <span class="nav-text">task_struct内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1ID"><span class="nav-number">2.1.</span> <span class="nav-text">任务ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">信号处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81"><span class="nav-number">2.3.</span> <span class="nav-text">任务状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-number">2.4.</span> <span class="nav-text">进程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%86%85%E5%AE%B9%E6%A6%82%E8%A7%88"><span class="nav-number">2.5.</span> <span class="nav-text">结构体内容概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF"><span class="nav-number">2.6.</span> <span class="nav-text">运行统计信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%BA%B2%E7%BC%98%E5%85%B3%E7%B3%BB"><span class="nav-number">2.7.</span> <span class="nav-text">进程亲缘关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E6%9D%83%E9%99%90"><span class="nav-number">2.8.</span> <span class="nav-text">进程权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.9.</span> <span class="nav-text">内存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8E%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.10.</span> <span class="nav-text">文件与文件系统</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言算法类型定义算法加密的数学实现（如明文块的长度，如何对明文密文进行加解密），算法模式则定义具体类型中加密的流程细节（例如加密的轮数、如何操作加解密的输入输出）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈（41）- 对称算法模式">
+<meta property="og:url" content="https://fishmwei.github.io/2022/11/20/2022-20221120-algmode-weekly/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言算法类型定义算法加密的数学实现（如明文块的长度，如何对明文密文进行加解密），算法模式则定义具体类型中加密的流程细节（例如加密的轮数、如何操作加解密的输入输出）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/ECB.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CBC.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CFB1.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CFB2.jpg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CFB3.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CFB4.jpg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/OFB.jpg">
+<meta property="og:image" content="https://fishmwei.github.io/images/202211/CTR.jpg">
+<meta property="article:published_time" content="2022-11-20T00:54:20.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.792Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202211/ECB.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/11/20/2022-20221120-algmode-weekly/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈（41）- 对称算法模式 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/11/20/2022-20221120-algmode-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈（41）- 对称算法模式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-20 08:54:20" itemprop="dateCreated datePublished" datetime="2022-11-20T08:54:20+08:00">2022-11-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/11/20/2022-20221120-algmode-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/11/20/2022-20221120-algmode-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>算法类型定义算法加密的数学实现（如明文块的长度，如何对明文密文进行加解密），算法模式则定义具体类型中加密的流程细节（例如加密的轮数、如何操作加解密的输入输出）。</p>
+<span id="more"></span>
+
+<p>对称算法根据明文的加密方式分成了流算法和分组算法。</p>
+<ul>
+<li>流算法一次加密明文中的一个位，解密也是按位解密的。主要的有祖冲之算法和SNOW3G算法，主要用于5G场景，由于5G场景中空口带宽比较珍贵，计算粒度到位。</li>
+<li>分组算法一次加密明文中的一个块，不同的算法块长度可以不一样，具体可以体现在算法的名称中，如AES-128-CBC。</li>
+</ul>
+<h1 id="算法模式"><a href="#算法模式" class="headerlink" title="算法模式"></a>算法模式</h1><p>对于分组算法，如果直接对明文块进行加密，如果不同的块内容一样，会导致加密出来的密文也都是一样的，比较容易被破译。为了处理这种问题，就引入了算法模式，给不同块的输入增加一些盐值，这样即使块的内容一样，由于盐值不一样，加密出的密文也会不一样。不同的算法模式，根据盐值如何产生，及模块加密的流程分为了ECB、CBC、CFB、OFB、CTR模式。</p>
+<h2 id="电子编码簿（ECB）模式"><a href="#电子编码簿（ECB）模式" class="headerlink" title="电子编码簿（ECB）模式"></a>电子编码簿（ECB）模式</h2><p>ECB模式是最简单的模式，也是最基础的模式。ECB模式没有盐值，直接将明文消息分成64位块，然后单独加密每个块。所有的块使用相同的密钥进行加密。如果原文中有多个相同的明文块，那么也会产生多个相同的密文块。</p>
+<p><img src="/images/202211/ECB.png" alt="ECB"></p>
+<p>这种模式适合那些短消息加密，明文重复概率比较小。</p>
+<h2 id="加密块链接（CBC）模式"><a href="#加密块链接（CBC）模式" class="headerlink" title="加密块链接（CBC）模式"></a>加密块链接（CBC）模式</h2><p>CBC模式为了解决ECB模式的相同明文块加密得到相同密文块的问题。通过使用反馈的形式，把上一块的加密结果反馈到当前块的加密中，当前块的加密跟前面所有块的加密结果都相关，这样就可以使得相同明文块加密得到不同的密文块。第一个明文块则跟一个随机的文本（初始向量）相关,第一个密文块作为第二个明文块的初始向量，以此类推。</p>
+<p><img src="/images/202211/CBC.png" alt="CBC"></p>
+<p>CBC模式下加密有三个重要的相关项： 初始向量、密钥、明文消息。每个块的初始向量不一样，但是加密的密钥是一样的。</p>
+<h2 id="加密反馈（CFB）模式"><a href="#加密反馈（CFB）模式" class="headerlink" title="加密反馈（CFB）模式"></a>加密反馈（CFB）模式</h2><p>前面两种模式都是按块加密的，但不是所有的应用都适用块加密。这时候就使用流加密或者CFB模式了，CFB模式加密数据可以使用更小的单元，比如8位，小于块的长度（64位）。</p>
+<p>CFB模式一次处理8位，流程相对前面两种更复杂一些。</p>
+<p>1、CFB模式也采用64位的初始化向量，通过加密方式得到加密后的向量。</p>
+<p><img src="/images/202211/CFB1.png" alt="CFB1"></p>
+<p>2、加密后的向量的前j位和明文异或，产生j为密文C，把C发送给接收方。<br><img src="/images/202211/CFB2.jpg" alt="CFB2"></p>
+<p>3、加密后的向量左移j位，并把第二步得到的C填充到最右边的j位。</p>
+<p><img src="/images/202211/CFB3.png" alt="CFB3"></p>
+<p>4、重复1-3步，一直到加密完所有的明文数据。<br><img src="/images/202211/CFB4.jpg" alt="CFB4"></p>
+<h2 id="输出反馈（OFB）模式"><a href="#输出反馈（OFB）模式" class="headerlink" title="输出反馈（OFB）模式"></a>输出反馈（OFB）模式</h2><p>OFB模式跟CFB模式很像，CFB模式是把密文填入下一个阶段的向量低8位，而OFB是把向量加密的结果填入下一阶段的向量低8位。这样一来，OFB的加密结果跟前一个明文无关，跟IV相关。而CFB的加密结果跟前一个明文和IV都是相关的。</p>
+<p><img src="/images/202211/OFB.jpg" alt="OFB"></p>
+<h2 id="计数器-CTR-模式"><a href="#计数器-CTR-模式" class="headerlink" title="计数器(CTR)模式"></a>计数器(CTR)模式</h2><p>CTR模式各个块的IV采用一个计数器值，计数加密之后再和明文异或得到密文。计数块的大小等于明文块的大小。</p>
+<p><img src="/images/202211/CTR.jpg" alt="CTR"></p>
+<p>CTR模式可以并行地计算多个块，因为输入跟前面的明文没有什么关系。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>加密模式还有一种xts，具体带学习后再小结。模式比较多，又很相似，刚开始看很容易混淆，后面慢慢地熟悉了就好了吧。</p>
+<h1 id="更多1"><a href="#更多1" class="headerlink" title="更多1"></a>更多1</h1><p>今年小组扩张的比较猛，从年初的5人扩充到了14人。人多了，就有很多人比较闲。后面招的基本都是应届生或者工作三年以下的，应届生就不用说了，基本等于白纸。工作几年的那几个呢，我感觉都不是技术爱好者，仅仅是工作糊口而已。</p>
+<p>人多了，问题也就多了。当然，这些问题主要还是因为大家没有很强的责任心导致的。联调一个功能，遇到问题了，不去积极解决问题，而是在互相推诿。A和B联调，A遇到问题了，首先自身没有深入定位，直接就去找B了。而B呢，直接说代码不是他写的，他没有改过，让找C。C又是说代码已经移交个B，又让找B。真的好扯，都是一个组的，代码就在那，都不愿意自己gdb去看看，总想着推脱责任，好无语。</p>
+<p>另外，很多工作并没有比较明确的时间点，有些也没有明确的目标，大家都在磨洋工啊。技术不好的也不想着提升技术，团队就是个散沙，然后有事情了又是拉几个老员工顶上去。呵呵。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/08/2022-20221108-userlib/" rel="prev" title="周谈（40）-用户态库">
+      <i class="fa fa-chevron-left"></i> 周谈（40）-用户态库
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/12/01/2022-20221201-aes-xts-weekly/" rel="next" title="周谈（42）- XTS算法模式">
+      周谈（42）- XTS算法模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">算法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%B5%E5%AD%90%E7%BC%96%E7%A0%81%E7%B0%BF%EF%BC%88ECB%EF%BC%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">电子编码簿（ECB）模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E5%9D%97%E9%93%BE%E6%8E%A5%EF%BC%88CBC%EF%BC%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">加密块链接（CBC）模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E5%8F%8D%E9%A6%88%EF%BC%88CFB%EF%BC%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">加密反馈（CFB）模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%8F%8D%E9%A6%88%EF%BC%88OFB%EF%BC%89%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.4.</span> <span class="nav-text">输出反馈（OFB）模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E5%99%A8-CTR-%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">计数器(CTR)模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A1"><span class="nav-number">4.</span> <span class="nav-text">更多1</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

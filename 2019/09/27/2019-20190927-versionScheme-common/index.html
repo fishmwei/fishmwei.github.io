@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一种获取客户端程序的代码版本的方法">
+<meta property="og:url" content="https://fishmwei.github.io/2019/09/27/2019-20190927-versionScheme-common/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/versionScheme.png">
+<meta property="article:published_time" content="2019-09-27T12:26:47.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.769Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta property="article:tag" content="开发经验">
+<meta property="article:tag" content="构思方案">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/versionScheme.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2019/09/27/2019-20190927-versionScheme-common/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>一种获取客户端程序的代码版本的方法 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2019/09/27/2019-20190927-versionScheme-common/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一种获取客户端程序的代码版本的方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-27 20:26:47" itemprop="dateCreated datePublished" datetime="2019-09-27T20:26:47+08:00">2019-09-27</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/09/27/2019-20190927-versionScheme-common/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/09/27/2019-20190927-versionScheme-common/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>记录一个构思方案， 本来方案准备用于专利申请的，反馈没有什么创新性。放上来供有需要的人参考，欢迎交流~</p>
+<span id="more"></span>
+
+<h2 id="背景技术"><a href="#背景技术" class="headerlink" title="背景技术"></a>背景技术</h2><p>目前主流的程序软件开发，都是依赖多个不同的代码库而构建的，有开源代码库、也有自研的代码库。不同版本的程序，依赖代码库的不同版本。目前流行的移动app还支持基于js的混合开发，程序可以通过下载最新的js代码运行新功能或者修复已知问题，同一个版本的app根据用户或者设备、平台等信息的不同，还可能更新到不同的js代码运行。</p>
+<p>一般情况下，使用的代码库信息在构建生成二进制文件之后，没有进行保存。当出现问题时，开发人员根据最新的代码库不一定能够复现问题， 时间很久的话，又很难找到当初构建app的工程，导致问题较难定位。另外，对于支持js热更新的业务，没有有效的方式获取移动app运行的js的版本，常常无法证明js版本是否更新。针对此类问题的运维手段较缺乏。</p>
+<h2 id="方案描述"><a href="#方案描述" class="headerlink" title="方案描述"></a>方案描述</h2><p>我们在构建移动app及其js代码时，把对应的依赖库版本信息与移动端app或者js代码的版本上传到专门的服务器保存。服务器提供接口查询，客户端app带上版本、包Id等信息，通过接口请求获取代码依赖库的版本信息，然后在客户端进行展示。技术实现简单，但是一旦实施，对问题定位是大有裨益的，快速定位问题出现版本，结合现象很容易分析出问题根因。</p>
+<p>基本流程如下：</p>
+<h3 id="1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"><a href="#1-构建保存依赖库版本信息、移动app信息、构建的js的版本信息。" class="headerlink" title="1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。"></a>1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</h3><p>移动app代码工程构建前，都需要根据配置的依赖代码库版本信息(一般由一个特定的文件来配置，如iOS的podfile文件)，来拉取对应的代码库。并生成一个相关的依赖文件， 比如iOS的podfile.lock、js的npm-shrinkwrap.json或者package-lock.json等记录最终使用的代码版本信息。然后，进行编译构建出最终的可执行文件包。<br>我们在构建成功后，把对应的版本信息文件和构建的app版本等信息上传到服务器，服务器解析后保存到数据库中。</p>
+<p>最终信息层次可以参考如下：</p>
+<p>一个移动app的信息：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&#123;   </span><br><span class="line">    <span class="attr">bundleId</span>: com.<span class="property">apple</span>.<span class="property">app</span>.<span class="property">diary</span>,</span><br><span class="line">    <span class="attr">appName</span>: 移动app，</span><br><span class="line">    <span class="attr">platform</span>: ios, <span class="comment">// 系统类型， android和iOS是分开编译的，其解析方式、依赖组件的名称及版本都是不一样的</span></span><br><span class="line">    <span class="attr">nativeInfoList</span>: [ <span class="comment">// 原生代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">version</span>: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">            <span class="attr">denpendencies</span>: [</span><br><span class="line">                <span class="title class_">AFNetWorking</span>: <span class="number">3.0</span><span class="number">.1</span>,</span><br><span class="line">                <span class="attr">FMDB</span>: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">version</span>: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">            <span class="attr">denpendencies</span>: [</span><br><span class="line">                <span class="title class_">AFNetWorking</span>: <span class="number">3.0</span><span class="number">.2</span>,</span><br><span class="line">                <span class="attr">FMDB</span>: <span class="number">2.0</span><span class="number">.0</span>,</span><br><span class="line">                ...</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">jsInfoList</span>: [  <span class="comment">// js代码版本</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">name</span>: personalPage, <span class="comment">// 个人主页业务js</span></span><br><span class="line">            <span class="attr">versions</span>: &#123;</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="title class_">Ver</span>: <span class="number">1.0</span><span class="number">.0</span>,</span><br><span class="line">                    <span class="attr">dependencies</span>: [</span><br><span class="line">                        <span class="attr">react</span>: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-<span class="attr">native</span>: <span class="number">0.60</span><span class="number">.1</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="title class_">Ver</span>: <span class="number">1.0</span><span class="number">.1</span>,</span><br><span class="line">                    <span class="attr">dependencies</span>: [</span><br><span class="line">                        <span class="attr">react</span>: <span class="number">16.8</span><span class="number">.0</span>,</span><br><span class="line">                        react-<span class="attr">native</span>: <span class="number">0.60</span><span class="number">.2</span>,</span><br><span class="line">                        ...</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考流程：</p>
+<p><img src="/images/versionScheme.png"></p>
+<h3 id="2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息"><a href="#2-服务器提供一个api，根据传入的请求信息返回对应的依赖信息" class="headerlink" title="2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息"></a>2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</h3><p>服务器开发一个接口，支持通过移动app上传app包Id，版本、平台、以及查询的js版本(如果有)信息，获取代码依赖版本信息。找不到则返回具体的错误(不存在的app、不存在的版本、不存在js版本等)。</p>
+<h3 id="3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"><a href="#3-移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息" class="headerlink" title="3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息"></a>3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</h3><p>移动app保存有当前的版本号及运行的js版本(更新的时候，需要保存更新后的版本)信息。测人人员通过某些方式(比如：通过IM聊天窗口的链接功能访问，也可以使用某些隐藏的方式触发访问，点击版本号10次之类的)跳转到UI展示页面，展示当前app的版本已经运行的所有js的版本。 点击具体的项目，发起对应的请求，然后进行结果展示。</p>
+<p>如此，我们就可以准确的获取移动app对应的依赖代码库的版本列表，快速定位问题版本。</p>
+<h2 id="场景举例"><a href="#场景举例" class="headerlink" title="场景举例"></a>场景举例</h2><p>以下通过具体场景，描述上述算法的具体实现：</p>
+<h3 id="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"><a href="#场景一：bug已修复，但是业务方依旧经常反馈相同的问题。" class="headerlink" title="场景一：bug已修复，但是业务方依旧经常反馈相同的问题。"></a>场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</h3><p>在工作中，常常会遇到如题所述的场景。某些bug已经在某个库版本中发布解决了，但是还是会有相同的问题反馈。我们之前需要找到对应移动app的构建环境，然后确认其配置是否引用的是已修复的代码版本。有时候，甚至会找不到构建环境了， 业务方仅能够提供移动app的程序，给问题定位带来很大的困难。通过本方案，我们可以快速确认发生问题的移动app引用的版本，确认问题版本号，然后再针对具体版本代码分析。</p>
+<p>流程：</p>
+<ul>
+<li><ol>
+<li>从业务方获取移动app，登录</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>连续点击版本号10次，跳转版本获取页面</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>确认问题是否由于未引用新的版本代码导致。如果是由于版本为更新引起的，告知业务方原因，通知其采用新的代码版本。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>如果是新的版本也有问题，采用问题版本进行复现定位。</li>
+</ol>
+</li>
+</ul>
+<h3 id="场景二：业务方反馈热更新不生效，导致其功能异常"><a href="#场景二：业务方反馈热更新不生效，导致其功能异常" class="headerlink" title="场景二：业务方反馈热更新不生效，导致其功能异常"></a>场景二：业务方反馈热更新不生效，导致其功能异常</h3><p>有时候，业务方会反馈称基本的js版本更新功能不生效，导致其功能无法通过热更新修复。其实不然，也有可能因为其代码修改未覆盖所有异常情况导致的，我们可以通过获取js依赖代码版本信息，证明代码已更新。</p>
+<ul>
+<li><ol>
+<li>从业务方获取问题复现环境(设备啊， 帐户啊)</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>启动app，打开版本信息界面</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>点击具体的条目，获取版本代码依赖信息</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>确认运行的js版本及代码依赖信息，告知业务方，以确认更新功能是否异常。如果更新功能正常，转业务开发人员继续定位</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>如果更新功能异常，查找异常原因并解决。</li>
+</ol>
+</li>
+</ul>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91%E7%BB%8F%E9%AA%8C/" rel="tag"># 开发经验</a>
+              <a href="/tags/%E6%9E%84%E6%80%9D%E6%96%B9%E6%A1%88/" rel="tag"># 构思方案</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/30/2019-20190830-kvStore-iOS/" rel="prev" title="YTKKeyValueStore开源库使用">
+      <i class="fa fa-chevron-left"></i> YTKKeyValueStore开源库使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/09/30/2019-20190930-sharedInstance-JOB/" rel="next" title="一次单例模式的代码重构">
+      一次单例模式的代码重构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">背景技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E6%8F%8F%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">方案描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9E%84%E5%BB%BA%E4%BF%9D%E5%AD%98%E4%BE%9D%E8%B5%96%E5%BA%93%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF%E3%80%81%E7%A7%BB%E5%8A%A8app%E4%BF%A1%E6%81%AF%E3%80%81%E6%9E%84%E5%BB%BA%E7%9A%84js%E7%9A%84%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">1. 构建保存依赖库版本信息、移动app信息、构建的js的版本信息。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8F%90%E4%BE%9B%E4%B8%80%E4%B8%AAapi%EF%BC%8C%E6%A0%B9%E6%8D%AE%E4%BC%A0%E5%85%A5%E7%9A%84%E8%AF%B7%E6%B1%82%E4%BF%A1%E6%81%AF%E8%BF%94%E5%9B%9E%E5%AF%B9%E5%BA%94%E7%9A%84%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">2.服务器提供一个api，根据传入的请求信息返回对应的依赖信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A7%BB%E5%8A%A8app%E5%8F%AF%E4%BB%A5%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAUI%E5%B1%95%E7%A4%BA%E9%A1%B5%E9%9D%A2%EF%BC%8C%E9%80%9A%E8%BF%87%E6%9F%90%E7%A7%8D%E7%89%B9%E6%AE%8A%E6%96%B9%E5%BC%8F%E5%B1%95%E7%A4%BA%E8%AF%A5%E9%A1%B5%E9%9D%A2%EF%BC%8C%E5%8F%91%E8%B5%B7%E6%8E%A5%E5%8F%A3%E8%AF%B7%E6%B1%82%EF%BC%8C%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">3.3.</span> <span class="nav-text">3.移动app可以实现一个UI展示页面，通过某种特殊方式展示该页面，发起接口请求，获取版本信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">场景举例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9Abug%E5%B7%B2%E4%BF%AE%E5%A4%8D%EF%BC%8C%E4%BD%86%E6%98%AF%E4%B8%9A%E5%8A%A1%E6%96%B9%E4%BE%9D%E6%97%A7%E7%BB%8F%E5%B8%B8%E5%8F%8D%E9%A6%88%E7%9B%B8%E5%90%8C%E7%9A%84%E9%97%AE%E9%A2%98%E3%80%82"><span class="nav-number">4.1.</span> <span class="nav-text">场景一：bug已修复，但是业务方依旧经常反馈相同的问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E4%B8%9A%E5%8A%A1%E6%96%B9%E5%8F%8D%E9%A6%88%E7%83%AD%E6%9B%B4%E6%96%B0%E4%B8%8D%E7%94%9F%E6%95%88%EF%BC%8C%E5%AF%BC%E8%87%B4%E5%85%B6%E5%8A%9F%E8%83%BD%E5%BC%82%E5%B8%B8"><span class="nav-number">4.2.</span> <span class="nav-text">场景二：业务方反馈热更新不生效，导致其功能异常</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

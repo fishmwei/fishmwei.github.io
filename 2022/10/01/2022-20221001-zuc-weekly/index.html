@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. 前言最近看了流密码算法的Crypto PMD，稍微总结一下。 2. 介绍Snow3g&#x2F;Zuc PMD都是基于intel-ipsec-mb库实现的库。许多数据和操作都是公共的，代码都位于dpdk&#x2F;drivers&#x2F;crypto&#x2F;ipsec_mb目录下。 intel-ipsec-mb库是为包处理提供的一个软件加密库，可以用在IPsec， TLS， Wirel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DPDK ZUC PMD代码笔记">
+<meta property="og:url" content="https://fishmwei.github.io/2022/10/01/2022-20221001-zuc-weekly/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="1. 前言最近看了流密码算法的Crypto PMD，稍微总结一下。 2. 介绍Snow3g&#x2F;Zuc PMD都是基于intel-ipsec-mb库实现的库。许多数据和操作都是公共的，代码都位于dpdk&#x2F;drivers&#x2F;crypto&#x2F;ipsec_mb目录下。 intel-ipsec-mb库是为包处理提供的一个软件加密库，可以用在IPsec， TLS， Wirel">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/zuc_pmd_func.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/zuc_capacity.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/zuc_operation.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202210/crypto_sym_session.png">
+<meta property="article:published_time" content="2022-10-01T01:55:19.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.792Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202210/zuc_pmd_func.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/10/01/2022-20221001-zuc-weekly/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DPDK ZUC PMD代码笔记 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/10/01/2022-20221001-zuc-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DPDK ZUC PMD代码笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-01 09:55:19" itemprop="dateCreated datePublished" datetime="2022-10-01T09:55:19+08:00">2022-10-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/dpdk/" itemprop="url" rel="index"><span itemprop="name">DPDK</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/10/01/2022-20221001-zuc-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/10/01/2022-20221001-zuc-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h1><p>最近看了流密码算法的Crypto PMD，稍微总结一下。</p>
+<h1 id="2-介绍"><a href="#2-介绍" class="headerlink" title="2. 介绍"></a>2. 介绍</h1><p>Snow3g&#x2F;Zuc PMD都是基于intel-ipsec-mb库实现的库。许多数据和操作都是公共的，代码都位于dpdk&#x2F;drivers&#x2F;crypto&#x2F;ipsec_mb目录下。</p>
+<p>intel-ipsec-mb库是为包处理提供的一个软件加密库，可以用在IPsec， TLS， Wireless等应用中。</p>
+<p>ipsec_mb下还有多个pmd，对应不同的算法。不同pmd类型相关的数据会保存到ipsec_mb_pmds变量中，公共函数根据当前的pmd类型获取对应pmd的数据和函数处理数据。实现不同pmd的分离。PMD类型在PMD初始化时保存到dev的dev_private区域。</p>
+<span id="more"></span>
+
+<h1 id="3-ZUC-PMD"><a href="#3-ZUC-PMD" class="headerlink" title="3. ZUC PMD"></a>3. ZUC PMD</h1><p>ZUC PMD的主要函数整理如下：</p>
+<p><img src="/images/202210/zuc_pmd_func.png" alt="zuc_pmd_func"></p>
+<p>下面描述一下主要的功能实现：</p>
+<h2 id="3-1-PMD操作回调及数据设置"><a href="#3-1-PMD操作回调及数据设置" class="headerlink" title="3.1 PMD操作回调及数据设置"></a>3.1 PMD操作回调及数据设置</h2><p>ipsec_mb_register_zuc函数在程序启动时设置ZUC PMD相关的配置，保存到全局数组变量ipsec_mb_pmds中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Constructor function to register zuc PMD */</span></span><br><span class="line">RTE_INIT(ipsec_mb_register_zuc)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ipsec_mb_internals</span> *<span class="title">zuc_data</span></span></span><br><span class="line"><span class="class">	    =</span> &amp;ipsec_mb_pmds[IPSEC_MB_PMD_TYPE_ZUC];</span><br><span class="line"></span><br><span class="line">	zuc_data-&gt;caps = zuc_capabilities;</span><br><span class="line">	zuc_data-&gt;dequeue_burst = zuc_pmd_dequeue_burst;</span><br><span class="line">	zuc_data-&gt;feature_flags = RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO</span><br><span class="line">			| RTE_CRYPTODEV_FF_SYM_OPERATION_CHAINING</span><br><span class="line">			| RTE_CRYPTODEV_FF_NON_BYTE_ALIGNED_DATA</span><br><span class="line">			| RTE_CRYPTODEV_FF_OOP_SGL_IN_LB_OUT</span><br><span class="line">			| RTE_CRYPTODEV_FF_SYM_SESSIONLESS</span><br><span class="line">			| RTE_CRYPTODEV_FF_OOP_LB_IN_LB_OUT;</span><br><span class="line">	zuc_data-&gt;internals_priv_size = <span class="number">0</span>;</span><br><span class="line">	zuc_data-&gt;ops = &amp;zuc_pmd_ops;</span><br><span class="line">	zuc_data-&gt;qp_priv_size = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> zuc_qp_data);</span><br><span class="line">	zuc_data-&gt;session_configure = zuc_session_configure;</span><br><span class="line">	zuc_data-&gt;session_priv_size = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> zuc_session);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// RTE_INIT的实现如下</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTE_PRIO(prio) \</span></span><br><span class="line"><span class="meta">	RTE_PRIORITY_ ## prio</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Run function before main() with high priority.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param func</span></span><br><span class="line"><span class="comment"> *   Constructor function.</span></span><br><span class="line"><span class="comment"> * @param prio</span></span><br><span class="line"><span class="comment"> *   Priority number must be above 100.</span></span><br><span class="line"><span class="comment"> *   Lowest number is the first to run.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> RTE_INIT_PRIO <span class="comment">/* Allow to override from EAL */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTE_INIT_PRIO(func, prio) \</span></span><br><span class="line"><span class="meta">static void __attribute__((constructor(RTE_PRIO(prio)), used)) func(void)</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Run function before main() with low priority.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * The constructor will be run after prioritized constructors.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * @param func</span></span><br><span class="line"><span class="comment"> *   Constructor function.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RTE_INIT(func) \</span></span><br><span class="line"><span class="meta">	RTE_INIT_PRIO(func, LAST)</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>RTE_INIT使用的是编译器的constructor属性，使得该函数在main函数运行之前就调用，类似于静态执行的一种机制。</p>
+<h2 id="3-2-设备驱动发现及卸载"><a href="#3-2-设备驱动发现及卸载" class="headerlink" title="3.2 设备驱动发现及卸载"></a>3.2 设备驱动发现及卸载</h2><p>上一篇文章中讲过，PMD会调用RTE_PMD_REGISTER_VDEV注册虚拟设备到DPDK框架中，在应用启动之后主动把驱动的发现和卸载的接口注册上去，也是调用的RTE_INIT实现的。</p>
+<p>ZUC PMD设备驱动发现及卸载函数分别调用ipsec_mb_create、ipsec_mb_remove。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span></span><br><span class="line"><span class="title function_">zuc_probe</span><span class="params">(<span class="keyword">struct</span> rte_vdev_device *vdev)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> ipsec_mb_create(vdev, IPSEC_MB_PMD_TYPE_ZUC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_vdev_driver</span> <span class="title">cryptodev_zuc_pmd_drv</span> =</span> &#123;</span><br><span class="line">	.probe = zuc_probe,</span><br><span class="line">	.remove = ipsec_mb_remove</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">cryptodev_driver</span> <span class="title">zuc_crypto_drv</span>;</span></span><br><span class="line"></span><br><span class="line">RTE_PMD_REGISTER_VDEV(CRYPTODEV_NAME_ZUC_PMD, cryptodev_zuc_pmd_drv);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>设备发现实现函数ipsec_mb_create，主要内容：</p>
+<p>1)获取pmd操作函数及数据<br>2)解析参数，创建pmd<br>3)在dev的私有数据部分，保存pmd类型及队列数目配置<br>4)获取驱动id， 驱动id在注册时确定，跟设备id不一样，驱动存放在cryptodev_driver_list<br>5)设置出入队函数、特性等数据到dev  </p>
+<p>设备卸载实现函数ipsec_mb_remove  </p>
+<ol>
+<li>释放队列对资源  </li>
+<li>释放pmd</li>
+</ol>
+<h2 id="3-3-能力定义"><a href="#3-3-能力定义" class="headerlink" title="3.3 能力定义"></a>3.3 能力定义</h2><p>ZUC PMD顾名思义就是只支持ZUC算法了。</p>
+<p><img src="/images/202210/zuc_capacity.png" alt="zuc_capacity"></p>
+<h2 id="3-4-队列对配置"><a href="#3-4-队列对配置" class="headerlink" title="3.4 队列对配置"></a>3.4 队列对配置</h2><p>实现函数为ipsec_mb_qp_setup：<br>1）为dev-&gt;data-&gt;queue_pairs[qp_id]申请空间，并初始化相关内容。<br>2）保存mp_pool, mp_pool_private。<br>3）创建队列对的软件队列rte_ring<br>4）队列对相关的统计数据结构初始化</p>
+<h2 id="3-5-Session处理"><a href="#3-5-Session处理" class="headerlink" title="3.5 Session处理"></a>3.5 Session处理</h2><p>rte_cryptodev_sym_session_create从队列对对应的mp_pool申请一个rte_cryptodev_sym_session。调用rte_cryptodev_sym_session_init初始化，从mp_pool_private申请PMD的私有session结构，调用sys_session_configure把xform数据转换为私有的session数据。</p>
+<p>看了许多DPDK的示例代码，默认一个vdev申请一个session， 每个session对应一种算法，也就对应到一个chain类型(CIPHER, AUTH, CIPHER_AUTH, AUTH_CIPHER和AEAD)。在出队入队时，同一批的ops，默认会是同一个session的，当然，具体看那个应用的实现了，也是可以支持不同算法类型的ops的，框架并没有对此限定。</p>
+<p>ZUC pmd实现函数zuc_session_configure：<br>1）解析xform链，获取operation对应的类型及相关的cipher_xform， auth_xform, aead_xform<br>2）从xform中获取数据信息填充到私有session结构  </p>
+<h2 id="3-6-Operation管理"><a href="#3-6-Operation管理" class="headerlink" title="3.6 Operation管理"></a>3.6 Operation管理</h2><p>用户根据情况自行创建op_mpool，调用rte_crypto_op_pool_create创建，op_mpool池分为对称和非对称两种类型。后面可以追加用户自定义的数据。<br>struct rte_mempool *<br>rte_crypto_op_pool_create(const char *name, enum rte_crypto_op_type type,<br>        unsigned nb_elts, unsigned cache_size, uint16_t priv_size,<br>        int socket_id)</p>
+<p>大致结构如下：  </p>
+<p><img src="/images/202210/zuc_operation.png" alt="zuc_operation"></p>
+<p>然后rte_crypto_op_alloc申请对应的operation，把session跟operation关联起来，把数据相关的信息填充到operation中。<br>一般把iv放到priv data区域。</p>
+<h2 id="3-7-入队出队"><a href="#3-7-入队出队" class="headerlink" title="3.7 入队出队"></a>3.7 入队出队</h2><p>入队统一使用公共的ipsec_mb_enqueue_burst，实现比较简单，直接把相关的ops添加到ingress_queue中，增加入队计数。<br>出队列实现函数zuc_pmd_dequeue_burst：    </p>
+<ul>
+<li>从ingress_queue获取nu_ops个ops    </li>
+<li>获取ops管理的session数据， 得到ops对应的算法类型。    </li>
+<li>获取相同算法类型的ops集中处理，最大16个。前N个类型相同，则最多处理16个，如果N小于16，则先处理N个，再处理下一种类型数据。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">uint16_t</span></span><br><span class="line"><span class="title function_">zuc_pmd_dequeue_burst</span><span class="params">(<span class="type">void</span> *queue_pair,</span></span><br><span class="line"><span class="params">		<span class="keyword">struct</span> rte_crypto_op **c_ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rte_crypto_op</span> *<span class="title">curr_c_op</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">zuc_session</span> *<span class="title">curr_sess</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">zuc_session</span> *<span class="title">sessions</span>[<span class="title">ZUC_MAX_BURST</span>];</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rte_crypto_op</span> *<span class="title">int_c_ops</span>[<span class="title">ZUC_MAX_BURST</span>];</span></span><br><span class="line">	<span class="class"><span class="keyword">enum</span> <span class="title">ipsec_mb_operation</span> <span class="title">prev_zuc_op</span> =</span> IPSEC_MB_OP_NOT_SUPPORTED;</span><br><span class="line">	<span class="class"><span class="keyword">enum</span> <span class="title">ipsec_mb_operation</span> <span class="title">curr_zuc_op</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">ipsec_mb_qp</span> *<span class="title">qp</span> =</span> queue_pair;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> nb_dequeued;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> i;</span><br><span class="line">	<span class="type">uint8_t</span> burst_size = <span class="number">0</span>;</span><br><span class="line">	<span class="type">uint8_t</span> processed_ops;</span><br><span class="line"></span><br><span class="line">	nb_dequeued = rte_ring_dequeue_burst(qp-&gt;ingress_queue,</span><br><span class="line">			(<span class="type">void</span> **)c_ops, nb_ops, <span class="literal">NULL</span>); <span class="comment">// 出队指定个数的ops</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nb_dequeued; i++) &#123;</span><br><span class="line">		curr_c_op = c_ops[i];</span><br><span class="line"></span><br><span class="line">		curr_sess = (<span class="keyword">struct</span> zuc_session *)</span><br><span class="line">			ipsec_mb_get_session_private(qp, curr_c_op); <span class="comment">// 获取私有session</span></span><br><span class="line">		<span class="keyword">if</span> (unlikely(curr_sess == <span class="literal">NULL</span>)) &#123;</span><br><span class="line">			curr_c_op-&gt;status =</span><br><span class="line">					RTE_CRYPTO_OP_STATUS_INVALID_SESSION;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		curr_zuc_op = curr_sess-&gt;op; <span class="comment">// 得到相同算法类型的操作</span></span><br><span class="line"></span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * Batch ops that share the same operation type</span></span><br><span class="line"><span class="comment">		 * (cipher only, auth only...).</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		<span class="keyword">if</span> (burst_size == <span class="number">0</span>) &#123;</span><br><span class="line">			prev_zuc_op = curr_zuc_op;</span><br><span class="line">			int_c_ops[<span class="number">0</span>] = curr_c_op;</span><br><span class="line">			sessions[<span class="number">0</span>] = curr_sess;</span><br><span class="line">			burst_size++;</span><br><span class="line">		&#125; <span class="keyword">else</span> <span class="keyword">if</span> (curr_zuc_op == prev_zuc_op) &#123;</span><br><span class="line">			int_c_ops[burst_size] = curr_c_op; <span class="comment">// 保存ops到临时数组中</span></span><br><span class="line">			sessions[burst_size] = curr_sess;  <span class="comment">// 同步保存私有的session</span></span><br><span class="line">			burst_size++;</span><br><span class="line">			<span class="comment">/*</span></span><br><span class="line"><span class="comment">			 * When there are enough ops to process in a batch,</span></span><br><span class="line"><span class="comment">			 * process them, and start a new batch.</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">			<span class="keyword">if</span> (burst_size == ZUC_MAX_BURST) &#123; <span class="comment">//  按16个批量处理</span></span><br><span class="line">				processed_ops = process_ops(int_c_ops, curr_zuc_op,</span><br><span class="line">						sessions, qp, burst_size);</span><br><span class="line">				<span class="keyword">if</span> (processed_ops &lt; burst_size) &#123;</span><br><span class="line">					burst_size = <span class="number">0</span>;</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				burst_size = <span class="number">0</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">/*</span></span><br><span class="line"><span class="comment">			 * Different operation type, process the ops</span></span><br><span class="line"><span class="comment">			 * of the previous type.</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">			processed_ops = process_ops(int_c_ops, prev_zuc_op, <span class="comment">// 遇到有不同算法的op，先处理之前的op</span></span><br><span class="line">					sessions, qp, burst_size);</span><br><span class="line">			<span class="keyword">if</span> (processed_ops &lt; burst_size) &#123;</span><br><span class="line">				burst_size = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			burst_size = <span class="number">0</span>;</span><br><span class="line">			prev_zuc_op = curr_zuc_op;</span><br><span class="line"></span><br><span class="line">			int_c_ops[<span class="number">0</span>] = curr_c_op;</span><br><span class="line">			sessions[<span class="number">0</span>] = curr_sess;</span><br><span class="line">			burst_size++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (burst_size != <span class="number">0</span>) &#123; <span class="comment">//处理达不到批量数量的op</span></span><br><span class="line">		<span class="comment">/* Process the crypto ops of the last operation type. */</span></span><br><span class="line">		processed_ops = process_ops(int_c_ops, prev_zuc_op,</span><br><span class="line">				sessions, qp, burst_size);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	qp-&gt;stats.dequeued_count += i;</span><br><span class="line">	<span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-8-Session池创建"><a href="#3-8-Session池创建" class="headerlink" title="3.8 Session池创建"></a>3.8 Session池创建</h2><p>每个numa节点分别分配一个mp_pool和一个mp_pool_private。<br>mp_pool的成员为rte_cryptodev_sym_session， 元素个数为设备数目乘以队列数，也就是让每个队列都能分配到一个session。<br>mp_pool使用接口rte_cryptodev_sym_session_pool_create创建</p>
+<p>struct rte_mempool *<br>rte_cryptodev_sym_session_pool_create(const char *name, uint32_t nb_elts,<br>    uint32_t elt_size, uint32_t cache_size, uint16_t user_data_size,<br>    int socket_id)</p>
+<p>mp_pool的元素为rte_cryptodev_sym_session</p>
+<p><img src="/images/202210/crypto_sym_session.png" alt="crypto_sym_session"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cryptodev symmetric crypto session</span></span><br><span class="line"><span class="comment"> * Each session is derived from a fixed xform chain. Therefore each session</span></span><br><span class="line"><span class="comment"> * has a fixed algo, key, op-type, digest_len etc.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_sym_session</span> &#123;</span></span><br><span class="line">	<span class="type">uint64_t</span> opaque_data;</span><br><span class="line">	<span class="comment">/**&lt; Can be used for external metadata */</span></span><br><span class="line">	<span class="type">uint16_t</span> nb_drivers;</span><br><span class="line">	<span class="comment">/**&lt; number of elements in sess_data array */</span></span><br><span class="line">	<span class="type">uint16_t</span> user_data_sz;</span><br><span class="line">	<span class="comment">/**&lt; session user data will be placed after sess_data */</span></span><br><span class="line">	__extension__ <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">		<span class="type">void</span> *data;</span><br><span class="line">		<span class="type">uint16_t</span> refcnt;</span><br><span class="line">	&#125; sess_data[];</span><br><span class="line">	<span class="comment">/**&lt; Driver specific session material, variable size */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>根据代码注释，我们可以确定每个session对应固定的算法， key，操作类型等数据。<br>mp_pool_priveate的则是PMD定义的私有数据，大小通过PMD提供的sym_session_get_size接口获取。mp_pool_private使用rte_mempool_create创建。<br>这两个pool池会被设置到队列对的配置中去。调用rte_cryptodev_queue_pair_setup进行配置。</p>
+<p>PMD初始化的时候会保存socket_id到dev结构中。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>大概梳理了一下ZUC PMD的接口，及其app调用的流程中的部分功能实现。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/18/2022-20220918-cryptodev-weekly/" rel="prev" title="周谈(37)-DPDK中cryptodev框架介绍">
+      <i class="fa fa-chevron-left"></i> 周谈(37)-DPDK中cryptodev框架介绍
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/16/2022-20221016-lats-weekly/" rel="next" title="周谈(39)-近期小事">
+      周谈(39)-近期小事 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">2. 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-ZUC-PMD"><span class="nav-number">3.</span> <span class="nav-text">3. ZUC PMD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-PMD%E6%93%8D%E4%BD%9C%E5%9B%9E%E8%B0%83%E5%8F%8A%E6%95%B0%E6%8D%AE%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 PMD操作回调及数据设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E8%AE%BE%E5%A4%87%E9%A9%B1%E5%8A%A8%E5%8F%91%E7%8E%B0%E5%8F%8A%E5%8D%B8%E8%BD%BD"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 设备驱动发现及卸载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%83%BD%E5%8A%9B%E5%AE%9A%E4%B9%89"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 能力定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E9%98%9F%E5%88%97%E5%AF%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 队列对配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-Session%E5%A4%84%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 Session处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-Operation%E7%AE%A1%E7%90%86"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 Operation管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-%E5%85%A5%E9%98%9F%E5%87%BA%E9%98%9F"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 入队出队</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-8-Session%E6%B1%A0%E5%88%9B%E5%BB%BA"><span class="nav-number">3.8.</span> <span class="nav-text">3.8 Session池创建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">4.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

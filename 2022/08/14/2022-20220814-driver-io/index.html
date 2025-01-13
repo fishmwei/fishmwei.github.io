@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言Linux IO中有阻塞和非阻塞之分。阻塞就是在执行操作的过程中，如果不能获得资源则挂起进程，直到满足可操作的条件后再进行操作。非阻塞则不会挂起，直接返回结果，然后可以不停的来查询直到可以进行操作，也可以放弃操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设备驱动的阻塞和非阻塞IO， 轮询编程">
+<meta property="og:url" content="https://fishmwei.github.io/2022/08/14/2022-20220814-driver-io/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言Linux IO中有阻塞和非阻塞之分。阻塞就是在执行操作的过程中，如果不能获得资源则挂起进程，直到满足可操作的条件后再进行操作。非阻塞则不会挂起，直接返回结果，然后可以不停的来查询直到可以进行操作，也可以放弃操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202208/driver_io.png">
+<meta property="article:published_time" content="2022-08-14T02:03:05.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.791Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202208/driver_io.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/08/14/2022-20220814-driver-io/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>设备驱动的阻塞和非阻塞IO， 轮询编程 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/08/14/2022-20220814-driver-io/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设备驱动的阻塞和非阻塞IO， 轮询编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-14 10:03:05" itemprop="dateCreated datePublished" datetime="2022-08-14T10:03:05+08:00">2022-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/%E9%A9%B1%E5%8A%A8/" itemprop="url" rel="index"><span itemprop="name">驱动</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/08/14/2022-20220814-driver-io/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/14/2022-20220814-driver-io/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Linux IO中有阻塞和非阻塞之分。阻塞就是在执行操作的过程中，如果不能获得资源则挂起进程，直到满足可操作的条件后再进行操作。非阻塞则不会挂起，直接返回结果，然后可以不停的来查询直到可以进行操作，也可以放弃操作。</p>
+<span id="more"></span>
+<h2 id="驱动的阻塞和非阻塞IO"><a href="#驱动的阻塞和非阻塞IO" class="headerlink" title="驱动的阻塞和非阻塞IO"></a>驱动的阻塞和非阻塞IO</h2><p>驱动实现的read和write操作，可以支持阻塞和非阻塞的操作。需要在read和write接口实现代码中，根据文件的flag实现不同的流程。阻塞的话，进程会挂起，调用schedule让出cpu，直到中断返回才继续执行。非阻塞就直接返回。</p>
+<p><img src="/images/202208/driver_io.png" alt="driver_io"></p>
+<p>是否阻塞，需要在打开文件的时候，传入对应的标记O_NONBLOCK。也可以通过ioctl, fcntl改变属性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">fd = open(<span class="string">&quot;/path/to/file&quot;</span>, O_RDWR | O_NON_BLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ioctl(m_sock, FIONBIO , &amp;has);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="阻塞实现"><a href="#阻塞实现" class="headerlink" title="阻塞实现"></a>阻塞实现</h2><p>阻塞实现是基于等待队列来实现的， 等待队列是linux的一个机制。在函数实现时，创建一个等待队列元素，保存当前任务的task结构，然后添加等待队列到等待队列头中。然后在需要阻塞的时候，调用schedule让出CPU。在满足条件的地方调用wake_up函数来调度之前阻塞的任务。</p>
+<p>下面分析一下read的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title function_">globalfifo_read</span><span class="params">(<span class="keyword">struct</span> file *filp, <span class="type">char</span> __user *buf,</span></span><br><span class="line"><span class="params">			       <span class="type">size_t</span> count, <span class="type">loff_t</span> *ppos)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data; <span class="comment">// 获取驱动设备信息</span></span><br><span class="line">	DECLARE_WAITQUEUE(wait, current);  <span class="comment">// 创建一个等待队列，保存current task</span></span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	add_wait_queue(&amp;dev-&gt;r_wait, &amp;wait); <span class="comment">// 添加到等待队列头r_wait中</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (dev-&gt;current_len == <span class="number">0</span>) &#123; <span class="comment">// 只有当没有数据时 需要阻塞住</span></span><br><span class="line">		<span class="keyword">if</span> (filp-&gt;f_flags &amp; O_NONBLOCK) &#123; <span class="comment">// 非阻塞直接返回</span></span><br><span class="line">			ret = -EAGAIN;</span><br><span class="line">			<span class="keyword">goto</span> out;</span><br><span class="line">		&#125;</span><br><span class="line">		__set_current_state(TASK_INTERRUPTIBLE);</span><br><span class="line">		mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">		schedule();  <span class="comment">// 让出CPU</span></span><br><span class="line">		<span class="keyword">if</span> (signal_pending(current)) &#123; <span class="comment">// 被信号中断  直接返回</span></span><br><span class="line">			ret = -ERESTARTSYS;</span><br><span class="line">			<span class="keyword">goto</span> out2;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (count &gt; dev-&gt;current_len)</span><br><span class="line">		count = dev-&gt;current_len; <span class="comment">//最多只读当前的长度</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (copy_to_user(buf, dev-&gt;mem, count)) &#123; <span class="comment">// 读数据</span></span><br><span class="line">		ret = -EFAULT;</span><br><span class="line">		<span class="keyword">goto</span> out;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">memcpy</span>(dev-&gt;mem, dev-&gt;mem + count, dev-&gt;current_len - count);</span><br><span class="line">		dev-&gt;current_len -= count;</span><br><span class="line">		printk(KERN_INFO <span class="string">&quot;read %d bytes(s),current_len:%d\n&quot;</span>, count,</span><br><span class="line">		       dev-&gt;current_len);</span><br><span class="line"></span><br><span class="line">		wake_up_interruptible(&amp;dev-&gt;w_wait); <span class="comment">// 通知潜在的可能的写阻塞任务</span></span><br><span class="line"></span><br><span class="line">		ret = count;</span><br><span class="line">	&#125;</span><br><span class="line"> out:</span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line"> out2:</span><br><span class="line">	remove_wait_queue(&amp;dev-&gt;r_wait, &amp;wait);</span><br><span class="line">	set_current_state(TASK_RUNNING);</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="轮询编程"><a href="#轮询编程" class="headerlink" title="轮询编程"></a>轮询编程</h2><p>非阻塞的IO可以通过select、poll等接口查询当前文件是否可进行读写操作。实际系统调用的是驱动的poll函数。poll函数的工作主要是调用poll_wait将等待队列添加到poll_table中，并返回对应的掩码标识。这样将触发select或者poll的进一步执行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">__poll_t</span> (*poll) (<span class="keyword">struct</span> file *, <span class="keyword">struct</span> poll_table_struct *);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">globalfifo_poll</span><span class="params">(<span class="keyword">struct</span> file *filp, poll_table * wait)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> mask = <span class="number">0</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">globalfifo_dev</span> *<span class="title">dev</span> =</span> filp-&gt;private_data;</span><br><span class="line"></span><br><span class="line">	mutex_lock(&amp;dev-&gt;mutex);</span><br><span class="line"></span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;r_wait, wait);</span><br><span class="line">	poll_wait(filp, &amp;dev-&gt;w_wait, wait);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != <span class="number">0</span>) &#123;</span><br><span class="line">		mask |= POLLIN | POLLRDNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (dev-&gt;current_len != GLOBALFIFO_SIZE) &#123;</span><br><span class="line">		mask |= POLLOUT | POLLWRNORM;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mutex_unlock(&amp;dev-&gt;mutex);</span><br><span class="line">	<span class="keyword">return</span> mask;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在用户空间就可以写对应的poll函数监听文件了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FIFO_CLEAR 0x1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> BUFFER_LEN 20</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> fd, num;</span><br><span class="line">	<span class="type">char</span> rd_ch[BUFFER_LEN];</span><br><span class="line">	fd_set rfds, wfds;	<span class="comment">/* 读/写文件描述符集 */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* 以非阻塞方式打开/dev/globalfifo设备文件 */</span></span><br><span class="line">	fd = open(<span class="string">&quot;/dev/globalfifo&quot;</span>, O_RDONLY | O_NONBLOCK);</span><br><span class="line">	<span class="keyword">if</span> (fd != <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="comment">/* FIFO清0 */</span></span><br><span class="line">		<span class="keyword">if</span> (ioctl(fd, FIFO_CLEAR, <span class="number">0</span>) &lt; <span class="number">0</span>)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;ioctl command failed\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">			FD_ZERO(&amp;rfds);</span><br><span class="line">			FD_ZERO(&amp;wfds);</span><br><span class="line">			FD_SET(fd, &amp;rfds);</span><br><span class="line">			FD_SET(fd, &amp;wfds);</span><br><span class="line"></span><br><span class="line">			select(fd + <span class="number">1</span>, &amp;rfds, &amp;wfds, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">			<span class="comment">/* 数据可获得 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;rfds)) &#123;</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be read\n&quot;</span>);</span><br><span class="line">                <span class="type">int</span> len = read(fd, rd_ch, BUFFER_LEN);</span><br><span class="line">                rd_ch[len<span class="number">-1</span>] = <span class="number">0</span>;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;read data %s\r\n&quot;</span>, rd_ch);</span><br><span class="line">            &#125;</span><br><span class="line">			<span class="comment">/* 数据可写入 */</span></span><br><span class="line">			<span class="keyword">if</span> (FD_ISSET(fd, &amp;wfds))</span><br><span class="line">				<span class="built_in">printf</span>(<span class="string">&quot;Poll monitor:can be written\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">            sleep(<span class="number">1000</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Device open failure\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>了解了驱动阻塞和非阻塞IO的实现，以及处理用户空间select&#x2F;poll&#x2F;epoll的并发IO处理的poll函数实现。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/14/2022-20220814-driver-char/" rel="prev" title="周谈(33)-字符设备驱动">
+      <i class="fa fa-chevron-left"></i> 周谈(33)-字符设备驱动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/27/2022-20220827-dma-weekly/" rel="next" title="周谈(34)-DMA地址映射api使用">
+      周谈(34)-DMA地址映射api使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A9%B1%E5%8A%A8%E7%9A%84%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9EIO"><span class="nav-number">1.1.</span> <span class="nav-text">驱动的阻塞和非阻塞IO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">阻塞实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%AE%E8%AF%A2%E7%BC%96%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">轮询编程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">2.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

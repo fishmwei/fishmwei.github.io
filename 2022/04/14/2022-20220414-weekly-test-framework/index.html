@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(18)-测试框架的学习小结">
+<meta property="og:url" content="https://fishmwei.github.io/2022/04/14/2022-20220414-weekly-test-framework/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-14T12:41:44.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.788Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/04/14/2022-20220414-weekly-test-framework/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(18)-测试框架的学习小结 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/04/14/2022-20220414-weekly-test-framework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(18)-测试框架的学习小结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-14 20:41:44" itemprop="dateCreated datePublished" datetime="2022-04-14T20:41:44+08:00">2022-04-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/dpdk/" itemprop="url" rel="index"><span itemprop="name">DPDK</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/04/14/2022-20220414-weekly-test-framework/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/04/14/2022-20220414-weekly-test-framework/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>平常每周都会有一些心得感悟，这些在大家工作中可能会有许多共性。我觉得花一些时间整理一下，跟粉丝读者们分享一下日常学习工作的想法和所得，这是一个很好的互动和文章分享的痛点。</p>
+<span id="more"></span>
+
+<p>这是第十八篇。</p>
+<h1 id="DPDK测试框架"><a href="#DPDK测试框架" class="headerlink" title="DPDK测试框架"></a>DPDK测试框架</h1><p>这一周看了DPDK的测试框架，主要是在app&#x2F;test*这些目录下实现的application。</p>
+<p>DPDK的测试框架的模型是基于XUnit模型实现的， 跟其他大多数的测试框架一样，分为测试套(test suite)和测试用例(test case)两个层级的概念。测试套下面可以包含多个测试套和多个测试用例，典型的树状结构，跟文件系统的目录结构是一样的。</p>
+<p>测试套的执行流程是 suite-&gt;setup … unit_test_suite_runner … suite-&gt;teardown。setup和teardown分别是suite对应的资源的申请初始化和释放。unit_test_suite_runner就是嵌套的执行其下的测试套和测试用例。</p>
+<p>测试用例的执行流程 case-&gt;setup … case-&gt;testcase&#x2F;case-&gt;testwithdata … case-&gt;teardown。setup和teardown分别是case对应的资源的申请初始化和释放。testcase、testwithdata分别对应没有数据和有传入数据的用例执行。具体的就是业务函数的执行，然后对比输出结果和期望结果。返回值有三种， TEST_SKIP, TEST_SUCCESS, TEST_FAIL，分别表示不支持该测试功能，支持并且执行成功，支持但是执行失败。</p>
+<p>最后，会输出用例的执行情况。</p>
+<p>dpdk-test这个application 还支持命令行，通过绑定命令行和一个测试功能集的入口函数，可以很方便的执行指定的功能集测试用例。效果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root@keep-VirtualBox:~/dpdk/build# dpdk-test -c 7 --vdev crypto_openssl --log-level 7 cryptodev_openssl_asym_autotest</span><br><span class="line">EAL: Detected CPU lcores: 12</span><br><span class="line">EAL: Detected NUMA nodes: 1</span><br><span class="line">EAL: Detected static linkage of DPDK</span><br><span class="line">EAL: Multi-process socket /var/run/dpdk/rte/mp_socket</span><br><span class="line">EAL: Selected IOVA mode &#x27;PA&#x27;</span><br><span class="line">EAL: VFIO support initialized</span><br><span class="line">CRYPTODEV: Creating cryptodev crypto_openssl</span><br><span class="line"></span><br><span class="line">CRYPTODEV: Initialisation parameters - name: crypto_openssl,socket id: 0, max queue pairs: 8</span><br><span class="line">TELEMETRY: No legacy callbacks, legacy socket not created</span><br><span class="line">APP: HPET is not enabled, using TSC as default timer</span><br><span class="line"><span class="meta prompt_">RTE&gt;</span><span class="language-bash">&gt;cryptodev_openssl_asym_autotest</span></span><br><span class="line"> + ------------------------------------------------------- +</span><br><span class="line"> + Test Suite : Crypto Device OPENSSL ASYM Unit Test Suite</span><br><span class="line"> + ------------------------------------------------------- +</span><br><span class="line"></span><br><span class="line">xform type: rsa</span><br><span class="line">===================</span><br><span class="line">operation supported - encrypt decrypt sign verify modlen: min 30 max 0 increment 1</span><br><span class="line"></span><br><span class="line">xform type: modexp</span><br><span class="line">===================</span><br><span class="line">operation supported - modlen: min 0 max 0 increment 1</span><br><span class="line"></span><br><span class="line">xform type: modinv</span><br><span class="line">===================</span><br><span class="line">operation supported - modlen: min 0 max 0 increment 1</span><br><span class="line"></span><br><span class="line">xform type: dh</span><br><span class="line">===================</span><br><span class="line">operation supported - priv_key_generate pub_key_generate sharedsecret_compute modlen: min 0 max 0 increment 1</span><br><span class="line"></span><br><span class="line">xform type: dsa</span><br><span class="line">===================</span><br><span class="line">operation supported - sign verify modlen: min 0 max 0 increment 1</span><br><span class="line"> + TestCase [ 0] : test_capability succeeded</span><br><span class="line"> + TestCase [ 1] : test_dsa succeeded</span><br><span class="line">USER1: Test Public and Private key pair generation</span><br><span class="line">USER1: Test Public Key Generation using pre-defined priv key</span><br><span class="line">USER1: Test Private Key Generation only</span><br><span class="line">USER1: Test shared secret compute</span><br><span class="line"> + TestCase [ 2] : test_dh_keygenration succeeded</span><br><span class="line"> + TestCase [ 3] : test_rsa_enc_dec succeeded</span><br><span class="line"> + TestCase [ 4] : test_rsa_sign_verify succeeded</span><br><span class="line"> + TestCase [ 5] : test_rsa_enc_dec_crt succeeded</span><br><span class="line"> + TestCase [ 6] : test_rsa_sign_verify_crt succeeded</span><br><span class="line"> + TestCase [ 7] : test_mod_inv succeeded</span><br><span class="line"> + TestCase [ 8] : test_mod_exp succeeded</span><br><span class="line">  0) TestCase Modular Exponentiation (mod=128, base=20, exp=3, res=128) PASS</span><br><span class="line">  1) TestCase Modular Exponentiation (mod=60, base=50, exp=40, res=60) PASS</span><br><span class="line">  2) TestCase Modular Exponentiation (mod=8, base=65, exp=17, res=8) PASS</span><br><span class="line">  3) TestCase Modular Exponentiation (mod=100, base=150, exp=192, res=100) PASS</span><br><span class="line">  4) TestCase Modular Exponentiation (mod=255, base=20, exp=10, res=255) PASS</span><br><span class="line">  5) TestCase Modular Exponentiation (mod=112, base=257, exp=43, res=112) PASS</span><br><span class="line">  6) TestCase Modular Exponentiation (mod=299, base=240, exp=321, res=299) PASS</span><br><span class="line">  7) TestCase Modular Exponentiation (mod=448, base=50, exp=40, res=448) PASS</span><br><span class="line">  8) TestCase Modular Exponentiation (mod=19, base=500, exp=35, res=19) PASS</span><br><span class="line">  9) TestCase Modular Inverse (mod=128, base=20, exp=3, inv=128) PASS</span><br><span class="line">  10) TestCase RSA Encryption Decryption (n=128, pt=20, e=3) EXP, QT PASS</span><br><span class="line"> + TestCase [ 9] : test_one_by_one succeeded</span><br><span class="line"> + ------------------------------------------------------- +</span><br><span class="line"> + Test Suite Summary : Crypto Device OPENSSL ASYM Unit Test Suite</span><br><span class="line"> + ------------------------------------------------------- +</span><br><span class="line"> + Tests Total :       10</span><br><span class="line"> + Tests Skipped :      0</span><br><span class="line"> + Tests Executed :    10</span><br><span class="line"> + Tests Unsupported:   0</span><br><span class="line"> + Tests Passed :      10</span><br><span class="line"> + Tests Failed :       0</span><br><span class="line"> + ------------------------------------------------------- +</span><br><span class="line">Test OK</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>DPDK的测试用例里面的数据都是在代码中写死了的，数据比较单一，场景有可能覆盖不全。</p>
+<h1 id="libkcapi测试框架"><a href="#libkcapi测试框架" class="headerlink" title="libkcapi测试框架"></a>libkcapi测试框架</h1><p>libkcapi是对内核加密框架的封装，提供给用户态程序调用的库。这个库的测试用例采用了对比测试的方式。通过从&#x2F;dev&#x2F;urandom设备读取随机数据，然后分别使用libkcapi的程序和openssl程序对数据进行加密、解密，对比两个程序输出的结果是否一致来判断libkcapi的用例是否成功。</p>
+<p>libkcapi的测试逻辑使用的shell脚本编写的，可以很方便进行调试。执行用例的时候，生成随机数据保存到临时文件中，然后通过命令行参数传递到程序中执行，输出结果到另一个临时文件，最后通过计算临时文件的sha1sum值来对比内容是否相同。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">生成随机数据到指定的文件</span></span><br><span class="line">gen_orig()</span><br><span class="line">&#123;</span><br><span class="line">	local size=$1</span><br><span class="line">	touch $ORIGPT</span><br><span class="line">	dd if=/dev/urandom of=$ORIGPT bs=$size count=1 2&gt;/dev/null</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对比文件的<span class="built_in">sha256sum</span>摘要值</span></span><br><span class="line">diff_file()</span><br><span class="line">&#123;</span><br><span class="line">	local orighash=$(sha256sum $1 | cut -d &quot; &quot; -f1)</span><br><span class="line">	local genhash=$(sha256sum $2 | cut -d &quot; &quot; -f1)</span><br><span class="line">	shift</span><br><span class="line">	shift</span><br><span class="line"></span><br><span class="line">	if [ x&quot;$orighash&quot; = x&quot;$genhash&quot; ]</span><br><span class="line">	then</span><br><span class="line">		echo_pass_local &quot;$@&quot;</span><br><span class="line">	else</span><br><span class="line">		echo_fail_local &quot;$@: original file ($orighash) and generated file ($genhash)&quot;</span><br><span class="line">	fi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">... </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">临时文件的清理 用到了<span class="built_in">trap</span>命令</span></span><br><span class="line">init_setup()</span><br><span class="line">&#123;</span><br><span class="line">	trap &quot;rm -f $TSTPREFIX*; exit&quot; 0 1 2 3 15</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">CR is also character</span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">Hex key string: 3031323334353637383961626364650a</span></span><br><span class="line">	echo -n &quot;0123456789abcdef&quot; &gt; $KEYFILE_128</span><br><span class="line">	OPENSSLKEY128=&quot;0123456789abcdef&quot;</span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">Hex key string: 303132333435363738396162636465663031323334353637383961626364650a</span></span><br><span class="line">	echo -n &quot;0123456789abcdef0123456789abcdef&quot; &gt; $KEYFILE_256</span><br><span class="line">	OPENSSLKEY256=&quot;0123456789abcdef0123456789abcdef&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>相比DPDK的测试框架， libkcapi采用随机数据，然后跟openssl的运算结果对比，相对比较灵活，覆盖场景比较全。不过，需要增加对openssl这个额外的库的学习成本，也是一种成长吧。</p>
+<p>感受一下libkcapi的测试效果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:~/code/libkcapi/test# ./hasher-test.sh</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Failure on empty checker file for md5sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Failure on empty line checker file for md5sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Parsing checker file with asterisk with md5sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Checker file &#x27;-&#x27; interpretation with md5sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Input file &#x27;-&#x27; interpretation with md5sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Failure on empty checker file for sha1sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Failure on empty line checker file for sha1sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Parsing checker file with asterisk with sha1sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Checker file &#x27;-&#x27; interpretation with sha1sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Input file &#x27;-&#x27; interpretation with sha1sum</span><br><span class="line">[PASSED: 64-bit - 5.17.1] Failure on empty checker file for sha256sum</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个就是简单的输出每个用例的执行结果，没有统计功能。不过看起来还比较清晰明了。</p>
+<p>这两个框架每次都是批量的执行用例，没办法单独执行特定的用例。感觉用shell脚本的话，还是比较方便的。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>开源库基本上都是有对应的测试用例。通过剖析其实现的原理，我们也可以借鉴来为自研的代码库搞一个测试用例。实现测试驱动开发的目的，还可以在更改代码后，进行回归测试，裨益多多。</p>
+<p>各种语言也有各自流行的测试框架，基本上也都是基于XUnit模型。 基于setup, test_case_fn，teardown的执行流程。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/05/2022-20220405-tailq/" rel="prev" title="TailQ的使用及ssh配置等skills">
+      <i class="fa fa-chevron-left"></i> TailQ的使用及ssh配置等skills
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/17/2022-20220417-cmake/" rel="next" title="get新技能 - cmake基础使用">
+      get新技能 - cmake基础使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DPDK%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">2.</span> <span class="nav-text">DPDK测试框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#libkcapi%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">libkcapi测试框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">4.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

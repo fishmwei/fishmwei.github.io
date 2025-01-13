@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言数据平面开发套件(DPDK, Data Plane Development Kit)是由6WIND,Intel等多家公司开发，主要基于Linux系统运行，用于快速数据包处理的函数库与驱动集合，可以极大提高数据处理性能和吞吐量，提高数据平面应用程序的工作效率。CryptoDev库是DPDK中的一个软件库，提供的管理和配置Crypto poll mode drivers的软件，定义了统一的操作接口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(37)-DPDK中cryptodev框架介绍">
+<meta property="og:url" content="https://fishmwei.github.io/2022/09/18/2022-20220918-cryptodev-weekly/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言数据平面开发套件(DPDK, Data Plane Development Kit)是由6WIND,Intel等多家公司开发，主要基于Linux系统运行，用于快速数据包处理的函数库与驱动集合，可以极大提高数据处理性能和吞吐量，提高数据平面应用程序的工作效率。CryptoDev库是DPDK中的一个软件库，提供的管理和配置Crypto poll mode drivers的软件，定义了统一的操作接口">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/202209/DPDK_CryptoDev.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202209/cryptodev_arch.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202209/symflow.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202209/asymflow.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/202209/telemetry.png">
+<meta property="article:published_time" content="2022-09-18T01:57:35.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.792Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/202209/DPDK_CryptoDev.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/09/18/2022-20220918-cryptodev-weekly/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(37)-DPDK中cryptodev框架介绍 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/09/18/2022-20220918-cryptodev-weekly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(37)-DPDK中cryptodev框架介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-18 09:57:35" itemprop="dateCreated datePublished" datetime="2022-09-18T09:57:35+08:00">2022-09-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/dpdk/" itemprop="url" rel="index"><span itemprop="name">DPDK</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/09/18/2022-20220918-cryptodev-weekly/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/09/18/2022-20220918-cryptodev-weekly/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>数据平面开发套件(DPDK, Data Plane Development Kit)是由6WIND,Intel等多家公司开发，主要基于Linux系统运行，用于快速数据包处理的函数库与驱动集合，可以极大提高数据处理性能和吞吐量，提高数据平面应用程序的工作效率。<br>CryptoDev库是DPDK中的一个软件库，提供的管理和配置Crypto poll mode drivers的软件，定义了统一的操作接口。支持加密、认证、链式加密认证、AEAD等对称类算法操作和非对称类算法操作。</p>
+<span id="more"></span>
+
+<p><img src="/images/202209/DPDK_CryptoDev.png" alt="cryptodev_algos"></p>
+<p>cryptodev库的文件大概十几个，代码仅3千行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@keep-VirtualBox:/media/sf_VM_SHARE/code/dpdk/lib<span class="comment"># tree cryptodev/</span></span><br><span class="line">cryptodev/</span><br><span class="line">├── cryptodev_pmd.c</span><br><span class="line">├── cryptodev_pmd.h</span><br><span class="line">├── cryptodev_trace_points.c</span><br><span class="line">├── meson.build</span><br><span class="line">├── rte_crypto_asym.h</span><br><span class="line">├── rte_cryptodev.c</span><br><span class="line">├── rte_cryptodev_core.h</span><br><span class="line">├── rte_cryptodev.h</span><br><span class="line">├── rte_cryptodev_trace_fp.h</span><br><span class="line">├── rte_cryptodev_trace.h</span><br><span class="line">├── rte_crypto.h</span><br><span class="line">├── rte_crypto_sym.h</span><br><span class="line">└── version.map</span><br><span class="line"></span><br><span class="line">0 directories, 13 files</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="功能介绍"><a href="#功能介绍" class="headerlink" title="功能介绍"></a>功能介绍</h1><p>CryptoDev库管理不同的crypto poll mode drivers， 对上提供统一的接口，把pmd抽象成不同的设备。主要功能模块如下图：<br><img src="/images/202209/cryptodev_arch.png" alt="cryptodev_arch"></p>
+<h2 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h2><p>类似linux的驱动管理，CryptoDev把每一种实现算法的硬件或者软件库当做一个crypto设备，定义了crypto设备对应的结构体rte_cryptodev。目前最大支持64个crypto设备，这些信息都会存在一个全局变量cryptodev_globals中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> <span class="title">rte_crypto_devices</span>[<span class="title">RTE_CRYPTO_MAX_DEVS</span>];</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev</span> *<span class="title">rte_cryptodevs</span> =</span> rte_crypto_devices;</span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_global</span> <span class="title">cryptodev_globals</span> =</span> &#123;</span><br><span class="line">		.devs			= rte_crypto_devices,</span><br><span class="line">		.data			= &#123; <span class="literal">NULL</span> &#125;,</span><br><span class="line">		.nb_devs		= <span class="number">0</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在创建完设备之后，使用设备之前需要调用相关的接口对设备相关的资源进行配置和初始化，后面才开始正常处理。</p>
+<h3 id="设备创建"><a href="#设备创建" class="headerlink" title="设备创建"></a>设备创建</h3><p>物理加密设备在DPDK初始化阶段的PCI探测到。虚拟设备可以在程序执行时指定vdev或者在代码中硬编码创建。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--vdev  <span class="string">&#x27;crypto_aesni_mb0,max_nb_queue_pairs=2,socket_id=0&#x27;</span></span><br><span class="line">rte_vdev_init(<span class="string">&quot;crypto_aesni_mb&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;max_nb_queue_pairs=2,socket_id=0&quot;</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>在PMD中调用RTE_PMD_REGISTER_VDEV注册为给定vdev的驱动。</p>
+<h3 id="设备描述标识"><a href="#设备描述标识" class="headerlink" title="设备描述标识"></a>设备描述标识</h3><p>描述一个设备有两种标识。一个是设备的索引，另外一个是设备的名称。可以类比接口名和接口索引。<br>设备索引主要在于设备创建的顺序，名称是PMD注册时指定的。</p>
+<h3 id="设备配置"><a href="#设备配置" class="headerlink" title="设备配置"></a>设备配置</h3><p>配置主要就是资源的配置(如：队列数目)，默认状态，计数器初始化。</p>
+<h3 id="队列对配置"><a href="#队列对配置" class="headerlink" title="队列对配置"></a>队列对配置</h3><p>pmd最主要的模式就是针对一个队列对入队出队，通过rte_cryptodev_queue_pair_setup接口分别设置crypto设备的队列对，从指定的socket申请资源。</p>
+<h2 id="设备特性及能力"><a href="#设备特性及能力" class="headerlink" title="设备特性及能力"></a>设备特性及能力</h2><p>Crypto设备定义全局的feature和算法能力，来描述crypto设备支持的功能。</p>
+<p>在设备创建时，定义设备支持的特性。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// openssl pmd 创建时设置 feature</span></span><br><span class="line"></span><br><span class="line">dev-&gt;feature_flags = RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_OPERATION_CHAINING |</span><br><span class="line">			RTE_CRYPTODEV_FF_CPU_AESNI |</span><br><span class="line">			RTE_CRYPTODEV_FF_IN_PLACE_SGL |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_SGL_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_OOP_LB_IN_LB_OUT |</span><br><span class="line">			RTE_CRYPTODEV_FF_ASYMMETRIC_CRYPTO |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_EXP |</span><br><span class="line">			RTE_CRYPTODEV_FF_RSA_PRIV_OP_KEY_QT |</span><br><span class="line">			RTE_CRYPTODEV_FF_SYM_SESSIONLESS;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>每个PMD会提供各自的算法能力数组，类型为<code>struct rte_cryptodev_capabilities</code>。一般在算法执行前，使用者通过rte_cryptodev_info_get接口调用到具体PMD提供的接口，获取到PMD的能力，再决定能否继续操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  	rte_cryptodev_info_get(dev_id, &amp;dev_info);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!(dev_info.feature_flags &amp; RTE_CRYPTODEV_FF_SYMMETRIC_CRYPTO)) &#123;</span><br><span class="line">	RTE_LOG(INFO, USER1, <span class="string">&quot;Feature flag requirements for Snow3G &quot;</span></span><br><span class="line">			<span class="string">&quot;testsuite not met\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> TEST_SKIPPED;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   ... </span><br><span class="line"></span><br><span class="line">   <span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">rte_cryptodev_capabilities</span> <span class="title">openssl_pmd_capabilities</span>[] =</span> &#123;</span><br><span class="line">&#123;	<span class="comment">/* MD5 HMAC */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5_HMAC,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">64</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">1</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">1</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;	<span class="comment">/* MD5 */</span></span><br><span class="line">	.op = RTE_CRYPTO_OP_TYPE_SYMMETRIC,</span><br><span class="line">	&#123;.sym = &#123;</span><br><span class="line">		.xform_type = RTE_CRYPTO_SYM_XFORM_AUTH,</span><br><span class="line">		&#123;.auth = &#123;</span><br><span class="line">			.algo = RTE_CRYPTO_AUTH_MD5,</span><br><span class="line">			.block_size = <span class="number">64</span>,</span><br><span class="line">			.key_size = &#123;</span><br><span class="line">				.min = <span class="number">0</span>,</span><br><span class="line">				.max = <span class="number">0</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.digest_size = &#123;</span><br><span class="line">				.min = <span class="number">16</span>,</span><br><span class="line">				.max = <span class="number">16</span>,</span><br><span class="line">				.increment = <span class="number">0</span></span><br><span class="line">			&#125;,</span><br><span class="line">			.iv_size = &#123; <span class="number">0</span> &#125;</span><br><span class="line">		&#125;, &#125;</span><br><span class="line">	&#125;, &#125;</span><br><span class="line">&#125;,</span><br><span class="line">   ... <span class="comment">// 省略</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="操作处理"><a href="#操作处理" class="headerlink" title="操作处理"></a>操作处理</h2><p>Crypto Operation使用入队出队的接口集实现操作处理。使用enqueue_burst接口接收待处理的operations，软件pmd一般会直接进行算法执行，硬件pmd会把数据放到硬件的input queue。使用dequeue_burst接口获取已经处理完成的operations，软件pmd一般从软件的已完成的队列中获取完成的operations，硬件pmd从硬件的output&#x2F;processed queue获取。</p>
+<h3 id="私有数据"><a href="#私有数据" class="headerlink" title="私有数据"></a>私有数据</h3><p>提供set和get接口API设置算法计算时需要的用户数据到crypto session数据结构中。对于session-less的操作，私有数据可以存放到operation内存尾部。所谓的私有数据一般是各个pmd内部识别算法使用的数据结构。</p>
+<h3 id="回调API"><a href="#回调API" class="headerlink" title="回调API"></a>回调API</h3><p>支持注册回调函数，在关联的队列对调用enqueue_burst之后，或者调用dequeue_burst之前，执行额外的操作。<br>这些回调函数，需要用户自己控制注销，以免造成内存泄漏。</p>
+<p>感觉这个没有多大用处。</p>
+<h3 id="Enqueue-x2F-Dequeue-Burst-接口"><a href="#Enqueue-x2F-Dequeue-Burst-接口" class="headerlink" title="Enqueue&#x2F;Dequeue Burst 接口"></a>Enqueue&#x2F;Dequeue Burst 接口</h3><p>提供接口往指定设备的指定队列队塞或者拉取operations。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_enqueue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">rte_cryptodev_dequeue_burst</span><span class="params">(<span class="type">uint8_t</span> dev_id, <span class="type">uint16_t</span> qp_id,</span></span><br><span class="line"><span class="params">                                     <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Operation结构定义"><a href="#Operation结构定义" class="headerlink" title="Operation结构定义"></a>Operation结构定义</h3><p>定义了operation的结构。一部分通用的区域，然后再分别跟着sym或者asym的operation，最后是私有的数据。开发者需要填充好各个字段，后续PMD才能正常执行。不同的算法都有一个约定好的数据格式，各个pmd按照约定去解析数据。</p>
+<h3 id="Operation分配管理"><a href="#Operation分配管理" class="headerlink" title="Operation分配管理"></a>Operation分配管理</h3><p>对Operation空间的分配管理提供了一套API接口。<br>定义一个mempool来分配operation空间， 以及如何从pool申请&#x2F;释放空间：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> rte_mempool *</span><br><span class="line"><span class="title function_">rte_crypto_op_pool_create</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *name, <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                          <span class="type">unsigned</span> nb_elts, <span class="type">unsigned</span> cache_size, <span class="type">uint16_t</span> priv_size,</span></span><br><span class="line"><span class="params">                          <span class="type">int</span> socket_id)</span>;</span><br><span class="line"><span class="keyword">struct</span> rte_crypto_op *<span class="title function_">rte_crypto_op_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                          <span class="keyword">enum</span> rte_crypto_op_type type)</span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="title function_">rte_crypto_op_bulk_alloc</span><span class="params">(<span class="keyword">struct</span> rte_mempool *mempool,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">enum</span> rte_crypto_op_type type,</span></span><br><span class="line"><span class="params">                                  <span class="keyword">struct</span> rte_crypto_op **ops, <span class="type">uint16_t</span> nb_ops)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">rte_crypto_op_free</span><span class="params">(<span class="keyword">struct</span> rte_crypto_op *op)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="对称算法支持"><a href="#对称算法支持" class="headerlink" title="对称算法支持"></a>对称算法支持</h3><p>主要用图描述一下对称算法的使用。</p>
+<p><img src="/images/202209/symflow.png" alt="symflow"></p>
+<h3 id="非对称算法支持"><a href="#非对称算法支持" class="headerlink" title="非对称算法支持"></a>非对称算法支持</h3><p>主要用图描述一下非对称算法的使用。</p>
+<p><img src="/images/202209/asymflow.png" alt="asymflow"></p>
+<h3 id="同步模式"><a href="#同步模式" class="headerlink" title="同步模式"></a>同步模式</h3><p>部分pmd支持同步模式，可以不使用enqueue_burst和dequeue_burst接口，而直接使用rte_cryptodev_sym_cpu_crypto_process。此时，需要设置feature 标记RTE_CRYPTODEV_FF_SYM_CPU_CRYPTO。</p>
+<h3 id="Raw-Data-path-API"><a href="#Raw-Data-path-API" class="headerlink" title="Raw Data-path API"></a>Raw Data-path API</h3><p>不使用DPDK提供的数据结构（rte_mbuf, rte_crypto_op等），可以使用用户定义的结构直接转换。待深入了解。</p>
+<h2 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h2><p>可以使用工具dpdk-telemetry.py查看设备信息。</p>
+<p><img src="/images/202209/telemetry.png" alt="telemetry"></p>
+<p>DPDK还提供了许多tools来作大页内存配置&#x2F;设备绑定等。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>CryptoDev库的代码使用了面向对象编程的方法，抽象出许多实体，使用指针的方式关联这些实体。</p>
+<p>随着软件行业的发展，面向对象编程使用的也更加广泛了。现在很多使用C语言编写的库都应用了面向对象编程的设计。包括Linux内核代码也一样，比如Linux Crypto框架，把算法抽象成了对象，还使用了模板，使得代码更加形象化。</p>
+<p>这周给组内分享了一下DPDK CryptoDev框架的基础，星期一的时候花了一整天的时间全面地看了一下cryptodev的主要代码。今天小结一下。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/13/2022-20220913-samba/" rel="prev" title="周谈(36)-samba配置">
+      <i class="fa fa-chevron-left"></i> 周谈(36)-samba配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/10/01/2022-20221001-zuc-weekly/" rel="next" title="DPDK ZUC PMD代码笔记">
+      DPDK ZUC PMD代码笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">功能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">设备管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E5%88%9B%E5%BB%BA"><span class="nav-number">2.1.1.</span> <span class="nav-text">设备创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E6%8F%8F%E8%BF%B0%E6%A0%87%E8%AF%86"><span class="nav-number">2.1.2.</span> <span class="nav-text">设备描述标识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.3.</span> <span class="nav-text">设备配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%AF%B9%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.4.</span> <span class="nav-text">队列对配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E7%89%B9%E6%80%A7%E5%8F%8A%E8%83%BD%E5%8A%9B"><span class="nav-number">2.2.</span> <span class="nav-text">设备特性及能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%A4%84%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">操作处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E6%9C%89%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">私有数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83API"><span class="nav-number">2.3.2.</span> <span class="nav-text">回调API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Enqueue-x2F-Dequeue-Burst-%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.3.3.</span> <span class="nav-text">Enqueue&#x2F;Dequeue Burst 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operation%E7%BB%93%E6%9E%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.3.4.</span> <span class="nav-text">Operation结构定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operation%E5%88%86%E9%85%8D%E7%AE%A1%E7%90%86"><span class="nav-number">2.3.5.</span> <span class="nav-text">Operation分配管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E7%AE%97%E6%B3%95%E6%94%AF%E6%8C%81"><span class="nav-number">2.3.6.</span> <span class="nav-text">对称算法支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%AF%B9%E7%A7%B0%E7%AE%97%E6%B3%95%E6%94%AF%E6%8C%81"><span class="nav-number">2.3.7.</span> <span class="nav-text">非对称算法支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.8.</span> <span class="nav-text">同步模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raw-Data-path-API"><span class="nav-number">2.3.9.</span> <span class="nav-text">Raw Data-path API</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-number">2.4.</span> <span class="nav-text">设备信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">3.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

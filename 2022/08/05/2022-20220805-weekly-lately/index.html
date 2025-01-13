@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周谈(32)- 近期遇到的那些事儿">
+<meta property="og:url" content="https://fishmwei.github.io/2022/08/05/2022-20220805-weekly-lately/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="前言最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-05T12:50:58.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.790Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fishmwei.github.io/2022/08/05/2022-20220805-weekly-lately/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周谈(32)- 近期遇到的那些事儿 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2022/08/05/2022-20220805-weekly-lately/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周谈(32)- 近期遇到的那些事儿
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-05 20:50:58" itemprop="dateCreated datePublished" datetime="2022-08-05T20:50:58+08:00">2022-08-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/08/05/2022-20220805-weekly-lately/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/08/05/2022-20220805-weekly-lately/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近有些忙吧，在做一些开发调试的工作，也就遇到了一些问题和知识盲区，稍微回顾一下，也跟大家分享一下。</p>
+<span id="more"></span>
+
+<h1 id="知识盲区"><a href="#知识盲区" class="headerlink" title="知识盲区"></a>知识盲区</h1><h2 id="ECC曲线算法"><a href="#ECC曲线算法" class="headerlink" title="ECC曲线算法"></a>ECC曲线算法</h2><p>ECC曲线算法是数学知识的一个实际应用，在前面有出了两篇文章讲了一下大体的原理，更详细的需要看一下标准文档和网络上大神的详细的总结。在编码的过程中，同时也简单地了解了一下ASN1的编码格式。ECC曲线的应用主要是密钥导出、密钥交换、签名和验签。</p>
+<h2 id="流密码算法"><a href="#流密码算法" class="headerlink" title="流密码算法"></a>流密码算法</h2><p>了解了祖冲之算法和snow3G算法的大概实现流程，在前面也分别有文章简单地聊了一下这两种算法。</p>
+<p>在实现算法的过程中，又涉及到一个端序的概念。就是大小端数据的组织。在以往的工作中，默认网络包的格式是大端的，正常主机是小端的。然后，过去在开发的过程中，对于字节流而言，是不区分什么大小端的，大小端都是针对那些整型字段而言的，转换端序的时候也只是对那些整形字段作转换。开发驱动却不是这样的，它这个端序是针对所有数据的， 也就是大端顺序是0 - N, 转为小端顺序就是 N - 0， 这样子。</p>
+<h2 id="内核模块代码添加宏"><a href="#内核模块代码添加宏" class="headerlink" title="内核模块代码添加宏"></a>内核模块代码添加宏</h2><p>看到同事写的代码里面，需要主动通过添加 #define AAAA， 上网查了一下， 只需要在Makefile里面添加选项就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">EXTRA_CFLAGS += -DAAAA</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一般的Makefile可以直接在make之后添加-DAAA， 内核需要手动加到EXTRA_CFLAGS中去。</p>
+<h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><h2 id="dma映射方向搞错，获取不到数据"><a href="#dma映射方向搞错，获取不到数据" class="headerlink" title="dma映射方向搞错，获取不到数据"></a>dma映射方向搞错，获取不到数据</h2><p>刚开始驱动调试的时候，不了解dma的接口，然后死活获取不到硬件给的数据，原来是在映射的时候，方向没有设置成双向的。</p>
+<h2 id="无符号差值保存到有符号变量中，实际还是一个无符号的数"><a href="#无符号差值保存到有符号变量中，实际还是一个无符号的数" class="headerlink" title="无符号差值保存到有符号变量中，实际还是一个无符号的数"></a>无符号差值保存到有符号变量中，实际还是一个无符号的数</h2><p>这是昨天调试的时候发现的一个问题:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">u32 a = <span class="number">47</span>;</span><br><span class="line">u32 b = <span class="number">48</span>;</span><br><span class="line"><span class="type">ssize_t</span> diff = a - b; <span class="comment">// diff = -1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//... </span></span><br><span class="line"><span class="keyword">if</span> (diff &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// do sth.</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// do other sth.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果走了do sth.分支。。。</span></span><br><span class="line"><span class="comment">// 最后只能改成这样   ssize_t diff = (int)a - (int)b;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="虚拟机升级了内核版本后，共享文件夹不可用了"><a href="#虚拟机升级了内核版本后，共享文件夹不可用了" class="headerlink" title="虚拟机升级了内核版本后，共享文件夹不可用了"></a>虚拟机升级了内核版本后，共享文件夹不可用了</h2><p>最近升级了一下虚拟机的内核版本，添加了对tcrypt和一些算法的支持。但是，重启之后，发现原来设置的共享文件夹不能用了，进入目录后一片空白。</p>
+<p>上网查了一下，重新设置一下共享文件夹。执行如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cd /mnt</span><br><span class="line">mkdir SF_SHARE</span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE </span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">报错</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">/sbin/mount.vboxsf: mounting failed with the error: No such device</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">这是由于增强工具没有安装， 继续下面的命令：</span></span><br><span class="line"></span><br><span class="line">cd /opt/VBoxGuestAdditions-*/init  </span><br><span class="line">./vboxadd setup</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装好之后， 继续执行， 就可以了。</span></span><br><span class="line"></span><br><span class="line">mount -t vboxsf VM_SHARE /mnt/SF_SHARE   # VM_SHARE是设置的共享文件夹名称</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="作dma映射后，程序卡死"><a href="#作dma映射后，程序卡死" class="headerlink" title="作dma映射后，程序卡死"></a>作dma映射后，程序卡死</h2><p>这个是由于作dma映射的空间不是cache对齐的， 导致cache刷新不同步，内容改变导致非法，再去访问就出问题了。所以说，后面要做dma映射的空间，要确保它的其实地址是cacheline对齐的，这样刷新的时候都是同步刷新的，不会跟其他数据混在一起。</p>
+<h2 id="使用局部变量作dma映射，程序卡死"><a href="#使用局部变量作dma映射，程序卡死" class="headerlink" title="使用局部变量作dma映射，程序卡死"></a>使用局部变量作dma映射，程序卡死</h2><p>执行dma映射的空间不能是全局变量和局部变量。</p>
+<h2 id="多个内核版本，修改默认启动版本"><a href="#多个内核版本，修改默认启动版本" class="headerlink" title="多个内核版本，修改默认启动版本"></a>多个内核版本，修改默认启动版本</h2><p>由于历史问题，在一台机器上更新了内核版本之后，默认启动的内核还是旧的版本，导致每次需要启动时，选择启动内核版本，有点麻烦。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改</span> </span><br><span class="line">vi /etc/default/grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置， 如果设置有问题 注意看后面update-grub的命令提示</span></span><br><span class="line">GRUB_DEFAULT=&quot;Advanced options for Ubuntu&gt;Ubuntu, with Linux 4.15.0&quot;</span><br><span class="line"></span><br><span class="line">update-grub</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">重启后就更新了</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>编写内核经常导致那个系统挂掉，原来可以在系统主板上也有串口的，可以插个串口线看那个堆栈的，请原谅我现在才知道，哈哈。</p>
+<p>生活可以忙忙碌碌随大流，思想必须偷偷摸摸求上进。</p>
+<p>最近吃了湾湾的那个瓜， 祖国加油！</p>
+<p>周末要去接娃来了，神兽又要来捣蛋了，^_^!</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/24/2022-20220724-ecdh/" rel="prev" title="周谈(31)-ECC曲线的应用">
+      <i class="fa fa-chevron-left"></i> 周谈(31)-ECC曲线的应用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/14/2022-20220814-driver-char/" rel="next" title="周谈(33)-字符设备驱动">
+      周谈(33)-字符设备驱动 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E7%9B%B2%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text">知识盲区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ECC%E6%9B%B2%E7%BA%BF%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">ECC曲线算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%AF%86%E7%A0%81%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">流密码算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E4%BB%A3%E7%A0%81%E6%B7%BB%E5%8A%A0%E5%AE%8F"><span class="nav-number">2.3.</span> <span class="nav-text">内核模块代码添加宏</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dma%E6%98%A0%E5%B0%84%E6%96%B9%E5%90%91%E6%90%9E%E9%94%99%EF%BC%8C%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E6%95%B0%E6%8D%AE"><span class="nav-number">3.1.</span> <span class="nav-text">dma映射方向搞错，获取不到数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E5%B7%AE%E5%80%BC%E4%BF%9D%E5%AD%98%E5%88%B0%E6%9C%89%E7%AC%A6%E5%8F%B7%E5%8F%98%E9%87%8F%E4%B8%AD%EF%BC%8C%E5%AE%9E%E9%99%85%E8%BF%98%E6%98%AF%E4%B8%80%E4%B8%AA%E6%97%A0%E7%AC%A6%E5%8F%B7%E7%9A%84%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">无符号差值保存到有符号变量中，实际还是一个无符号的数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8D%87%E7%BA%A7%E4%BA%86%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC%E5%90%8E%EF%BC%8C%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8D%E5%8F%AF%E7%94%A8%E4%BA%86"><span class="nav-number">3.3.</span> <span class="nav-text">虚拟机升级了内核版本后，共享文件夹不可用了</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9Cdma%E6%98%A0%E5%B0%84%E5%90%8E%EF%BC%8C%E7%A8%8B%E5%BA%8F%E5%8D%A1%E6%AD%BB"><span class="nav-number">3.4.</span> <span class="nav-text">作dma映射后，程序卡死</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E4%BD%9Cdma%E6%98%A0%E5%B0%84%EF%BC%8C%E7%A8%8B%E5%BA%8F%E5%8D%A1%E6%AD%BB"><span class="nav-number">3.5.</span> <span class="nav-text">使用局部变量作dma映射，程序卡死</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E5%86%85%E6%A0%B8%E7%89%88%E6%9C%AC%EF%BC%8C%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E5%90%AF%E5%8A%A8%E7%89%88%E6%9C%AC"><span class="nav-number">3.6.</span> <span class="nav-text">多个内核版本，修改默认启动版本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">4.</span> <span class="nav-text">更多</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

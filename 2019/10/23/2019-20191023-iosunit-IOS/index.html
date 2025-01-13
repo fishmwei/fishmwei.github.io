@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS接口的单元测试">
+<meta property="og:url" content="https://fishmwei.github.io/2019/10/23/2019-20191023-iosunit-IOS/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="iOS接口的单元测试近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。 现在就来聊聊iOS代码的单元测试。 单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/20191023/unit1.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/20191023/unit2.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/20191023/unit3.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/20191023/unit4.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/20191023/unit5.png">
+<meta property="article:published_time" content="2019-10-23T11:06:31.000Z">
+<meta property="article:modified_time" content="2025-01-12T16:07:04.770Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/20191023/unit1.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2019/10/23/2019-20191023-iosunit-IOS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS接口的单元测试 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2019/10/23/2019-20191023-iosunit-IOS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS接口的单元测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-23 19:06:31" itemprop="dateCreated datePublished" datetime="2019-10-23T19:06:31+08:00">2019-10-23</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2019/10/23/2019-20191023-iosunit-IOS/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/10/23/2019-20191023-iosunit-IOS/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="iOS接口的单元测试"><a href="#iOS接口的单元测试" class="headerlink" title="iOS接口的单元测试"></a>iOS接口的单元测试</h1><p>近期把一个业务复杂，功能繁多的库进行了拆分，实现了功能的单一性。代码重构告一段落，功能验证并且提测了，在QA测试阶段，终于闲下来把单元测试的代码也进行拆分与补充了。</p>
+<p>现在就来聊聊iOS代码的单元测试。</p>
+<p>单元测试本质上就是对我们写的代码接口进行执行，传入特定的参数，返回执行结果，然后对比结果与期望的值是否一致，确定功能是否执行正确。</p>
+<span id="more"></span>
+
+<h2 id="单元测试流程"><a href="#单元测试流程" class="headerlink" title="单元测试流程"></a>单元测试流程</h2><p>不同于其他语言，Objective-C可以通过苹果官方的编辑器XCode提供的XCTest框架很方便的进行测试，可以不需要额外的第三方框架进行基础的单元测试。而JavaScript语言(jest)、C语言(CUnit)等需要专门的库才能作测试。</p>
+<p>现在，我们公司iOS开发属于组件化开发，各个组件的代码都是在一个独立的库，工程通过<code>cocoapods</code>管理。这样有一个好处，就是每个库的功能单一，接口少，代码都是由特定的一个或者几个人员维护，开发人员对代码比较熟悉，单元测试都是可以对所有文件的接口进行覆盖测试，还可以通过Xcode直观的看到每个文件的测试覆盖率。在代码入库检视时，检视人把好单元测试的关，很容易推动他人对代码作单元测试，提高代码的质量。</p>
+<p>下面讲一下我是如何作单元测试的</p>
+<h3 id="如何开始单元测试"><a href="#如何开始单元测试" class="headerlink" title="如何开始单元测试"></a>如何开始单元测试</h3><p>每个组件库代码都是一个由<code>cocoapods</code>管理的<code>workspace</code>工程组织的，构建最终输出是一个个<code>.a</code></p>
+<ul>
+<li>创建一个target， 类型为 iOS Unit Testing Bundle</li>
+<li>在target下创建一个文件，继承XCTTestCase, 编写单元测试代码</li>
+<li>工程选中对应的test target， 设置 Target Dependencies, Link Binart with Libraries 为库的target</li>
+<li>编译执行test  target （快捷键 command + U）</li>
+</ul>
+<p>每个测试用例的重复代码可以写在 <code>setUp</code>&#x2F;<code>tearDown</code>方法里， 分别为公共前置代码编写、资源清理的处理。</p>
+<p><img src="/images/20191023/unit1.png"></p>
+<h3 id="异步接口测试"><a href="#异步接口测试" class="headerlink" title="异步接口测试"></a>异步接口测试</h3><p>针对一些异步执行的接口， XCTest提供了<code>XCTestExpectation</code>来实现。</p>
+<p>由于项目代码不便提供，这边请允许我偷个懒， 从<code>SDWebImage</code>库上摘录一些测试代码O(∩_∩)O哈哈~</p>
+<p><img src="/images/20191023/unit2.png"></p>
+<p>在回调里面，根据传入的参数判断是否符合预期， 是则调用fullfil方法，否则调用报错。</p>
+<h3 id="添加文件测试"><a href="#添加文件测试" class="headerlink" title="添加文件测试"></a>添加文件测试</h3><ul>
+<li>添加文件到test target</li>
+<li>使用 <code>bundleForClass:</code>获取正确的bundle，再访问bundle路径下的具体文件。</li>
+</ul>
+<p><img src="/images/20191023/unit3.png"></p>
+<h3 id="使用OCMock进行代码mock"><a href="#使用OCMock进行代码mock" class="headerlink" title="使用OCMock进行代码mock"></a>使用OCMock进行代码mock</h3><p>对于复杂的对象，可能会有许多成员。但是这些成员是不容易获得的， 我们可以通过OCMock模拟该成员，对部分函数进行打桩，达到期待的结果。</p>
+<p>OCMock是一个库， 通过 podfile 引入该库， 然后根据文档进行操作。 具体文档可以访问<a target="_blank" rel="noopener" href="http://ocmock.org/">链接</a></p>
+<h3 id="使用OHHTTPStubs-对网络接口进行mock"><a href="#使用OHHTTPStubs-对网络接口进行mock" class="headerlink" title="使用OHHTTPStubs 对网络接口进行mock"></a>使用OHHTTPStubs 对网络接口进行mock</h3><p>有些接口需要访问网络才能返回正常的结果，可以使用OHHTTPStubs这个库对网络请求进行打桩，根据请求的request确定是否要进行打桩。</p>
+<p><img src="/images/20191023/unit4.png"></p>
+<h3 id="查看代码覆盖率"><a href="#查看代码覆盖率" class="headerlink" title="查看代码覆盖率"></a>查看代码覆盖率</h3><ul>
+<li>工程Edit Scheme -&gt; Test -&gt; Options -&gt; Gather coverage for xxx </li>
+<li>跑一遍单元测试， 查看结果</li>
+</ul>
+<p><img src="/images/20191023/unit5.png"></p>
+<h3 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h3><p>一般的接口功能的单元测试，掌握以上部分就可以了。 如果还有性能的测试、或者UI的测试可以看官网文档。</p>
+<p>更多查看<a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/testing_with_xcode/chapters/01-introduction.html#//apple_ref/doc/uid/TP40014132-CH1-SW1">苹果文档</a></p>
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>为工程添加单元测试， 我们可能需要对已有代码进行重构， 使之可以是可被测试的。 通过单元测试代码的运行，可以很容易发现隐藏的问题, 不会引入新问题。 单元测试是代码质量的一个可靠的保障手段，好的团队应该对其代码进行单元测试。当然这里有巨大的工作量，但是是值得的。 以为本次代码重构的经历而言， 设计占2&#x2F;5, 写代码4&#x2F;15, 单元测试大概1&#x2F;3. 比例大概为 6:4:5。 单元测试还是花了许多时间，但中间也发现了一些问题， 这些问题在前面功能自测的时候并没有发现，代码检视过程中也没有发现，单元测试的时候发现了，不枉我花了时间啊O(∩_∩)O哈哈~。 单元测试算是一个迭代的过程吧， 也有一点一劳永逸的感觉。</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ios/" rel="tag"># iOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/30/2019-20190930-sharedInstance-JOB/" rel="prev" title="一次单例模式的代码重构">
+      <i class="fa fa-chevron-left"></i> 一次单例模式的代码重构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/24/2019-20191224-CoreDump-JOB/" rel="next" title="CoreDump的使用">
+      CoreDump的使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">iOS接口的单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">单元测试流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%A7%8B%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">如何开始单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.2.</span> <span class="nav-text">异步接口测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.3.</span> <span class="nav-text">添加文件测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8OCMock%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81mock"><span class="nav-number">1.1.4.</span> <span class="nav-text">使用OCMock进行代码mock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8OHHTTPStubs-%E5%AF%B9%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E8%BF%9B%E8%A1%8Cmock"><span class="nav-number">1.1.5.</span> <span class="nav-text">使用OHHTTPStubs 对网络接口进行mock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">1.1.6.</span> <span class="nav-text">查看代码覆盖率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A"><span class="nav-number">1.1.7.</span> <span class="nav-text">更多</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%84%9F%E6%83%B3"><span class="nav-number">1.2.</span> <span class="nav-text">感想</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">187</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
