@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="密码体制算法介绍密码体制算法是实现信息加密、解密、签名、验证等安全功能的核心技术，主要用于保障数据的机密性、完整性、认证性和不可否认性。根据加密密钥与解密密钥的关系，密码体制可分为对称密码体制、非对称密码体制和混合密码体制三大类，每类包含多种经典算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crypto系列1-密码体制算法">
+<meta property="og:url" content="https://fishmwei.github.io/2025/09/26/2025-20250926-crypto-001/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="密码体制算法介绍密码体制算法是实现信息加密、解密、签名、验证等安全功能的核心技术，主要用于保障数据的机密性、完整性、认证性和不可否认性。根据加密密钥与解密密钥的关系，密码体制可分为对称密码体制、非对称密码体制和混合密码体制三大类，每类包含多种经典算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+<meta property="article:published_time" content="2025-09-26T14:26:38.000Z">
+<meta property="article:modified_time" content="2025-09-26T14:38:20.718Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2025/09/26/2025-20250926-crypto-001/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>crypto系列1-密码体制算法 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2025/09/26/2025-20250926-crypto-001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          crypto系列1-密码体制算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-09-26 22:26:38" itemprop="dateCreated datePublished" datetime="2025-09-26T22:26:38+08:00">2025-09-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/crypto/" itemprop="url" rel="index"><span itemprop="name">crypto</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2025/09/26/2025-20250926-crypto-001/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/09/26/2025-20250926-crypto-001/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="密码体制算法介绍"><a href="#密码体制算法介绍" class="headerlink" title="密码体制算法介绍"></a>密码体制算法介绍</h1><p>密码体制算法是实现信息加密、解密、签名、验证等安全功能的核心技术，主要用于保障数据的机密性、完整性、认证性和不可否认性。根据加密密钥与解密密钥的关系，密码体制可分为<strong>对称密码体制</strong>、<strong>非对称密码体制</strong>和<strong>混合密码体制</strong>三大类，每类包含多种经典算法。</p>
+<span id="more"></span>
+
+<h2 id="一、对称密码体制（Symmetric-Cryptography）"><a href="#一、对称密码体制（Symmetric-Cryptography）" class="headerlink" title="一、对称密码体制（Symmetric Cryptography）"></a>一、对称密码体制（Symmetric Cryptography）</h2><p>对称密码体制又称“单钥密码体制”，其核心特点是<strong>加密和解密使用相同的密钥</strong>（或加密密钥与解密密钥可相互推导）。由于密钥需要共享，因此密钥的安全分发是该体制的主要挑战。</p>
+<h3 id="核心特点"><a href="#核心特点" class="headerlink" title="核心特点"></a>核心特点</h3><ul>
+<li>加密&#x2F;解密速度快，适合处理大量数据（如文件、流媒体）。</li>
+<li>密钥长度较短（通常128位、256位），但需严格保密。</li>
+<li>密钥管理复杂：n个用户间通信需n(n-1)&#x2F;2个密钥。</li>
+</ul>
+<h3 id="典型算法"><a href="#典型算法" class="headerlink" title="典型算法"></a>典型算法</h3><ol>
+<li><p><strong>DES（Data Encryption Standard）</strong>  </p>
+<ul>
+<li>分组密码，1977年成为美国联邦标准，分组长度64位，有效密钥长度56位（含8位校验位）。  </li>
+<li>缺点：密钥过短（56位），安全性不足，已被淘汰。</li>
+</ul>
+</li>
+<li><p><strong>3DES（Triple DES）</strong>  </p>
+<ul>
+<li>DES的改进版，通过对数据执行三次DES加密（加密-解密-加密）增强安全性，密钥长度168位（56位×3）。  </li>
+<li>兼容性好，但速度较慢，逐渐被AES取代。</li>
+</ul>
+</li>
+<li><p><strong>AES（Advanced Encryption Standard）</strong>  </p>
+<ul>
+<li>2001年取代DES成为新国际标准，分组长度128位，支持128&#x2F;192&#x2F;256位密钥。  </li>
+<li>采用SP网络结构（替代-置换），安全性高、效率优异，是目前应用最广泛的对称算法（如HTTPS、WiFi加密）。</li>
+</ul>
+</li>
+<li><p><strong>RC4（Rivest Cipher 4）</strong>  </p>
+<ul>
+<li>流密码，生成伪随机密钥流与明文异或加密，密钥长度可变（1-256位）。  </li>
+<li>实现简单、速度快，但存在安全漏洞（如WEP协议被破解），逐渐被淘汰。</li>
+</ul>
+</li>
+<li><p><strong>ChaCha20</strong>  </p>
+<ul>
+<li>流密码，由Google设计，无需硬件加速即可高效运行，抗攻击性强。  </li>
+<li>广泛用于移动端和嵌入式设备（如HTTPS的TLS 1.3、SSH）。</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、非对称密码体制（Asymmetric-Cryptography）"><a href="#二、非对称密码体制（Asymmetric-Cryptography）" class="headerlink" title="二、非对称密码体制（Asymmetric Cryptography）"></a>二、非对称密码体制（Asymmetric Cryptography）</h2><p>非对称密码体制又称“公钥密码体制”，其核心特点是<strong>加密和解密使用不同的密钥</strong>：一个是公开的“公钥”（用于加密或验证签名），一个是保密的“私钥”（用于解密或生成签名），且从公钥无法推导出私钥。</p>
+<h3 id="核心特点-1"><a href="#核心特点-1" class="headerlink" title="核心特点"></a>核心特点</h3><ul>
+<li>无需共享密钥，解决了对称密码的密钥分发问题。</li>
+<li>加密速度较慢，适合处理少量数据（如密钥加密、数字签名）。</li>
+<li>密钥长度较长（通常1024位以上），安全性依赖数学难题。</li>
+</ul>
+<h3 id="典型算法-1"><a href="#典型算法-1" class="headerlink" title="典型算法"></a>典型算法</h3><ol>
+<li><p><strong>RSA（Rivest-Shamir-Adleman）</strong>  </p>
+<ul>
+<li>基于“大整数分解”难题：将两个大质数相乘容易，但分解乘积得到原始质数极难。  </li>
+<li>支持加密和签名，应用广泛（如HTTPS证书、数字签名、SSH密钥）。  </li>
+<li>推荐密钥长度：2048位（安全）、4096位（高安全场景）。</li>
+</ul>
+</li>
+<li><p><strong>ECC（Elliptic Curve Cryptography，椭圆曲线密码）</strong>  </p>
+<ul>
+<li>基于“椭圆曲线离散对数”难题：在椭圆曲线上的点群中，求解离散对数比大整数分解更困难。  </li>
+<li>同等安全强度下，密钥长度远短于RSA（如256位ECC≈3072位RSA），计算效率更高。  </li>
+<li>适合资源受限场景（如移动设备、物联网），是未来主流（如比特币、5G安全）。</li>
+</ul>
+</li>
+<li><p><strong>DSA（Digital Signature Algorithm）</strong>  </p>
+<ul>
+<li>基于“离散对数”难题，仅用于数字签名（不支持加密），美国联邦标准。  </li>
+<li>改进版为ECDSA（椭圆曲线DSA），结合ECC优势，签名效率更高。</li>
+</ul>
+</li>
+<li><p><strong>ElGamal</strong>  </p>
+<ul>
+<li>基于“离散对数”难题，支持加密和签名，但签名结果不唯一（概率性算法）。  </li>
+<li>应用较少，被RSA和ECC替代。</li>
+</ul>
+</li>
+</ol>
+<h2 id="三、混合密码体制（Hybrid-Cryptography）"><a href="#三、混合密码体制（Hybrid-Cryptography）" class="headerlink" title="三、混合密码体制（Hybrid Cryptography）"></a>三、混合密码体制（Hybrid Cryptography）</h2><p>混合密码体制结合了对称密码和非对称密码的优势：<strong>用非对称密码加密对称密钥，用对称密码加密实际数据</strong>，既解决了密钥分发问题，又保证了加密效率。</p>
+<h3 id="典型应用流程（如HTTPS）"><a href="#典型应用流程（如HTTPS）" class="headerlink" title="典型应用流程（如HTTPS）"></a>典型应用流程（如HTTPS）</h3><ol>
+<li>发送方生成一个临时对称密钥（会话密钥，如AES密钥）。  </li>
+<li>用接收方的公钥（RSA&#x2F;ECC）加密会话密钥，确保只有接收方能解密。  </li>
+<li>用会话密钥加密大量原始数据（如网页内容），效率极高。  </li>
+<li>接收方用私钥解密得到会话密钥，再用会话密钥解密原始数据。</li>
+</ol>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><ul>
+<li>兼顾安全性（非对称密钥分发）和效率（对称加密大数据），是互联网安全的主流方案（如HTTPS、VPN、邮件加密）。</li>
+</ul>
+<h2 id="四、其他重要密码技术"><a href="#四、其他重要密码技术" class="headerlink" title="四、其他重要密码技术"></a>四、其他重要密码技术</h2><h3 id="1-哈希函数（Hash-Function）"><a href="#1-哈希函数（Hash-Function）" class="headerlink" title="1. 哈希函数（Hash Function）"></a>1. 哈希函数（Hash Function）</h3><ul>
+<li>不属于加密算法，但与密码体制紧密配合，用于生成数据摘要（固定长度哈希值），确保完整性。  </li>
+<li>特点：单向性（无法从哈希值反推原文）、抗碰撞性（不同原文难生成相同哈希值）。  </li>
+<li>典型算法：SHA-256（应用最广）、SHA-3、MD5（已不安全，淘汰）。</li>
+</ul>
+<h3 id="2-数字签名（Digital-Signature）"><a href="#2-数字签名（Digital-Signature）" class="headerlink" title="2. 数字签名（Digital Signature）"></a>2. 数字签名（Digital Signature）</h3><ul>
+<li>基于非对称密码和哈希函数，发送方用私钥对数据哈希值加密生成签名，接收方用公钥验证，确保数据未篡改且来源可信。  </li>
+<li>核心算法：RSA签名、ECDSA签名。</li>
+</ul>
+<h2 id="五、总结：密码体制的选择依据"><a href="#五、总结：密码体制的选择依据" class="headerlink" title="五、总结：密码体制的选择依据"></a>五、总结：密码体制的选择依据</h2><table>
+<thead>
+<tr>
+<th>场景需求</th>
+<th>推荐体制&#x2F;算法</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>加密大量数据（文件、流）</td>
+<td>对称密码（AES-256、ChaCha20）</td>
+<td>速度快，适合大数据量</td>
+</tr>
+<tr>
+<td>密钥分发、数字签名</td>
+<td>非对称密码（ECC、RSA-2048+）</td>
+<td>无需共享密钥，保障身份认证</td>
+</tr>
+<tr>
+<td>互联网通信（如HTTPS）</td>
+<td>混合密码（AES+RSA&#x2F;ECC）</td>
+<td>兼顾密钥安全分发和数据加密效率</td>
+</tr>
+<tr>
+<td>资源受限设备（物联网）</td>
+<td>ECC+轻量级对称算法（如AES-128）</td>
+<td>密钥短、计算量小，适合低功耗设备</td>
+</tr>
+</tbody></table>
+<p>密码体制的安全性不仅依赖算法本身，还取决于密钥管理（如密钥生成、存储、销毁）和实现细节（如抗侧信道攻击）。随着量子计算的发展，抗量子密码（如格基密码）正成为新的研究热点。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/01/13/2025-20250113-arm64/" rel="prev" title="arm64指令学习1-加载存储指令">
+      <i class="fa fa-chevron-left"></i> arm64指令学习1-加载存储指令
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">密码体制算法介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6%EF%BC%88Symmetric-Cryptography%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">一、对称密码体制（Symmetric Cryptography）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.1.</span> <span class="nav-text">核心特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E7%AE%97%E6%B3%95"><span class="nav-number">1.1.2.</span> <span class="nav-text">典型算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6%EF%BC%88Asymmetric-Cryptography%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">二、非对称密码体制（Asymmetric Cryptography）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E7%82%B9-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">核心特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E7%AE%97%E6%B3%95-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">典型算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B7%B7%E5%90%88%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6%EF%BC%88Hybrid-Cryptography%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">三、混合密码体制（Hybrid Cryptography）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E6%B5%81%E7%A8%8B%EF%BC%88%E5%A6%82HTTPS%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">典型应用流程（如HTTPS）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8A%BF"><span class="nav-number">1.3.2.</span> <span class="nav-text">优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%85%B6%E4%BB%96%E9%87%8D%E8%A6%81%E5%AF%86%E7%A0%81%E6%8A%80%E6%9C%AF"><span class="nav-number">1.4.</span> <span class="nav-text">四、其他重要密码技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%EF%BC%88Hash-Function%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 哈希函数（Hash Function）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%EF%BC%88Digital-Signature%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 数字签名（Digital Signature）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%9A%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6%E7%9A%84%E9%80%89%E6%8B%A9%E4%BE%9D%E6%8D%AE"><span class="nav-number">1.5.</span> <span class="nav-text">五、总结：密码体制的选择依据</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">188</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
