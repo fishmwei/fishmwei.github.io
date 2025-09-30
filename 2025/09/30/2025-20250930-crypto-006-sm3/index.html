@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="SM3算法：中国国家密码局哈希标准详解SM3算法是由国家密码管理局制定并发布的密码哈希函数标准，属于中国自主设计的商用密码算法体系（SM系列算法），主要用于数据完整性校验、数字签名、身份认证等场景，其安全性和性能经过严格评估，已广泛应用于金融、政务、通信等关键领域。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crypto系列6-国产哈希算法SM3">
+<meta property="og:url" content="https://fishmwei.github.io/2025/09/30/2025-20250930-crypto-006-sm3/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="SM3算法：中国国家密码局哈希标准详解SM3算法是由国家密码管理局制定并发布的密码哈希函数标准，属于中国自主设计的商用密码算法体系（SM系列算法），主要用于数据完整性校验、数字签名、身份认证等场景，其安全性和性能经过严格评估，已广泛应用于金融、政务、通信等关键领域。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM3_summary.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+<meta property="article:published_time" content="2025-09-30T01:45:10.000Z">
+<meta property="article:modified_time" content="2025-09-30T04:19:02.092Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/2025/SM3_summary.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2025/09/30/2025-20250930-crypto-006-sm3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>crypto系列6-国产哈希算法SM3 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2025/09/30/2025-20250930-crypto-006-sm3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          crypto系列6-国产哈希算法SM3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-09-30 09:45:10" itemprop="dateCreated datePublished" datetime="2025-09-30T09:45:10+08:00">2025-09-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/crypto/" itemprop="url" rel="index"><span itemprop="name">crypto</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2025/09/30/2025-20250930-crypto-006-sm3/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/09/30/2025-20250930-crypto-006-sm3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="SM3算法：中国国家密码局哈希标准详解"><a href="#SM3算法：中国国家密码局哈希标准详解" class="headerlink" title="SM3算法：中国国家密码局哈希标准详解"></a>SM3算法：中国国家密码局哈希标准详解</h1><p>SM3算法是由<strong>国家密码管理局</strong>制定并发布的密码哈希函数标准，属于中国自主设计的商用密码算法体系（SM系列算法），主要用于数据完整性校验、数字签名、身份认证等场景，其安全性和性能经过严格评估，已广泛应用于金融、政务、通信等关键领域。</p>
+<span id="more"></span>
+<h2 id="一、SM3的基本定位与核心作用"><a href="#一、SM3的基本定位与核心作用" class="headerlink" title="一、SM3的基本定位与核心作用"></a>一、SM3的基本定位与核心作用</h2><p>哈希函数（Hash Function）的核心是将任意长度的输入数据（称为“消息”）映射为<strong>固定长度的输出值</strong>（称为“哈希值”或“摘要”），且满足三大核心特性：</p>
+<ol>
+<li><strong>单向性</strong>：从哈希值无法反推原始消息；</li>
+<li><strong>抗碰撞性</strong>：不存在两条不同消息生成相同哈希值（强抗碰撞），也无法主动构造两条消息生成相同哈希值（弱抗碰撞）；</li>
+<li><strong>雪崩效应</strong>：原始消息的微小变化（如1个比特的修改）会导致哈希值发生剧烈改变，确保篡改可被检测。</li>
+</ol>
+<p>SM3作为国家推荐标准（GB&#x2F;T 32905-2016《信息安全技术 SM3密码杂凑算法》），正是为满足上述特性设计，其输出哈希值固定为<strong>256比特（32字节）</strong>，可有效抵御当前已知的密码分析攻击（如生日攻击、差分攻击等）。</p>
+<h2 id="二、SM3的算法流程"><a href="#二、SM3的算法流程" class="headerlink" title="二、SM3的算法流程"></a>二、SM3的算法流程</h2><p>SM3的处理过程分为4个核心步骤，整体逻辑与国际主流哈希算法（如SHA-256）有相似之处，但在压缩函数、常量设计等细节上体现自主创新：</p>
+<p><img src="/images/2025/SM3_summary.png" alt="SM3_summary"></p>
+<h3 id="1-消息预处理"><a href="#1-消息预处理" class="headerlink" title="1. 消息预处理"></a>1. 消息预处理</h3><p>对输入消息进行“补位”和“分块”，确保消息长度满足后续压缩要求：</p>
+<ul>
+<li><p><strong>步骤1：补位</strong><br>若消息长度为<code>L</code>比特，先在消息末尾添加1个“1”比特，再添加<code>k</code>个“0”比特，使得补位后的总长度满足 <code>L + 1 + k ≡ 448 mod 512</code>（即模512后余448）。<br><em>例：若消息长度为448比特，补1个“1”后长度为449，需补511个“0”，使总长度为449+511&#x3D;960 ≡ 448 mod 512</em>。</p>
+</li>
+<li><p><strong>步骤2：附加长度</strong><br>将原始消息的长度<code>L</code>（以64比特二进制数表示，不足64比特则高位补0）附加到补位后的消息末尾，最终消息总长度为<code>512的整数倍</code>，即被划分为<code>N个512比特的消息块</code>（记为M₀, M₁, …, Mₙ₋₁）。</p>
+</li>
+</ul>
+<h3 id="2-消息扩展：生成68个消息字与64个扩展字"><a href="#2-消息扩展：生成68个消息字与64个扩展字" class="headerlink" title="2. 消息扩展：生成68个消息字与64个扩展字"></a>2. 消息扩展：生成68个消息字与64个扩展字</h3><p>对每个512比特的消息块Mᵢ，将其拆分为16个32比特的“基本消息字”（W₀~W₁₅），再通过特定变换生成后续的“扩展消息字”，最终得到132个32比特字（68个W字 + 64个W’字），为压缩函数提供输入：</p>
+<ul>
+<li><p><strong>W字生成（W₀~W₆₇）</strong>：<br>当0 ≤ j ≤ 15时，Wⱼ直接等于Mᵢ拆分后的第j个32比特字；<br>当16 ≤ j ≤ 67时，Wⱼ &#x3D; P₁(Wⱼ₋₄ ⊕ Wⱼ₋₅ ⊕ Wⱼ₋₆ ⊕ Wⱼ₋₁₄ ⊕ Wⱼ₋₁₅ ⊕ Wⱼ₋₁₆) ⊕ (Wⱼ₋₈ ≪ 15) ⊕ Wⱼ₁₆；<br>其中<code>P₁(X)</code>是SM3定义的置换函数（P₁(X) &#x3D; X ⊕ (X ≪ 15) ⊕ (X ≪ 23)），<code>≪ s</code>表示左移s比特。</p>
+</li>
+<li><p><strong>W’字生成（W’₀~W’₆₃）</strong>：<br>W’ⱼ &#x3D; Wⱼ ⊕ Wⱼ₄（0 ≤ j ≤ 63），用于压缩函数的轮运算。</p>
+</li>
+</ul>
+<h3 id="3-压缩函数：迭代更新哈希值"><a href="#3-压缩函数：迭代更新哈希值" class="headerlink" title="3. 压缩函数：迭代更新哈希值"></a>3. 压缩函数：迭代更新哈希值</h3><p>压缩函数是SM3的核心，其作用是将当前消息块的扩展字与“中间哈希值”（初始为固定初始值）进行64轮迭代运算，生成新的中间哈希值，直至所有消息块处理完成：</p>
+<ul>
+<li><p><strong>初始哈希值（IV）</strong>：<br>SM3规定了固定的初始256比特哈希值，分为8个32比特寄存器（A~H），初始值为：<br>A&#x3D;7380166F, B&#x3D;4914B2B9, C&#x3D;172442D7, D&#x3D;DA8A0600,<br>E&#x3D;A96F30BC, F&#x3D;163138AA, G&#x3D;E38DEE4D, H&#x3D;B0FB0E4E（均为十六进制）。</p>
+</li>
+<li><p><strong>64轮迭代运算</strong>：<br>每轮迭代使用对应的Wⱼ和W’ⱼ，通过以下步骤更新A~H：  </p>
+<ol>
+<li>计算轮常量Tⱼ：当0 ≤ j ≤ 15时，Tⱼ&#x3D;79CC4519；当16 ≤ j ≤ 63时，Tⱼ&#x3D;7A879D8A（十六进制，用于增强抗攻击能力）；  </li>
+<li>计算中间变量SS1 &#x3D; ((A ≪ 12) + E + (Tⱼ ≪ j)) ≪ 7；  </li>
+<li>计算中间变量SS2 &#x3D; SS1 ⊕ (A ≪ 12)；  </li>
+<li>计算中间变量TT1 &#x3D; FFⱼ(A,B,C) + D + SS2 + W’ⱼ；  </li>
+<li>计算中间变量TT2 &#x3D; GGⱼ(E,F,G) + H + SS1 + Wⱼ；  </li>
+<li>更新寄存器：D&#x3D;C, C&#x3D;B≪9, B&#x3D;A, A&#x3D;TT1, H&#x3D;G, G&#x3D;F≪19, F&#x3D;E, E&#x3D;P₀(TT2)；<br>其中<code>FFⱼ</code>和<code>GGⱼ</code>是轮函数（j≤15时为简单异或，j&gt;15时为复杂布尔运算），<code>P₀(X)</code>是置换函数（P₀(X)&#x3D;X⊕(X≪9)⊕(X≪17)）。</li>
+</ol>
+</li>
+<li><p><strong>迭代更新</strong>：每个消息块处理完成后，将新生成的A~H与处理前的中间哈希值进行异或，得到新的中间哈希值，作为下一个消息块的输入。</p>
+</li>
+</ul>
+<h3 id="4-输出最终哈希值"><a href="#4-输出最终哈希值" class="headerlink" title="4. 输出最终哈希值"></a>4. 输出最终哈希值</h3><p>当所有N个消息块均处理完成后，最终的中间哈希值（A~H拼接）即为SM3的输出结果——256比特（32字节）的哈希值，通常以64位十六进制字符串形式展示（1字节&#x3D;2位十六进制）。</p>
+<h2 id="三、SM3的安全性与优势"><a href="#三、SM3的安全性与优势" class="headerlink" title="三、SM3的安全性与优势"></a>三、SM3的安全性与优势</h2><h3 id="1-安全性评估"><a href="#1-安全性评估" class="headerlink" title="1. 安全性评估"></a>1. 安全性评估</h3><p>SM3的设计充分考虑了当前密码分析技术，经过国内外密码学界多年验证，具备以下安全特性：</p>
+<ul>
+<li><strong>抗碰撞性</strong>：目前尚无公开方法能在多项式时间内构造碰撞（即找到两条不同消息生成相同哈希值），其抗碰撞强度与SHA-256相当（理论生日攻击复杂度为2¹²⁸）；</li>
+<li><strong>抗差分攻击</strong>：压缩函数的轮函数和置换函数设计能有效抵御差分攻击，降低算法被破解的风险；</li>
+<li><strong>合规性</strong>：作为国家密码标准，SM3已通过国家密码管理局的安全性审查，满足关键信息基础设施的密码应用要求（符合《密码法》和《信息安全技术 密码应用基本要求》）。</li>
+</ul>
+<h3 id="2-核心优势"><a href="#2-核心优势" class="headerlink" title="2. 核心优势"></a>2. 核心优势</h3><ul>
+<li><strong>自主可控</strong>：完全由中国自主设计，避免依赖国外算法可能存在的“后门”或技术卡脖子风险；</li>
+<li><strong>性能均衡</strong>：算法流程简洁，硬件实现（如芯片、FPGA）和软件实现（如编程语言库）均具备较高效率，适合高并发场景（如区块链交易验证、大规模数据校验）；</li>
+<li><strong>场景适配</strong>：输出256比特哈希值，既能满足安全性需求，又不会因长度过长导致存储和传输成本过高，适配金融、政务、物联网等多领域。</li>
+</ul>
+<h2 id="四、SM3的典型应用场景"><a href="#四、SM3的典型应用场景" class="headerlink" title="四、SM3的典型应用场景"></a>四、SM3的典型应用场景</h2><p>SM3的特性使其在需要“数据完整性校验”和“身份认证”的场景中广泛应用：</p>
+<ol>
+<li><strong>数字签名</strong>：与SM2椭圆曲线公钥算法配合，构成“SM2+SM3”签名方案——将消息用SM3生成摘要后，再用私钥对摘要签名，接收方用公钥验签，确保消息未被篡改且来源可信（如电子合同、公文签署）；</li>
+<li><strong>区块链</strong>：作为区块链的“哈希算法”，用于生成区块哈希（如中国自主区块链平台“长安链”采用SM3），确保区块数据不可篡改；</li>
+<li><strong>数据校验</strong>：对文件、传输数据生成SM3哈希值，接收方重新计算哈希值并比对，验证数据是否在传输或存储过程中被篡改（如软件安装包校验、云存储数据完整性检查）；</li>
+<li><strong>身份认证</strong>：将用户密码通过SM3哈希后存储（而非明文存储），登录时比对哈希值，保障用户密码安全（避免密码泄露风险）。</li>
+</ol>
+<h2 id="五、SM3与国际主流哈希算法（SHA-256）对比"><a href="#五、SM3与国际主流哈希算法（SHA-256）对比" class="headerlink" title="五、SM3与国际主流哈希算法（SHA-256）对比"></a>五、SM3与国际主流哈希算法（SHA-256）对比</h2><p>SM3常与国际标准SHA-256（SHA-2系列算法）比较，二者在安全性和应用场景上有相似之处，但存在关键差异：</p>
+<table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>SM3</th>
+<th>SHA-256</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>制定机构</td>
+<td>中国国家密码管理局</td>
+<td>美国国家标准与技术研究院（NIST）</td>
+</tr>
+<tr>
+<td>输出长度</td>
+<td>256比特（32字节）</td>
+<td>256比特（32字节）</td>
+</tr>
+<tr>
+<td>消息块大小</td>
+<td>512比特</td>
+<td>512比特</td>
+</tr>
+<tr>
+<td>迭代轮数</td>
+<td>64轮</td>
+<td>64轮</td>
+</tr>
+<tr>
+<td>核心函数</td>
+<td>自定义P₀、P₁置换函数，FFⱼ、GGⱼ轮函数</td>
+<td>自定义Ch、Maj函数，Σ₀、Σ₁轮函数</td>
+</tr>
+<tr>
+<td>主要应用场景</td>
+<td>中国政务、金融、国企等合规场景</td>
+<td>国际通用场景（如互联网、跨境业务）</td>
+</tr>
+<tr>
+<td>合规性要求</td>
+<td>符合中国《密码法》强制要求</td>
+<td>符合国际NIST标准</td>
+</tr>
+</tbody></table>
+<h2 id="六、SM3的实现与工具"><a href="#六、SM3的实现与工具" class="headerlink" title="六、SM3的实现与工具"></a>六、SM3的实现与工具</h2><h3 id="1-编程语言支持"><a href="#1-编程语言支持" class="headerlink" title="1. 编程语言支持"></a>1. 编程语言支持</h3><p>主流编程语言均已通过官方或第三方库支持SM3算法：</p>
+<ul>
+<li><strong>Python</strong>：可通过<code>pycryptodome</code>库（<code>Crypto.Hash.SM3</code>）或<code>gmssl</code>库（国密专用库）实现；</li>
+<li><strong>Java</strong>：通过<code>BouncyCastle</code>加密库（需添加国密算法支持）或<code>gmssl-jdk</code>库；</li>
+<li>**C&#x2F;C++**：可使用国家密码管理局发布的“SM3算法参考实现代码”，或开源库<code>OpenSSL</code>（1.1.1及以上版本支持SM3）；</li>
+<li><strong>Go</strong>：标准库<code>crypto</code>无直接支持，需通过第三方库如<code>github.com/tjfoc/gmsm</code>。</li>
+</ul>
+<h3 id="2-常用工具"><a href="#2-常用工具" class="headerlink" title="2. 常用工具"></a>2. 常用工具</h3><ul>
+<li><strong>命令行工具</strong>：<code>OpenSSL</code>（命令：<code>openssl dgst -sm3 文件名</code>）、<code>gmssl</code>（国密专用工具，命令：<code>gmssl sm3 文件名</code>）；</li>
+<li><strong>在线工具</strong>：多个国密合规平台提供在线SM3哈希计算（如“国密算法在线测试平台”），适合快速验证小规模数据。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>SM3作为中国自主可控的密码哈希标准，不仅在安全性上达到国际先进水平，更在合规性上满足国内关键领域的密码应用要求。随着《密码法》的实施和“自主可控”战略的推进，SM3已成为金融、政务、区块链等领域的核心密码算法之一，是保障数据安全和信息主权的重要技术支撑。</p>
+<p>规范下载可以到<code>国家密码管理局网站-&gt;信息公开-&gt;标准规范</code>区域下载。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/09/27/2025-20250927-crypto-005-sm/" rel="prev" title="crypto系列5-国产密码算法">
+      <i class="fa fa-chevron-left"></i> crypto系列5-国产密码算法
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SM3%E7%AE%97%E6%B3%95%EF%BC%9A%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E5%AF%86%E7%A0%81%E5%B1%80%E5%93%88%E5%B8%8C%E6%A0%87%E5%87%86%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">SM3算法：中国国家密码局哈希标准详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81SM3%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%BD%8D%E4%B8%8E%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">一、SM3的基本定位与核心作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81SM3%E7%9A%84%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">二、SM3的算法流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B6%88%E6%81%AF%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 消息预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B6%88%E6%81%AF%E6%89%A9%E5%B1%95%EF%BC%9A%E7%94%9F%E6%88%9068%E4%B8%AA%E6%B6%88%E6%81%AF%E5%AD%97%E4%B8%8E64%E4%B8%AA%E6%89%A9%E5%B1%95%E5%AD%97"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 消息扩展：生成68个消息字与64个扩展字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8E%8B%E7%BC%A9%E5%87%BD%E6%95%B0%EF%BC%9A%E8%BF%AD%E4%BB%A3%E6%9B%B4%E6%96%B0%E5%93%88%E5%B8%8C%E5%80%BC"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 压缩函数：迭代更新哈希值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BE%93%E5%87%BA%E6%9C%80%E7%BB%88%E5%93%88%E5%B8%8C%E5%80%BC"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. 输出最终哈希值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81SM3%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E4%B8%8E%E4%BC%98%E5%8A%BF"><span class="nav-number">1.3.</span> <span class="nav-text">三、SM3的安全性与优势</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E5%85%A8%E6%80%A7%E8%AF%84%E4%BC%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. 安全性评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%B8%E5%BF%83%E4%BC%98%E5%8A%BF"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 核心优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81SM3%E7%9A%84%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.4.</span> <span class="nav-text">四、SM3的典型应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81SM3%E4%B8%8E%E5%9B%BD%E9%99%85%E4%B8%BB%E6%B5%81%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95%EF%BC%88SHA-256%EF%BC%89%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.</span> <span class="nav-text">五、SM3与国际主流哈希算法（SHA-256）对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81SM3%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">1.6.</span> <span class="nav-text">六、SM3的实现与工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">1. 编程语言支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">1.6.2.</span> <span class="nav-text">2. 常用工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">193</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
