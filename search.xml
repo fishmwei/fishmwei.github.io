@@ -8584,4 +8584,117 @@
         <category>crypto</category>
       </categories>
   </entry>
+  <entry>
+    <title>crypto系列7-国产对称算法SM4</title>
+    <url>/2025/10/02/2025-20251002-crypto-007-sm4/</url>
+    <content><![CDATA[<h1 id="SM4算法：中国国家密码局对称标准详解"><a href="#SM4算法：中国国家密码局对称标准详解" class="headerlink" title="SM4算法：中国国家密码局对称标准详解"></a>SM4算法：中国国家密码局对称标准详解</h1><p>SM4算法是中国自主设计的<strong>分组密码算法</strong>，主要用于数据加密保护，是国家密码标准（GB&#x2F;T 32907-2016）的核心组成部分。</p>
+<span id="more"></span>
+
+<h2 id="一、SM4算法核心特性"><a href="#一、SM4算法核心特性" class="headerlink" title="一、SM4算法核心特性"></a>一、SM4算法核心特性</h2><ol>
+<li><strong>算法类型</strong>：属于分组密码，采用Feistel结构（轮函数迭代），加密和解密过程结构相同，仅轮密钥使用顺序相反。</li>
+<li><strong>核心参数</strong>：<ul>
+<li>分组长度：固定为<strong>128位</strong>，即每次处理16字节的数据。</li>
+<li>密钥长度：固定为<strong>128位</strong>，确保高强度加密。</li>
+<li>迭代轮数：共32轮，每轮通过S盒（非线性变换）和线性变换实现数据混淆与扩散。</li>
+</ul>
+</li>
+<li><strong>安全等级</strong>：能有效抵抗差分攻击、线性攻击、代数攻击等主流密码分析方法，经国家密码管理局认证，可满足政务、金融等关键领域的安全需求。</li>
+</ol>
+<h2 id="二、SM4算法实现"><a href="#二、SM4算法实现" class="headerlink" title="二、SM4算法实现"></a>二、SM4算法实现</h2><p>SM4算法流程基于<strong>Feistel结构</strong>，核心分为<strong>密钥扩展</strong>和<strong>数据加密&#x2F;解密</strong>两部分，加密与解密流程结构完全一致，仅轮密钥使用顺序相反。</p>
+<h3 id="一、核心前提：轮密钥扩展"><a href="#一、核心前提：轮密钥扩展" class="headerlink" title="一、核心前提：轮密钥扩展"></a>一、核心前提：轮密钥扩展</h3><p>128位初始密钥需先生成32个128位的轮密钥（<code>rk0</code>-<code>rk31</code>），供32轮迭代使用，步骤如下：</p>
+<ol>
+<li><strong>初始准备</strong>：将128位初始密钥拆分为4个32位字（<code>K0</code>-<code>K3</code>），与4个固定的32位系统参数（<code>FK0</code>-<code>FK3</code>）分别异或，得到初始密钥字（<code>K4</code>-<code>K7</code>）。</li>
+<li><strong>迭代生成轮密钥</strong>：从<code>K8</code>开始，每生成1个密钥字需经过3步：<ul>
+<li>对前1个密钥字（如<code>K7</code>）进行循环左移、S盒非线性变换、异或固定参数（<code>CK</code>）的复合操作，得到临时值<code>t</code>。</li>
+<li>将<code>t</code>与前4个密钥字（如<code>K4</code>）异或，得到新密钥字（如<code>K8</code>）。</li>
+<li>重复此过程，直至生成<code>K4</code>-<code>K39</code>，其中<code>K8</code>-<code>K39</code>即为32个轮密钥（<code>rk0</code>-<code>rk31</code>）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="二、数据加密流程（128位明文→128位密文）"><a href="#二、数据加密流程（128位明文→128位密文）" class="headerlink" title="二、数据加密流程（128位明文→128位密文）"></a>二、数据加密流程（128位明文→128位密文）</h3><ol>
+<li><strong>初始变换（IP）</strong>：将128位明文拆分为4个32位字（<code>X0</code>-<code>X3</code>），与第1个轮密钥<code>rk0</code>结合，进入首轮迭代。</li>
+<li><strong>32轮迭代（Feistel结构）</strong>：每轮迭代对4个输入字（<code>Xi</code>-<code>Xi+3</code>）执行固定操作：<ul>
+<li>对<code>Xi+3</code>进行循环左移、S盒变换、线性变换的复合操作，得到中间值<code>F</code>。</li>
+<li>将<code>F</code>与<code>Xi</code>、轮密钥<code>rki</code>异或，得到新字<code>Xi+4</code>。</li>
+<li>4个输入字依次右移（<code>Xi+1</code>→<code>Xi</code>，<code>Xi+2</code>→<code>Xi+1</code>，<code>Xi+3</code>→<code>Xi+2</code>，<code>Xi+4</code>→<code>Xi+3</code>），进入下一轮。</li>
+</ul>
+</li>
+<li><strong>逆初始变换（IP⁻¹）</strong>：32轮迭代结束后，将最终4个输出字（<code>X32</code>-<code>X35</code>）按<code>X35</code>、<code>X34</code>、<code>X33</code>、<code>X32</code>的顺序拼接，得到128位密文。</li>
+</ol>
+<h3 id="三、数据解密流程（128位密文→128位明文）"><a href="#三、数据解密流程（128位密文→128位明文）" class="headerlink" title="三、数据解密流程（128位密文→128位明文）"></a>三、数据解密流程（128位密文→128位明文）</h3><p>解密流程与加密流程<strong>结构完全相同</strong>，唯一区别是轮密钥的使用顺序相反：</p>
+<ul>
+<li>加密时按<code>rk0</code>→<code>rk1</code>→…→<code>rk31</code>的顺序使用轮密钥。</li>
+<li>解密时按<code>rk31</code>→<code>rk30</code>→…→<code>rk0</code>的顺序使用轮密钥。</li>
+</ul>
+<h2 id="三、安全性分析"><a href="#三、安全性分析" class="headerlink" title="三、安全性分析"></a>三、安全性分析</h2><ol>
+<li><strong>密钥空间</strong>：128位密钥提供<code>2^128</code>种可能，远超暴力破解的计算能力（需约<code>10^38</code>年）。</li>
+<li><strong>抗攻击能力</strong>：<ul>
+<li><strong>差分攻击</strong>：最佳差分路径概率≤<code>2^-126</code>，需<code>2^126</code>次选择明文攻击，实际不可行。</li>
+<li><strong>线性攻击</strong>：线性逼近概率≤<code>2^-64</code>，攻击复杂度超过<code>2^128</code>。</li>
+<li><strong>侧信道攻击</strong>：硬件实现中通过冗余塔域（RTF）等技术防护，例如将S盒运算映射到AES的冗余塔域框架，降低功耗泄露风险。</li>
+</ul>
+</li>
+<li><strong>国际认证</strong>：2021年成为ISO&#x2F;IEC国际标准（ISO&#x2F;IEC 18033-3:2021&#x2F;AMD1:2021），表明其设计通过国际密码学界审查。</li>
+</ol>
+<h2 id="四、与AES的对比"><a href="#四、与AES的对比" class="headerlink" title="四、与AES的对比"></a>四、与AES的对比</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>SM4</th>
+<th>AES-128</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>结构</strong></td>
+<td>非平衡Feistel网络，32轮</td>
+<td>SPN结构，10轮</td>
+</tr>
+<tr>
+<td><strong>S盒设计</strong></td>
+<td>自主构造的8×8置换表</td>
+<td>GF(2⁸)求逆+仿射变换</td>
+</tr>
+<tr>
+<td><strong>扩散机制</strong></td>
+<td>线性变换L（循环移位+异或）</td>
+<td>列混淆（MixColumns）矩阵乘法</td>
+</tr>
+<tr>
+<td><strong>密钥扩展</strong></td>
+<td>与加密流程相似，生成32个轮密钥</td>
+<td>独立密钥扩展算法，生成11个轮密钥</td>
+</tr>
+<tr>
+<td><strong>硬件优化</strong></td>
+<td>边扩展边加密，节省存储资源</td>
+<td>流水线架构，侧重吞吐率</td>
+</tr>
+<tr>
+<td><strong>安全性</strong></td>
+<td>抗差分&#x2F;线性攻击能力与AES相当</td>
+<td>抗代数攻击能力更强</td>
+</tr>
+</tbody></table>
+<p>SM4在资源受限设备（如物联网传感器）上表现更优，而AES在通用计算平台上性能略高。</p>
+<h2 id="五、应用场景"><a href="#五、应用场景" class="headerlink" title="五、应用场景"></a>五、应用场景</h2><ol>
+<li><strong>金融领域</strong>：银行卡交易加密、移动支付安全（如中国银联的SM4-GCM标准）。</li>
+<li><strong>政务通信</strong>：公文传输加密、电子证照保护。</li>
+<li><strong>物联网</strong>：智能家居设备间的通信加密（如华为鸿蒙系统的SM4集成）。</li>
+<li><strong>VPN与云安全</strong>：虚拟专用网络数据加密、云端存储敏感字段保护。</li>
+</ol>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>SM4算法通过<strong>S盒非线性混淆</strong>、<strong>线性变换全局扩散</strong>和<strong>密钥扩展的伪随机性</strong>，实现了高效且安全的对称加密。其设计既符合国际密码学标准，又满足国产化替代需求，在政务、金融、物联网等关键领域发挥核心作用。随着量子计算技术的发展，SM4的后量子安全性优化（如融合格密码）成为未来研究重点，但目前其128位密钥和32轮迭代足以抵御现有攻击手段。</p>
+<p>SM4 算法处理固定长度为 128 位（16 字节）的数据块，使用 128 位（16 字节）的密钥。在实际应用中，对于长度超过 128 位的数据，需要使用分组密码的工作模式（如 CBC、CTR 等）进行处理。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>crypto</category>
+      </categories>
+  </entry>
 </search>
