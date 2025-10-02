@@ -8601,7 +8601,7 @@
 <li><strong>安全等级</strong>：能有效抵抗差分攻击、线性攻击、代数攻击等主流密码分析方法，经国家密码管理局认证，可满足政务、金融等关键领域的安全需求。</li>
 </ol>
 <h2 id="二、SM4算法实现"><a href="#二、SM4算法实现" class="headerlink" title="二、SM4算法实现"></a>二、SM4算法实现</h2><p>SM4算法流程基于<strong>Feistel结构</strong>，核心分为<strong>密钥扩展</strong>和<strong>数据加密&#x2F;解密</strong>两部分，加密与解密流程结构完全一致，仅轮密钥使用顺序相反。</p>
-<h3 id="一、核心前提：轮密钥扩展"><a href="#一、核心前提：轮密钥扩展" class="headerlink" title="一、核心前提：轮密钥扩展"></a>一、核心前提：轮密钥扩展</h3><p>128位初始密钥需先生成32个128位的轮密钥（<code>rk0</code>-<code>rk31</code>），供32轮迭代使用，步骤如下：</p>
+<h3 id="A、核心前提：轮密钥扩展"><a href="#A、核心前提：轮密钥扩展" class="headerlink" title="A、核心前提：轮密钥扩展"></a>A、核心前提：轮密钥扩展</h3><p>128位初始密钥需先生成32个128位的轮密钥（<code>rk0</code>-<code>rk31</code>），供32轮迭代使用，步骤如下：</p>
 <ol>
 <li><strong>初始准备</strong>：将128位初始密钥拆分为4个32位字（<code>K0</code>-<code>K3</code>），与4个固定的32位系统参数（<code>FK0</code>-<code>FK3</code>）分别异或，得到初始密钥字（<code>K4</code>-<code>K7</code>）。</li>
 <li><strong>迭代生成轮密钥</strong>：从<code>K8</code>开始，每生成1个密钥字需经过3步：<ul>
@@ -8611,7 +8611,7 @@
 </ul>
 </li>
 </ol>
-<h3 id="二、数据加密流程（128位明文→128位密文）"><a href="#二、数据加密流程（128位明文→128位密文）" class="headerlink" title="二、数据加密流程（128位明文→128位密文）"></a>二、数据加密流程（128位明文→128位密文）</h3><ol>
+<h3 id="B、数据加密流程（128位明文→128位密文）"><a href="#B、数据加密流程（128位明文→128位密文）" class="headerlink" title="B、数据加密流程（128位明文→128位密文）"></a>B、数据加密流程（128位明文→128位密文）</h3><ol>
 <li><strong>初始变换（IP）</strong>：将128位明文拆分为4个32位字（<code>X0</code>-<code>X3</code>），与第1个轮密钥<code>rk0</code>结合，进入首轮迭代。</li>
 <li><strong>32轮迭代（Feistel结构）</strong>：每轮迭代对4个输入字（<code>Xi</code>-<code>Xi+3</code>）执行固定操作：<ul>
 <li>对<code>Xi+3</code>进行循环左移、S盒变换、线性变换的复合操作，得到中间值<code>F</code>。</li>
@@ -8621,7 +8621,7 @@
 </li>
 <li><strong>逆初始变换（IP⁻¹）</strong>：32轮迭代结束后，将最终4个输出字（<code>X32</code>-<code>X35</code>）按<code>X35</code>、<code>X34</code>、<code>X33</code>、<code>X32</code>的顺序拼接，得到128位密文。</li>
 </ol>
-<h3 id="三、数据解密流程（128位密文→128位明文）"><a href="#三、数据解密流程（128位密文→128位明文）" class="headerlink" title="三、数据解密流程（128位密文→128位明文）"></a>三、数据解密流程（128位密文→128位明文）</h3><p>解密流程与加密流程<strong>结构完全相同</strong>，唯一区别是轮密钥的使用顺序相反：</p>
+<h3 id="C、数据解密流程（128位密文→128位明文）"><a href="#C、数据解密流程（128位密文→128位明文）" class="headerlink" title="C、数据解密流程（128位密文→128位明文）"></a>C、数据解密流程（128位密文→128位明文）</h3><p>解密流程与加密流程<strong>结构完全相同</strong>，唯一区别是轮密钥的使用顺序相反：</p>
 <ul>
 <li>加密时按<code>rk0</code>→<code>rk1</code>→…→<code>rk31</code>的顺序使用轮密钥。</li>
 <li>解密时按<code>rk31</code>→<code>rk30</code>→…→<code>rk0</code>的顺序使用轮密钥。</li>
@@ -8684,6 +8684,7 @@
 </ol>
 <h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>SM4算法通过<strong>S盒非线性混淆</strong>、<strong>线性变换全局扩散</strong>和<strong>密钥扩展的伪随机性</strong>，实现了高效且安全的对称加密。其设计既符合国际密码学标准，又满足国产化替代需求，在政务、金融、物联网等关键领域发挥核心作用。随着量子计算技术的发展，SM4的后量子安全性优化（如融合格密码）成为未来研究重点，但目前其128位密钥和32轮迭代足以抵御现有攻击手段。</p>
 <p>SM4 算法处理固定长度为 128 位（16 字节）的数据块，使用 128 位（16 字节）的密钥。在实际应用中，对于长度超过 128 位的数据，需要使用分组密码的工作模式（如 CBC、CTR 等）进行处理。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>SM4算法配合不同模式用于具体的场景，比如IPSec的国密场景CBC(SM4)+SM3， 磁盘加密的XTS（SM4），NTLS（国密传输层安全协议）加密的GCM(SM4)等。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
