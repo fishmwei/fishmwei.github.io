@@ -8698,4 +8698,245 @@
         <category>crypto</category>
       </categories>
   </entry>
+  <entry>
+    <title>crypto系列8-国产对称算法SM2</title>
+    <url>/2025/10/05/2025-20251005-crypto-008-sm2/</url>
+    <content><![CDATA[<h1 id="SM2算法"><a href="#SM2算法" class="headerlink" title="SM2算法"></a>SM2算法</h1><p>SM2是中国自主设计的<strong>椭圆曲线公钥密码算法</strong>，主要用于数字签名、密钥交换和公钥加密，是国家密码管理局认定的国密标准算法之一。</p>
+<span id="more"></span>
+
+<h2 id="一、SM2算法的核心特性"><a href="#一、SM2算法的核心特性" class="headerlink" title="一、SM2算法的核心特性"></a>一、SM2算法的核心特性</h2><ol>
+<li><strong>高安全性</strong>：基于椭圆曲线离散对数问题（ECDLP），该问题在数学上具有较高的计算复杂度，能有效抵抗当前主流的攻击方式。</li>
+<li><strong>高效性能</strong>：相比传统的RSA算法，在相同安全等级下，SM2的密钥长度更短（如256位SM2等效于3072位RSA），运算速度更快，更适合资源受限的设备（如物联网终端、智能卡）。</li>
+<li><strong>合规性</strong>：作为中国《信息安全技术 公钥密码算法第2部分：SM2椭圆曲线公钥密码算法》（GB&#x2F;T 32918.2-2016）的核心算法，满足国内政务、金融、能源等关键领域的密码合规要求。</li>
+</ol>
+<h2 id="二、SM2的主要应用场景"><a href="#二、SM2的主要应用场景" class="headerlink" title="二、SM2的主要应用场景"></a>二、SM2的主要应用场景</h2><ul>
+<li><strong>数字签名</strong>：用于电子合同、电子公文、软件版权认证等场景，确保数据的完整性和发送者身份的真实性。</li>
+<li><strong>密钥交换</strong>：在通信双方（如客户端与服务器）之间安全协商会话密钥，保障后续数据传输的加密安全。</li>
+<li><strong>公钥加密</strong>：对敏感信息（如用户隐私数据、金融交易信息）进行加密，仅授权方（持有私钥）可解密。</li>
+<li><strong>协同加密</strong>：常与国密对称加密算法SM4配合使用，SM2负责密钥分发，SM4负责数据批量加密，形成完整的密码应用体系。</li>
+</ul>
+<h2 id="三、核心算法流程"><a href="#三、核心算法流程" class="headerlink" title="三、核心算法流程"></a>三、核心算法流程</h2><p>SM2支持三大核心操作，分别是数字签名（含验签）、密钥交换、公钥加密（含解密）。</p>
+<h3 id="1-数字签名与验签流程"><a href="#1-数字签名与验签流程" class="headerlink" title="1. 数字签名与验签流程"></a>1. 数字签名与验签流程</h3><ul>
+<li><strong>签名步骤</strong>：<ol>
+<li>签名方用SM3哈希算法计算待签名数据的哈希值。</li>
+<li>签名方使用自身私钥，结合随机数和椭圆曲线运算，生成签名值（含两个分量r、s）。</li>
+<li>将待签名数据与签名值（r、s）一同发送给验签方。</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/2025/SM2_sign.png" alt="SM2_sign"></p>
+<ul>
+<li><strong>验签步骤</strong>：<ol>
+<li>验签方接收数据后，用相同的SM3算法计算数据哈希值。</li>
+<li>验签方使用签名方的公钥，结合椭圆曲线运算验证签名值（r、s）的合法性。</li>
+<li>若运算结果与签名中的r一致，则验签通过；反之则失败。<br><img src="/images/2025/SM2_verify.png" alt="SM2_verify"></li>
+</ol>
+</li>
+</ul>
+<h3 id="2-密钥交换流程"><a href="#2-密钥交换流程" class="headerlink" title="2. 密钥交换流程"></a>2. 密钥交换流程</h3><ol>
+<li>通信双方（A、B）分别生成自身的公私钥对，并交换公钥。</li>
+<li>双方各自结合自身私钥与对方公钥，通过椭圆曲线点乘法计算出相同的会话密钥。</li>
+<li>会话密钥生成后，需用SM3进行哈希处理，确保密钥的一致性和完整性。<br><img src="/images/2025/SM2_exchange.png" alt="SM2_exchange"></li>
+</ol>
+<h3 id="3-公钥加密与解密流程"><a href="#3-公钥加密与解密流程" class="headerlink" title="3. 公钥加密与解密流程"></a>3. 公钥加密与解密流程</h3><ul>
+<li><p><strong>加密步骤</strong>：</p>
+<ol>
+<li>加密方用接收方的公钥，结合随机数和椭圆曲线运算，生成临时公钥和加密密钥。</li>
+<li>用生成的加密密钥对明文数据进行对称加密（通常配合SM4算法），并生成加密数据。</li>
+<li>将临时公钥、加密数据及SM3哈希值（用于完整性校验）一同发送。<br><img src="/images/2025/SM2_encrypt.png" alt="SM2_encrypt"></li>
+</ol>
+</li>
+<li><p><strong>解密步骤</strong>：</p>
+<ol>
+<li>解密方用自身私钥解析临时公钥，还原出加密密钥。</li>
+<li>用加密密钥解密数据，得到明文，同时通过SM3哈希值验证数据完整性。</li>
+<li>若哈希值匹配则解密成功；反之则数据被篡改，解密失败。<br><img src="/images/2025/SM2_decrypt.png" alt="SM2_decrypt"></li>
+</ol>
+</li>
+</ul>
+<h2 id="四、SM2与RSA算法的关键区别"><a href="#四、SM2与RSA算法的关键区别" class="headerlink" title="四、SM2与RSA算法的关键区别"></a>四、SM2与RSA算法的关键区别</h2><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>SM2算法</th>
+<th>RSA算法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数学基础</td>
+<td>椭圆曲线离散对数问题</td>
+<td>大整数分解问题</td>
+</tr>
+<tr>
+<td>密钥长度（等效安全）</td>
+<td>256位</td>
+<td>3072位</td>
+</tr>
+<tr>
+<td>运算速度</td>
+<td>更快（加解密、签名验签）</td>
+<td>较慢（大整数运算耗时）</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>国内合规场景、轻量化设备</td>
+<td>全球通用场景、兼容性优先</td>
+</tr>
+</tbody></table>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>crypto</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>crypto系列9-国产流算法ZUC</title>
+    <url>/2025/10/08/2025-20251008-crypto-009-zuc/</url>
+    <content><![CDATA[<h1 id="ZUC算法"><a href="#ZUC算法" class="headerlink" title="ZUC算法"></a>ZUC算法</h1><p>ZUC算法中文称作祖冲之算法，其以中国古代著名数学家祖冲之的拼音(ZU Chongzhi)首字母命名,是中国自主设计的流密码算法，其设计原理和工作模式体现了现代密码学中“混淆-扩散”的核心思想，同时通过三层架构的协同作用实现高效安全的密钥流生成。是移动通信 3GPP加密算法128-EEA3和完整性算法128-EIA3的核心。以下从技术细节展开说明：</p>
+<span id="more"></span>
+
+<h2 id="一、设计原理：三层架构的协同作用"><a href="#一、设计原理：三层架构的协同作用" class="headerlink" title="一、设计原理：三层架构的协同作用"></a>一、设计原理：三层架构的协同作用</h2><p><img src="/images/2025/zuc.png" alt="zuc"><br>ZUC分为3层逻辑， 顶层包含16个31位的线性反馈移位寄存器， 中间层是用于重组的4个32bit值，底层是一个非线性的函数。</p>
+<h3 id="1-线性反馈移位寄存器（LFSR）：高周期序列的基石"><a href="#1-线性反馈移位寄存器（LFSR）：高周期序列的基石" class="headerlink" title="1. 线性反馈移位寄存器（LFSR）：高周期序列的基石"></a>1. <strong>线性反馈移位寄存器（LFSR）：高周期序列的基石</strong></h3><ul>
+<li><strong>结构与运算</strong>：LFSR由16个31位寄存器单元组成，定义在素域GF(2³¹-1)上，特征多项式为16次本原多项式。其更新规则为：<br>[<br>s_{16} &#x3D; (2^{15}s_{15} + 2^{17}s_{13} + 2^{21}s_{10} + 2^{20}s_4 + (1+2^8)s_0) \mod (2^{31}-1)<br>]<br>该设计使LFSR生成周期约为2⁴⁹⁶的m序列，具有优良的统计特性和抗线性攻击能力。</li>
+<li><strong>模式切换</strong>：LFSR分为初始化模式和工作模式。初始化时接收非线性函数F的输出（舍弃最低位）作为输入，通过32轮迭代实现状态随机化；工作模式下无输入，自主更新状态。</li>
+</ul>
+<h3 id="2-比特重组（BR）：线性结构的破坏者"><a href="#2-比特重组（BR）：线性结构的破坏者" class="headerlink" title="2. 比特重组（BR）：线性结构的破坏者"></a>2. <strong>比特重组（BR）：线性结构的破坏者</strong></h3><ul>
+<li><strong>数据抽取与重组</strong>：从LFSR的16个寄存器中抽取128位，重新组合为4个32位字（X₀、X₁、X₂、X₃）。具体规则为：<br>[<br>\begin{align*}<br>X_0 &amp;&#x3D; s_{15} \text{的高16位} | s_{14} \text{的低16位} \<br>X_1 &amp;&#x3D; s_{11} \text{的低16位} | s_9 \text{的高16位} \<br>X_2 &amp;&#x3D; s_7 \text{的低16位} | s_5 \text{的高16位} \<br>X_3 &amp;&#x3D; s_2 \text{的低16位} | s_0 \text{的高16位}<br>\end{align*}<br>]<br>前3个字（X₀、X₁、X₂）输入非线性函数F，第4个字X₃直接参与密钥流生成。</li>
+<li><strong>设计目标</strong>：通过跨寄存器的位重组，破坏LFSR在素域上的线性结构，为后续非线性处理奠定基础。</li>
+</ul>
+<h3 id="3-非线性函数F：抗攻击能力的核心"><a href="#3-非线性函数F：抗攻击能力的核心" class="headerlink" title="3. 非线性函数F：抗攻击能力的核心"></a>3. <strong>非线性函数F：抗攻击能力的核心</strong></h3><ul>
+<li><strong>组件与运算</strong>：F函数包含4个8×8的S盒（S₀、S₁、S₀、S₂，其中S₂&#x3D;S₀，S₃&#x3D;S₁）和线性变换L。其运算步骤为：<ol>
+<li><strong>输入预处理</strong>：将X₀与R₁异或，结果与R₂进行模2³²加法，得到中间值W。</li>
+<li><strong>分支处理</strong>：<br>[<br>\begin{align*}<br>W_1 &amp;&#x3D; R_1 + X_1 \mod 2^{32} \<br>W_2 &amp;&#x3D; R_2 \oplus X_2<br>\end{align*}<br>]</li>
+<li><strong>S盒变换</strong>：将W₁的低16位与W₂的高16位拼接后，通过线性变换L₁扩散，再输入S盒；同理处理W₂的低16位与W₁的高16位，通过L₂变换和S盒。</li>
+<li><strong>状态更新</strong>：<br>[<br>\begin{align*}<br>R_1 &amp;&#x3D; S(L_1(W_{1L} | W_{2H})) \<br>R_2 &amp;&#x3D; S(L_2(W_{2L} | W_{1H}))<br>\end{align*}<br>]</li>
+</ol>
+</li>
+<li><strong>安全特性</strong>：S盒提供非线性混淆，线性变换L通过循环移位和异或实现高扩散（如L₁的移位参数为2、10、18、24），有效抵御差分攻击和线性分析。</li>
+</ul>
+<h2 id="二、算法介绍"><a href="#二、算法介绍" class="headerlink" title="二、算法介绍"></a>二、算法介绍</h2><p>ZUC包含机密性和完整性两种算法。</p>
+<h3 id="一、机密性算法（128-EEA3）：密钥流驱动的逐位加密"><a href="#一、机密性算法（128-EEA3）：密钥流驱动的逐位加密" class="headerlink" title="一、机密性算法（128-EEA3）：密钥流驱动的逐位加密"></a>一、机密性算法（128-EEA3）：<strong>密钥流驱动的逐位加密</strong></h3><h4 id="1-核心原理"><a href="#1-核心原理" class="headerlink" title="1. 核心原理"></a>1. <strong>核心原理</strong></h4><p>128-EEA3采用<strong>流密码加密</strong>机制，通过ZUC生成的<strong>伪随机密钥流</strong>与明文逐位异或，实现数据加密。其核心逻辑为：<br>[<br>\text{密文} \ C &#x3D; P \oplus Z<br>]<br>其中，(P)为明文，(Z)为密钥流。解密时重复相同过程：(P &#x3D; C \oplus Z)。</p>
+<h4 id="2-密钥流生成流程"><a href="#2-密钥流生成流程" class="headerlink" title="2. 密钥流生成流程"></a>2. <strong>密钥流生成流程</strong></h4><ul>
+<li><strong>初始化阶段</strong>：<br>使用128位加密密钥(K_{\text{enc}})和128位初始向量(IV)对LFSR进行32轮状态扰动，确保密钥流与初始参数深度关联。初始化完成后，先执行一次工作模式操作，<strong>丢弃首个密钥流</strong>以消除残留影响。</li>
+<li><strong>工作阶段</strong>：<br>每周期生成32位密钥字(Z)：<ol>
+<li><strong>LFSR更新</strong>：自主计算新状态(s_{16})，确保序列周期长达(2^{496})。</li>
+<li><strong>比特重组（BR）</strong>：从LFSR抽取128位，重组为4个32位字(X_0 \sim X_3)。</li>
+<li><strong>非线性函数F</strong>：输入(X_0, X_1, X_2)生成32位输出(W)，并更新记忆单元(R_1, R_2)。</li>
+<li><strong>密钥流生成</strong>：(Z &#x3D; X_3 \oplus W)，确保每一位密钥流与明文一一对应。</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-安全性保障"><a href="#3-安全性保障" class="headerlink" title="3. 安全性保障"></a>3. <strong>安全性保障</strong></h4><ul>
+<li><strong>IV唯一性</strong>：(IV)由COUNT（计数器）、BEARER（承载标识）、DIRECTION（传输方向）等参数拼接生成，确保每次通信的密钥流不同，抵抗重放攻击。</li>
+<li><strong>密钥流随机性</strong>：LFSR在素域(GF(2^{31}-1))上的设计和非线性函数F的混淆扩散，使密钥流难以预测。</li>
+</ul>
+<h3 id="二、完整性算法（128-EIA3）：哈希-密钥流结合的MAC生成"><a href="#二、完整性算法（128-EIA3）：哈希-密钥流结合的MAC生成" class="headerlink" title="二、完整性算法（128-EIA3）：哈希-密钥流结合的MAC生成"></a>二、完整性算法（128-EIA3）：<strong>哈希-密钥流结合的MAC生成</strong></h3><h4 id="1-核心原理-1"><a href="#1-核心原理-1" class="headerlink" title="1. 核心原理"></a>1. <strong>核心原理</strong></h4><p>128-EIA3通过<strong>消息认证码（MAC）</strong>验证数据完整性，其核心逻辑为：<br>[<br>\text{MAC} &#x3D; \text{Hash}(M \oplus Z) \oplus Z_{\text{final}}<br>]<br>其中，(M)为消息，(Z)为密钥流，(Z_{\text{final}})为最终密钥字。实际实现中采用<strong>迭代哈希</strong>与密钥流结合的方式，确保抗篡改能力。</p>
+<h4 id="2-MAC生成流程"><a href="#2-MAC生成流程" class="headerlink" title="2. MAC生成流程"></a>2. <strong>MAC生成流程</strong></h4><ul>
+<li><strong>输入参数</strong>：<br>128位完整性密钥(K_{\text{int}})、(IV)、消息(M)及消息长度(L)（32位表示）。</li>
+<li><strong>具体步骤</strong>：<ol>
+<li><strong>消息预处理</strong>：将(M)按32位分组，不足补0，得到(M_0, M_1, \dots, M_{m-1})。</li>
+<li><strong>初始化哈希状态</strong>：设置32位哈希值(H_0 &#x3D; 0)。</li>
+<li><strong>迭代计算</strong>：<br>对每个分组(M_i)，生成对应密钥字(Z_i)，更新哈希状态：<br>[<br>H_{i+1} &#x3D; (H_i \oplus M_i) + Z_i \mod 2^{32}<br>]<br>（加法运算增强非线性，异或操作确保对消息敏感）。</li>
+<li><strong>最终处理</strong>：<br>引入消息长度(L)，计算最终哈希值：<br>[<br>T &#x3D; (H_m \oplus L) + Z_m \mod 2^{32}<br>]<br>取(T)的低32位作为(\text{MAC})。</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-安全性保障-1"><a href="#3-安全性保障-1" class="headerlink" title="3. 安全性保障"></a>3. <strong>安全性保障</strong></h4><ul>
+<li><strong>密钥流关联</strong>：MAC的生成依赖密钥流(Z_i)，确保攻击者无法在不掌握(K_{\text{int}})的情况下伪造消息。</li>
+<li><strong>长度验证</strong>：将消息长度(L)纳入计算，防止<strong>长度扩展攻击</strong>（即攻击者通过已知MAC伪造更长消息）。</li>
+</ul>
+<h3 id="三、机密性与完整性的协同设计"><a href="#三、机密性与完整性的协同设计" class="headerlink" title="三、机密性与完整性的协同设计"></a>三、机密性与完整性的协同设计</h3><ol>
+<li><strong>密钥分离机制</strong>：<br>加密和完整性使用独立密钥（(K_{\text{enc}})和(K_{\text{int}})），降低单密钥泄露的风险。例如，在4G网络中，用户平面数据加密用(K_{\text{enc}})，控制平面信令完整性校验用(K_{\text{int}})。</li>
+<li><strong>IV共享与唯一性</strong>：<br>两者使用相同(IV)生成方式（基于COUNT等参数），确保同一通信会话的加密与完整性保护同步。(IV)的唯一性由COUNT的单调递增性保证，每次通信使用不同(IV)。</li>
+<li><strong>效率优化</strong>：<br>密钥流生成模块（ZUC）被两者共享，减少重复计算。例如，在5G边缘节点中，加密和完整性校验可复用同一密钥流生成过程，降低处理延迟。</li>
+</ol>
+<h2 id="三、实际应用示例"><a href="#三、实际应用示例" class="headerlink" title="三、实际应用示例"></a>三、实际应用示例</h2><ul>
+<li><strong>4G LTE网络</strong>：<br>基站与手机通信时，128-EEA3对用户平面的语音、视频数据加密，128-EIA3对控制平面的鉴权消息生成MAC，确保信令未被篡改。</li>
+<li><strong>移动支付</strong>：<br>用户通过云闪付APP发送支付指令时，128-EEA3加密卡号和金额，128-EIA3生成MAC验证报文完整性，防止中间人攻击。</li>
+</ul>
+<h2 id="四、标准化与演进"><a href="#四、标准化与演进" class="headerlink" title="四、标准化与演进"></a>四、标准化与演进</h2><ul>
+<li><strong>国际标准</strong>：<br>128-EEA3和128-EIA3已纳入3GPP LTE（TS 35.221）和ISO&#x2F;IEC 18033-4国际标准，成为全球通信安全的通用方案。</li>
+<li><strong>量子安全扩展</strong>：<br>升级版ZUC-256将密钥长度扩展至256位，增强抗量子攻击能力，计划用于5G和车联网等未来场景。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ZUC的机密性和完整性算法通过<strong>密钥流异或加密</strong>和<strong>哈希-密钥流认证</strong>的组合，在保障数据安全的同时兼顾效率。其设计体现了现代密码学的核心原则：<strong>混淆-扩散</strong>（非线性函数F）、<strong>密钥分离</strong>（加密与完整性独立密钥）和<strong>初始化唯一性</strong>（动态IV）。这一架构不仅支撑了4G&#x2F;5G网络的安全运行，也为物联网、金融支付等领域提供了可信赖的安全解决方案。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>crypto</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈（60）- 内核异步Crypto性能拉胯？问题竟在测试逻辑！</title>
+    <url>/2025/10/21/2025-20251021-weekly-kcapi-speed/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近帮同事调试内核异步Crypto算法的性能测试，目标是榨干硬件的最大算力。但测试结果却让人意外：相同硬件下，64字节数据的内核态测试性能，居然只有用户态的1&#x2F;10。</p>
+<p>要知道这款硬件专门针对小字节场景做了优化，设计指标完全没发挥出来，这背后肯定不是硬件的问题，得从软件层面找原因。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="代码剖析：原来测试逻辑“拖了后腿”"><a href="#代码剖析：原来测试逻辑“拖了后腿”" class="headerlink" title="代码剖析：原来测试逻辑“拖了后腿”"></a>代码剖析：原来测试逻辑“拖了后腿”</h2><p>先看内核自带tcrypt测试程序的核心代码，问题其实藏在执行逻辑里：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> <span class="title function_">do_one_ahash_op</span><span class="params">(<span class="keyword">struct</span> ahash_request *req, <span class="type">int</span> ret)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">crypto_wait</span> *<span class="title">wait</span> =</span> req-&gt;base.data;</span><br><span class="line">	<span class="keyword">return</span> crypto_wait_req(ret, wait);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">test_ahash_jiffies_digest</span><span class="params">(<span class="keyword">struct</span> ahash_request *req, <span class="type">int</span> blen,</span></span><br><span class="line"><span class="params">				     <span class="type">char</span> *out, <span class="type">int</span> secs)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> start, end;</span><br><span class="line">	<span class="type">int</span> bcount;</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 核心问题：发一个等一个，完全串行执行</span></span><br><span class="line">	<span class="keyword">for</span> (start = jiffies, end = start + secs * HZ, bcount = <span class="number">0</span>;</span><br><span class="line">	     time_before(jiffies, end); bcount++) &#123;</span><br><span class="line">		ret = do_one_ahash_op(req, crypto_ahash_digest(req));</span><br><span class="line">		<span class="keyword">if</span> (ret)</span><br><span class="line">			<span class="keyword">return</span> ret;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pr_cont(<span class="string">&quot;%6u opers/sec, %9lu bytes/sec\n&quot;</span>,</span><br><span class="line">		bcount / secs, ((<span class="type">long</span>)bcount * blen) / secs);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再看AEAD算法的并发测试逻辑：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">do_mult_aead_op</span><span class="params">(<span class="keyword">struct</span> test_mb_aead_data *data, <span class="type">int</span> enc,</span></span><br><span class="line"><span class="params">				u32 num_mb, <span class="type">int</span> *rc)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> i, err = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 批量下发num_mb个请求</span></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_mb; i++) &#123;</span><br><span class="line">		rc[i] = enc == ENCRYPT ? crypto_aead_encrypt(data[i].req) : crypto_aead_decrypt(data[i].req);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 等待所有请求完成后再继续</span></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; num_mb; i++) &#123;</span><br><span class="line">		rc[i] = crypto_wait_req(rc[i], &amp;data[i].wait);</span><br><span class="line">		<span class="keyword">if</span> (rc[i]) err = rc[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两段代码暴露了关键问题：</p>
+<ol>
+<li>基础测试逻辑是“下发一个、等待完成、再发下一个”，硬件并发数被限制为1，完全串行执行，根本发挥不出硬件的并发算力；</li>
+<li>AEAD算法虽支持num_mb批量下发，但本质还是“批量等待”，最大并发量被num_mb锁定，依然无法跑满硬件性能。</li>
+</ol>
+<hr>
+<h2 id="优化思路：参考用户态，实现“边下发边接收”"><a href="#优化思路：参考用户态，实现“边下发边接收”" class="headerlink" title="优化思路：参考用户态，实现“边下发边接收”"></a>优化思路：参考用户态，实现“边下发边接收”</h2><p>其实用户态的测试逻辑早就给出了标准答案——通过异步回调实现“只下发不等待”，让硬件持续处于高负载状态。我之前就把这个思路告诉了同事，可惜两三周过去，代码还没落地，最后还是得自己上手。</p>
+<p>优化后的核心流程如下：</p>
+<ol>
+<li>提前申请好算法上下文，避免运行时资源分配耗时；</li>
+<li>创建多线程并发测试，每个线程独立统计性能；<ul>
+<li>预先创建命令请求池，提前分配好数据空间；</li>
+<li>记录开始时间后，循环批量获取请求并下发；</li>
+<li>通过重写request的callback函数，异步记录完成的请求数，无需主动等待；</li>
+</ul>
+</li>
+<li>用定时器设置测试停止标志，保证测试时长精准；</li>
+<li>等待所有线程执行完毕，累加各线程性能数据，得到总性能。</li>
+</ol>
+<p><img src="/images/2025/kspeed.png" alt="优化后测试逻辑示意图"></p>
+<p>完整的代码实现已上传至Gitee，可直接参考：<a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/kspeed">https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/kspeed</a></p>
+<hr>
+<h2 id="优化结果：性能大幅提升，仍有优化空间"><a href="#优化结果：性能大幅提升，仍有优化空间" class="headerlink" title="优化结果：性能大幅提升，仍有优化空间"></a>优化结果：性能大幅提升，仍有优化空间</h2><p>修改后的测试结果让人惊喜：</p>
+<ul>
+<li>64字节场景：性能从用户态的1&#x2F;10提升至1&#x2F;3，小字节优化终于初步见效；</li>
+<li>1024字节场景：性能完全追平用户态，说明修改后的逻辑已经能把硬件跑满。</li>
+</ul>
+<p>不过64字节场景仍有差距，后续我又分析了算法实现的细节，找到了几个可以进一步优化的点，目前已经交给同事继续迭代。</p>
+<hr>
+<p>性能测试不是“跑通就行”，而是要让硬件发挥出应有的实力。这次的踩坑经历也提醒我们：遇到性能不符预期时，先别急着质疑硬件，不妨回头看看测试逻辑是否真的合理。</p>
+<h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>周六一大早，就赶去赴系统架构师软考的“约”。考场里人头攒动，没想到还偶遇了上家公司的同事，简单聊了几句才知道，他也是主动报名的——大家都想着拿个证，算是给自己的专业能力一个官方认可，不得不说，现在职场人是真卷啊～</p>
+<p>其实我上半年就报过一次名，可惜当时准备得太仓促，加上家里刚好有急事冲突，最后直接缺考了，干脆把希望寄托在下半年。可谁想到，下半年项目突然进入攻关期，连着两三个月忙得脚不沾地，备考只能见缝插针地翻几页书，根本没系统梳理。好不容易等到国庆有了空闲，10月份又撞上职级晋升的筹备，报的备考课都没来得及听完，复习计划再次被打乱。</p>
+<p>直到10月底，才终于挤出时间突击补习了十几天。心里一边给自己打气“差不多准备好了”，一边又有点没底，但想想也只能硬着头皮上——成年人的备考，哪有“完全准备充分”这一说？工作、生活的琐事总会不断挤占时间，很多时候都是被事情推着往前走，尽力就好。</p>
+<p>这次考试感觉有戏，但又不敢太笃定，一半期待一半忐忑，只能静静等着12月的成绩揭晓啦～</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
 </search>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="SM2算法SM2是中国自主设计的椭圆曲线公钥密码算法，主要用于数字签名、密钥交换和公钥加密，是国家密码管理局认定的国密标准算法之一。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crypto系列8-国产对称算法SM2">
+<meta property="og:url" content="https://fishmwei.github.io/2025/10/05/2025-20251005-crypto-008-sm2/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="SM2算法SM2是中国自主设计的椭圆曲线公钥密码算法，主要用于数字签名、密钥交换和公钥加密，是国家密码管理局认定的国密标准算法之一。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM2_sign.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM2_verify.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM2_exchange.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM2_encrypt.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/2025/SM2_decrypt.png">
+<meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+<meta property="article:published_time" content="2025-10-05T00:57:07.000Z">
+<meta property="article:modified_time" content="2025-10-05T01:13:21.322Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/2025/SM2_sign.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2025/10/05/2025-20251005-crypto-008-sm2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>crypto系列8-国产对称算法SM2 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2025/10/05/2025-20251005-crypto-008-sm2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          crypto系列8-国产对称算法SM2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-05 08:57:07" itemprop="dateCreated datePublished" datetime="2025-10-05T08:57:07+08:00">2025-10-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/crypto/" itemprop="url" rel="index"><span itemprop="name">crypto</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2025/10/05/2025-20251005-crypto-008-sm2/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2025/10/05/2025-20251005-crypto-008-sm2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="SM2算法"><a href="#SM2算法" class="headerlink" title="SM2算法"></a>SM2算法</h1><p>SM2是中国自主设计的<strong>椭圆曲线公钥密码算法</strong>，主要用于数字签名、密钥交换和公钥加密，是国家密码管理局认定的国密标准算法之一。</p>
+<span id="more"></span>
+
+<h2 id="一、SM2算法的核心特性"><a href="#一、SM2算法的核心特性" class="headerlink" title="一、SM2算法的核心特性"></a>一、SM2算法的核心特性</h2><ol>
+<li><strong>高安全性</strong>：基于椭圆曲线离散对数问题（ECDLP），该问题在数学上具有较高的计算复杂度，能有效抵抗当前主流的攻击方式。</li>
+<li><strong>高效性能</strong>：相比传统的RSA算法，在相同安全等级下，SM2的密钥长度更短（如256位SM2等效于3072位RSA），运算速度更快，更适合资源受限的设备（如物联网终端、智能卡）。</li>
+<li><strong>合规性</strong>：作为中国《信息安全技术 公钥密码算法第2部分：SM2椭圆曲线公钥密码算法》（GB&#x2F;T 32918.2-2016）的核心算法，满足国内政务、金融、能源等关键领域的密码合规要求。</li>
+</ol>
+<h2 id="二、SM2的主要应用场景"><a href="#二、SM2的主要应用场景" class="headerlink" title="二、SM2的主要应用场景"></a>二、SM2的主要应用场景</h2><ul>
+<li><strong>数字签名</strong>：用于电子合同、电子公文、软件版权认证等场景，确保数据的完整性和发送者身份的真实性。</li>
+<li><strong>密钥交换</strong>：在通信双方（如客户端与服务器）之间安全协商会话密钥，保障后续数据传输的加密安全。</li>
+<li><strong>公钥加密</strong>：对敏感信息（如用户隐私数据、金融交易信息）进行加密，仅授权方（持有私钥）可解密。</li>
+<li><strong>协同加密</strong>：常与国密对称加密算法SM4配合使用，SM2负责密钥分发，SM4负责数据批量加密，形成完整的密码应用体系。</li>
+</ul>
+<h2 id="三、核心算法流程"><a href="#三、核心算法流程" class="headerlink" title="三、核心算法流程"></a>三、核心算法流程</h2><p>SM2支持三大核心操作，分别是数字签名（含验签）、密钥交换、公钥加密（含解密）。</p>
+<h3 id="1-数字签名与验签流程"><a href="#1-数字签名与验签流程" class="headerlink" title="1. 数字签名与验签流程"></a>1. 数字签名与验签流程</h3><ul>
+<li><strong>签名步骤</strong>：<ol>
+<li>签名方用SM3哈希算法计算待签名数据的哈希值。</li>
+<li>签名方使用自身私钥，结合随机数和椭圆曲线运算，生成签名值（含两个分量r、s）。</li>
+<li>将待签名数据与签名值（r、s）一同发送给验签方。</li>
+</ol>
+</li>
+</ul>
+<p><img src="/images/2025/SM2_sign.png" alt="SM2_sign"></p>
+<ul>
+<li><strong>验签步骤</strong>：<ol>
+<li>验签方接收数据后，用相同的SM3算法计算数据哈希值。</li>
+<li>验签方使用签名方的公钥，结合椭圆曲线运算验证签名值（r、s）的合法性。</li>
+<li>若运算结果与签名中的r一致，则验签通过；反之则失败。<br><img src="/images/2025/SM2_verify.png" alt="SM2_verify"></li>
+</ol>
+</li>
+</ul>
+<h3 id="2-密钥交换流程"><a href="#2-密钥交换流程" class="headerlink" title="2. 密钥交换流程"></a>2. 密钥交换流程</h3><ol>
+<li>通信双方（A、B）分别生成自身的公私钥对，并交换公钥。</li>
+<li>双方各自结合自身私钥与对方公钥，通过椭圆曲线点乘法计算出相同的会话密钥。</li>
+<li>会话密钥生成后，需用SM3进行哈希处理，确保密钥的一致性和完整性。<br><img src="/images/2025/SM2_exchange.png" alt="SM2_exchange"></li>
+</ol>
+<h3 id="3-公钥加密与解密流程"><a href="#3-公钥加密与解密流程" class="headerlink" title="3. 公钥加密与解密流程"></a>3. 公钥加密与解密流程</h3><ul>
+<li><p><strong>加密步骤</strong>：</p>
+<ol>
+<li>加密方用接收方的公钥，结合随机数和椭圆曲线运算，生成临时公钥和加密密钥。</li>
+<li>用生成的加密密钥对明文数据进行对称加密（通常配合SM4算法），并生成加密数据。</li>
+<li>将临时公钥、加密数据及SM3哈希值（用于完整性校验）一同发送。<br><img src="/images/2025/SM2_encrypt.png" alt="SM2_encrypt"></li>
+</ol>
+</li>
+<li><p><strong>解密步骤</strong>：</p>
+<ol>
+<li>解密方用自身私钥解析临时公钥，还原出加密密钥。</li>
+<li>用加密密钥解密数据，得到明文，同时通过SM3哈希值验证数据完整性。</li>
+<li>若哈希值匹配则解密成功；反之则数据被篡改，解密失败。<br><img src="/images/2025/SM2_decrypt.png" alt="SM2_decrypt"></li>
+</ol>
+</li>
+</ul>
+<h2 id="四、SM2与RSA算法的关键区别"><a href="#四、SM2与RSA算法的关键区别" class="headerlink" title="四、SM2与RSA算法的关键区别"></a>四、SM2与RSA算法的关键区别</h2><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>SM2算法</th>
+<th>RSA算法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数学基础</td>
+<td>椭圆曲线离散对数问题</td>
+<td>大整数分解问题</td>
+</tr>
+<tr>
+<td>密钥长度（等效安全）</td>
+<td>256位</td>
+<td>3072位</td>
+</tr>
+<tr>
+<td>运算速度</td>
+<td>更快（加解密、签名验签）</td>
+<td>较慢（大整数运算耗时）</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>国内合规场景、轻量化设备</td>
+<td>全球通用场景、兼容性优先</td>
+</tr>
+</tbody></table>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/10/02/2025-20251002-crypto-007-sm4/" rel="prev" title="crypto系列7-国产对称算法SM4">
+      <i class="fa fa-chevron-left"></i> crypto系列7-国产对称算法SM4
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/10/08/2025-20251008-crypto-009-zuc/" rel="next" title="crypto系列9-国产流算法ZUC">
+      crypto系列9-国产流算法ZUC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SM2%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">SM2算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81SM2%E7%AE%97%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">一、SM2算法的核心特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81SM2%E7%9A%84%E4%B8%BB%E8%A6%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text">二、SM2的主要应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A0%B8%E5%BF%83%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">三、核心算法流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E4%B8%8E%E9%AA%8C%E7%AD%BE%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. 数字签名与验签流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 密钥交换流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.3.</span> <span class="nav-text">3. 公钥加密与解密流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81SM2%E4%B8%8ERSA%E7%AE%97%E6%B3%95%E7%9A%84%E5%85%B3%E9%94%AE%E5%8C%BA%E5%88%AB"><span class="nav-number">1.4.</span> <span class="nav-text">四、SM2与RSA算法的关键区别</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">197</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
