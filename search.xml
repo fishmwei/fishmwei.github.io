@@ -8922,11 +8922,100 @@
 </ul>
 <p>不过64字节场景仍有差距，后续我又分析了算法实现的细节，找到了几个可以进一步优化的点，目前已经交给同事继续迭代。</p>
 <hr>
-<p>性能测试不是“跑通就行”，而是要让硬件发挥出应有的实力。这次的踩坑经历也提醒我们：遇到性能不符预期时，先别急着质疑硬件，不妨回头看看测试逻辑是否真的合理。</p>
+<p>性能测试不是“跑通就行”，而是要让硬件发挥出应有的实力。这次的踩坑经历也提醒我们：遇到性能不符预期时，不妨回头看看测试逻辑是否真的合理。</p>
 <h1 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h1><p>周六一大早，就赶去赴系统架构师软考的“约”。考场里人头攒动，没想到还偶遇了上家公司的同事，简单聊了几句才知道，他也是主动报名的——大家都想着拿个证，算是给自己的专业能力一个官方认可，不得不说，现在职场人是真卷啊～</p>
 <p>其实我上半年就报过一次名，可惜当时准备得太仓促，加上家里刚好有急事冲突，最后直接缺考了，干脆把希望寄托在下半年。可谁想到，下半年项目突然进入攻关期，连着两三个月忙得脚不沾地，备考只能见缝插针地翻几页书，根本没系统梳理。好不容易等到国庆有了空闲，10月份又撞上职级晋升的筹备，报的备考课都没来得及听完，复习计划再次被打乱。</p>
 <p>直到10月底，才终于挤出时间突击补习了十几天。心里一边给自己打气“差不多准备好了”，一边又有点没底，但想想也只能硬着头皮上——成年人的备考，哪有“完全准备充分”这一说？工作、生活的琐事总会不断挤占时间，很多时候都是被事情推着往前走，尽力就好。</p>
 <p>这次考试感觉有戏，但又不敢太笃定，一半期待一半忐忑，只能静静等着12月的成绩揭晓啦～</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>周谈（61）- ARM SMC接口实战</title>
+    <url>/2025/11/19/2025-20251119-smcmodule/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在项目开发中，需要从 REE（Rich Execution Environment，即普通执行环境）触发一个需要更高异常等级才能执行的操作。最终，我们通过 SMC（Secure Monitor Call）接口实现了这一功能。借此机会，也系统学习了一下 SMC 接口的使用方法。</p>
+<span id="more"></span>
+
+<p>ARM SMC（Secure Monitor Call）接口是 ARM 架构中用于在非安全世界（Normal World）和安全世界（Secure World）之间进行上下文切换的关键机制，其底层基于 ARM TrustZone 技术实现。通过执行 SMC 指令，软件可以从当前运行环境（例如 Linux 内核所在的非安全世界）切换到安全监控器（Secure Monitor），从而与运行在安全世界的可信执行环境（TEE，Trusted Execution Environment）进行安全交互。</p>
+<h2 id="一、SMC接口的基本原理"><a href="#一、SMC接口的基本原理" class="headerlink" title="一、SMC接口的基本原理"></a>一、SMC接口的基本原理</h2><ol>
+<li><p><strong>触发方式</strong><br>通过执行 <code>SMC</code> 汇编指令触发异常，指令中可通过寄存器传递参数，用于指定操作类型及相关数据。</p>
+</li>
+<li><p>世界切换<br>执行 <code>SMC</code> 指令后，处理器会从当前异常等级（如 EL1，对应内核态）切换到安全监控器所在的更高异常等级（如 EL3，适用于 ARMv8 及以上架构）。</p>
+</li>
+<li><p><strong>安全监控器的作用</strong><br>运行在 EL3 的安全监控器负责解析 SMC 请求，判断其合法性，并决定是否允许访问安全世界资源，最后将结果返回给调用方。</p>
+</li>
+</ol>
+<h2 id="二、SMC调用的参数传递"><a href="#二、SMC调用的参数传递" class="headerlink" title="二、SMC调用的参数传递"></a>二、SMC调用的参数传递</h2><p>在 ARM 架构中，SMC 调用的参数通过通用寄存器传递，具体规范如下（不同架构或 TEE 实现可能略有差异）：</p>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>调用时用途</th>
+<th>返回时用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x0</code></td>
+<td>SMC 功能号（Function ID）</td>
+<td>返回状态码或数据</td>
+</tr>
+<tr>
+<td><code>x1-x7</code></td>
+<td>输入参数</td>
+<td>输出参数</td>
+</tr>
+<tr>
+<td><code>x8</code></td>
+<td>部分实现中用于传递 SMC 状态</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>功能号（Function ID）</strong>：用于标识具体的 SMC 操作，通常由芯片厂商或 TEE 系统定义，例如在 OP-TEE 中，功能号通常以 <code>0x32000000</code> 开头。</li>
+<li><strong>参数传递限制</strong>：最多可通过 <code>x1-x7</code> 传递 7 个参数，若参数数量超出或需要传递复杂数据结构，可通过共享内存的方式传递其物理地址。</li>
+</ul>
+<h2 id="三、SMC调用的类型"><a href="#三、SMC调用的类型" class="headerlink" title="三、SMC调用的类型"></a>三、SMC调用的类型</h2><p>以 ARMv8 为例，SMC 调用主要分为以下几类：</p>
+<ol>
+<li><p><strong>标准 SMC（Standard SMC）</strong><br>由 ARM 架构标准定义，功能号通常以 <code>0x80000000</code> 开头，用于基本的世界切换或系统信息查询。</p>
+</li>
+<li><p><strong>厂商自定义 SMC（Vendor SMC）</strong><br>由芯片厂商或 TEE 系统自定义实现，功能号范围通常为 <code>0x00000000-0x7FFFFFFF</code>。</p>
+</li>
+<li><p><strong>Hypervisor SMC</strong><br>用于虚拟化场景，与 Hypervisor 交互，功能号以 <code>0x40000000</code> 开头。</p>
+</li>
+</ol>
+<h2 id="四、示例：Linux内核中的SMC调用"><a href="#四、示例：Linux内核中的SMC调用" class="headerlink" title="四、示例：Linux内核中的SMC调用"></a>四、示例：Linux内核中的SMC调用</h2><p>在 Linux 内核中，可以通过 <code>smc()</code> 或 <code>hvc()</code>（用于虚拟化调用）函数触发 SMC，以下是一个基于 ARMv8 汇编的简化示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 函数：smc_call</span><br><span class="line">// 输入：x0 = 功能号，x1-x7 = 参数</span><br><span class="line">// 输出：x0 = 返回值</span><br><span class="line"></span><br><span class="line">smc_call:</span><br><span class="line">    smc #0    // 执行 SMC 指令，#0 表示无立即数，参数由寄存器传递</span><br><span class="line">    ret       // 返回，结果保存在 x0 中</span><br></pre></td></tr></table></figure>
+
+<p>在 C 代码中，可以使用内联汇编或调用内核封装好的接口：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/arm-smccc.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">arm_smccc_res</span> <span class="title">res</span>;</span>  <span class="comment">// 存储返回结果</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 SMC：功能号为 0x12345678，输入参数 x1=1, x2=2</span></span><br><span class="line">arm_smccc_smc(<span class="number">0x12345678</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, &amp;res);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (res.a0 == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 调用成功，可通过 res.a1 - res.a7 获取返回参数</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 调用失败</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>arm_smccc_smc()</code> 是 Linux 内核中封装好的 SMC 调用函数，定义在 <code>include/linux/arm-smccc.h</code> 中，会自动处理寄存器传递和结果保存。</li>
+</ul>
+<h2 id="五、注意事项"><a href="#五、注意事项" class="headerlink" title="五、注意事项"></a>五、注意事项</h2><ol>
+<li><p><strong>权限控制</strong><br>SMC 调用通常需要在内核态执行，用户态程序直接执行 <code>SMC</code> 指令会触发异常，因此一般需通过系统调用（如 <code>ioctl</code>）间接调用内核中的 SMC 接口。</p>
+</li>
+<li><p><strong>安全限制</strong><br>安全监控器会对所有 SMC 请求进行安全检查，非法请求会被拒绝并返回错误码。</p>
+</li>
+<li><p><strong>兼容性</strong><br>不同 ARM 架构（如 ARMv7 与 ARMv8）及不同 TEE 实现（如 OP-TEE、Trusty）之间的 SMC 功能号及参数规范可能存在差异，开发时应参考对应平台的说明文档。</p>
+</li>
+</ol>
+<h2 id="六、测试-Demo"><a href="#六、测试-Demo" class="headerlink" title="六、测试 Demo"></a>六、测试 Demo</h2><p>以下是一个基于 Linux 内核模块的 SMC 测试示例，通过设备节点供用户态触发 SMC 调用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义设备名称</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SMC_TEST_DEV <span class="string">&quot;smc_test&quot;</span></span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> major;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义 ARM 标准 SMC 功能号（参考 ARM DEN 0028）</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SMC_STD_VERSION          0x80000000  <span class="comment">// 查询安全监控器版本</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SMC_STD_DISCOVER_FEATURES 0x80000001 <span class="comment">// 发现支持的功能</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SMC_STD_GET_SOC_ID       0x80000003  <span class="comment">// 获取 SoC ID（部分设备支持）</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试：查询安全监控器版本</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">test_smc_version</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">arm_smccc_res</span> <span class="title">res</span>;</span></span><br><span class="line"></span><br><span class="line">    pr_info(<span class="string">&quot;\n=== Testing SMC_STD_VERSION (0x%x) ===\n&quot;</span>, SMC_STD_VERSION);</span><br><span class="line">    arm_smccc_smc(SMC_STD_VERSION, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, &amp;res);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (res.a0 == <span class="number">0xFFFFFFFF</span>) &#123;</span><br><span class="line">        pr_info(<span class="string">&quot;Standard SMC version not supported\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解析版本号（主版本 &lt;&lt; 16 | 次版本）</span></span><br><span class="line">    u32 major_ver = (res.a0 &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFFFF</span>;</span><br><span class="line">    u32 minor_ver = res.a0 &amp; <span class="number">0xFFFF</span>;</span><br><span class="line">    pr_info(<span class="string">&quot;Secure Monitor Version: v%d.%d\n&quot;</span>, major_ver, minor_ver);</span><br><span class="line">    pr_info(<span class="string">&quot;Additional info: a1=0x%llx, a2=0x%llx\n&quot;</span>, res.a1, res.a2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试：查询 TrustZone 支持特性</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">test_smc_trustzone</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">arm_smccc_res</span> <span class="title">res</span>;</span></span><br><span class="line"></span><br><span class="line">    pr_info(<span class="string">&quot;\n=== Testing SMC_STD_DISCOVER_FEATURES (0x%lx) ===\n&quot;</span>, </span><br><span class="line">            SMC_STD_DISCOVER_FEATURES);</span><br><span class="line">    arm_smccc_smc(SMC_STD_DISCOVER_FEATURES, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, &amp;res);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (res.a0 == <span class="number">0</span>) &#123;</span><br><span class="line">        pr_info(<span class="string">&quot;TrustZone supported: Yes\n&quot;</span>);</span><br><span class="line">        pr_info(<span class="string">&quot;Feature flags: 0x%llx\n&quot;</span>, res.a1);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pr_info(<span class="string">&quot;TrustZone supported: No (error: 0x%llx)\n&quot;</span>, res.a0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设备节点的读操作函数</span></span><br><span class="line"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title function_">smc_test_read</span><span class="params">(<span class="keyword">struct</span> file *file, <span class="type">char</span> __user *buf, </span></span><br><span class="line"><span class="params">                             <span class="type">size_t</span> len, <span class="type">loff_t</span> *off)</span></span><br><span class="line">&#123;</span><br><span class="line">    test_smc_version();</span><br><span class="line">    test_smc_trustzone();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 文件操作结构体</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">smc_test_fops</span> =</span> &#123;</span><br><span class="line">    .read = smc_test_read,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块初始化</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">smc_test_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    major = register_chrdev(<span class="number">0</span>, SMC_TEST_DEV, &amp;smc_test_fops);</span><br><span class="line">    <span class="keyword">if</span> (major &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        pr_err(<span class="string">&quot;Failed to register device\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> major;</span><br><span class="line">    &#125;</span><br><span class="line">    pr_info(<span class="string">&quot;SMC test module loaded. Major: %d\n&quot;</span>, major);</span><br><span class="line">    pr_info(<span class="string">&quot;Run &#x27;mknod /dev/%s c %d 0&#x27; to create device node\n&quot;</span>, </span><br><span class="line">            SMC_TEST_DEV, major);</span><br><span class="line">    pr_info(<span class="string">&quot;Read /dev/%s to trigger SMC tests\n&quot;</span>, SMC_TEST_DEV);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模块退出</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">smc_test_exit</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    unregister_chrdev(major, SMC_TEST_DEV);</span><br><span class="line">    pr_info(<span class="string">&quot;SMC test module unloaded\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(smc_test_init);</span><br><span class="line">module_exit(smc_test_exit);</span><br></pre></td></tr></table></figure>
+<p>测试结果如图所示：<br><img src="/images/2025/smc_test.png" alt="smc_test"></p>
+<blockquote>
+<p>完整代码已开源，可在<a href="https://gitee.com/fishmwei/blog_code/tree/master/linux-kernel/smcmodule">Gitee</a>仓库查看</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过 SMC 接口，系统能够在不同安全世界之间建立可控的通信机制，使得敏感操作（例如加密计算、密钥管理与安全存储）可以在受保护的环境中执行，从而有效防止非安全世界直接访问关键资源，极大提升了系统的整体安全性。</p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
