@@ -9117,23 +9117,6 @@
       </categories>
   </entry>
   <entry>
-    <title>spring2</title>
-    <url>/2026/03/01/spring2/</url>
-    <content><![CDATA[<p>我帮你把这篇《2026春节杂记》润色成<strong>更流畅、有温度、适合公众号阅读</strong>的版本，语气自然不矫情，保留你原本的真实感，只优化文笔和节奏：</p>
-<hr>
-<h2 id="title-2026春节杂记comments-truetop-1000categories-技术date-2026-03-01-10-14-58tags"><a href="#title-2026春节杂记comments-truetop-1000categories-技术date-2026-03-01-10-14-58tags" class="headerlink" title="title: 2026春节杂记comments: truetop: 1000categories:  - 技术date: 2026-03-01 10:14:58tags:"></a>title: 2026春节杂记<br>comments: true<br>top: 1000<br>categories:<br>  - 技术<br>date: 2026-03-01 10:14:58<br>tags:</h2><hr>
-<p>行动，才不会被动!</p>
-<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
-<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
-<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
-<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
-<hr>
-]]></content>
-      <categories>
-        <category>技术</category>
-      </categories>
-  </entry>
-  <entry>
     <title>2026春节杂记</title>
     <url>/2026/03/01/2026-20260301-spring/</url>
     <content><![CDATA[<h1 id="2026春节杂记"><a href="#2026春节杂记" class="headerlink" title="2026春节杂记"></a>2026春节杂记</h1><p>春节假期一晃而过，趁着记忆还清晰，简单记录下这段日子的行程与心情。</p>
@@ -9160,6 +9143,138 @@
 <p>一路风景很好，远处山峦层叠，视野开阔。<br>最让人惊喜的是孩子，全程自己走下来，硬是坚持到了最后。</p>
 <p>下山排队坐了观光车，整体倒也不算太累。<br>只是感觉衡山对徒步登山的人不算太友好，登山路上时常要横穿公路，车辆较多，安全上还是要多留心。</p>
 <h2 id="长沙"><a href="#长沙" class="headerlink" title="长沙"></a>长沙</h2><p>回到长沙，便基本宅在家里了。<br>天气转冷，又下起了雨，没有太多外出活动，安安静静，收心准备开工。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>快速安装使用opencode编程助手</title>
+    <url>/2026/03/04/2026-20260304-opencode/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在填一个项目的坑，别人的代码写得那叫一个「别具一格」，看得我头都大了。😅</p>
+<p>自己一个个改，改了好几天，终于把它跑起来了。</p>
+<p>说实话，这种体力活儿，写完第一个后面都大差不差，简直是 AI 的舒适区。</p>
+<p>再加上领导最近开会天天念叨「把 AI 用起来，提升效率」，我就静下心来研究了一下 OpenCode 这一款开源神器。</p>
+<p>在此之前，我也就是用用 DeepSeek、豆包、Kimi 的网页版对话，或者 VS Code 里的 Trae、Continue、Cline 这些插件做代码补全。</p>
+<p>但 OpenCode 完全免费不说，还支持接入 Claude、GPT、DeepSeek、GLM 等多种大模型，关键是完全开源，隐私优先！👍</p>
+<p>今天手把手教你安装配置，小白也能轻松上手。还可以支持配置本地模型哦~</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="什么是-OpenCode？"><a href="#什么是-OpenCode？" class="headerlink" title="什么是 OpenCode？"></a>什么是 OpenCode？</h2><p>OpenCode 是一个开源的 AI 编程助手，可以帮你：</p>
+<p>✅ 分析代码<br>✅ 生成新功能<br>✅ 重构优化项目<br>✅ 修复 Bug<br>✅ 智能问答</p>
+<p>它支持在<strong>终端、桌面应用和主流 IDE</strong>（如 VS Code）中使用，完全免费，完全开源！</p>
+<p>简单理解：它就像一个免费的「代码助手」，用自然语言告诉它要做什么，它就会帮你写代码。</p>
+<hr>
+<h2 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h2><h3 id="Windows-用户"><a href="#Windows-用户" class="headerlink" title="Windows 用户"></a>Windows 用户</h3><p><strong>使用 npm</strong></p>
+<p>前提需要安装好 Node.js（自带 npm）。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm i -g opencode-ai</span><br></pre></td></tr></table></figure>
+
+<h3 id="macOS-x2F-Linux-用户"><a href="#macOS-x2F-Linux-用户" class="headerlink" title="macOS &#x2F; Linux 用户"></a>macOS &#x2F; Linux 用户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -fsSL https://opencode.ai/install | bash</span><br></pre></td></tr></table></figure>
+
+<p>或者使用 Homebrew：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install opencode</span><br></pre></td></tr></table></figure>
+
+<h3 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">opencode --version</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、配置模型"><a href="#二、配置模型" class="headerlink" title="二、配置模型"></a>二、配置模型</h2><h3 id="1-启动-OpenCode"><a href="#1-启动-OpenCode" class="headerlink" title="1. 启动 OpenCode"></a>1. 启动 OpenCode</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">opencode</span><br></pre></td></tr></table></figure>
+
+<p>首次启动会提示配置模型 API，按提示操作即可。</p>
+<h3 id="2-选择模型提供商"><a href="#2-选择模型提供商" class="headerlink" title="2. 选择模型提供商"></a>2. 选择模型提供商</h3><p>推荐选择：</p>
+<ul>
+<li>🔥 <strong>OpenCode Zen</strong> - 官方优化版，支持主流模型</li>
+<li>💎 <strong>DeepSeek</strong> - 国产之光，响应快且便宜</li>
+<li>🤖 <strong>Claude</strong> - Anthropic 出品</li>
+<li>🌟 <strong>Google Gemini</strong> - Google 出品</li>
+</ul>
+<h3 id="3-获取-API-Key"><a href="#3-获取-API-Key" class="headerlink" title="3. 获取 API Key"></a>3. 获取 API Key</h3><p>在对应官网申请后填入即可：</p>
+<ul>
+<li>DeepSeek：<a href="https://platform.deepseek.com/">https://platform.deepseek.com</a></li>
+<li>Anthropic：<a href="https://anthropic.com/">https://anthropic.com</a></li>
+<li>Google AI：<a href="https://aistudio.google.com/">https://aistudio.google.com</a></li>
+</ul>
+<h3 id="4-免费模型"><a href="#4-免费模型" class="headerlink" title="4. 免费模型"></a>4. 免费模型</h3><p>内置<strong>4个免费模型</strong>可用：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>big-pickle</td>
+<td>OpenCode 官方模型</td>
+</tr>
+<tr>
+<td>GLM-4.7</td>
+<td>智谱出品，推荐！</td>
+</tr>
+<tr>
+<td>Grok Code Fast 1</td>
+<td>X 出品</td>
+</tr>
+<tr>
+<td>MiniMax M2.1</td>
+<td>免费额度多</td>
+</tr>
+</tbody></table>
+<p>免费额度都是有上限的，超过后会需要等下一个周期。今天我用了自带的那个 big-pickle 模型，就改几个代码就耗完额度了。😂</p>
+<p>后来使用公司内网部署的 GLM 模型，实现了 token 自由，真香！</p>
+<hr>
+<h2 id="三、两种工作模式"><a href="#三、两种工作模式" class="headerlink" title="三、两种工作模式"></a>三、两种工作模式</h2><table>
+<thead>
+<tr>
+<th align="center">模式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">📖 <strong>Plan</strong></td>
+<td>只读规划模式，会分析代码但默认拒绝修改</td>
+</tr>
+<tr>
+<td align="center">🛠️ <strong>Build</strong></td>
+<td>构建模式，全权限可直接编辑文件、执行命令</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、常用命令"><a href="#四、常用命令" class="headerlink" title="四、常用命令"></a>四、常用命令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">opencode              # 启动交互式会话</span><br><span class="line">opencode &quot;你的问题&quot;   # 直接提问</span><br><span class="line">/models               # 切换模型</span><br><span class="line">/plan                 # 切换到规划模式</span><br><span class="line">/build                # 切换到构建模式</span><br><span class="line">/exit                 # 退出</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、进阶：Oh-My-OpenCode"><a href="#五、进阶：Oh-My-OpenCode" class="headerlink" title="五、进阶：Oh My OpenCode"></a>五、进阶：Oh My OpenCode</h2><p>这是 OpenCode 的增强插件，类似于「Oh My Zsh」之于 Zsh：</p>
+<ul>
+<li>🤝 多 AI 模型协作</li>
+<li>🎯 内置专业智能体</li>
+<li>✨ 提示词自动优化</li>
+<li>⚡ 后台任务管理</li>
+</ul>
+<p><strong>安装：</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">opencode plugin install omoc</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i -g oh-my-opencode</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>OpenCode 是一款<strong>完全免费、开源、支持多模型</strong>的 AI 编程助手，可以完美替代付费的 Claude Code 等工具。</p>
+<p>无论你是编程新手还是资深开发者，都能从中提升效率！</p>
+<p>要部署本地模型，需要创建 opencode.jsonc 配置文件，配置本地模型的地址和端口。</p>
+<p>下面分享一下我的配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;$schema&quot;: &quot;https://opencode.ai/config.json&quot;,</span><br><span class="line">  &quot;disabled_providers&quot;: [],</span><br><span class="line">  &quot;provider&quot;: &#123;</span><br><span class="line">    &quot;fishmwei_ai&quot;: &#123;</span><br><span class="line">      &quot;name&quot;: &quot;fishmwei_ai&quot;,</span><br><span class="line">      &quot;npm&quot;: &quot;@ai-sdk/openai-compatible&quot;,</span><br><span class="line">      &quot;models&quot;: &#123;</span><br><span class="line">        &quot;aea8ae40-fb8b-4428-b520-98793efxxxxx&quot;: &#123;</span><br><span class="line">          &quot;name&quot;: &quot;GLM-TEST&quot;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;options&quot;: &#123;</span><br><span class="line">        &quot;baseURL&quot;: &quot;https://aiapi.fishmwei.com.cn/v1&quot;,</span><br><span class="line">        &quot;allowSelfSignedCerts&quot;: true,</span><br><span class="line">        &quot;apiKey&quot;:&quot;sk-PvSLwH5XwbloPy_SvZVXXX&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>快去试试吧！</strong> </p>
+<p>如果你觉得有帮助，欢迎<strong>点赞、在看、转发</strong>~</p>
+<p>有任何问题评论区见！</p>
+<hr>
+<p><em>参考来源：OpenCode 官方文档</em></p>
 <hr>
 <p>行动，才不会被动!</p>
 <p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
