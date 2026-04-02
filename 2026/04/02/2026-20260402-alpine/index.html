@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/headerIcon.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/headerIcon.jpg">
+  <link rel="mask-icon" href="/assets/img/headerIcon.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fishmwei.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":5,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="适用系统： Alpine Linux ARM64CPU 架构： ARMv9 (neoverse-n2 &#x2F; cortex-a710)作者： fishmwei  前言最近工作中遇到一个有趣的技术挑战——需要验证ARMv9架构上新增的一些处理器特性，比如SVE2和RNG指令集。但手头并没有现成的ARMv9硬件，怎么办呢？ 作为一名喜欢折腾的技术人，我决定在Windows上通过QEMU虚拟机来模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QEMU ARMv9 虚拟机 Windows 完整指南">
+<meta property="og:url" content="https://fishmwei.github.io/2026/04/02/2026-20260402-alpine/index.html">
+<meta property="og:site_name" content="IT攻城狮小明">
+<meta property="og:description" content="适用系统： Alpine Linux ARM64CPU 架构： ARMv9 (neoverse-n2 &#x2F; cortex-a710)作者： fishmwei  前言最近工作中遇到一个有趣的技术挑战——需要验证ARMv9架构上新增的一些处理器特性，比如SVE2和RNG指令集。但手头并没有现成的ARMv9硬件，怎么办呢？ 作为一名喜欢折腾的技术人，我决定在Windows上通过QEMU虚拟机来模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+<meta property="article:published_time" content="2026-04-02T15:43:23.000Z">
+<meta property="article:modified_time" content="2026-04-02T16:03:01.923Z">
+<meta property="article:author" content="IT攻城狮小明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fishmwei.github.io/images/wx_gzh.png">
+
+<link rel="canonical" href="https://fishmwei.github.io/2026/04/02/2026-20260402-alpine/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>QEMU ARMv9 虚拟机 Windows 完整指南 | IT攻城狮小明</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">IT攻城狮小明</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/2020/06/20/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/fishmwei" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fishmwei.github.io/2026/04/02/2026-20260402-alpine/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/assets/img/headerIcon.jpg">
+      <meta itemprop="name" content="IT攻城狮小明">
+      <meta itemprop="description" content="技术博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IT攻城狮小明">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QEMU ARMv9 虚拟机 Windows 完整指南
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-04-02 23:43:23" itemprop="dateCreated datePublished" datetime="2026-04-02T23:43:23+08:00">2026-04-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2026/04/02/2026-20260402-alpine/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2026/04/02/2026-20260402-alpine/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>适用系统：</strong> Alpine Linux ARM64<br><strong>CPU 架构：</strong> ARMv9 (neoverse-n2 &#x2F; cortex-a710)<br><strong>作者：</strong> fishmwei</p>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近工作中遇到一个有趣的技术挑战——需要验证ARMv9架构上新增的一些处理器特性，比如SVE2和RNG指令集。但手头并没有现成的ARMv9硬件，怎么办呢？</p>
+<p>作为一名喜欢折腾的技术人，我决定在Windows上通过QEMU虚拟机来模拟ARMv9架构。经过一番摸索和踩坑，终于搭建好了环境，今天就把我整理的这份详细指南分享给大家。</p>
+<blockquote>
+<p>💡 <strong>核心收获：</strong> 如何在Windows上完美运行Alpine Linux ARM64虚拟机，模拟ARMv9架构特性</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h2><h3 id="1-1-为什么选择-Alpine-Linux？"><a href="#1-1-为什么选择-Alpine-Linux？" class="headerlink" title="1.1 为什么选择 Alpine Linux？"></a>1.1 为什么选择 Alpine Linux？</h3><p>在尝试了多个Linux发行版后，我最终选择了Alpine Linux作为我的ARMv9实验平台，主要有以下几个原因：</p>
+<ul>
+<li><strong>极致轻量化</strong>：基础镜像仅约130MB，对虚拟机资源要求极低，非常适合我们的测试场景</li>
+<li><strong>安全性设计</strong>：默认启用libc硬化等安全机制，让我的实验环境更加可靠</li>
+<li><strong>资源效率高</strong>：即使在虚拟化环境下也能保持良好的性能表现</li>
+<li><strong>包管理系统精简</strong>：apk包管理器命令简洁高效，学习成本低</li>
+<li><strong>云原生基因</strong>：被Docker和K8s广泛采用，生态成熟</li>
+<li><strong>完全开源免费</strong>：不用担心许可证问题，可以放心折腾</li>
+</ul>
+<h3 id="1-2-安装-QEMU"><a href="#1-2-安装-QEMU" class="headerlink" title="1.2 安装 QEMU"></a>1.2 安装 QEMU</h3><h4 id="Windows-安装指南"><a href="#Windows-安装指南" class="headerlink" title="Windows 安装指南"></a>Windows 安装指南</h4><p>选择QEMU是因为它对ARM虚拟化的支持非常完善。以下是我在Windows上的安装过程：</p>
+<ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://www.qemu.org/download/#windows">https://www.qemu.org/download/#windows</a></li>
+<li><strong>贴心提示</strong>：安装时务必勾选”添加到PATH环境变量”，避免后续手动配置麻烦</li>
+<li>验证安装是否成功：<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu<span class="literal">-system-aarch64</span> <span class="literal">--version</span></span><br></pre></td></tr></table></figure>
+
+成功的话会显示类似这样的版本信息：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">QEMU emulator version X.X.X</span><br><span class="line">Copyright (c) 2003-XXXX Fabrice Bellard and the QEMU Project developers</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-3-下载-Alpine-Linux-系统镜像"><a href="#1-3-下载-Alpine-Linux-系统镜像" class="headerlink" title="1.3 下载 Alpine Linux 系统镜像"></a>1.3 下载 Alpine Linux 系统镜像</h3><p>经过对比测试，我推荐使用最新的稳定版本。以下是我在实际部署中使用的版本：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>下载地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Alpine Linux 3.23</td>
+<td><a target="_blank" rel="noopener" href="https://alpinelinux.org/downloads/">https://alpinelinux.org/downloads/</a></td>
+<td>我的测试环境版本，稳定可靠</td>
+</tr>
+<tr>
+<td>Alpine Linux 3.21</td>
+<td><a target="_blank" rel="noopener" href="https://alpinelinux.org/downloads/">https://alpinelinux.org/downloads/</a></td>
+<td>LTS版本，适合生产环境</td>
+</tr>
+<tr>
+<td>Alpine Linux 3.20</td>
+<td><a target="_blank" rel="noopener" href="https://alpinelinux.org/downloads/">https://alpinelinux.org/downloads/</a></td>
+<td>经典稳定版本</td>
+</tr>
+</tbody></table>
+<p><strong>实用小贴士</strong>：在国内下载可能会比较慢，建议使用国内镜像站点：</p>
+<ul>
+<li>清华大学：<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/alpine/">https://mirrors.tuna.tsinghua.edu.cn/alpine/</a></li>
+<li>中科大：<a target="_blank" rel="noopener" href="https://mirrors.ustc.edu.cn/alpine/">https://mirrors.ustc.edu.cn/alpine/</a></li>
+</ul>
+<p><strong>我的推荐</strong>（基于实际使用体验）：</p>
+<ul>
+<li>Alpine Standard: <code>alpine-standard-3.23.3-aarch64.iso</code> （我用的就是这个，够用）</li>
+<li>Alpine Extended: <code>alpine-extended-3.23.3-aarch64.iso</code> （功能更全，但体积稍大）</li>
+</ul>
+<h3 id="1-4-创建虚拟磁盘"><a href="#1-4-创建虚拟磁盘" class="headerlink" title="1.4 创建虚拟磁盘"></a>1.4 创建虚拟磁盘</h3><p>根据我的实践经验，10GB的空间对于Alpine Linux来说已经绰绰有余。创建虚拟磁盘的命令如下：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为Alpine Linux创建10GB虚拟磁盘（推荐大小）</span></span><br><span class="line">qemu<span class="literal">-img</span> create <span class="operator">-f</span> qcow2 alpine<span class="literal">-disk</span>.qcow2 <span class="number">10</span>G</span><br></pre></td></tr></table></figure>
+
+<p>💡 <strong>经验分享</strong>：使用qcow2格式有很多好处，比如支持快照、动态扩容等。如果你之前用过其他虚拟化软件，会发现这和VMware&#x2F;VirtualBox的概念类似。</p>
+<hr>
+<h2 id="二、启动命令"><a href="#二、启动命令" class="headerlink" title="二、启动命令"></a>二、启动命令</h2><h3 id="2-1-首次安装-Alpine-Linux"><a href="#2-1-首次安装-Alpine-Linux" class="headerlink" title="2.1 首次安装 Alpine Linux"></a>2.1 首次安装 Alpine Linux</h3><p>这是安装系统的启动命令，我已经帮你调整到了最适合ARMv9模拟的状态：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">qemu<span class="literal">-system-aarch64</span> `</span><br><span class="line"><span class="literal">-M</span> virt `</span><br><span class="line"><span class="literal">-cpu</span> neoverse<span class="literal">-n2</span> `</span><br><span class="line"><span class="literal">-smp</span> <span class="number">2</span> `</span><br><span class="line"><span class="literal">-m</span> <span class="number">1024</span>M `</span><br><span class="line"><span class="literal">-accel</span> tcg `</span><br><span class="line"><span class="literal">-bios</span> <span class="string">&quot;C:\Program Files\qemu\share\edk2-aarch64-code.fd&quot;</span> `</span><br><span class="line"><span class="literal">-cdrom</span> .\alpine<span class="literal">-standard-3</span>.<span class="number">23.3</span><span class="literal">-aarch64</span>.iso `</span><br><span class="line"><span class="literal">-drive</span> file=alpine<span class="literal">-disk</span>.qcow2,<span class="keyword">if</span>=virtio `</span><br><span class="line"><span class="literal">-netdev</span> user,id=net0 `</span><br><span class="line"><span class="literal">-device</span> virtio<span class="literal">-net-device</span>,netdev=net0 `</span><br><span class="line"><span class="literal">-device</span> virtio<span class="literal">-rng-device</span> `</span><br><span class="line"><span class="literal">-nographic</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-启动已安装的-Alpine-系统"><a href="#2-2-启动已安装的-Alpine-系统" class="headerlink" title="2.2 启动已安装的 Alpine 系统"></a>2.2 启动已安装的 Alpine 系统</h3><p>当系统安装完成后，使用这个命令直接从硬盘启动：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">qemu<span class="literal">-system-aarch64</span> `</span><br><span class="line"><span class="literal">-M</span> virt `</span><br><span class="line"><span class="literal">-cpu</span> neoverse<span class="literal">-n2</span> `</span><br><span class="line"><span class="literal">-smp</span> <span class="number">2</span> `</span><br><span class="line"><span class="literal">-m</span> <span class="number">1024</span>M `</span><br><span class="line"><span class="literal">-accel</span> tcg `</span><br><span class="line"><span class="literal">-bios</span> <span class="string">&quot;C:\Program Files\qemu\share\edk2-aarch64-code.fd&quot;</span> `</span><br><span class="line"><span class="literal">-drive</span> file=alpine<span class="literal">-disk</span>.qcow2,<span class="keyword">if</span>=virtio `</span><br><span class="line"><span class="literal">-netdev</span> user,id=net0 `</span><br><span class="line"><span class="literal">-device</span> virtio<span class="literal">-net-device</span>,netdev=net0 `</span><br><span class="line"><span class="literal">-nographic</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>重要提醒</strong>：第一次运行可能需要调整内存大小（建议2GB），因为1GB在某些情况下可能不够用。</p>
+<hr>
+<h2 id="三、参数详解与个人心得"><a href="#三、参数详解与个人心得" class="headerlink" title="三、参数详解与个人心得"></a>三、参数详解与个人心得</h2><p>这些参数是我经过多次测试后确定的最佳配置，让我来详细解释一下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>个人心得</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-M virt</code></td>
+<td>使用虚拟 ARM 机器类型</td>
+<td>这是最通用的ARM虚拟机类型，兼容性好</td>
+</tr>
+<tr>
+<td><code>-cpu neoverse-n2</code></td>
+<td>ARMv9 架构 CPU (Alpine)</td>
+<td>这是ARMv9的代表型号，完美支持SVE2等新特性</td>
+</tr>
+<tr>
+<td><code>-cpu cortex-a710</code></td>
+<td>ARMv9 架构 CPU (openEuler)</td>
+<td>另一种ARMv9实现，可根据需求选择</td>
+</tr>
+<tr>
+<td><code>-smp 2</code></td>
+<td>2 个 CPU 核心</td>
+<td>对于Alpine来说足够了，再多也提升有限</td>
+</tr>
+<tr>
+<td><code>-m 1024M/4096M</code></td>
+<td>内存大小</td>
+<td>建议至少2GB，否则系统会比较卡顿</td>
+</tr>
+<tr>
+<td><code>-accel tcg</code></td>
+<td>TCG 软件加速（无硬件虚拟化时）</td>
+<td>在Windows上主要靠软件模拟，性能就这样了</td>
+</tr>
+<tr>
+<td><code>-bios</code></td>
+<td>ARM64 UEFI 固件路径</td>
+<td>注意路径要正确，否则无法启动</td>
+</tr>
+<tr>
+<td><code>-cdrom</code></td>
+<td>ISO 安装镜像</td>
+<td>安装完成后就不再需要了</td>
+</tr>
+<tr>
+<td><code>-drive</code></td>
+<td>虚拟硬盘</td>
+<td>主要的数据存储位置</td>
+</tr>
+<tr>
+<td><code>-netdev &amp; -device</code></td>
+<td>网络配置</td>
+<td>采用用户模式网络，简单易用</td>
+</tr>
+<tr>
+<td><code>-device virtio-rng-device</code></td>
+<td>硬件随机数生成器</td>
+<td><strong>关键配置！</strong> 解决启动卡顿问题</td>
+</tr>
+<tr>
+<td><code>-nographic</code></td>
+<td>串口控制台模式</td>
+<td>适合服务器场景，资源占用少</td>
+</tr>
+<tr>
+<td><code>-display gtk</code></td>
+<td>GTK 图形界面（可选）</td>
+<td>如果需要图形界面可以用这个</td>
+</tr>
+<tr>
+<td><code>-fsdev &amp; -device virtio-9p-pci</code></td>
+<td>9P 共享目录</td>
+<td>用于主机与虚拟机间文件交换</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、踩坑记录与解决方案"><a href="#四、踩坑记录与解决方案" class="headerlink" title="四、踩坑记录与解决方案"></a>四、踩坑记录与解决方案</h2><p>这一路走来，我也遇到了不少坑，现在把最常见和最棘手的问题都整理出来，希望能帮大家少走弯路：</p>
+<h3 id="4-1-找不到-QEMU-EFI-fd-固件文件"><a href="#4-1-找不到-QEMU-EFI-fd-固件文件" class="headerlink" title="4.1 找不到 QEMU_EFI.fd 固件文件"></a>4.1 找不到 QEMU_EFI.fd 固件文件</h3><p><strong>症状：</strong> 启动时报错找不到固件文件<br><strong>解决：</strong> 使用正确的固件路径</p>
+<ul>
+<li>Windows: <code>&quot;C:\Program Files\qemu\share\edk2-aarch64-code.fd&quot;</code></li>
+<li><strong>经验分享：</strong> 不同版本的QEMU路径可能略有不同，请根据你实际安装路径调整</li>
+</ul>
+<h3 id="4-2-启动卡在-Hardware-RNG-Entropy-Gatherer-Daemon"><a href="#4-2-启动卡在-Hardware-RNG-Entropy-Gatherer-Daemon" class="headerlink" title="4.2 启动卡在 Hardware RNG Entropy Gatherer Daemon"></a>4.2 启动卡在 Hardware RNG Entropy Gatherer Daemon</h3><p><strong>症状：</strong> 系统启动时长时间停在RNG相关服务处<br><strong>解决：</strong> 添加 RNG 设备（这点我在参数部分特别强调了）</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">-device</span> virtio<span class="literal">-rng-device</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>重要提示：</strong> 这个参数是解决启动卡顿的关键！我当初在这里卡了几个小时</li>
+</ul>
+<h3 id="4-3-网络连接超时或无法获取-IP"><a href="#4-3-网络连接超时或无法获取-IP" class="headerlink" title="4.3 网络连接超时或无法获取 IP"></a>4.3 网络连接超时或无法获取 IP</h3><p><strong>症状：</strong> 启动后无法上网，ping不通外网<br><strong>解决：</strong> 启动后手动激活网络</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alpine Linux</span></span><br><span class="line">ip link <span class="built_in">set</span> eth0 up</span><br><span class="line">udhcpc <span class="literal">-i</span> eth0</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>实战经验：</strong> 有时DHCP获取IP会有延迟，耐心等一下或者手动执行以上命令</li>
+</ul>
+<h3 id="4-6-包管理器无法找到某些包"><a href="#4-6-包管理器无法找到某些包" class="headerlink" title="4.6 包管理器无法找到某些包"></a>4.6 包管理器无法找到某些包</h3><p><strong>症状：</strong> apk命令报错说找不到包<br><strong>解决：</strong> 先更新包索引</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alpine</span></span><br><span class="line">apk update</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-7-地址超过-32-位限制"><a href="#4-7-地址超过-32-位限制" class="headerlink" title="4.7 地址超过 32 位限制"></a>4.7 地址超过 32 位限制</h3><p><strong>症状：</strong> 启动时出现内存地址相关的错误<br><strong>解决：</strong> 减少内存分配或使用正确的机器类型参数，关闭 handoff</p>
+<ul>
+<li><strong>个人建议：</strong> 尝试减少内存大小到2GB以下，或者更新QEMU版本</li>
+</ul>
+<h3 id="4-8-安装过程路径解析错误"><a href="#4-8-安装过程路径解析错误" class="headerlink" title="4.8 安装过程路径解析错误"></a>4.8 安装过程路径解析错误</h3><p><strong>症状：</strong> 安装过程中出现路径相关的错误<br><strong>解决：</strong> 使用完整绝对路径或切换到其他发行版如 Alpine</p>
+<ul>
+<li><strong>经验之谈：</strong> 这通常是由于相对路径引起的，建议使用完整路径</li>
+</ul>
+<h3 id="4-9-包管理器无法找到某些包（完整方案）"><a href="#4-9-包管理器无法找到某些包（完整方案）" class="headerlink" title="4.9 包管理器无法找到某些包（完整方案）"></a>4.9 包管理器无法找到某些包（完整方案）</h3><p><strong>症状：</strong> 各种发行版的包管理器问题<br><strong>解决：</strong> 根据不同发行版分别处理</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alpine</span></span><br><span class="line">apk update</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ubuntu/Debian</span></span><br><span class="line">apt update</span><br><span class="line">apt upgrade</span><br><span class="line"></span><br><span class="line"><span class="comment"># openEuler</span></span><br><span class="line">yum update</span><br><span class="line"><span class="comment"># 或者使用新版本的 DNF</span></span><br><span class="line">dnf update</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-地址超过-32-位限制"><a href="#4-4-地址超过-32-位限制" class="headerlink" title="4.4 地址超过 32 位限制"></a>4.4 地址超过 32 位限制</h3><p><strong>解决：</strong> 减少内存分配或使用正确的机器类型参数，关闭 handoff</p>
+<h3 id="4-5-安装过程路径解析错误"><a href="#4-5-安装过程路径解析错误" class="headerlink" title="4.5 安装过程路径解析错误"></a>4.5 安装过程路径解析错误</h3><p><strong>解决：</strong> 使用完整绝对路径或切换到其他发行版如 Alpine</p>
+<h3 id="4-6-包管理器无法找到某些包-1"><a href="#4-6-包管理器无法找到某些包-1" class="headerlink" title="4.6 包管理器无法找到某些包"></a>4.6 包管理器无法找到某些包</h3><p><strong>解决：</strong> </p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Alpine</span></span><br><span class="line">apk update</span><br><span class="line"></span><br><span class="line"><span class="comment"># Ubuntu/Debian</span></span><br><span class="line">apt update</span><br><span class="line">apt upgrade</span><br><span class="line"></span><br><span class="line"><span class="comment"># openEuler</span></span><br><span class="line">yum update</span><br><span class="line"><span class="comment"># 或者使用新版本的 DNF</span></span><br><span class="line">dnf update</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、Alpine-Linux-系统配置实战"><a href="#五、Alpine-Linux-系统配置实战" class="headerlink" title="五、Alpine Linux 系统配置实战"></a>五、Alpine Linux 系统配置实战</h2><h3 id="5-1-安装-Alpine-Linux"><a href="#5-1-安装-Alpine-Linux" class="headerlink" title="5.1 安装 Alpine Linux"></a>5.1 安装 Alpine Linux</h3><p>这是我亲历的安装过程，按照以下步骤操作，成功率100%：</p>
+<ol>
+<li><p><strong>登录系统</strong>（默认用户：root，无密码）</p>
+</li>
+<li><p><strong>启动安装向导</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setup-alpine</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>按提示逐步配置</strong>：</p>
+<ul>
+<li>键盘布局（一般选默认us即可）</li>
+<li>主机名（可以自定义，如alpine-armv9-test）</li>
+<li>网络配置（通常选择 DHCP 自动获取）</li>
+<li>时区（选择 Asia&#x2F;Shanghai）</li>
+<li>代理设置（没有代理则留空回车）</li>
+<li>SSH 服务器（强烈推荐 openssh，便于远程管理）</li>
+<li>磁盘分区（选择虚拟磁盘，如 sda）</li>
+</ul>
+</li>
+<li><p><strong>设置 root 用户密码</strong>（一定要设个强密码）</p>
+</li>
+<li><p><strong>确认安装</strong>（耐心等待安装完成）</p>
+</li>
+</ol>
+<p>安装完成后，系统会提示重启。重启后拔掉ISO，从硬盘启动。</p>
+<h3 id="5-2-网络配置（Alpine-Linux）"><a href="#5-2-网络配置（Alpine-Linux）" class="headerlink" title="5.2 网络配置（Alpine Linux）"></a>5.2 网络配置（Alpine Linux）</h3><p>刚安装完的系统可能网络还没完全激活，我通常会执行以下命令：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 激活网络接口</span></span><br><span class="line">ip link <span class="built_in">set</span> eth0 up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取 IP 地址</span></span><br><span class="line">udhcpc <span class="literal">-i</span> eth0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证网络连通性</span></span><br><span class="line">ping <span class="number">8.8</span>.<span class="number">8.8</span></span><br></pre></td></tr></table></figure>
+
+<p>💡 <strong>个人经验</strong>：有时候需要等待几分钟才能联网，不要着急。</p>
+<h3 id="5-3-CPU-信息验证"><a href="#5-3-CPU-信息验证" class="headerlink" title="5.3 CPU 信息验证"></a>5.3 CPU 信息验证</h3><p>这是我们这次实验的核心！验证ARMv9特性是否生效：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /proc/cpuinfo</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>期望看到的关键信息：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">processor       : 0</span><br><span class="line">BogoMIPS        : 125.00</span><br><span class="line">Features        : fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp sve2 sveaes svepmull svebitperm svesha3 svesm4 flagm2 frint svei8mm svebf16 i8mm bf16 dgh rng bti</span><br><span class="line">CPU implementer : 0x41</span><br><span class="line">CPU architecture: 8</span><br><span class="line">CPU variant     : 0x0</span><br><span class="line">CPU part        : 0xd49    </span><br><span class="line">CPU revision    : 3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>重点关注</strong>：<code>Features</code>字段中的<code>sve2</code>和<code>rng</code>，这说明ARMv9的新特性已经生效！</p>
+<h3 id="5-4-常用工具安装（Alpine）"><a href="#5-4-常用工具安装（Alpine）" class="headerlink" title="5.4 常用工具安装（Alpine）"></a>5.4 常用工具安装（Alpine）</h3><p>刚安装的Alpine比较精简，我们先装些常用工具：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新包索引（非常重要！）</span></span><br><span class="line">apk update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装日常开发必备工具</span></span><br><span class="line">apk add vim nano <span class="built_in">curl</span> <span class="built_in">wget</span> bash gcc git htop tmux</span><br></pre></td></tr></table></figure>
+
+<p><strong>推荐理由</strong>：这些工具在ARMv9特性的验证过程中非常有用。</p>
+<hr>
+<h2 id="六、共享主机目录（文件传输方案）"><a href="#六、共享主机目录（文件传输方案）" class="headerlink" title="六、共享主机目录（文件传输方案）"></a>六、共享主机目录（文件传输方案）</h2><p>在虚拟机和主机之间传输文件是个常见需求，我总结了几种方法，各有优劣：</p>
+<h3 id="6-1-使用-SSH-x2F-SFTP-传输文件（我最常用的方法）"><a href="#6-1-使用-SSH-x2F-SFTP-传输文件（我最常用的方法）" class="headerlink" title="6.1 使用 SSH&#x2F;SFTP 传输文件（我最常用的方法）"></a>6.1 使用 SSH&#x2F;SFTP 传输文件（我最常用的方法）</h3><p>这是最简单直接的方式，几乎零配置：</p>
+<ol>
+<li><p>确保 Alpine Linux 中 SSH 服务已启用（安装时已配置）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rc-service sshd start</span><br><span class="line">rc-update add sshd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>从 Windows 使用 SFTP 客户端（如 WinSCP）连接到虚拟机 IP 地址</p>
+</li>
+</ol>
+<h3 id="6-3-端口转发传输文件"><a href="#6-3-端口转发传输文件" class="headerlink" title="6.3 端口转发传输文件"></a>6.3 端口转发传输文件</h3><p>使用端口转发将文件传输到虚拟机：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">-netdev</span> user,id=net0,hostfwd=tcp::<span class="number">2222</span>-:<span class="number">22</span>,hostfwd=tcp::<span class="number">8080</span>-:<span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>从 Windows 使用 SFTP 客户端（如 WinSCP 或 FileZilla）连接到虚拟机 IP 地址</li>
+<li><strong>我的经验</strong>：如果网络配置正常，直接连接虚拟机IP即可；如果遇到连接问题，可以使用端口转发</li>
+</ol>
+<h3 id="6-2-端口转发传输文件"><a href="#6-2-端口转发传输文件" class="headerlink" title="6.2 端口转发传输文件"></a>6.2 端口转发传输文件</h3><p>如果需要更灵活的网络配置，可以使用端口转发：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">-netdev</span> user,id=net0,hostfwd=tcp::<span class="number">2222</span>-:<span class="number">22</span>,hostfwd=tcp::<span class="number">8080</span>-:<span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>这样可以通过 localhost:2222 访问虚拟机的 SSH 服务。</p>
+<h3 id="6-3-使用-Samba-共享（备选方案）"><a href="#6-3-使用-Samba-共享（备选方案）" class="headerlink" title="6.3 使用 Samba 共享（备选方案）"></a>6.3 使用 Samba 共享（备选方案）</h3><p>虽然我更推荐SSH方案，但如果你习惯Windows文件共享，也可以考虑Samba：</p>
+<p>Windows 不原生支持 9P 文件系统，Samba是另一种选择：</p>
+<ol>
+<li>在 Windows 主机上安装 Samba 服务器（或使用现有服务器）</li>
+<li>配置共享目录，如 <code>\\localhost\shared</code></li>
+<li>启动 QEMU 时使用以下参数：<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">-netdev</span> user,id=net0,hostfwd=tcp::<span class="number">445</span>-:<span class="number">445</span> `</span><br><span class="line"><span class="literal">-device</span> virtio<span class="literal">-net-device</span>,netdev=net0</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>个人建议</strong>：除非特殊需求，否则优先使用SSH&#x2F;SFTP方案，更简单可靠。</p>
+<hr>
+<h2 id="七、优雅退出虚拟机"><a href="#七、优雅退出虚拟机" class="headerlink" title="七、优雅退出虚拟机"></a>七、优雅退出虚拟机</h2><h3 id="Windows-平台"><a href="#Windows-平台" class="headerlink" title="Windows 平台"></a>Windows 平台</h3><ol>
+<li>按 <strong>Ctrl+AltGr+2</strong> 进入 QEMU 控制台</li>
+<li>输入 <code>quit</code> 命令优雅退出</li>
+<li><strong>我的习惯</strong>：在虚拟机内先执行 <code>poweroff</code> 或 <code>shutdown -h now</code>，再退出QEMU</li>
+</ol>
+<p><strong>温馨提示</strong>：直接关闭QEMU窗口可能导致虚拟磁盘损坏，建议养成优雅关机的习惯。</p>
+<hr>
+<h2 id="八、我的实战经验与注意事项"><a href="#八、我的实战经验与注意事项" class="headerlink" title="八、我的实战经验与注意事项"></a>八、我的实战经验与注意事项</h2><p>经过多次实践，我总结了一些重要经验，希望能帮助大家少踩坑：</p>
+<p>💡 <strong>性能优化提醒：</strong></p>
+<ul>
+<li>ARM64 虚拟机运行速度相对较慢（TCG模拟器确实有性能损耗，这是正常的）</li>
+<li><strong>我的配置建议</strong>：建议分配 2GB+ 内存以获得流畅体验</li>
+<li>如果你尝试其他带图形界面的系统（如openEuler），需要 4GB+ 内存</li>
+<li>Ubuntu Desktop 等完整桌面环境建议分配 6GB+ 内存</li>
+</ul>
+<p>💾 <strong>磁盘空间规划：</strong></p>
+<ul>
+<li>确保主机有足够磁盘空间（建议预留 20GB+，qcow2格式会动态增长）</li>
+</ul>
+<p>⏱️ <strong>时间预期管理：</strong></p>
+<ul>
+<li>系统安装过程确实需要较长等待时间（别着急，这是虚拟化的正常现象）</li>
+<li>首次启动较慢属正常现象（特别是首次系统初始化）</li>
+</ul>
+<p>⌨️ <strong>实用快捷键：</strong></p>
+<ul>
+<li>Windows: <code>Ctrl+AltGr+2</code> 进入 QEMU 控制台（这是我最常用的快捷键）</li>
+</ul>
+<p>🔥 <strong>我的经验之谈：</strong></p>
+<ul>
+<li>如果只是做ARMv9特性的验证，Alpine Linux + 命令行已经足够了</li>
+<li>不要在虚拟机里跑太重的应用，毕竟性能有限</li>
+<li>定期备份虚拟机镜像，避免重复劳动</li>
+</ul>
+<hr>
+<h2 id="九、实战速查手册（我的常用命令）"><a href="#九、实战速查手册（我的常用命令）" class="headerlink" title="九、实战速查手册（我的常用命令）"></a>九、实战速查手册（我的常用命令）</h2><p>平时使用时，我会频繁参考这些命令，节省大量时间：</p>
+<h3 id="🚀-一键启动命令（Alpine-ARMv9）"><a href="#🚀-一键启动命令（Alpine-ARMv9）" class="headerlink" title="🚀 一键启动命令（Alpine + ARMv9）"></a>🚀 一键启动命令（Alpine + ARMv9）</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qemu<span class="literal">-system-aarch64</span> <span class="literal">-M</span> virt <span class="literal">-cpu</span> neoverse<span class="literal">-n2</span> <span class="literal">-m</span> <span class="number">1024</span>M <span class="literal">-accel</span> tcg <span class="literal">-bios</span> <span class="string">&quot;C:\Program Files\qemu\share\edk2-aarch64-code.fd&quot;</span> <span class="literal">-cdrom</span> .\alpine<span class="literal">-standard-3</span>.<span class="number">23.3</span><span class="literal">-aarch64</span>.iso <span class="literal">-drive</span> file=alpine<span class="literal">-disk</span>.qcow2,<span class="keyword">if</span>=virtio <span class="literal">-netdev</span> user,id=net0 <span class="literal">-device</span> virtio<span class="literal">-net-device</span>,netdev=net0 <span class="literal">-device</span> virtio<span class="literal">-rng-device</span> <span class="literal">-nographic</span></span><br></pre></td></tr></table></figure>
+<p><strong>贴心提示</strong>：我通常会把这个命令保存为批处理脚本，方便重复使用</p>
+<h3 id="🌐-网络故障一键诊断"><a href="#🌐-网络故障一键诊断" class="headerlink" title="🌐 网络故障一键诊断"></a>🌐 网络故障一键诊断</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip link <span class="built_in">set</span> eth0 up &amp;&amp; udhcpc <span class="literal">-i</span> eth0 &amp;&amp; ping <span class="number">8.8</span>.<span class="number">8.8</span></span><br></pre></td></tr></table></figure>
+<p><strong>使用场景</strong>：网络无法连接时的快速排查命令</p>
+<h3 id="✅-ARMv9-特性验证命令"><a href="#✅-ARMv9-特性验证命令" class="headerlink" title="✅ ARMv9 特性验证命令"></a>✅ ARMv9 特性验证命令</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /proc/cpuinfo | grep <span class="string">&quot;CPU part&quot;</span></span><br><span class="line"><span class="comment"># 正常情况应显示 0xd49 (cortex-a710)，证明ARMv9模拟成功</span></span><br></pre></td></tr></table></figure>
+<p><strong>验证要点</strong>：看到0xd49就说明你的ARMv9环境搭建成功了！</p>
+<p>💡 <strong>我的使用习惯</strong>：把这几个命令保存在记事本里，随时查阅。</p>
+<hr>
+<h2 id="附录：Alpine-Linux-实用技巧（我的私藏）"><a href="#附录：Alpine-Linux-实用技巧（我的私藏）" class="headerlink" title="附录：Alpine Linux 实用技巧（我的私藏）"></a>附录：Alpine Linux 实用技巧（我的私藏）</h2><p>这部分是我日常使用Alpine Linux总结的小技巧，希望对你有帮助：</p>
+<h3 id="A-1-Alpine-Linux-包管理实战"><a href="#A-1-Alpine-Linux-包管理实战" class="headerlink" title="A.1 Alpine Linux 包管理实战"></a>A.1 Alpine Linux 包管理实战</h3><p>Alpine的apk包管理器虽然简洁，但功能强大，以下是我的常用命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新包索引（每次装软件前先执行）</span></span><br><span class="line">apk update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装单个软件包</span></span><br><span class="line">apk add vim</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装多个软件包</span></span><br><span class="line">apk add vim curl wget git</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除软件包（保留依赖）</span></span><br><span class="line">apk del package_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索软件包（查找你需要的工具）</span></span><br><span class="line">apk search package_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看已安装包的详细信息</span></span><br><span class="line">apk info package_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看软件包包含哪些文件</span></span><br><span class="line">apk info -L package_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理APK缓存（释放空间）</span></span><br><span class="line">apk cache clean</span><br></pre></td></tr></table></figure>
+
+<p><strong>我的使用习惯</strong>：经常用<code>apk search</code>来查找需要的软件包名，非常方便。</p>
+<h3 id="A-2-仓库配置快速切换"><a href="#A-2-仓库配置快速切换" class="headerlink" title="A.2 仓库配置快速切换"></a>A.2 仓库配置快速切换</h3><p>如果遇到网络问题，快速切换到国内镜像源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一键切换到阿里云镜像（推荐）</span></span><br><span class="line">setup-apk-mirror --country CN --protocol https</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者手动操作（更可控）</span></span><br><span class="line"><span class="comment"># 备份原配置</span></span><br><span class="line"><span class="built_in">cp</span> /etc/apk/repositories /etc/apk/repositories.backup.$(<span class="built_in">date</span> +%Y%m%d)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 手动编辑仓库文件，替换为国内源</span></span><br><span class="line">sed -i <span class="string">&#x27;s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g&#x27;</span> /etc/apk/repositories</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者重新创建仓库文件</span></span><br><span class="line"><span class="built_in">cat</span> &gt; /etc/apk/repositories &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">https://mirrors.aliyun.com/alpine/v3.23/main</span></span><br><span class="line"><span class="string">https://mirrors.aliyun.com/alpine/v3.23/community</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="A-3-实用运维命令"><a href="#A-3-实用运维命令" class="headerlink" title="A.3 实用运维命令"></a>A.3 实用运维命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查系统信息</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="built_in">cat</span> /etc/os-release</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查CPU信息（验证ARMv9特性）</span></span><br><span class="line"><span class="built_in">cat</span> /proc/cpuinfo | grep -i arm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查内存使用</span></span><br><span class="line">free -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查磁盘使用</span></span><br><span class="line"><span class="built_in">df</span> -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查网络配置</span></span><br><span class="line">ip addr show</span><br><span class="line">ip route show</span><br></pre></td></tr></table></figure>
+
+<p>💡 <strong>经验分享</strong>：这些命令在我每天的工作中频繁使用，建议收藏备用。</p>
+<hr>
+<p>行动，才不会被动!</p>
+<p>欢迎关注个人公众号 微信 -&gt; 搜索 -&gt; fishmwei，沟通交流。</p>
+<p><img src="/images/wx_gzh.png" alt="欢迎关注"></p>
+<p>博客地址： <a href="https://fishmwei.github.io/">https://fishmwei.github.io</a></p>
+<p>掘金主页： <a target="_blank" rel="noopener" href="https://juejin.cn/user/2084329776486919">https://juejin.cn/user/2084329776486919</a></p>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2026/03/17/2026-20260317-x25519/" rel="prev" title="揭秘X25519密钥交换：当我深入硬件验证时发现的加密黑科技">
+      <i class="fa fa-chevron-left"></i> 揭秘X25519密钥交换：当我深入硬件验证时发现的加密黑科技
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">一、环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-Alpine-Linux%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 为什么选择 Alpine Linux？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%AE%89%E8%A3%85-QEMU"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 安装 QEMU</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows-%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97"><span class="nav-number">2.2.1.</span> <span class="nav-text">Windows 安装指南</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E4%B8%8B%E8%BD%BD-Alpine-Linux-%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 下载 Alpine Linux 系统镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%A3%81%E7%9B%98"><span class="nav-number">2.4.</span> <span class="nav-text">1.4 创建虚拟磁盘</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">二、启动命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%A6%96%E6%AC%A1%E5%AE%89%E8%A3%85-Alpine-Linux"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 首次安装 Alpine Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%90%AF%E5%8A%A8%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84-Alpine-%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 启动已安装的 Alpine 系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3%E4%B8%8E%E4%B8%AA%E4%BA%BA%E5%BF%83%E5%BE%97"><span class="nav-number">4.</span> <span class="nav-text">三、参数详解与个人心得</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">四、踩坑记录与解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%89%BE%E4%B8%8D%E5%88%B0-QEMU-EFI-fd-%E5%9B%BA%E4%BB%B6%E6%96%87%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 找不到 QEMU_EFI.fd 固件文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%90%AF%E5%8A%A8%E5%8D%A1%E5%9C%A8-Hardware-RNG-Entropy-Gatherer-Daemon"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 启动卡在 Hardware RNG Entropy Gatherer Daemon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E8%B6%85%E6%97%B6%E6%88%96%E6%97%A0%E6%B3%95%E8%8E%B7%E5%8F%96-IP"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 网络连接超时或无法获取 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0%E6%9F%90%E4%BA%9B%E5%8C%85"><span class="nav-number">5.4.</span> <span class="nav-text">4.6 包管理器无法找到某些包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-%E5%9C%B0%E5%9D%80%E8%B6%85%E8%BF%87-32-%E4%BD%8D%E9%99%90%E5%88%B6"><span class="nav-number">5.5.</span> <span class="nav-text">4.7 地址超过 32 位限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-8-%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E8%B7%AF%E5%BE%84%E8%A7%A3%E6%9E%90%E9%94%99%E8%AF%AF"><span class="nav-number">5.6.</span> <span class="nav-text">4.8 安装过程路径解析错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-9-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0%E6%9F%90%E4%BA%9B%E5%8C%85%EF%BC%88%E5%AE%8C%E6%95%B4%E6%96%B9%E6%A1%88%EF%BC%89"><span class="nav-number">5.7.</span> <span class="nav-text">4.9 包管理器无法找到某些包（完整方案）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%9C%B0%E5%9D%80%E8%B6%85%E8%BF%87-32-%E4%BD%8D%E9%99%90%E5%88%B6"><span class="nav-number">5.8.</span> <span class="nav-text">4.4 地址超过 32 位限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B%E8%B7%AF%E5%BE%84%E8%A7%A3%E6%9E%90%E9%94%99%E8%AF%AF"><span class="nav-number">5.9.</span> <span class="nav-text">4.5 安装过程路径解析错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0%E6%9F%90%E4%BA%9B%E5%8C%85-1"><span class="nav-number">5.10.</span> <span class="nav-text">4.6 包管理器无法找到某些包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81Alpine-Linux-%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E5%AE%9E%E6%88%98"><span class="nav-number">6.</span> <span class="nav-text">五、Alpine Linux 系统配置实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%AE%89%E8%A3%85-Alpine-Linux"><span class="nav-number">6.1.</span> <span class="nav-text">5.1 安装 Alpine Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%EF%BC%88Alpine-Linux%EF%BC%89"><span class="nav-number">6.2.</span> <span class="nav-text">5.2 网络配置（Alpine Linux）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-CPU-%E4%BF%A1%E6%81%AF%E9%AA%8C%E8%AF%81"><span class="nav-number">6.3.</span> <span class="nav-text">5.3 CPU 信息验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85%EF%BC%88Alpine%EF%BC%89"><span class="nav-number">6.4.</span> <span class="nav-text">5.4 常用工具安装（Alpine）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%85%B1%E4%BA%AB%E4%B8%BB%E6%9C%BA%E7%9B%AE%E5%BD%95%EF%BC%88%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%96%B9%E6%A1%88%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">六、共享主机目录（文件传输方案）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E4%BD%BF%E7%94%A8-SSH-x2F-SFTP-%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6%EF%BC%88%E6%88%91%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">6.1 使用 SSH&#x2F;SFTP 传输文件（我最常用的方法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6"><span class="nav-number">7.2.</span> <span class="nav-text">6.3 端口转发传输文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6"><span class="nav-number">7.3.</span> <span class="nav-text">6.2 端口转发传输文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E4%BD%BF%E7%94%A8-Samba-%E5%85%B1%E4%BA%AB%EF%BC%88%E5%A4%87%E9%80%89%E6%96%B9%E6%A1%88%EF%BC%89"><span class="nav-number">7.4.</span> <span class="nav-text">6.3 使用 Samba 共享（备选方案）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">8.</span> <span class="nav-text">七、优雅退出虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows-%E5%B9%B3%E5%8F%B0"><span class="nav-number">8.1.</span> <span class="nav-text">Windows 平台</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E6%88%91%E7%9A%84%E5%AE%9E%E6%88%98%E7%BB%8F%E9%AA%8C%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">9.</span> <span class="nav-text">八、我的实战经验与注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%AE%9E%E6%88%98%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C%EF%BC%88%E6%88%91%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%89"><span class="nav-number">10.</span> <span class="nav-text">九、实战速查手册（我的常用命令）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%9A%80-%E4%B8%80%E9%94%AE%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4%EF%BC%88Alpine-ARMv9%EF%BC%89"><span class="nav-number">10.1.</span> <span class="nav-text">🚀 一键启动命令（Alpine + ARMv9）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8C%90-%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E4%B8%80%E9%94%AE%E8%AF%8A%E6%96%AD"><span class="nav-number">10.2.</span> <span class="nav-text">🌐 网络故障一键诊断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9C%85-ARMv9-%E7%89%B9%E6%80%A7%E9%AA%8C%E8%AF%81%E5%91%BD%E4%BB%A4"><span class="nav-number">10.3.</span> <span class="nav-text">✅ ARMv9 特性验证命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95%EF%BC%9AAlpine-Linux-%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7%EF%BC%88%E6%88%91%E7%9A%84%E7%A7%81%E8%97%8F%EF%BC%89"><span class="nav-number">11.</span> <span class="nav-text">附录：Alpine Linux 实用技巧（我的私藏）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#A-1-Alpine-Linux-%E5%8C%85%E7%AE%A1%E7%90%86%E5%AE%9E%E6%88%98"><span class="nav-number">11.1.</span> <span class="nav-text">A.1 Alpine Linux 包管理实战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-2-%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE%E5%BF%AB%E9%80%9F%E5%88%87%E6%8D%A2"><span class="nav-number">11.2.</span> <span class="nav-text">A.2 仓库配置快速切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-3-%E5%AE%9E%E7%94%A8%E8%BF%90%E7%BB%B4%E5%91%BD%E4%BB%A4"><span class="nav-number">11.3.</span> <span class="nav-text">A.3 实用运维命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="IT攻城狮小明"
+      src="/assets/img/headerIcon.jpg">
+  <p class="site-author-name" itemprop="name">IT攻城狮小明</p>
+  <div class="site-description" itemprop="description">技术博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">203</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-fishmwei"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">IT攻城狮小明</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'qlMkmpehRDwm1DefVyydOxbR-gzGzoHsz',
+      appKey     : '0x5cs3gW6EAeDvJk6z4X3uAQ',
+      placeholder: "😜尽情吐槽吧~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
